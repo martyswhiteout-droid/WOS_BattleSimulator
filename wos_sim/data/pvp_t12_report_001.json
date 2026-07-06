@@ -1,0 +1,49 @@
+{
+  "description": "FIRST T12 PvP report (2026-05-24, #148 X:597 Y:597, WOS_BattleReports_T12_146.pdf). Marty 191 (attacker/rally, [RF/J]) VICTORY over GFG Achamela garrison. NEAR-EVEN, RAZOR-THIN - attacker won with only 62,364 survivors of 1,805,272 (3.45%), defender FULLY WIPED. The closest-to-boundary PvP data point in the corpus and the key near-even calibration anchor. FULL STATS extracted 2026-07-05 (panels, per-class composition, lead heroes, buffs, T12).",
+  "outcome": "attacker_victory",
+  "attacker": {
+    "player": "[RF/J]Marty 191", "role": "rally", "power_loss": 98578248,
+    "troops": 1805272, "losses": 0, "injured": 610027, "lightly_injured": 1132881,
+    "survivors": 62364, "incap": 1742908, "survivor_frac": 0.0345,
+    "lead_heroes": {"Infantry": "Elif", "Lancer": "Dominic", "Marksman": "Vulcanus"},
+    "lead_hero_gens": {"Infantry": 14, "Lancer": 14, "Marksman": 13},
+    "joiner_flags": ["Blanchette", "Hendrik", "Ligeia", "Bradley"],
+    "n_participants": 8,
+    "composition": {
+      "Infantry": {"count": 783589, "avg_tier": 11.3},
+      "Lancer":   {"count": 331529, "avg_tier": 11.6},
+      "Marksman": {"count": 690154, "avg_tier": 11.5}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 4093.0, "Defense": 3419.1, "Lethality": 3388.9, "Health": 3040.5},
+      "Lancer":   {"Attack": 4101.5, "Defense": 3385.1, "Lethality": 3381.6, "Health": 2996.1},
+      "Marksman": {"Attack": 3887.5, "Defense": 3214.9, "Lethality": 3317.2, "Health": 2934.6}
+    },
+    "t12_skill_levels": {"indomitable_wall": 4, "meridian_phalanx": 5, "starfire": 8}
+  },
+  "defender": {
+    "player": "[GFG]Achamela", "role": "garrison", "power_loss": 97552884,
+    "troops": 1868495, "losses": 0, "injured": 653984, "lightly_injured": 1214511,
+    "survivors": 0, "incap": 1868495, "survivor_frac": 0.0,
+    "lead_heroes": {"Infantry": "Elif", "Lancer": "Dominic", "Marksman": "Cara"},
+    "lead_hero_gens": {"Infantry": 14, "Lancer": 14, "Marksman": 14},
+    "joiner_flags": ["Eleanora", "Ligeia", "Renee", "Blanchette"],
+    "n_participants": 10,
+    "composition": {
+      "Infantry": {"count": 979228, "avg_tier": 11.0},
+      "Lancer":   {"count": 348222, "avg_tier": 10.8},
+      "Marksman": {"count": 541045, "avg_tier": 11.1}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 3706.2, "Defense": 3846.6, "Lethality": 3624.2, "Health": 3226.8},
+      "Lancer":   {"Attack": 3652.0, "Defense": 3790.8, "Lethality": 3577.3, "Health": 3152.5},
+      "Marksman": {"Attack": 3652.0, "Defense": 3791.9, "Lethality": 3596.6, "Health": 3190.9}
+    },
+    "t12_skill_levels": {"indomitable_wall": 4, "meridian_phalanx": 3, "starfire": 3}
+  },
+  "stats_note": "panel_pct = the in-game Stat Bonuses panel (FULL SCOUTED - includes heroes, gear, items, pets, widgets, penalties). Since the two sides differ, this is the ACTUAL-stats case (NOT pre-assumed symmetric) - feed as-is, NO hero relayering. KEY ASYMMETRY: attacker is OFFENSE-focused (higher Attack/Lethality), defender is DEFENSE-focused (higher Defense/Health) - via the widgets (attacker Rally Attack/Leth +15%, defender Defender Def/Leth +15%).",
+  "specials_note": "Both sides +20% troops A/D/L/H items; -20% enemy A/D; pets +10% A/D/L/H both; enemy pet penalties Def -10% / Leth -5% / HP -5% both. Attacker widgets: Rally Attack +15%, Rally Lethality +15%. Defender widgets: Defender Defense +15%, Defender Lethality +15%. All already baked into panel_pct.",
+  "t12_notes": "Attacker HIGHER T12 research (Meridian 5 vs 3, Starfire 8 vs 3 -> +5%/+4% marks buffs vs +3%/+1.5%). Indomitable Wall tied L4 (-2.4% enemy dmg both). Likely decisive in the near-even outcome.",
+  "reconstructed_timeline_2026_07_05": "Martin reconstructed the clock from hero-skill trigger counts. REVISED to 16 turns (was 15): the clean anchor is Vulcanus SK3 '+60% def, every 3 turns' triggered 6x -> turns 1,4,7,10,13,16 -> marksman alive at T16 -> battle=16. Revised Vulcanus SK2 reading: 'every 5 attacks PER TROOP TYPE' (not total-side): his inf floor(12/5)=2 + lancer floor(14/5)=2 + marksman floor(16/5)=3 = 7 triggers. Other triggers: his Elif SK3 x12 (infantry die endT12), enemy Elif SK3 x15 (enemy infantry die endT15), enemy Cara x6 every-2 (enemy marksman die endT12). STAGING: T12 his INF die + enemy MARKSMAN die (his ambush); his LANCER die endT14 (revised from T12); T13-16 his MARKSMAN carry; enemy INF die endT15, enemy LANCER die endT16 (LAST to fall - their counter=his infantry died T12); his 62,364 marksman survive. MECHANICS (Martin, authoritative): volleys are STRICT FRONT-TO-BACK (inf->lancer->marksman); marksman are IMMORTAL behind a live wall EXCEPT bypass procs = enemy lancer Ambusher procs + enemy Cara SK3 (periodic every-2 burst hitting lancer+marksman directly). So his marksman were only chipped ~690k->~580k over T1-12 by procs, held FLAT ~580k T13-T15start (lancers soaked), exposed only T15-16. ENDGAME explains the razor-thin result: T15 ~0/0/580k vs enemy ~1/348k/0; his exposed marksman grind 348k enemy lancers over T15-16 at a COUNTER DISADVANTAGE (lancer counters marksman), losing ~518k to kill ~348k, ending 62,364 - won on NUMBERS alone (580k>348k); ~10% fewer marks = loss. NEAR-MUTUAL-ANNIHILATION, attacker edged 3.45%. Casualty check EXACT: 783589+331529+(690154-62364)=1,742,908=incap. Paired with report_002 (25t, LANCERS survive) this is a controlled near-even experiment - see report_002 engine_finding for the TWO structural gaps (casualty-allocation order + near-balance hypersensitivity). Both are validation anchors; neither is reproducible by the current engine.",
+  "calibration_finding_2026_07_05": "CORRECTED (Martin caught the error). My first reconstruction built units from PANELS ONLY - it applied the T12 troop skills but NOT the hero skills - and compared against r6/r8 which DO have their hero skills (via assemble). Invalid comparison. Also r6/r8 are a PRE-T12 regime (no T12 troop skills, sub-Gen11 heroes) so cannot be force-fit with this T12 regime (T12 skills + Gen14 heroes) under one rate/def_k/def_ed. REDONE via construct.build (hero skills applied): skills add +8% stat (skillmult x1.08) + LARGE Damage-Dealt (+55% inf/marks, +100% lancer). That ~1.5-2x extra damage crushes the battle to ~8 turns (real ~30+) and inflates the attacker win to ~70% survivors (real 3.45%) - the rate=168 calibrated on r6/r8's lower-DD PRE-T12 config does NOT fit this high-DD T12 config. So my earlier 'definitive structural mis-ranking' claim is RETRACTED - with skills in, the dominant issue is DD-driven over-acceleration + a regime/duration mismatch, and one T12 point cannot cleanly separate structure from calibration. Possible over-count in DD (conditional/targeted skills applied as flat - assemble v0 approximation) - TBD. PATH: calibrate the T12 regime SEPARATELY (own rate/def_k/def_ed), which needs SEVERAL T12 near-even reports (esp. an attacker-barely-LOSES) + this battle's real round count (Bradley S3 counter). Until then near-even T12 = untrustworthy (calibrated=false)."
+}

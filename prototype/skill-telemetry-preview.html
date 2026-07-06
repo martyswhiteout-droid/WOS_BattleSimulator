@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill Telemetry Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{--void:#0A1017;--void-2:#0C141D;--panel:#111C26;--panel-2:#16232F;--line:#1E2E3B;--line-soft:#182531;--ice:#5FD2E0;--ice-bright:#8CEDF3;--ice-deep:#2E9AAB;--ember:#F0913D;--ember-bright:#FDB765;--ember-deep:#B5652A;--white:#EAF3F7;--mute:#8AA2B0;--mute-2:#5E7382;--disp:'Chakra Petch',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,rgba(95,210,224,.06),transparent 60%),radial-gradient(900px 500px at 100% 0%,rgba(240,145,61,.05),transparent 55%),var(--void);color:var(--white);font-family:var(--body);font-size:14px;line-height:1.45}
+  .bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:14px;padding:12px clamp(14px,3vw,30px);background:rgba(10,16,23,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .flake{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:9px;background:radial-gradient(circle at 50% 30%,rgba(95,210,224,.18),transparent 70%);color:var(--ice-bright)}
+  .brand h1{font-family:var(--disp);font-size:16px;letter-spacing:.14em;text-transform:uppercase;line-height:1;margin:0}
+  .brand p{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mute-2);text-transform:uppercase;margin:3px 0 0}
+  .bar-note{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember-bright);border:1px solid color-mix(in srgb,var(--ember) 40%,transparent);background:rgba(240,145,61,.1);border-radius:7px;padding:5px 11px}
+  main{max-width:1360px;margin:0 auto;padding:26px clamp(14px,3vw,30px) 80px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin:0 0 16px}
+  .sec-head h2{font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:.2em;text-transform:uppercase;margin:0}
+  .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .forecast{background:linear-gradient(180deg,var(--panel),var(--void-2));border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px -24px rgba(0,0,0,.9);overflow:hidden}
+  .forecast-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(95,210,224,.07),transparent 36%,rgba(240,145,61,.07))}
+  .score{font-family:var(--disp);font-size:28px;font-weight:700;letter-spacing:.04em}.score.own{color:var(--ice-bright)}.score.enemy{color:var(--ember-bright);text-align:right}
+  .pill{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--void-2)}
+  .body{padding:20px}.fc-part{padding:20px 0;border-top:1px solid var(--line-soft)}.fc-part:first-child{border-top:0;padding-top:0}
+  .h{font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:.08em;margin-bottom:5px}.sub{font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.04em;margin-bottom:14px}
+  .mock-bars{height:120px;border:1px solid var(--line-soft);border-radius:10px;background:var(--void-2);display:grid;place-items:center;padding:20px}
+  .mock-bars div{width:min(760px,100%);height:15px;border-radius:5px;background:linear-gradient(90deg,var(--ice-deep) 0 43%,var(--line) 43% 44%,var(--ember-deep) 44% 100%)}
+  .legend,.skill-trow{display:grid;grid-template-columns:minmax(0,1fr) 118px minmax(0,1fr);gap:10px}.legend{margin-bottom:8px}.legend div{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute-2)}.legend .own{color:var(--ice-bright)}.legend .enemy{color:var(--ember-bright);text-align:right}
+  .skill-telemetry{display:grid;gap:10px}.skill-trow{align-items:stretch}.skill-slot{display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute-2)}
+  .skill-card{background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:10px;min-width:0}.skill-card.own{border-color:color-mix(in srgb,var(--ice) 20%,var(--line))}.skill-card.enemy{border-color:color-mix(in srgb,var(--ember) 20%,var(--line))}
+  .skill-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.skill-hero{display:flex;align-items:center;gap:8px;min-width:0}.skill-hero img{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel)}
+  .skill-name{font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.skill-role{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute-2);white-space:nowrap}
+  .skill-lines{display:grid;gap:7px}.skill-line{display:grid;grid-template-columns:30px minmax(0,1.15fr) minmax(78px,.75fr) minmax(78px,.75fr);gap:8px;align-items:center;background:var(--void);border:1px solid var(--line-soft);border-radius:8px;padding:7px;min-width:0}
+  .skill-icon{width:28px;height:28px;border-radius:7px;object-fit:cover;background:var(--panel);border:1px solid color-mix(in srgb,var(--white) 25%,transparent)}.skill-icon.missing{display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--mute-2)}
+  .skill-copy{min-width:0}.skill-copy b{display:block;font-family:var(--disp);font-size:12px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}.skill-copy small{display:block;font-family:var(--mono);font-size:8.5px;color:var(--mute-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .skill-stat{min-width:0}.skill-stat span{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute-2);margin-bottom:3px}.skill-stat b{display:block;font-family:var(--disp);font-size:13px;line-height:1.05;color:var(--white);margin-bottom:3px}
+  .skill-spark{height:26px;display:flex;align-items:flex-end;gap:2px;padding:3px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:6px}.skill-spark i{display:block;flex:1;min-width:2px;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(--ice-bright),var(--ice-deep));height:var(--h)}.skill-card.enemy .skill-spark i{background:linear-gradient(180deg,var(--ember-bright),var(--ember-deep))}.skill-spark.kills i{opacity:.85}
+  .skill-card.captain{background:linear-gradient(180deg,var(--panel-2),var(--void-2))}.skill-card.joiner-pack{background:linear-gradient(180deg,rgba(92,113,130,.12),var(--void-2));border-style:dashed}.joiner-list{display:grid;gap:9px}.joiner-entry{background:var(--void);border:1px solid var(--line-soft);border-radius:9px;padding:8px;min-width:0}.joiner-entry-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}.joiner-entry-head img{width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--panel)}.joiner-entry-head b{font-family:var(--disp);font-size:12px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .note{margin-top:16px;border:1px solid color-mix(in srgb,var(--ember) 30%,transparent);background:linear-gradient(180deg,rgba(240,145,61,.09),rgba(240,145,61,.03));border-radius:10px;padding:12px 14px;color:var(--mute);font-size:12.5px}.note b{color:var(--ember-bright)}
+  @media (max-width:780px){.forecast-head{grid-template-columns:1fr;gap:8px}.score.enemy{text-align:left}.legend{display:none}.skill-trow{grid-template-columns:1fr}.skill-slot{order:-1;padding:7px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}.skill-line{grid-template-columns:30px minmax(0,1fr);}.skill-stat{grid-column:2}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="flake">*</div><div class="brand"><h1>Whiteout Tactics</h1><p>Forecast visual prototype</p></div><div class="bar-note">Mock telemetry</div></header>
+<main>
+  <div class="sec-head"><h2>Forecast</h2><div class="rule"></div></div>
+  <section class="forecast">
+    <div class="forecast-head"><div class="score own">62% win</div><div class="pill">10K sims - sample data</div><div class="score enemy">38% enemy</div></div>
+    <div class="body">
+      <div class="fc-part"><div class="h">Simulation Outcome - Troops Lost %</div><div class="sub">Placeholder context so the new hero telemetry panel appears in its Forecast-bottom position.</div><div class="mock-bars"><div></div></div></div>
+      <div class="fc-part"><div class="h">Skill details - hero procs &amp; direct kills</div><div class="sub">captain trio, top four joiners, and troop skills - per-skill median/range over simulations - proc and kill distributions</div><div class="legend"><div class="own">Your skills</div><div></div><div class="enemy">Enemy skills</div></div><div class="skill-telemetry" id="skillTelemetry"></div></div>
+      <div class="note"><b>Prototype only.</b> These numbers are fabricated to preview layout. In the live app this panel stays hidden until the engine emits <code>skill_telemetry</code>.</div>
+    </div>
+  </section>
+</main>
+<script src="assets/skill_display.js"></script>
+<script>
+const ROSTER={Elif:'Elif.jpg',Dominic:'Dominic.jpg',Cara:'Cara.jpg',Gisela:'Gisela.jpg',Flora:'Flora.jpg',Vulcanus:'Vulcanus.jpg',Hervor:'Hervor.jpg',Karol:'Karol.jpg',Ligeia:'Ligeia.jpg',Eleonora:'Eleonora.jpg',Lloyd:'Lloyd.jpg',Blanchette:'Blanchette.jpg',Renee:'Renee.jpg'};
+const pct=[18,34,58,84,100,82,48,22,8], small=[4,10,26,54,100,68,24,8,2], flat=[2,2,2,2,2,2,2,2,2];
+function dist(label, active=true){return {label, p:active?pct:flat, k:active?small:flat};}
+function metaHero(hero){return ((window.HERO_SKILL_DISPLAY||{}).heroes||{})[hero]||{skills:[]};}
+function metaTroop(key){const d=window.TROOP_SKILL_DISPLAY||{};return (d.normal&&d.normal[key])||(d.t12&&d.t12[key])||{};}
+function heroGroup(hero, role, skillLabels, killLabels){const all=metaHero(hero).skills||[], meta=role==='Joiner'?all.slice(0,1):all;return {kind:'hero', hero, role, avatar:ROSTER[hero], skills:meta.map((s,i)=>({source:'hero',name:s.name, icon:s.icon, effect:s.effect, slot:s.slot, procs:skillLabels[i]||'1', kills:killLabels[i]||'-', p:pct.map(v=>Math.max(2,v-(i*8))), k:(killLabels[i]&&killLabels[i]!=='-')?small.map(v=>Math.max(2,v-(i*5))):flat}))};}
+function addTroops(group, items){group.skills.push(...items.map(([key,procs,kills])=>{const m=metaTroop(key);return {source:'troop',name:m.name||key, icon:m.icon, effect:m.effect, troop:m.troop||'', procs, kills, p:pct, k:kills==='-'?flat:small};}));return group;}
+function joinerPack(rows){return {kind:'joiners', hero:'Joiners', role:rows.length+' active flags', rows};}
+const rows=[
+  ['Captain Infantry', addTroops(heroGroup('Elif','Captain - Infantry',['1','1','12-15'],['-','-','-']),[['crystal_shield','2-4','-'],['indomitable_wall','2','-']]), addTroops(heroGroup('Hervor','Captain - Infantry',['1','1','11-14'],['-','-','-']),[['crystal_shield','1-3','-'],['indomitable_wall','1','-']])],
+  ['Captain Lancer', addTroops(heroGroup('Dominic','Captain - Lancer',['1','1','1'],['-','-','-']),[['ambusher','8-10','61,950'],['crystal_lance','3-5','22,458'],['incandescent_field','4','-'],['meridian_phalanx','3','-']]), addTroops(heroGroup('Karol','Captain - Lancer',['1','1','1'],['-','-','-']),[['ambusher','7-9','58,120'],['crystal_lance','3-4','14,588'],['incandescent_field','4','-'],['meridian_phalanx','1','-']])],
+  ['Captain Marksman', addTroops(heroGroup('Cara','Captain - Marksman',['1','6-8','5-7'],['-','86,270','34,566']),[['volley','6','71,636'],['crystal_gunpowder','5','34,566'],['starfire','4','-']]), addTroops(heroGroup('Vulcanus','Captain - Marksman',['1','6-8','5-7'],['-','71,636','-']),[['volley','5','62,440'],['crystal_gunpowder','4','28,910'],['starfire','1','-']])],
+  ['Joiners', joinerPack([heroGroup('Gisela','Joiner',['8-10'],['-']),heroGroup('Flora','Joiner',['9'],['310']),heroGroup('Vulcanus','Joiner',['6-8'],['1,120']),heroGroup('Hervor','Joiner',['5'],['-'])]), joinerPack([heroGroup('Eleonora','Joiner',['7-9'],['-']),heroGroup('Lloyd','Joiner',['8-9'],['260']),heroGroup('Blanchette','Joiner',['6-7'],['900']),heroGroup('Ligeia','Joiner',['4-6'],['-'])])]
+];
+function enc(s){return encodeURIComponent(s)} function avatar(f){return 'avatars/'+enc(f)}
+function bars(vals, cls){return '<div class="skill-spark '+cls+'">'+vals.map(v=>'<i style="--h:'+v+'%"></i>').join('')+'</div>'}
+function icon(skill){return skill.icon?'<img class="skill-icon" src="'+skill.icon+'" alt="">':'<div class="skill-icon missing">'+(skill.name||'?').slice(0,1)+'</div>'}
+function line(s){return '<div class="skill-line">'+icon(s)+'<div class="skill-copy"><b title="'+(s.effect||'').replaceAll('"','&quot;')+'">'+s.name+'</b><small title="'+(s.effect||'').replaceAll('"','&quot;')+'">'+(s.source==='troop'?'troop · ':'')+(s.troop||s.slot||'')+'</small></div><div class="skill-stat"><span>Procs</span><b>'+s.procs+'</b>'+bars(s.p,'procs')+'</div><div class="skill-stat"><span>Kills</span><b>'+s.kills+'</b>'+bars(s.k,'kills')+'</div></div>'}
+function card(side,row){if(row.kind==='joiners')return joinerCard(side,row);const img=row.avatar?'<img src="'+avatar(row.avatar)+'" alt="">':'';return '<div class="skill-card captain '+side+'"><div class="skill-top"><div class="skill-hero">'+img+'<div class="skill-name">'+row.hero+'</div></div><div class="skill-role">'+row.role+'</div></div><div class="skill-lines">'+row.skills.map(line).join('')+'</div></div>'}
+function joinerCard(side,row){return '<div class="skill-card joiner-pack '+side+'"><div class="skill-top"><div class="skill-name">Joiners</div><div class="skill-role">'+row.role+'</div></div><div class="joiner-list">'+row.rows.map(j=>'<div class="joiner-entry"><div class="joiner-entry-head"><img src="'+avatar(j.avatar)+'" alt=""><b>'+j.hero+'</b></div><div class="skill-lines">'+j.skills.map(line).join('')+'</div></div>').join('')+'</div></div>'}
+document.getElementById('skillTelemetry').innerHTML=rows.map(r=>'<div class="skill-trow">'+card('own',r[1])+'<div class="skill-slot">'+r[0]+'</div>'+card('enemy',r[2])+'</div>').join('');
+</script>
+</body>
+</html>

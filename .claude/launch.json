@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "prototype",
+      "runtimeExecutable": "E:/WOS/Battle Simulator/.venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "uvicorn", "wos_sim.predictor.server:app", "--port", "8137"],
+      "port": 8137
+    }
+  ]
+}

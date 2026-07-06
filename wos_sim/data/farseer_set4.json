@@ -1,0 +1,28 @@
+{
+  "description": "Far Seer calibration set 4 + Marlinman discriminator attempt, 2026-07-03 14:43-14:56 (WOS_BattleReports_FarSeerCalibration_4.pdf). Deterministic (no procs). Experiments: tier rungs T3/T4/T5, single-class T6 lancer/marksman runs, beast ladder Lv10/Lv15 extensions, Marlinman+Seo-yoon L5 (censored - full wipes). All power identities verified (own pw = injured x tier power identifies tiers: -12=T3, -18=T4, -26=T5, -40=T6, -56=T7).",
+  "farseer_panel": {"all_classes": {"Attack": 0.121, "Defense": 0.101, "Lethality": 0.100, "Health": 0.100}},
+  "new_beasts": {
+    "Lv10 Musk Ox": {"bonus": 0.085, "units": 1070, "groups": [["Inf", 3.2, 65], ["Inf", 3.2, 255], ["Lan", 3.2, 75], ["Lan", 3.2, 300], ["Mar", 3.2, 75], ["Mar", 3.2, 300]], "note": "SIX groups (matches marlinman catalog totals 320/375/375)"},
+    "Lv15 Giant Tapir": {"bonus": 0.265, "units": 3740, "groups": [["Inf", 5.0, 1120], ["Lan", 5.0, 1310], ["Mar", 5.0, 1310]], "unit_power_check": "83 kills x 13 = 1,079 = observed power loss EXACT (Lv5.0 units)"}
+  },
+  "battles": [
+    {"time": "14:49:21", "beast": "Lv12 Musk Ox", "army": [["Lan", 6, 1000]], "hero": null, "beast_losses": 185, "own": [0, 2, 998, 0], "own_power": 40, "note": "SINGLE-CLASS lancer run; bars show blue on Lancer row"},
+    {"time": "14:50:39", "beast": "Lv12 Musk Ox", "army": [["Mar", 6, 1000]], "hero": null, "beast_losses": 202, "own": [0, 2, 998, 0], "own_power": 40, "note": "SINGLE-CLASS marksman run; 202/185 = 1.092 ~ marks-vs-inf counter"},
+    {"time": "14:53:11", "beast": "Lv10 Musk Ox", "army": [["Inf", 7, 1000]], "hero": null, "beast_losses": 1070, "censored": true, "result": "VICTORY", "own": [0, 2, 561, 437], "own_power": 56, "note": "FIRST UNCENSORED OWN-CASUALTY OBSERVABLE: 563 incapacitated of 1000 for the full 1,070 wipe; beast groups lost 65/255/75/300/75/300"},
+    {"time": "14:53:40", "beast": "Lv15 Giant Tapir", "army": [["Inf", 7, 1000]], "hero": null, "beast_losses": 83, "own": [0, 2, 998, 0], "own_power": 56},
+    {"time": "14:54:56", "beast": "Lv12 Musk Ox", "army": [["Inf", 3, 1000]], "hero": null, "beast_losses": 51, "own": [0, 2, 998, 0], "own_power": 12},
+    {"time": "14:55:18", "beast": "Lv12 Musk Ox", "army": [["Inf", 4, 1000]], "hero": null, "beast_losses": 87, "own": [0, 2, 998, 0], "own_power": 18},
+    {"time": "14:56:28", "beast": "Lv12 Musk Ox", "army": [["Inf", 5, 1000]], "hero": null, "beast_losses": 125, "own": [0, 2, 998, 0], "own_power": 26}
+  ],
+  "marlinman_censored": [
+    {"time": "14:43:57", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1000]], "hero": "Seo-yoon L5 (+25% attack, tooltip verbatim)", "result": "VICTORY wipe 2,460", "own": [0, 0, 0, 1000], "note": "zero own casualties - fully censored"},
+    {"time": "14:48:53", "beast": "Lv13 Giant Tapir", "army": [["Inf", 1, 2000]], "hero": "Seo-yoon L5", "result": "VICTORY wipe 2,460", "own": [0, 1, 5, 1994], "note": "even 2,000 T1 on the +850% panel wipe the Tapir; 6 incapacitated"}
+  ],
+  "discoveries": [
+    "TIER LADDER now T1-T5,T7 at N=1000 vs Musk12: 11/26/51/87/125/252.",
+    "SEO-YOON IS A MARKSMAN HERO: her card injected +140.1/+148.1/+5.4/+5.4 into Marlinman's Marksman panel rows (1037.4 vs 897.3 baseline attack etc.) while all slots except hers show Vacant - third documented card injection.",
+    "Marlinman discriminator INCONCLUSIVE as run (full wipes censor kills). Fix: DEFEAT configs - e.g. Marlinman 200-300 T1/T7 infantry vs Lv20-25 field beast, no-hero vs Seo-yoon pair; T1/T7 have no procs so runs stay deterministic even on his account.",
+    "Lv10 Musk Ox has SIX groups; Lv15 Tapir has three (1,120/1,310/1,310 at Lv5.0).",
+    "Rallying Beat L5 tooltip: +25% (completes the 5/10/15/20/25 ladder)."
+  ]
+}

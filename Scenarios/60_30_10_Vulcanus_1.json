@@ -1,0 +1,172 @@
+{
+  "wos_config": 1,
+  "name": "60_30_10_Vulcanus_1",
+  "runs": 10000,
+  "seed": 4471,
+  "own": {
+    "role": "garrison",
+    "troops_total": 1500000,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.6,
+      "Lancer": 0.3,
+      "Marksman": 0.1
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 40,
+      "Infantry|Defense": 40,
+      "Infantry|Lethality": 40,
+      "Infantry|Health": 40,
+      "Lancer|Attack": 40,
+      "Lancer|Defense": 40,
+      "Lancer|Lethality": 40,
+      "Lancer|Health": 40,
+      "Marksman|Attack": 40,
+      "Marksman|Defense": 40,
+      "Marksman|Lethality": 40,
+      "Marksman|Health": 40
+    },
+    "own_buffs": {
+      "Attack": 0.3,
+      "Defense": 0.3,
+      "Lethality": 0.3,
+      "Health": 0.3
+    },
+    "debuffs_on_enemy": {
+      "Attack": 0.2,
+      "Defense": 0.3,
+      "Health": 0.05,
+      "Lethality": 0.05
+    },
+    "lead_heroes": {
+      "Infantry": "Gisela",
+      "Lancer": "Flora",
+      "Marksman": "Vulcanus"
+    },
+    "joiners": [
+      "Gatot",
+      "Gordon",
+      "Renee",
+      "Hendrik"
+    ],
+    "_ui_buffs": {
+      "item": [
+        "20",
+        "20",
+        "20",
+        "20",
+        "-20",
+        "-20"
+      ],
+      "pet": [
+        10,
+        10,
+        10,
+        10,
+        5,
+        5,
+        10
+      ]
+    }
+  },
+  "enemy": {
+    "role": "rally",
+    "troops_total": 1500000,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5,
+      "Lancer": 0.2,
+      "Marksman": 0.3
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 40,
+      "Infantry|Defense": 40,
+      "Infantry|Lethality": 40,
+      "Infantry|Health": 40,
+      "Lancer|Attack": 40,
+      "Lancer|Defense": 40,
+      "Lancer|Lethality": 40,
+      "Lancer|Health": 40,
+      "Marksman|Attack": 40,
+      "Marksman|Defense": 40,
+      "Marksman|Lethality": 40,
+      "Marksman|Health": 40
+    },
+    "own_buffs": {
+      "Attack": 0.3,
+      "Defense": 0.3,
+      "Lethality": 0.3,
+      "Health": 0.3
+    },
+    "debuffs_on_enemy": {
+      "Attack": 0.2,
+      "Defense": 0.3,
+      "Health": 0.05,
+      "Lethality": 0.05
+    },
+    "lead_heroes": {
+      "Infantry": "Gisela",
+      "Lancer": "Karol",
+      "Marksman": "Vulcanus"
+    },
+    "joiners": [
+      "Hendrik",
+      "Blanchette",
+      "Mia",
+      "Jessie"
+    ],
+    "_ui_buffs": {
+      "item": [
+        "20",
+        "20",
+        "20",
+        "20",
+        "-20",
+        "-20"
+      ],
+      "pet": [
+        10,
+        10,
+        10,
+        10,
+        5,
+        5,
+        10
+      ]
+    }
+  }
+}

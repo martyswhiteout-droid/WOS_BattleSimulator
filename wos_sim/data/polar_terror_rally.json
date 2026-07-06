@@ -1,0 +1,40 @@
+{
+  "description": "Polar Terror rally, 2026-07-03 08:42:43 (WOS_BattleReports_T12PolarTerror.pdf). Lv8 Abyssal Shelldragon - rally-only beast type. Marlinman = rally captain with NO heroes set (all three slots Vacant) and only 3 troops sent; 8 alliance joiners carry the army (incl. T12 troops). VICTORY. Structure/demo report, NOT calibration-grade (joiner stat panels unknown).",
+  "beast": {
+    "name": "Lv8 Abyssal Shelldragon", "bonus": 6.60, "units": 750000,
+    "groups": [["Inf", 10.0, 250000], ["Lan", 10.0, 250000], ["Mar", 10.0, 250000]],
+    "power_loss": 49500000,
+    "power_per_unit_check": "49,500,000/750,000 = 66.0 = EXACT tier-10 power - tier mapping holds for Polar Terrors; bonus ladder differs from field beasts (+660% at Lv8)"
+  },
+  "rally": {
+    "troops_total": 1344300, "losses": 0, "injured": 45, "lightly_injured": 17760, "survivors": 1326495,
+    "severe_share_of_incapacitated": 0.0025,
+    "composition_display": {"Infantry": [11.5, 465231], "Lancer": [11.3, 383840], "Marksman": [11.4, 495229]},
+    "composition_note": "Displayed tier levels are FRACTIONAL (11.5/11.3/11.4) - rally panel shows the troop-count-weighted average tier of the mixed T11+T12 army, same interpolation convention as beast units.",
+    "joiner_flag_heroes_per_martin": ["Ligeia", "Eleanora", "Hervor", "Patrick"],
+    "participants": [
+      {"player": "[JOE]Marlinman", "troops": 3, "kills": 13, "captain": true},
+      {"player": "[JOE]DARK KRISTINE", "troops": 212200, "kills": 131468, "class_rows_kills": [19527, 51432, 60509]},
+      {"player": "[JOE]U S M Z", "troops": 194160, "kills": 100017, "class_rows_kills": [14856, 39128, 46033]},
+      {"player": "[JOE]doc", "troops": 202780, "kills": 114725, "class_rows_kills": [27991, 86734]},
+      {"player": "[JOE]momo", "troops": 50000, "kills": 33429, "class_rows_kills": [12091, 21338]},
+      {"player": "[JOE]Tarbar", "troops": 169610, "kills": 83238},
+      {"player": "[JOE]SleepyBear", "troops": 176090, "kills": 90708},
+      {"player": "[JOE]Mer", "troops": 206280, "kills": 127800},
+      {"player": "[JOE]AZoZ", "troops": 133177, "kills": 68602}
+    ]
+  },
+  "t12_skills_confirmed_ingame_text": {
+    "Indomitable Wall": {"total_level": 4, "procs": 3, "text": "Reduces enemy damage inflicted by 2.4% for 5 turns from the start of battle", "per_level": 0.006, "activation": "TOTAL level summed across rally members (8-member cap per wostools)"},
+    "Meridian Phalanx": {"total_level": 2, "procs": 2, "text": "Reduces Infantry damage taken by 2% and increases Marksman damage by 2% for 5 turns from the start of battle", "per_level": 0.01},
+    "Starfire": {"total_level": 4, "procs": 3, "text": "Increases Marksman damage dealt every 5 turns by 2% from the start of battle", "per_level": 0.005, "note": "stacking every 5 turns"}
+  },
+  "observations": [
+    "Skill panel shows captain's three hero slots (all Vacant) + troop skills + T12 skill totals. Joiner flag-hero skills still invisible as in PvP.",
+    "T12 skills display as 'Total <skill> Level: N' with the summed effect in the tooltip - additive total-level stacking CONFIRMED in-game.",
+    "Stat Bonuses panel shown = captain's own (Marlinman's, incl. his still-active buffs at +17/+6/+6) even though he sent 3 troops - the panel is per-viewer, NOT rally-aggregated. Rally stat aggregation remains an open question -> controlled farm rallies wanted.",
+    "Widgets confirmed inert for Polar Terrors (Martin) - neither rally nor garrison context.",
+    "Beast group kills columns: 3/18/24 severe of 45 injured total; severe share ~0.25% matches beast bookkeeping.",
+    "Polar Terror bonus at Lv8 is +660% - a separate, much steeper ladder than field beasts (+5.3% at Lv8)."
+  ]
+}

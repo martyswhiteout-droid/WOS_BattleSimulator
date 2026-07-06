@@ -1,0 +1,15 @@
+# WoS Battle Simulator — runtime dependencies
+# (ROADMAP E-0). Create a venv and install with:
+#   python -m venv .venv && .venv/Scripts/python -m pip install -r requirements.txt
+
+# --- engine + app runtime ---
+openpyxl>=3.1        # workbook / hero-catalog loading (wos_sim/loader.py)
+numpy>=1.26          # vectorised Monte-Carlo core + stats (optional today, required for the batched kernel)
+
+# --- web app (Layer 3, api server) ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+
+# --- engine calibration / fitting only (not needed to run the app) ---
+scipy>=1.11          # wos_sim/farm_fit.py, pvp_calibrate.py (dev/fitting)

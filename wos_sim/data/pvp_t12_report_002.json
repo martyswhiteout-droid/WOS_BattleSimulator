@@ -1,0 +1,42 @@
+{
+  "description": "SECOND T12 PvP report (2026-05-24 00:27:45, #148 X:597 Y:597, WOS_BattleReports_T12_146_v2.pdf). Marty 191 (attacker/rally, [RFJ]) VICTORY over GFG Achamela garrison - the SAME opponent as report_001, fought MINUTES apart (report_001 same day). NEAR-EVEN, razor-thin: attacker won with 118,068 survivors of 1,805,272 (6.54%), defender FULLY WIPED. CRITICAL PAIR WITH report_001: identical panels, identical attacker total (1,805,272), near-identical defender, SAME special bonuses - the ONLY material difference is troop COMPOSITION - yet the outcome differs wildly (this: 25 turns, LANCERS survive; report_001: 16 turns, MARKSMAN survive). The two together are the corpus's controlled near-even experiment and expose the engine's casualty-allocation gap.",
+  "outcome": "attacker_victory",
+  "attacker": {
+    "player": "[RFJ]Marty 191", "role": "rally",
+    "troops": 1805272, "losses": 33199, "injured": 557334, "lightly_injured": 1096671,
+    "survivors": 118068, "incap": 1687204, "survivor_frac": 0.0654,
+    "survivor_composition": "ALL LANCERS (118,068). Infantry and Marksman fully wiped.",
+    "lead_heroes": {"Infantry": "Elif", "Lancer": "Dominic", "Marksman": "Vulcanus"},
+    "composition": {
+      "Infantry": {"count": 656570, "avg_tier": 11.4},
+      "Lancer":   {"count": 522386, "avg_tier": 11.8},
+      "Marksman": {"count": 626316, "avg_tier": 11.5}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 4093.0, "Defense": 3419.1, "Lethality": 3388.9, "Health": 3040.5},
+      "Lancer":   {"Attack": 4101.5, "Defense": 3385.1, "Lethality": 3381.6, "Health": 2996.1},
+      "Marksman": {"Attack": 3887.5, "Defense": 3214.9, "Lethality": 3317.2, "Health": 2934.6}
+    },
+    "t12_skill_levels_ASSUMED": {"indomitable_wall": 4, "meridian_phalanx": 5, "starfire": 8}
+  },
+  "defender": {
+    "player": "[GFG]Achamela", "role": "garrison",
+    "troops": 1868872, "losses": 0, "injured": 654122, "lightly_injured": 1214750,
+    "survivors": 0, "incap": 1868872, "survivor_frac": 0.0,
+    "lead_heroes": {"Infantry": "Elif", "Lancer": "Dominic", "Marksman": "Cara"},
+    "composition": {
+      "Infantry": {"count": 1087726, "avg_tier": 11.1},
+      "Lancer":   {"count": 354482, "avg_tier": 11.1},
+      "Marksman": {"count": 426664, "avg_tier": 11.0}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 3706.2, "Defense": 3846.6, "Lethality": 3624.2, "Health": 3226.8},
+      "Lancer":   {"Attack": 3652.0, "Defense": 3790.8, "Lethality": 3577.3, "Health": 3152.5},
+      "Marksman": {"Attack": 3652.0, "Defense": 3791.9, "Lethality": 3596.6, "Health": 3190.9}
+    },
+    "t12_skill_levels_ASSUMED": {"indomitable_wall": 4, "meridian_phalanx": 3, "starfire": 3}
+  },
+  "stats_note": "panel_pct IDENTICAL to report_001 (same players/setup minutes apart). FULL SCOUTED. Special bonuses identical to report_001 (attacker +20% troop A/D/L/H, -20% enemy A/D, Rally Atk+15%/Leth+15% widgets, pets +10% all & enemy pet penalties; defender same but Defender Def+15%/Leth+15% widgets). t12_skill_levels ASSUMED same as report_001 (not separately visible in this report - same player, minutes apart). Attacker OFFENSE-focused, defender DEFENSE-focused.",
+  "reconstructed_timeline_2026_07_05": "Martin reconstructed from hero-skill trigger counts. ROBUST anchors: (1) battle = 25 turns [Vulcanus SK3 'every 3 turns' triggered 9x -> turns 1,4,7,...,25 -> (9-1)*3+1=25]. (2) his infantry died end T19 [his Elif SK3 = 19]. (3) enemy infantry died end T22 [enemy Elif SK3 = 22]. (4) enemy marksman died ~T18 [enemy Cara 'every 2' = 9x -> 9*2=18]. (5) his LANCERS are the sole survivors (118,068). WRINKLE: Vulcanus SK2 (revised to 'every 5 attacks PER TROOP TYPE') = 10 triggers implies his MARKSMAN died ~T10-14 [inf floor(19/5)=3 + lancer floor(25/5)=5 + marks=2 -> 3+5+2=10], i.e. his marksman died EARLY. RESOLVED (Martin): his MARKSMAN were annihilated by ~T14 by enemy lancer Ambusher procs + enemy Cara SK3 bursts (bypass the front, hit marksman directly), NON-LINEARLY (step drops at each proc), while his LANCERS stayed IMMORTAL behind infantry until infantry died T19, then survived to T25 (118,068). So death order his side: MARKSMAN (~T14, via bypass procs) -> INFANTRY (T19, front wall) -> LANCER survives. permanent LOSSES=33,199 (non-zero here vs 0 in report_001).",
+  "engine_finding_2026_07_05": "CORRECTED (Martin: absorption IS strict front-to-back - the ORDER mechanic is RIGHT, not a bug). The real gap: the engine models hero skills as AVERAGED modifiers (Vulcanus SK2 +100%dd/freq5 -> ~+20% avg; Cara SK3 +40%dd/freq2 -> ~+20% avg) and does NOT fire discrete procs, so it cannot reproduce BACKLINE ANNIHILATION VIA BYPASS PROCS. report_002: his MARKSMAN (626k) were annihilated by ~T14 by enemy Ambusher procs + enemy Cara SK3 bursts (both bypass the front, hit marksman directly), while his LANCERS stayed immortal behind infantry until T19 then survived (118,068). The engine's only bypass is a fixed 20% ambush fraction (LANCER_BYPASS_CHANCE) - too weak - and Cara SK3 is not modeled as a backline hit, so the engine keeps marksman alive in BOTH battles (always returns MARKSMAN survivor). TWO real gaps: (1) skills must FIRE discretely turn-by-turn (with correct bypass magnitudes) to reproduce NON-LINEAR proc-driven attrition + the correct survivor type; averaging cannot. (2) near-balance hypersensitivity/bimodality (exact survivor% is chaotic near even). PATH = re-architect to a turn-by-turn skill-firing simulator (which also emits the trigger+kill telemetry the front-end now wants). Both battles are the validation anchors."
+}

@@ -1,0 +1,27 @@
+{
+  "description": "[TFO]Far Seer weak-farm pure-infantry calibration, 2026-07-03 12:32-12:36 (WOS_BattleReports_FarSeerCalibration.pdf, 8 battles, one page). NO heroes, NO proc skills on either side (low-tier troops both sides; T7 infantry passive = flat anti-lancer advantage only). All battles vs Lv12 Musk Ox. All DEFEATS with own side wiped; beast losses come from the FRONT INFANTRY GROUP ONLY (no lancers -> no bypass; front never broken).",
+  "attacker_panel": {"Infantry": {"Attack": 0.121, "Defense": 0.101, "Lethality": 0.100, "Health": 0.100}},
+  "beast": {
+    "name": "Lv12 Musk Ox", "bonus": 0.144, "units": 1910,
+    "groups": [["Inf", 4.0, 570], ["Lan", 4.0, 670], ["Mar", 4.0, 670]],
+    "unit_level_check": "power/unit = 9.0 EXACT = tier 4 power; bonus +14.4% slots between Lv10 +8.5% and Lv13 +18.5%"
+  },
+  "battles": [
+    {"time": "12:32:27", "tier": 7, "n": 1000, "beast_losses": 252, "own": [0, 2, 998, 0], "own_power": 56, "beast_power": 2268},
+    {"time": "12:32:52", "tier": 2, "n": 1000, "beast_losses": 26,  "own": [0, 2, 998, 0], "own_power": 8,  "beast_power": 234},
+    {"time": "12:33:17", "tier": 1, "n": 1000, "beast_losses": 11,  "own": [0, 2, 998, 0], "own_power": 6,  "beast_power": 99, "note": "Martin said tiers 7 and 2 only, but power arithmetic (2 injured x 3 = 6) says TIER 1 - confirm badge"},
+    {"time": "12:34:25", "tier": 7, "n": 1000, "beast_losses": 252, "own": [0, 2, 998, 0], "own_power": 56, "beast_power": 2268},
+    {"time": "12:34:42", "tier": 7, "n": 1000, "beast_losses": 252, "own": [0, 2, 998, 0], "own_power": 56, "beast_power": 2268},
+    {"time": "12:35:02", "tier": 7, "n": 1100, "beast_losses": 291, "own": [0, 3, 1097, 0], "own_power": 84, "beast_power": 2619},
+    {"time": "12:35:21", "tier": 7, "n": 900,  "beast_losses": 214, "own": [0, 2, 898, 0],  "own_power": 56, "beast_power": 1926},
+    {"time": "12:35:44", "tier": 7, "n": 1200, "beast_losses": 332, "own": [0, 3, 1197, 0], "own_power": 84, "beast_power": 2988}
+  ],
+  "identities_verified": "ALL 8 battles: own power loss == injured x attacker tier power (also identifies tiers unambiguously: 28=T7, 4=T2, 3=T1); beast power loss == kills x 9.0 exactly.",
+  "key_findings": [
+    "ENGINE IS DETERMINISTIC WITHOUT PROC SKILLS: three identical T7 N=1000 runs -> beast losses 252/252/252, injured 2/2/2, powers identical to the unit. ALL previously measured variance (10-16% sd) comes from proc-skill RNG. Proc-free configs need only ONE run per data point.",
+    "N-ladder (T7: 900/1000/1100/1200 -> 214/252/291/332): kills ~ N^1.525. With survival-time factor ~N^1 (own wipe duration proportional to N), per-event exponent e = 0.525 - EXACTLY the static-fit value from the 8 PvP reports. Two independent derivations agree to 3 decimals.",
+    "Tier ladder at N=1000: T1 11 / T2 26 / T7 252 kills - clean kernel-shape constraints (attacker A*L and own D*H both vary with known values; beast fixed).",
+    "Severe (injured) share ~0.2-0.3% of incapacitated - beast bookkeeping again; lightly injured cost ZERO power (own power loss counts injured only).",
+    "Front-group-only damage; beast lancer/marks groups untouched (no bypass without lancers)."
+  ]
+}

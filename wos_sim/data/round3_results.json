@@ -1,0 +1,48 @@
+{
+  "description": "Round-3 mechanism search results (2026-07-04). Engine: wos_sim/farm_engine.py. ASYMMETRIC COMBAT WIDTH + per-class k + self-throttle + pinned-front. Corpus: 35 deterministic farm battles + 9 clock durations.",
+  "mechanism": {
+    "name": "asymmetric combat width",
+    "core": "own kill rate LINEAR in own live N (all units fire at the compact beast); beast engages own frontage SUBLINEARLY ~N^ed. One ed sets BOTH duration T~N^(1-ed)=N^0.515 AND total kills~N^1.515.",
+    "own_offense_per_stack_per_turn": "kc[class] * n * (A*L) / (beast_front D^qd H^qh) / throttle(own) * pin(if front) * counter",
+    "beast_incoming_per_turn": "kb * n_ownfront^ed * (beast_live/beast_init)^bpow * (beast A*L) / (own_front D^qd H^qh) * counter",
+    "throttle": "self-durability/power damping - reconciles marginal-linear (attack buff leaves throttle untouched) vs tier-sublinear (higher tier raises throttle stat, compressing spread)",
+    "pin": "the own stack being attacked (front) fires at fraction pin<1; protected back stacks fire freely - explains mixed-army splits (inf-front low, protected marks high) and solo-dealer modesty"
+  },
+  "fits": {
+    "dh_throttle_cm_free": {
+      "note": "throttle=/(own D*H)^so. BEST aggregate loss but cm ran to 1.88 (unphysical; wostools counter=+10%). Structure validated; cm absorbing cross-class residual.",
+      "loss": 1.43, "cm": 1.88, "so": 1.0, "ed": 0.55,
+      "quality": "tier ladder + durations excellent; solo marksman +67%"
+    },
+    "power_throttle_cm_pinned": {
+      "note": "throttle=/(unit tier power)^so, cm PINNED at physical 1.10 (no cheating). Cleaner/honest.",
+      "loss": 20.07, "params": {"ki": 0.3604, "kl": 0.3604, "km": 0.1802, "kb": 3.8356, "ed": 0.55, "qd": 1.0, "qh": 0.9, "cm": 1.10, "bpow": 1.0, "so": 0.85, "pin": 0.55},
+      "quality": "T7 N-ladder near-EXACT (within 1%); Seo-yoon/Tapir within 5%; durations within 10%. RESIDUALS: low tiers T3/T4/T5 +30% (beast-defense penetration floor missing); solo lancer +30% / marksman -35% (cross-class dealer balance)."
+    }
+  },
+  "verdict": "Mechanism FAMILY found. The STRUCTURE (asymmetric width + throttle + pin + per-class k) reproduces the corpus, but the '~10-15%' headline was over-claimed: it describes the cm=1.88 (unphysical) fit; the honest cm=1.10 fit shows ~30% low-tier misses AS REPORTED and its scalar loss 20.07 was UNDER-OPTIMIZED (QA probe: ki 0.36->0.45 drops loss to 4.30, so a proper optimizer likely recovers ~10-15% honestly). NOT yet at integer-rounding bar.",
+  "qa_2026_07_04": {
+    "reviewer": "external QA agent (read-only), full report in session + STATUS/ENGINE_PLAN round-4 actions",
+    "confirmed_no_issues": "all identity checks pass (32 power identities, 54 sum checks, 8 PvP validations); buff algebra, skill-pool ratio 1.2506, determinism, grand-check 246, Ling Xue blind #2 all reproduce; farm_engine.py DOES implement the claimed asymmetry (own linear in n, beast n^ed).",
+    "action_items": [
+      "OPTIMIZER: coord-descent stuck in local optimum (loss 20->4.3 by ki alone). Replace with multi-start/Nelder-Mead; re-weight loss to protect T7 anchor; re-assess accuracy honestly.",
+      "PIN ed to clock value ~0.483 (fitted drifted to 0.55) - test mechanism holds at measured ed; separate physical-prior fits from free-knob exploration.",
+      "PENETRATION FLOOR (round 4) with GUARD regression: T2-T7 effective A vs beast D (A/D = 0.28/0.42/0.56/0.70/.../0.98) so the floor cannot fix low tiers by breaking T7.",
+      "FIX assemble.py L184 + reports.py L253: hero stat skills are separate MULTIPLICATIVE factors, not additive-pool (GAME_RULES 6l). PvP path only; pre-round-4-PvP.",
+      "within-turn: farm_engine applies own damage vs turn-start beast front then cascades; add immediate retarget/stat recompute when front dies mid-turn (low severity).",
+      "DOCS honesty: enemy-penalty RMS from rounded JSON is 0.108 not 0.034 (divisor still decisive); blind duration #1 was a boundary pass; c range 4.05-5.27 not 4.2-5.3."
+    ]
+  },
+  "round4_targets": [
+    "Beast-defense PENETRATION floor on the offensive term: low-attack (low-tier) troops penetrate armor sublinearly -> suppresses the +30% low-tier overprediction. Form: effective_pen = max(A - c*D_beast, floor*A) or A^2/(A+c*D_beast).",
+    "Cross-class dealer balance: reconcile solo (modest) vs protected (huge) lancer/marks output - likely the pin/duration interplay needs class-specific pin or the counter matchups (lancer->marks, marks->inf) acting through the beast's group structure.",
+    "Low-N integer quantization (T1/T2 at small kills) - discrete-unit rounding.",
+    "Then lock params, add proc scheduler (Ambusher/Crystal/hero procs), regress full corpus incl. stochastic beast sets and 8 PvP reports."
+  ],
+  "eliminated": {
+    "round1_cadence_kernels": "loss 7.7; duration N-slope too steep (N^0.7 vs 0.515)",
+    "round1_revenge_casualty_paced": "loss 42.8; fails whale victories",
+    "round2_paced_symmetric": "loss 69.8; over-boosts squishy classes; best durations pre-round3",
+    "note": "all symmetric structures fail the duration+total exponent pair; only ASYMMETRIC width satisfies both."
+  }
+}

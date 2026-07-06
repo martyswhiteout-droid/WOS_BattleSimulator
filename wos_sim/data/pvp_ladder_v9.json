@@ -1,0 +1,27 @@
+{
+  "description": "First controlled PvP farm-ladder (2026-07-04, WOS_BattleReports_LadderCalibration_v9.pdf). Attacker 沃军 (T10 inf + T6 marks, Bradley only hero) vs defender [RTS]Colonel Muller (T7 inf + T6 marks). NO-PROC design (T6 marks, no lancers => deterministic - CONFIRMED by 3 identical 6Kv6K repeats). Both sides 50-50 inf/marks. All attacker VICTORY, defender fully wiped.",
+  "design_note": "SYMMETRIC scaling - both sides' counts grew together (4Kv3K, 6Kv6K, 10Kv10K), NOT fixed-attacker/varying-defender. A symmetric NxN ladder is self-similar (constant loss fraction: 6v6 and 10v10 BOTH give 19.3% attacker-inf loss) so it CANNOT isolate the defender frontage exponent def_ed. Still valuable: confirms determinism + scale-invariance + is a clean 2-sided PvP calibration anchor.",
+  "determinism": "6Kv6K run 3x (19:47:20, 19:50:25, 19:51:03) -> identical (att injured 203, survivors 5,421). No-proc PvP is deterministic.",
+  "battles": [
+    {"time": "19:46:08", "att_inf_tier": 10, "att": {"inf": 2000, "marks": 2000}, "def": {"inf": 1500, "marks": 1500}, "def_total": 3000,
+     "att_inf_incap": 244, "att_inf_survivors": 1756, "att_marks_untouched": true, "att_inf_loss_pct": 0.122,
+     "att_kills": {"inf_row": 176, "marks_row": 874, "total": 1050}, "def_wiped": true, "def_severe": 1050, "def_light": 1950,
+     "bradley_s3_procs": 3, "power_loss": {"att": 6106, "def": 25200}, "note": "4K vs 3K - attacker OUTNUMBERS -> lower loss fraction"},
+    {"time": "19:47:20", "att_inf_tier": 10, "att": {"inf": 3000, "marks": 3000}, "def": {"inf": 3000, "marks": 3000}, "def_total": 6000,
+     "att_inf_incap": 579, "att_inf_survivors": 2421, "att_marks_untouched": true, "att_inf_loss_pct": 0.193,
+     "att_kills": {"inf_row": 371, "marks_row": 1729, "total": 2100}, "def_wiped": true, "def_severe": 2100, "def_light": 3900,
+     "bradley_s3_procs": 4, "power_loss": {"att": 14413, "def": 50400}, "repeats": 3, "note": "6Kv6K symmetric, run 3x identical"},
+    {"time": "19:48:27", "att_inf_tier": 10, "att": {"inf": 5000, "marks": 5000}, "def": {"inf": 5000, "marks": 5000}, "def_total": 10000,
+     "att_inf_incap": 966, "att_inf_survivors": 4034, "att_marks_untouched": true, "att_inf_loss_pct": 0.193,
+     "att_kills": {"inf_row": 617, "marks_row": 2883, "total": 3500}, "def_wiped": true, "def_severe": 3500, "def_light": 6500,
+     "bradley_s3_procs": 4, "power_loss": {"att": 24069, "def": 84000}, "note": "10Kv10K symmetric - SAME loss fraction as 6v6 (scale-invariant)"}
+  ],
+  "key_findings": [
+    "NO-PROC PvP IS DETERMINISTIC (3 identical 6Kv6K).",
+    "Attacker MARKS untouched every battle (protected behind the inf wall); all attacker casualties are INFANTRY.",
+    "SYMMETRIC battles are SCALE-INVARIANT: 6v6 and 10v10 both -> 19.3% attacker-inf loss. Battle A (4v3, attacker outnumbers) -> 12.2%.",
+    "att 'kills' column = defender SEVERE bucket exactly (1050/2100/3500 = injured); severe:light ~35:65 (0.35 severe share, matches fortress convention).",
+    "Bradley S3 procs 3/4/4 -> ~12/16/16 turns; duration grows then ~plateaus - coarse (x4 turns resolution)."
+  ],
+  "next": "REDO as FIXED-ATTACKER: same attacker army EVERY battle (large enough to win vs 16K defender), vary ONLY defender 3K/6K/10K/16K. Attacker-inf casualties vs defender count then reveal def_ed (linear=1 vs frontage-limited~0.48)."
+}

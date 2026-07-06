@@ -1,0 +1,736 @@
+{
+  "report_id": "report_006_Smarty_vs_exdyst",
+  "outcome_friendly": "victory",
+  "notes": [
+    "Battle 2025-10-11 21:51:30 at #229 X:597 Y:597 (fortress). Friendly = Smarty ATTACKING, won with 286,415 survivors.",
+    "STRUCTURAL EXPERIMENT: friendly brought ZERO Lancers (Inf 51.4% + Marks 48.6%); defender brought ZERO Marksmen (Inf 60.7% + Lancers 39.3%). Friendly won.",
+    "Joiners tailored to composition: Nora x4 = Inf+Marks DT -15%/DD +15% each -> EV -60% damage taken / +60% damage dealt on the ENTIRE army (no lancers to miss the buff).",
+    "Skill panel confirms class-scoping: friendly Lloyd's lancer troop-skill rows are EMPTY (no lancers owned); enemy Bradley's marksman troop-skill rows EMPTY (no marks owned).",
+    "Injured share 0.35001 both sides (Oct-2025 fortress) - combined with r3 (Dec-2025 X:117 = 30%) the share looks LOCATION/STRUCTURE-dependent, not era-dependent.",
+    "Defender Losses 71,517 all in goodjam's rows (41,740 inf + 29,777 lancer) - infirmary overflow player-specific again.",
+    "Overview survivors rows cut in screenshot; derived: friendly 286,415, enemy 0 (identities close exactly).",
+    "Several participant blocks collapsed (no row detail): attacker MARI/XiaoFenSi/Bubla, defender Orin/Blue/ssosso/Toxin/RAIN/Honggu - totals and kills known, per-class rows unavailable. Side identities still close exactly on totals and kills.",
+    "Flag heroes (Martin): attacker joiners Nora x4; defender joiners Gatot/Hendrik/Renee/Blanchette.",
+    "Expanded attacker blocks show a curious 50/50 exact inf/marks split per participant (e.g. 115,218 + 115,218).",
+    "CORRECTION (Martin): garrison captain is auto-selected as the STRONGEST player regardless of position - here Honggu (last block), whose heroes are the skill-panel trio (Eleonora/Lloyd/Bradley). exdyst on the overview is the city owner, and is joiner #1. Garrison joiners = first four non-captain blocks: exdyst(Gatot), onion(Hendrik), goodjam(Renee), RELENT(Blanchette).",
+    "Specials completed from Martin's re-sent panel. Widget reconciliation 7/7: defender (captain Honggu) Defender Attack +30 = Lloyd + Bradley Garrison-Attack widgets, Defender Health +15 = Eleonora Garrison-Health; friendly Rally Attack +15 = Rufus only (Eleonora/Lloyd garrison widgets dormant while attacking). Defender's only pet effect is Enemy Lethality Penalty -5%; no own pet bonuses."
+  ],
+  "friendly": {
+    "player": "[RFJ]SmartytramS 191",
+    "state": 191,
+    "coords": "#229 X:598 Y:592",
+    "role": "Attacker",
+    "is_friendly": true,
+    "power_loss": -70758208,
+    "troops": 1652384,
+    "losses": 0,
+    "injured": 478096,
+    "lightly_injured": 887873,
+    "survivors": 286415,
+    "composition": {
+      "Infantry": {
+        "share": 0.514,
+        "fc_badge": 10,
+        "tier_level": 11.0
+      },
+      "Marksman": {
+        "share": 0.4859,
+        "fc_badge": 10,
+        "tier_level": 11.0
+      }
+    },
+    "scouted": {
+      "Infantry|Attack": 31.348,
+      "Infantry|Defense": 28.256,
+      "Infantry|Lethality": 25.983,
+      "Infantry|Health": 27.241,
+      "Lancer|Attack": 31.348,
+      "Lancer|Defense": 28.256,
+      "Lancer|Lethality": 26.005,
+      "Lancer|Health": 27.233,
+      "Marksman|Attack": 31.348,
+      "Marksman|Defense": 28.256,
+      "Marksman|Lethality": 25.7,
+      "Marksman|Health": 26.95
+    },
+    "specials": [
+      {
+        "label": "Troops Attack Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Defense Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Lethality Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Health Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Health",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Troops Attack",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Troops Defense",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Defender Troops Attack",
+        "value": 0.0,
+        "source": "widget",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defender Troops Health",
+        "value": 0.0,
+        "source": "widget",
+        "stat": "Health",
+        "applies_to": "own"
+      },
+      {
+        "label": "Rally Troops Attack",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Lethality Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Health Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Health",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Attack Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defense Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Lethality Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Health Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Health",
+        "applies_to": "own"
+      }
+    ],
+    "lead_heroes": [
+      {
+        "name": "Eleonora",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Eleonora Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Eleonora Skill 2",
+            "triggered": 1
+          },
+          {
+            "skill": "Eleonora Skill 3 (proc)",
+            "triggered": 6,
+            "identified": false
+          },
+          {
+            "skill": "icon:infantry-troop-skill (fiery gate)",
+            "triggered": 27,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Lloyd",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Lloyd Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Lloyd Skill 2 (Iceflare)",
+            "triggered": 1
+          },
+          {
+            "skill": "Lloyd Skill 3 (chance)",
+            "triggered": 12
+          },
+          {
+            "skill": "lancer troop skills: EMPTY (no lancers owned)",
+            "triggered": 0
+          }
+        ]
+      },
+      {
+        "name": "Rufus",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Rufus Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Rufus Skill 2 (per-attack)",
+            "triggered": 1
+          },
+          {
+            "skill": "Rufus Skill 3 (Wrathful Quake)",
+            "triggered": 11
+          },
+          {
+            "skill": "icon:marksman-troop-skill",
+            "triggered": 5,
+            "identified": false
+          },
+          {
+            "skill": "icon:marksman gun (direct kills)",
+            "triggered": 10,
+            "kills": 66372,
+            "identified": false
+          }
+        ]
+      }
+    ],
+    "participants": [
+      {
+        "player": "[RFJ]SmartytramS 191",
+        "is_captain": true,
+        "troops": 259884,
+        "kills": 91266,
+        "power_loss": -11073952,
+        "flag_hero": "Eleonora",
+        "rows": []
+      },
+      {
+        "player": "[RFJ]Butcher",
+        "troops": 230436,
+        "kills": 80917,
+        "power_loss": -9818912,
+        "flag_hero": "Nora",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 6670,
+            "losses": 0,
+            "injured": 39031,
+            "lightly_injured": 72485,
+            "survivors": 3702
+          },
+          {
+            "troop_type": "Marksman",
+            "fc_badge": 10,
+            "kills": 74247,
+            "losses": 0,
+            "injured": 27313,
+            "lightly_injured": 50722,
+            "survivors": 37183
+          }
+        ]
+      },
+      {
+        "player": "[RFJ]SongKang",
+        "troops": 231924,
+        "kills": 81439,
+        "power_loss": -9882256,
+        "flag_hero": "Nora",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 6713,
+            "losses": 0,
+            "injured": 39283,
+            "lightly_injured": 72953,
+            "survivors": 3726
+          },
+          {
+            "troop_type": "Marksman",
+            "fc_badge": 10,
+            "kills": 74726,
+            "losses": 0,
+            "injured": 27489,
+            "lightly_injured": 51050,
+            "survivors": 37423
+          }
+        ]
+      },
+      {
+        "player": "[RFJ]ZhiMing DG",
+        "troops": 228012,
+        "kills": 80066,
+        "power_loss": -9715756,
+        "flag_hero": "Nora",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 6600,
+            "losses": 0,
+            "injured": 38621,
+            "lightly_injured": 71722,
+            "survivors": 3663
+          },
+          {
+            "troop_type": "Marksman",
+            "fc_badge": 10,
+            "kills": 73466,
+            "losses": 0,
+            "injured": 27026,
+            "lightly_injured": 50189,
+            "survivors": 36791
+          }
+        ]
+      },
+      {
+        "player": "[RFJ]Green Tea",
+        "troops": 195040,
+        "kills": 68488,
+        "power_loss": -8310792,
+        "flag_hero": "Nora",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 5646,
+            "losses": 0,
+            "injured": 33036,
+            "lightly_injured": 61351,
+            "survivors": 3133
+          },
+          {
+            "troop_type": "Marksman",
+            "fc_badge": 10,
+            "kills": 62842,
+            "losses": 0,
+            "injured": 23118,
+            "lightly_injured": 42931,
+            "survivors": 31471
+          }
+        ]
+      },
+      {
+        "player": "[RFJ]MARI",
+        "troops": 250284,
+        "kills": 87887,
+        "power_loss": -10664584,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]XiaoFenSi",
+        "troops": 224760,
+        "kills": 74701,
+        "power_loss": -9685416,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]Bubla",
+        "troops": 32044,
+        "kills": 1855,
+        "power_loss": -1606540,
+        "rows": []
+      }
+    ]
+  },
+  "enemy": {
+    "player": "[KOR]exdyst",
+    "state": 229,
+    "coords": "#229 X:594 Y:606",
+    "role": "Defender",
+    "is_friendly": false,
+    "power_loss": -83859612,
+    "troops": 1618888,
+    "losses": 71517,
+    "injured": 495102,
+    "lightly_injured": 1052269,
+    "survivors": 0,
+    "composition": {
+      "Infantry": {
+        "share": 0.607,
+        "fc_badge": 10,
+        "tier_level": 11.0
+      },
+      "Lancer": {
+        "share": 0.3929,
+        "fc_badge": 10,
+        "tier_level": 11.0
+      }
+    },
+    "scouted": {
+      "Infantry|Attack": 31.751,
+      "Infantry|Defense": 25.478,
+      "Infantry|Lethality": 24.813,
+      "Infantry|Health": 28.002,
+      "Lancer|Attack": 31.751,
+      "Lancer|Defense": 25.478,
+      "Lancer|Lethality": 24.804,
+      "Lancer|Health": 28.004,
+      "Marksman|Attack": 23.869,
+      "Marksman|Defense": 19.173,
+      "Marksman|Lethality": 23.02,
+      "Marksman|Health": 25.968
+    },
+    "specials": [
+      {
+        "label": "Troops Attack Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Defense Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Lethality Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Health Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Health",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Troops Attack",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Troops Defense",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Defender Troops Attack",
+        "value": 0.3,
+        "source": "widget",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defender Troops Health",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Health",
+        "applies_to": "own"
+      },
+      {
+        "label": "Rally Troops Attack",
+        "value": 0.0,
+        "source": "widget",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Lethality Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "enemy"
+      }
+    ],
+    "lead_heroes": [
+      {
+        "name": "Eleonora",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Eleonora Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Eleonora Skill 2",
+            "triggered": 1
+          },
+          {
+            "skill": "Eleonora Skill 3 (proc)",
+            "triggered": 5,
+            "identified": false
+          },
+          {
+            "skill": "icon:infantry-troop-skill (fiery gate)",
+            "triggered": 47,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Lloyd",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Lloyd Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Lloyd Skill 2 (Iceflare)",
+            "triggered": 1
+          },
+          {
+            "skill": "Lloyd Skill 3 (chance)",
+            "triggered": 14
+          },
+          {
+            "skill": "icon:lancer-troop-skill (blue blade)",
+            "triggered": 5,
+            "identified": false
+          },
+          {
+            "skill": "Ambusher (bypass, direct kills)",
+            "triggered": 4,
+            "kills": 17236
+          },
+          {
+            "skill": "icon:lancer troop-skill extra",
+            "triggered": 5,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Bradley",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Bradley Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Bradley Skill 2",
+            "triggered": 1
+          },
+          {
+            "skill": "Bradley Skill 3 (Tactical Assistance)",
+            "triggered": 8
+          },
+          {
+            "skill": "marksman troop skills: EMPTY (no marks owned)",
+            "triggered": 0
+          }
+        ]
+      }
+    ],
+    "participants": [
+      {
+        "player": "[KOR]exdyst",
+        "is_captain": false,
+        "troops": 144396,
+        "kills": 73528,
+        "power_loss": -7479772,
+        "flag_hero": "Gatot",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 1764,
+            "losses": 0,
+            "injured": 13731,
+            "lightly_injured": 25500,
+            "survivors": 0
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 10,
+            "kills": 71764,
+            "losses": 0,
+            "injured": 36808,
+            "lightly_injured": 68357,
+            "survivors": 0
+          }
+        ]
+      },
+      {
+        "player": "[KOR]onion",
+        "troops": 231781,
+        "kills": 66346,
+        "power_loss": -12006352,
+        "flag_hero": "Hendrik",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 6453,
+            "losses": 0,
+            "injured": 50403,
+            "lightly_injured": 93605,
+            "survivors": 0
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 10,
+            "kills": 59893,
+            "losses": 0,
+            "injured": 30721,
+            "lightly_injured": 57052,
+            "survivors": 0
+          }
+        ],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]goodjam",
+        "troops": 211671,
+        "kills": 63725,
+        "power_loss": -10964728,
+        "flag_hero": "Renee",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 5673,
+            "losses": 41740,
+            "injured": 2569,
+            "lightly_injured": 82287,
+            "survivors": 0
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 10,
+            "kills": 58052,
+            "losses": 29777,
+            "injured": 0,
+            "lightly_injured": 55298,
+            "survivors": 0
+          }
+        ],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]RELENT",
+        "troops": 117226,
+        "kills": 60004,
+        "power_loss": -6072440,
+        "flag_hero": "Blanchette",
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 10,
+            "kills": 1404,
+            "losses": 0,
+            "injured": 10972,
+            "lightly_injured": 20376,
+            "survivors": 0
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 10,
+            "kills": 58600,
+            "losses": 0,
+            "injured": 30058,
+            "lightly_injured": 55820,
+            "survivors": 0
+          }
+        ],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]Orin-z",
+        "troops": 166319,
+        "kills": 21280,
+        "power_loss": -8615376,
+        "rows": [],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]Blue",
+        "troops": 84268,
+        "kills": 3776,
+        "power_loss": -4365112,
+        "rows": [],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]ssosso",
+        "troops": 230534,
+        "kills": 66006,
+        "power_loss": -11941824,
+        "rows": [],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]Toxin",
+        "troops": 128898,
+        "kills": 53175,
+        "power_loss": -6677168,
+        "rows": [],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]RAIN",
+        "troops": 182550,
+        "kills": 8180,
+        "power_loss": -9456164,
+        "rows": [],
+        "is_captain": false
+      },
+      {
+        "player": "[KOR]Honggu",
+        "troops": 121245,
+        "kills": 62076,
+        "power_loss": -6280676,
+        "rows": [],
+        "is_captain": true,
+        "flag_hero": "Eleonora"
+      }
+    ]
+  }
+}

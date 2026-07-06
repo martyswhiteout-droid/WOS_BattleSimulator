@@ -1,0 +1,28 @@
+{
+  "description": "Calibration set 5, 2026-07-03 19:35-19:53 (WOS_BattleReports_FarSeerCalibration_v5.pdf). Marlinman big-panel discriminator + Far Seer T6 infantry + Bradley turn-clock pair + Renee single-lancer/turn-clock pair. NOTE (Martin): FC proc skills (Crystal Shield etc.) trigger on Marlinman for ALL troop tiers - FC skills are account-gated, not tier-gated - so Marlinman is never fully proc-free.",
+  "marlinman_battles": [
+    {"time": "19:35:35", "army": "300 T11FC10 Infantry", "beast": "Lv20 Titan Roc (14,115)", "result": "VICTORY", "beast_losses": 14115, "own": [0, 1, 158, 141], "procs": {"gate": 246, "beast_blade": 51, "beast_marks": 29}},
+    {"time": "19:36:44", "army": "300 T7 Infantry", "beast": "Lv23 Giant Elk (32,185)", "result": "DEFEAT", "beast_losses": 830, "own": [0, 1, 299, 0], "hero": null},
+    {"time": "19:35:40", "army": "300 T7 Infantry", "beast": "Lv25 Giant Elk (49,630)", "result": "DEFEAT", "beast_losses": 202, "own": [0, 1, 299, 0], "hero": null},
+    {"time": "19:37:09", "army": "300 T1 Infantry", "beast": "Lv23 Giant Elk", "result": "DEFEAT", "beast_losses": 36, "own": [0, 1, 299, 0], "hero": null},
+    {"time": "19:37:56", "army": "300 T7 Infantry", "beast": "Lv23 Giant Elk", "result": "DEFEAT", "beast_losses": 1038, "own": [0, 1, 299, 0], "hero": "Seo-yoon (S1 L5 +25% attack; marksman card inert for infantry army)"},
+    {"time": "19:40:01", "army": "300 T1 Infantry", "beast": "Lv23 Giant Elk", "result": "DEFEAT", "beast_losses": 43, "own": [0, 1, 299, 0], "hero": "Seo-yoon"}
+  ],
+  "skill_pool_discriminator": {
+    "T7_pair": {"no_hero": 830, "seo_yoon": 1038, "ratio": 1.2506, "predicted_multiplicative": 1.25, "predicted_additive_with_panel": 1.026},
+    "T1_pair": {"no_hero": 36, "seo_yoon": 43, "ratio": 1.194, "note": "integer quantization at small counts; consistent with x1.25 within +/-1 kill"},
+    "VERDICT": "STAT SKILLS ARE MULTIPLICATIVE - their own factor on the stat, NOT additive with the panel pool. The additive hypothesis (x1.026) is dead."
+  },
+  "farseer_battles": [
+    {"time": "19:40:46", "army": [["Inf", 6, 1000]], "beast": "Lv12 Musk Ox", "beast_losses": 174, "own": [0, 2, 998, 0], "note": "completes same-tier class triple: T6 Inf 174 / T6 Lan 185 / T6 Mar 202"},
+    {"time": "19:42:54", "army": [["Inf", 7, 300]], "beast": "Lv13 Giant Tapir", "beast_losses": 35, "own": [0, 1, 299, 0], "hero": "Bradley (S1 L3 x1.15 atk, S2 L3, S3 L3 18% DD 2-of-4)", "clock": {"skill": "Bradley S3 every 4 turns", "procs": 7}, "beast_group_losses": [7, 28]},
+    {"time": "19:43:18", "army": [["Inf", 7, 1000]], "beast": "Lv13 Giant Tapir", "beast_losses": 213, "own": [0, 2, 998, 0], "hero": "Bradley", "clock": {"skill": "Bradley S3 every 4 turns", "procs": 14}, "beast_group_losses": [43, 170], "note": "213/177 = 1.2034 vs no-hero baseline: S1 x1.15 x S3-EV 1.046 fits; S2 Power Shot (+15% DD to Infantry) apparently did NOT apply vs beast - open question"},
+    {"time": "19:52:05", "army": [["Inf", 7, 300], ["Lan", 6, 1]], "beast": "Lv13 Giant Tapir", "beast_losses": 51, "kills_by_class": [37, 14], "own": [0, 2, 299, 0], "hero": "Renee (lancer; card +111.3 Atk/+111.3 Def to Lancer panel rows; S1 Nightmare Trace L2 80% extra lancer dmg every 2 turns; S2 Dreamcatcher L2 +60% lancer DD to marked)", "clock": {"skill": "Renee S1 every 2 turns", "procs": 16}, "beast_group_losses": [10, 41]},
+    {"time": "19:52:4x", "army": [["Inf", 7, 1000], ["Lan", 6, 1]], "beast": "Lv13 Giant Tapir", "beast_losses": 251, "kills_by_class": [197, 54], "own": [0, 3, 998, 0], "hero": "Renee", "clock": {"skill": "Renee S1 every 2 turns", "procs": 29}, "beast_group_losses": [50, 201]}
+  ],
+  "turn_clock_findings": {
+    "durations": "Tapir vs ~300 T7 inf: Bradley 7x4 and Renee 16x2 agree at T = 31 (S3 fires turns 4,8..28; S1 fires odd turns 1,3..31). Tapir vs ~1000: Bradley 14 procs + Renee 29 procs agree at T = 57-58.",
+    "structure": "Duration scales ~N^0.58, NOT ~N. So the beast's kills-per-turn GROW with our troop count (~N^0.42) - the DEFENDER's count enters the damage kernel (engagement-width behavior). This also reconciles the total-kills exponent 1.525: per-event attacker exponent is then ~0.95 (near-linear), not 0.525.",
+    "single_lancer": "1 protected T6 lancer (Renee-boosted): 14 kills over 31 turns (0.45/turn) with 300-wall; 54 kills over 57.5 turns (0.94/turn) with 1000-wall. Same lancer, same beast - per-turn output doubled with a bigger own-side wall. Another defender/side-count coupling signature."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "description": "Phase-3 PvP back-test first cut (2026-07-04). Two-sided engine (pvp_engine.py) with round-4 BEST_PARAMS + one rate knob, run over the 8 validated PvP reports (pvp_backtest.py). Symmetric-assumption baseline BEFORE the attacker/defender asymmetry fix.",
+  "status": {
+    "stat_skill_fix": "DONE - hero stat skills now multiplicative (assemble.py board.skillmult); QA finding closed.",
+    "engine_plumbing": "DONE - assembly + two-sided sim + harness run all 8 reports without error.",
+    "rate_scale": "rate~70 gives realistic ~30-turn durations (rate=1 gave 2000-4000 turns).",
+    "accuracy": "POOR - systematic defender bias; winner correct only 2/8; casualty magnitudes off, esp. defender under-killed."
+  },
+  "backtest_rate70": [
+    {"report": "001", "engine_winner": "A", "actual": "D", "a_incap_pred": 1014983, "a_incap_obs": 1721972, "d_incap_pred": 1484339, "d_incap_obs": 844845, "turns": 32},
+    {"report": "002", "engine_winner": "D", "actual": "A", "a_incap_pred": 1690172, "a_incap_obs": 989260, "d_incap_pred": 1215692, "d_incap_obs": 1739472, "turns": 22},
+    {"report": "003", "engine_winner": "A", "actual": "D", "d_incap_pred": 1502640, "d_incap_obs": 1124131, "turns": 29},
+    {"report": "004", "engine_winner": "D", "actual": "A", "d_incap_pred": 33676, "d_incap_obs": 1771872, "turns": 32, "note": "worst miss - defender barely scratched, actually got wiped"},
+    {"report": "005", "engine_winner": "D", "actual": "A", "d_incap_pred": 66474, "d_incap_obs": 1771872, "turns": 27},
+    {"report": "006", "engine_winner": "D", "actual": "A", "d_incap_pred": 1226101, "d_incap_obs": 1618888, "turns": 53},
+    {"report": "007", "engine_winner": "D", "actual": "D", "a_incap_pred": 1590225, "a_incap_obs": 1590384, "turns": 15, "note": "OK winner; attacker incap near-exact"},
+    {"report": "008", "engine_winner": "A", "actual": "A", "turns": 65, "note": "OK winner"}
+  ],
+  "diagnosis": "The two-sided engine assumed SYMMETRIC combat (both sides fire all units linearly). The farm mechanism (rounds 1-4) was ASYMMETRIC: attacker deals FULL linear damage to the compact target; the defender/beast returns fire FRONTAGE-LIMITED (~N_attacker^ed, sublinear). Symmetric assumption over-powers the defender (fortress walls at full output chip the attacker too hard). The systematic defender-win bias is the signature.",
+  "next": "Restructure pvp_engine defender output to mirror the farm beast->own term (attacker-linear / defender-frontage-limited), then calibrate the PvP coupling (rate + asymmetry) on the r6/r8 SISTER PAIR only and validate on the other 6 - do NOT fit all 8 (overfitting). Only after that: proc scheduler for stochastic runs.",
+  "caution": "8 reports is a THIN validation set for a multi-param engine. Calibrate on 2 (r6/r8), hold out 6. Report win/loss accuracy and casualty-magnitude bands, not point fits."
+}

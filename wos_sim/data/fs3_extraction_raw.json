@@ -1,0 +1,2428 @@
+{
+ "page_2": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:36:44",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 2000,
+     "losses": 0,
+     "injured": 4,
+     "lightly_injured": 1996,
+     "survivors": 0,
+     "power_loss": 16,
+     "stacks": [
+      {
+       "class_guess": "unknown",
+       "count": 2000,
+       "tier": 2
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 74,
+     "survivors": 1836,
+     "power_loss": 666,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 74,
+      "survivors": 496
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     },
+     {
+      "kills": 2,
+      "losses": 0,
+      "survivors": 670
+     }
+    ],
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero": {
+     "name": "none",
+     "skill_rows": []
+    },
+    "hero_card": "",
+    "tooltip_texts": [],
+    "reading_confidence": "Overview and defender rows cross-checked (496+670+670=1836 survivors, -74 loss). Attacker stack badge reads 'Lv 2.0' with count 2,000 - unit icon is a fur-hat trooper, class not identifiable. No attacker per-class rows shown in Battle Details (only beast rows). Hero Comparison panel shows all slots as empty silhouettes, hence hero=none; no Skill Details panel captured for this battle."
+   },
+   {
+    "timestamp": "2026-07-03 12:38:34",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 2,
+     "lightly_injured": 998,
+     "survivors": 0,
+     "power_loss": 56,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 1000,
+       "tier": 7
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 252,
+     "survivors": 1658,
+     "power_loss": 2268,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 252,
+      "survivors": 318
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 670
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     }
+    ],
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero_card": "",
+    "tooltip_texts": [],
+    "reading_confidence": "All numbers verified in zoom; attacker single stack purple badge 'Lv 7.0' x1,000 (great-helm icon = Infantry guess). Battle Details attacker block header: kills 252, power -56; no per-class attacker rows visible. No hero/Skill Details panels captured."
+   },
+   {
+    "timestamp": "2026-07-03 12:40:18",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 997,
+     "survivors": 0,
+     "power_loss": 68,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 500,
+       "tier": 7
+      },
+      {
+       "class_guess": "Lancer",
+       "count": 200,
+       "tier": 6
+      },
+      {
+       "class_guess": "Marksman",
+       "count": 300,
+       "tier": 6
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 1466,
+     "survivors": 444,
+     "power_loss": 13194,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 112,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 499,
+      "survivors": 0
+     },
+     {
+      "kills": 394,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 199,
+      "survivors": 0
+     },
+     {
+      "kills": 960,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 299,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 570,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 670,
+      "survivors": 0
+     },
+     {
+      "kills": 2,
+      "losses": 226,
+      "survivors": 444
+     }
+    ],
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      12.1,
+      10.1,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero_card": "",
+    "tooltip_texts": [],
+    "reading_confidence": "Attacker rows Injured column shows red -1 each (magnitude 1 recorded). Third attacker badge tier label blurry in this column - read as 'Lv 6.0' (could be 4.0); the same march in the 12:40:55 battle clearly shows Lv 6.0. Marksman Health stat-bonus row cut off at screenshot edge (only 3 marksman values readable). Cross-checks: kills 112+394+960=1466 = beast losses; LI 499+199+299=997."
+   },
+   {
+    "timestamp": "2026-07-03 12:40:55",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 997,
+     "survivors": 0,
+     "power_loss": 68,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 500,
+       "tier": 7
+      },
+      {
+       "class_guess": "Lancer",
+       "count": 200,
+       "tier": 6
+      },
+      {
+       "class_guess": "Marksman",
+       "count": 300,
+       "tier": 6
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 1466,
+     "survivors": 444,
+     "power_loss": 13194,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 112,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 499,
+      "survivors": 0
+     },
+     {
+      "kills": 394,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 199,
+      "survivors": 0
+     },
+     {
+      "kills": 960,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 299,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 570,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 670,
+      "survivors": 0
+     },
+     {
+      "kills": 2,
+      "losses": 226,
+      "survivors": 444
+     }
+    ],
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero_card": "",
+    "tooltip_texts": [],
+    "reading_confidence": "Distinct battle (timestamp 12:40:55) but every readable number is identical to the 12:40:18 battle - verified independently in zoomed crops, not copied. Full 12-row stat bonus panel visible here incl. Marksman Health +10.0%/+14.4%."
+   },
+   {
+    "timestamp": "2026-07-03 12:46:05",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 2,
+     "lightly_injured": 998,
+     "survivors": 0,
+     "power_loss": 56,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 1000,
+       "tier": 7
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 177,
+     "survivors": 2283,
+     "power_loss": 1733,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 35,
+      "survivors": 115
+     },
+     {
+      "kills": 1,
+      "losses": 142,
+      "survivors": 448
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero_card": "",
+    "tooltip_texts": [],
+    "reading_confidence": "Beast green badge levels read as Lv 4.2 (740) and Lv 4.1 (860 x2) - decimal digit slightly blurry. Defender Battle Details has 6 rows though the icon row shows 3 groups; sums check out (survivors 115+448+170+690+170+690=2,283; losses 35+142=177). Only the Defender block of Battle Details was captured (no attacker class rows)."
+   },
+   {
+    "timestamp": "2026-07-03 12:51:45",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1700,
+     "losses": 0,
+     "injured": 4,
+     "lightly_injured": 1696,
+     "survivors": 0,
+     "power_loss": 104,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 1400,
+       "tier": 7
+      },
+      {
+       "class_guess": "Lancer",
+       "count": 300,
+       "tier": 6
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 1146,
+     "survivors": 1314,
+     "power_loss": 11234,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 343,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1397,
+      "survivors": 0
+     },
+     {
+      "kills": 803,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 299,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 150,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 590,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 80,
+      "survivors": 90
+     },
+     {
+      "kills": 0,
+      "losses": 326,
+      "survivors": 364
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 2,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      12.1
+     ],
+     "beast_pct": 18.5
+    },
+    "hero_card": "",
+    "tooltip_texts": [],
+    "reading_confidence": "Stat Bonuses screenshot cut off after Marksman Attack +12.1% (Defense/Lethality/Health rows not visible). Attacker Injured shown as red -3 and -1 (magnitudes recorded). Cross-checks: kills 343+803=1,146 = beast losses; LI 1,397+299=1,696; beast survivors 90+364+170+690=1,314."
+   }
+  ],
+  "page_notes": "Page 2 contains 6 battles, all attacker [TFO]Far Seer, all DEFEAT (Far Seer wiped, all troops lightly injured/injured, 0 survivors on own side). Battles 1-4 vs Lv. 12 Musk Ox at X:978 Y:1051 (own X:976 Y:1051); battles 5-6 vs Lv. 13 Giant Tapir at X:967 Y:1035 (own X:966 Y:1036). Strips overlap: 12:38:34 appears in strips 1-2, 12:40:55 in strips 2-3, 12:51:45 in strips 3-4 - each reported once, deduped by timestamp. Note on Stat Bonuses colors: contrary to the briefing, the own-side (left) column is rendered in RED (+12.1/+10.1/+10.0/+10.0) and the beast (right) column in GREEN (flat +14.4% for Musk Ox battles, +18.5% for Giant Tapir battles); assignment here is by column position (left = Far Seer), consistent with the beast having the same value on all 12 rows. Battles at 12:40:18 and 12:40:55 have identical armies and identical outcomes - independently verified, not double-reported. No Skill Details panels, no skill tooltips, and no Hero Overall Stats cards appear anywhere on this page; battle 1 includes a Hero Comparison panel with all hero slots empty (no heroes on either side)."
+ },
+ "page_3": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:36:22",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 2,
+     "lightly_injured": 998,
+     "survivors": 0,
+     "power_loss": 56,
+     "stacks": [
+      {
+       "class_guess": "unknown",
+       "tier": 7,
+       "count": 1000
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 264,
+     "survivors": 1646,
+     "power_loss": 2376,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 264,
+      "survivors": 306
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 670
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     }
+    ],
+    "tooltip_texts": [
+     "Rallying Beat Lv. 1 \u2014 Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 5%."
+    ],
+    "hero_card": "",
+    "reading_confidence": "All Battle Overview and Battle Details numbers clearly readable. Attacker per-class rows were not visible in the Battle Details panel (scrolled to defender rows only), so attacker_class_rows is empty. Seo-yoon's own slot label was not visible (right-hand block reads 'Marksman Hero: Vacant'); her single skill row shows Triggered 1, Kills '-'. Attacker stack icon class not identifiable from the small purple badge (Lv 7.0), so class_guess is unknown."
+   },
+   {
+    "timestamp": "2026-07-03 12:37:18",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1200,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1197,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "unknown",
+       "tier": 7,
+       "count": 1200
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 349,
+     "survivors": 1561,
+     "power_loss": 3141,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 349,
+      "survivors": 221
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     }
+    ],
+    "tooltip_texts": [],
+    "hero_card": "",
+    "reading_confidence": "Numbers clear across strips 2 and 3 (same battle visible in both; strip 3 confirmed defender rows -349/221, 0/670, 0/670 and defender kills 1/1/1). Attacker per-class rows not visible in Battle Details, so attacker_class_rows is empty. Skill Details shows Seo-yoon with one row Triggered 1, Kills '-'; 'Marksman Hero: Vacant' on the right block. Attacker stack class not identifiable (Lv 7.0 purple badge), class_guess unknown."
+   }
+  ],
+  "page_notes": "Page 3 contains 2 unique battles (12:36:22 and 12:37:18), both [TFO]Far Seer DEFEATs vs Lv. 12 Musk Ox. Strip 1 covers battle 1 fully (overview, stat bonuses, skill details with Rallying Beat Lv. 1 tooltip, battle details). Strips 2-3 cover battle 2 (strip 3 is the right-edge overlap of the same battle 2 Battle Details panels; not double-reported). Strip 4 is blank. Battle Details panels on this page were scrolled to show only defender (beast) group rows plus vacant hero slot placeholders, so no attacker per-class breakdown rows were visible for either battle. No Hero Overall Stats card on this page. Expiry line under battle 1: 'Expires in 2026-07-17 12:36:22'."
+ },
+ "page_4": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:39:07",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1200,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1197,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 1200,
+       "tier": 7
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 366,
+     "survivors": 1544,
+     "power_loss": 3294,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 366,
+      "survivors": 204
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 670
+     }
+    ],
+    "tooltip_texts": [
+     "Rallying Beat Lv. 2 \u2014 Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 10%."
+    ],
+    "hero_card": "",
+    "reading_confidence": "High confidence overall. Attacker per-class rows were collapsed/not shown in this battle's Battle Details (only summary: kills 366, power -84). Defender kills column read as 1/1/1 (small digits) which sums to the beast's total kills of 3, and defender survivors 204+670+670=1544 matches the overview, so consistent. Skill Details next slot read as 'Marksman Hero: Vacant'; Seo-yoon's own slot label was cut off."
+   },
+   {
+    "timestamp": "2026-07-03 12:41:39",
+    "result": "VICTORY",
+    "beast_name": "Lv. 12 Musk Ox",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 1,
+     "lightly_injured": 465,
+     "survivors": 534,
+     "power_loss": 28,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 500,
+       "tier": 7
+      },
+      {
+       "class_guess": "Lancer",
+       "count": 200,
+       "tier": 6
+      },
+      {
+       "class_guess": "Marksman",
+       "count": 300,
+       "tier": 6
+      }
+     ]
+    },
+    "beast": {
+     "troops": 1910,
+     "losses": 1910,
+     "survivors": 0,
+     "power_loss": 17190,
+     "groups": [
+      {
+       "unit_level": 4,
+       "count_label": 570
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      },
+      {
+       "unit_level": 4,
+       "count_label": 670
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 14.4
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 190,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 465,
+      "survivors": 34
+     },
+     {
+      "kills": 564,
+      "losses": 0,
+      "injured": 0,
+      "lightly_injured": 0,
+      "survivors": 200
+     },
+     {
+      "kills": 1156,
+      "losses": 0,
+      "injured": 0,
+      "lightly_injured": 0,
+      "survivors": 300
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 1,
+      "losses": 570,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 670,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 670,
+      "survivors": 0
+     }
+    ],
+    "tooltip_texts": [],
+    "hero_card": "",
+    "reading_confidence": "High confidence. Attacker rows cross-checked across two strips: 190/-1 injured/465 lightly/34 surv; 564/200 surv; 1156/300 surv. Survivors 34+200+300=534 and beast losses 570+670+670=1910 both match the overview. Attacker summary kills 1910, power -28; defender summary kills 1, hit -1910."
+   },
+   {
+    "timestamp": "2026-07-03 12:42:45",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1200,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1197,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "count": 1200,
+       "tier": 7
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 257,
+     "survivors": 2203,
+     "power_loss": 2521,
+     "groups": [
+      {
+       "count_label": 740
+      },
+      {
+       "count_label": 860
+      },
+      {
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 257,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1197,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 52,
+      "survivors": 98
+     },
+     {
+      "kills": 1,
+      "losses": 205,
+      "survivors": 385
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [],
+    "hero_card": "",
+    "reading_confidence": "Beast group badge unit levels unreadable at this resolution (looked like Lv 4.x, possibly 4.2/4.1/4.1 in one strip vs 4.0 in another) so omitted. The troop icon row shows only 3 beast groups (740/860/860, sum 2460) while Battle Details lists 6 defender rows; icon row likely truncated. Defender rows are internally consistent: losses 52+205=257, survivors sum=2203, kills sum=3, all matching the overview."
+   }
+  ],
+  "page_notes": "Page 4 contains three battles by [TFO]Far Seer (X:976 Y:1051): 12:39:07 DEFEAT vs Lv. 12 Musk Ox, 12:41:39 VICTORY vs Lv. 12 Musk Ox, 12:42:45 DEFEAT vs Lv. 13 Giant Tapir. Strips overlap: strip 1/2 cover battle 1 and its Battle Details, strip 2/3 cover battle 2, strip 3/4 cover battle 3; each battle reported once by timestamp. One skill tooltip appears (Rallying Beat Lv. 2, +10% all Troops Attack) attached to battle 1's Skill Details. Seo-yoon (Lv. 20) is the only hero in all three battles; the adjacent slot reads 'Marksman Hero: Vacant' and her own slot label is cropped in every view. No 'Hero Overall Stats' card appears on this page. Green own-side stat bonuses are identical across all three battles; the beast column is +14.4% for both Musk Ox fights and +18.5% for the Giant Tapir fight."
+ },
+ "page_5": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:43:21",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1300,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1297,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1300
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 291,
+     "survivors": 2169,
+     "power_loss": 2851,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "Marksman (header pair shows 'Marksman Hero: Vacant' on beast side)",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 58,
+      "survivors": 92
+     },
+     {
+      "kills": 1,
+      "losses": 233,
+      "survivors": 357
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [
+     "Rallying Beat Lv. 2 - Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 10%."
+    ],
+    "hero_card": "",
+    "reading_confidence": "Attacker per-class rows in Battle Details are covered by the tooltip popup, not readable. Beast summary line in Battle Details: troops 2,460, kills 3, power -2,851, losses -291. Green badge levels (4.2/4.1/4.1) are small; counts 740/860/860 sum to 2,460 which matches beast troops. Defender rows: injured and lightly injured all 0."
+   },
+   {
+    "timestamp": "2026-07-03 12:43:52",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1500,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1497,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1500
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 361,
+     "power_loss": 3541,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      50.2,
+      48.2,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "Marksman (header pair shows 'Marksman Hero: Vacant' on beast side)",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 73,
+      "survivors": 77
+     },
+     {
+      "kills": 1,
+      "losses": 288,
+      "survivors": 302
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [],
+    "hero_card": "",
+    "reading_confidence": "Battle Overview screenshot is cut after the Lightly Injured row, so both Survivors values are NOT visible (fields omitted, not zero). Battle Details attacker summary line reads: [TFO]Far Seer troops 1,500, kills 361, power -84, losses 0; no per-class attacker rows shown. Beast summary: 2,460 troops, kills 3, power -3,541, losses -361. Defender rows injured/lightly injured all 0."
+   },
+   {
+    "timestamp": "2026-07-03 12:44:55",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 2,
+     "lightly_injured": 998,
+     "survivors": 0,
+     "power_loss": 56,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1000
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 195,
+     "survivors": 2265,
+     "power_loss": 1911,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "Marksman (header pair shows 'Marksman Hero: Vacant' on beast side)",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 39,
+      "survivors": 111
+     },
+     {
+      "kills": 1,
+      "losses": 156,
+      "survivors": 434
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [
+     "Rallying Beat Lv. 2 - Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 10%."
+    ],
+    "hero_card": "",
+    "reading_confidence": "Attacker per-class rows covered by the tooltip popup. Beast summary in Battle Details: 2,460 troops, kills 2, power -1,911, losses -195. Marksman Attack/Defense bonuses differ from earlier battles: +56.6% / +54.6% (double-checked in strip 3). Defender rows injured/lightly injured all 0."
+   }
+  ],
+  "page_notes": "Page 5 contains exactly 3 battles, all [TFO]Far Seer vs Lv. 13 Giant Tapir at X:967 Y:1035, all DEFEAT: 12:43:21 (1,300 troops), 12:43:52 (1,500 troops), 12:44:55 (1,000 troops). Strips overlap: strip 2 left edge repeats battle 1 panels, strip 3 left column repeats battle 2 Battle Details, strip 4 repeats battle 3 (used the clearer strip 4 view for battle 3 details, which also shows beast kills=2). Own troop stack is a single purple Lv 7.0 badge (helmet icon, presumed Infantry). Beast icon-row badges: Lv 4.2 x740, Lv 4.1 x860, Lv 4.1 x860 (sum 2,460 matches). No Hero Overall Stats card on this page. Attacker per-class Battle Details rows were not readable in any battle (tooltip overlay or off-panel). Own attacker summary kills (skull icon) visible only for battle 2: 361, matching beast losses. Battle 2 survivors fields omitted because the overview screenshot is cut before the Survivors row."
+ },
+ "page_6": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:47:08",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1200,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1197,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1200
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 257,
+     "survivors": 2203,
+     "power_loss": 2521,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Jasser",
+     "slot": "shown in left slot of Skill Details header, opposite 'Marksman Hero: Vacant'; own class label not visible",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 52,
+      "survivors": 98
+     },
+     {
+      "kills": 1,
+      "losses": 205,
+      "survivors": 385
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [
+     "Tactical Genius Lv. 2 \u2014 Jasser's combination of courage and wisdom enriches the army, increasing damage dealt by 10% for all troops."
+    ],
+    "hero_card": "",
+    "reading_confidence": "Overview, stat bonuses, beast groups, and defender rows read clearly. Attacker per-class Battle Details rows for this battle are NOT visible in any strip (only the Skill Details header and the defender block were captured), so attacker_class_rows is omitted. Skill row kills displayed as '-' (recorded null). First green badge level looks like 4.2 vs 4.1 for the others; small text, slight uncertainty on the .2 vs .1. Tooltip in this battle's column is partially cut off but identical to the fully readable copy in battle 2's column."
+   },
+   {
+    "timestamp": "2026-07-03 12:50:35",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1700,
+     "losses": 0,
+     "injured": 4,
+     "lightly_injured": 1696,
+     "survivors": 0,
+     "power_loss": 104,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1500
+      },
+      {
+       "class_guess": "unknown",
+       "tier": 6,
+       "count": 200
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 1269,
+     "survivors": 1191,
+     "power_loss": 12437,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Jasser",
+     "slot": "shown in left slot of Skill Details header, opposite 'Marksman Hero: Vacant'; own class label not visible",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 456,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1497,
+      "survivors": 0
+     },
+     {
+      "kills": 813,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 199,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 150,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 590,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 104,
+      "survivors": 66
+     },
+     {
+      "kills": 0,
+      "losses": 425,
+      "survivors": 265
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 2,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [
+     "Tactical Genius Lv. 2 \u2014 Jasser's combination of courage and wisdom enriches the army, increasing damage dealt by 10% for all troops."
+    ],
+    "hero_card": "",
+    "reading_confidence": "All numbers read clearly across strips 2 and 3 (which overlap and agree). Attacker rows: injured shown red as -3 and -1 (magnitudes recorded); only two attacker rows are visible before the panel is cut off, but they account for all 1,696 lightly injured so likely complete. Skill row kills displayed as '-' (recorded null). First green badge level 4.2 vs 4.1 for the others; small text, slight uncertainty on the decimal."
+   }
+  ],
+  "page_notes": "Page 6 contains two battles, both [TFO]Far Seer (X:966 Y:1036) attacking a Lv. 13 Giant Tapir (X:967 Y:1035), both DEFEAT. Strip 1 = battle 12:47:08 (overview/bonuses/defender details); strips 2-3 = battle 12:50:35 (overlapping views, used both). Strip 4 is entirely blank. No Hero Overall Stats card on this page. Battle 1's attacker per-class Battle Details block was not captured in the collage."
+ },
+ "page_7": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:47:32",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1200,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1197,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1200
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 257,
+     "survivors": 2203,
+     "power_loss": 2521,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "Marksman",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "tooltip_texts": [
+     "Rallying Beat Lv. 2 \u2014 Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 10%."
+    ],
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 52,
+      "survivors": 98
+     },
+     {
+      "kills": 1,
+      "losses": 205,
+      "survivors": 385
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "hero_card": "",
+    "reading_confidence": "High confidence. Defender survivor rows sum to 2203, matching overview Survivors. Beast group badge levels read as Lv 4.2 (740) and Lv 4.1 (860 x2) from the clearer strip 2 view of the same panels. No attacker block was shown in Battle Details for this battle (defender block only). Skill row Kills displayed as '-' (recorded null)."
+   },
+   {
+    "timestamp": "2026-07-03 12:48:17",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1000,
+     "losses": 0,
+     "injured": 2,
+     "lightly_injured": 998,
+     "survivors": 0,
+     "power_loss": 56,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1000
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 204,
+     "survivors": 2256,
+     "power_loss": 2000,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "Marksman",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "tooltip_texts": [
+     "Rallying Beat Lv. 3 \u2014 Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 15%."
+    ],
+    "attacker_class_rows": [],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 41,
+      "survivors": 109
+     },
+     {
+      "kills": 1,
+      "losses": 163,
+      "survivors": 427
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "hero_card": "",
+    "reading_confidence": "High confidence. Battle appears in strips 2 and 3; readings agree. Defender survivor rows sum to 2256, matching overview. Defender header shows kills 2, power -2,000, losses -204. No attacker block shown in Battle Details for this battle. Skill row Kills displayed as '-' (recorded null)."
+   },
+   {
+    "timestamp": "2026-07-03 12:49:07",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1500,
+     "losses": 0,
+     "injured": 3,
+     "lightly_injured": 1497,
+     "survivors": 0,
+     "power_loss": 84,
+     "stacks": [
+      {
+       "class_guess": "Infantry",
+       "tier": 7,
+       "count": 1500
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 378,
+     "survivors": 2082,
+     "power_loss": 3706,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "Marksman",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "tooltip_texts": [
+     "Rallying Beat Lv. 3 \u2014 Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 15%."
+    ],
+    "attacker_class_rows": [
+     {
+      "kills": 378,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1497,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 76,
+      "survivors": 74
+     },
+     {
+      "kills": 1,
+      "losses": 302,
+      "survivors": 288
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 690
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 1,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "hero_card": "",
+    "reading_confidence": "High confidence. Battle appears in strips 3 and 4; readings agree. Attacker block (Far Seer side) visible: single infantry row Kills 378, Losses 0, Injured -3, Lightly Injured 1,497, Survivors 0. Defender survivor rows sum to 2082, matching overview. Same Rallying Beat Lv. 3 tooltip appears in both strips (transcribed once)."
+   }
+  ],
+  "page_notes": "Page 7 contains 3 battles, all [TFO]Far Seer (X:966 Y:1036) attacking Lv. 13 Giant Tapir (X:967 Y:1035), all DEFEAT. Troop escalation across battles: 1,200 -> 1,000 -> 1,500 T7 Infantry (Lv 7.0 badge, purple helmet icon). Beast composition identical in all three: Lv 4.2 x740, Lv 4.1 x860, Lv 4.1 x860 (six defender rows in Battle Details, so the three icon-row groups appear split into six sub-stacks). Stat Bonuses identical across battles (Marksman Attack +56.6%, Marksman Defense +54.6% stand out; beast +18.5% on all 12 rows). Hero Seo-yoon (Lv 20) only skill shown: Rallying Beat \u2014 Lv. 2 (10% Troops Attack) in the 12:47:32 battle, upgraded to Lv. 3 (15%) for the 12:48:17 and 12:49:07 battles. No Hero Overall Stats card on this page. Attacker Battle Details block only captured for the 12:49:07 battle."
+ },
+ "page_8": {
+  "battles": [
+   {
+    "timestamp": "2026-07-03 12:50:01",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1700,
+     "losses": 0,
+     "injured": 4,
+     "lightly_injured": 1696,
+     "survivors": 0,
+     "power_loss": 104,
+     "stacks": [
+      {
+       "tier": 7,
+       "count": 1500,
+       "class_guess": "unknown"
+      },
+      {
+       "tier": 6,
+       "count": 200,
+       "class_guess": "unknown"
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 1441,
+     "survivors": 1019,
+     "power_loss": 14121,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "unknown (adjacent header reads Marksman Hero: Vacant)",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 514,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1497,
+      "survivors": 0
+     },
+     {
+      "kills": 927,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 199,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 150,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 590,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 138,
+      "survivors": 32
+     },
+     {
+      "kills": 0,
+      "losses": 563,
+      "survivors": 127
+     },
+     {
+      "kills": 0,
+      "losses": 0,
+      "survivors": 170
+     },
+     {
+      "kills": 2,
+      "losses": 0,
+      "survivors": 690
+     }
+    ],
+    "tooltip_texts": [],
+    "hero_card": "",
+    "reading_confidence": "Marksman Health stat-bonus row cut off at bottom of screenshot, so marksman array has only 3 values (Attack/Defense/Lethality); in the other two battles on this page it reads +10.0%. Beast green badge levels read as Lv 4.2 / 4.1 / 4.1 but could be Lv 4.0 - small text. All other numbers cross-checked between strips 1 and 2 (overlap) and internally consistent (defender losses sum 1441 = overview losses)."
+   },
+   {
+    "timestamp": "2026-07-03 12:52:24",
+    "result": "DEFEAT",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1700,
+     "losses": 0,
+     "injured": 4,
+     "lightly_injured": 1696,
+     "survivors": 0,
+     "power_loss": 104,
+     "stacks": [
+      {
+       "tier": 7,
+       "count": 1400,
+       "class_guess": "unknown"
+      },
+      {
+       "tier": 6,
+       "count": 300,
+       "class_guess": "unknown"
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 1660,
+     "survivors": 800,
+     "power_loss": 16264,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "unknown (adjacent header reads Marksman Hero: Vacant)",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 483,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1397,
+      "survivors": 0
+     },
+     {
+      "kills": 1177,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 299,
+      "survivors": 0
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 150,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 590,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 170,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 690,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 11,
+      "survivors": 159
+     },
+     {
+      "kills": 2,
+      "losses": 49,
+      "survivors": 641
+     }
+    ],
+    "tooltip_texts": [
+     "Rallying Beat Lv. 3 - Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 15%"
+    ],
+    "hero_card": "",
+    "reading_confidence": "Tooltip's final percentage (15%) is partially clipped at the tooltip bottom edge in both strips but the green '15' is legible. Beast badge levels read Lv 4.2 / 4.1 / 4.1, possibly Lv 4.0. Attacker and defender detail rows cross-checked between strips 2 and 3 (overlap); defender losses sum 1660 = overview losses, survivors 159+641 = 800 overview."
+   },
+   {
+    "timestamp": "2026-07-03 12:53:00",
+    "result": "VICTORY",
+    "beast_name": "Lv. 13 Giant Tapir",
+    "own": {
+     "troops": 1800,
+     "losses": 0,
+     "injured": 4,
+     "lightly_injured": 1567,
+     "survivors": 229,
+     "power_loss": 104,
+     "stacks": [
+      {
+       "tier": 7,
+       "count": 1500,
+       "class_guess": "unknown"
+      },
+      {
+       "tier": 6,
+       "count": 300,
+       "class_guess": "unknown"
+      }
+     ]
+    },
+    "beast": {
+     "troops": 2460,
+     "losses": 2460,
+     "survivors": 0,
+     "power_loss": 24100,
+     "groups": [
+      {
+       "unit_level": 4.2,
+       "count_label": 740
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      },
+      {
+       "unit_level": 4.1,
+       "count_label": 860
+      }
+     ]
+    },
+    "stat_bonuses": {
+     "infantry": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "lancer": [
+      12.1,
+      10.1,
+      10,
+      10
+     ],
+     "marksman": [
+      56.6,
+      54.6,
+      10,
+      10
+     ],
+     "beast_pct": 18.5
+    },
+    "hero": {
+     "name": "Seo-yoon",
+     "slot": "unknown (adjacent header reads Marksman Hero: Vacant)",
+     "skill_rows": [
+      {
+       "triggered": 1,
+       "kills": null
+      }
+     ]
+    },
+    "attacker_class_rows": [
+     {
+      "kills": 661,
+      "losses": 0,
+      "injured": 3,
+      "lightly_injured": 1497,
+      "survivors": 0
+     },
+     {
+      "kills": 1799,
+      "losses": 0,
+      "injured": 1,
+      "lightly_injured": 70,
+      "survivors": 229
+     }
+    ],
+    "defender_group_rows": [
+     {
+      "kills": 0,
+      "losses": 150,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 590,
+      "survivors": 0
+     },
+     {
+      "kills": 1,
+      "losses": 170,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 690,
+      "survivors": 0
+     },
+     {
+      "kills": 0,
+      "losses": 170,
+      "survivors": 0
+     },
+     {
+      "kills": 2,
+      "losses": 690,
+      "survivors": 0
+     }
+    ],
+    "tooltip_texts": [],
+    "hero_card": "",
+    "reading_confidence": "Cross-checked between strips 3 and 4 (overlap). Internally consistent: defender losses sum 2460 = overview losses/troops (full wipe), attacker lightly injured 1497+70 = 1567 overview, survivors 229 match. Beast badge levels read Lv 4.2 / 4.1 / 4.1, possibly Lv 4.0."
+   }
+  ],
+  "page_notes": "Page 8 contains 3 battles, all [TFO]Far Seer (X:966 Y:1036) vs Lv. 13 Giant Tapir (X:967 Y:1035), timestamps 12:50:01 (DEFEAT), 12:52:24 (DEFEAT), 12:53:00 (VICTORY). Strips overlap: battle 1 spans strips 1-2, battle 2 spans strips 2-3, battle 3 spans strips 3-4; each battle reported once using the clearer view. Attacker stack class icons (dark purple Lv 7.0 helmet and silver Lv 6.0 helmet) not confidently identifiable; the Troop Power Comparison panel shows only Lancer and Marksman bars with blue attacker portions, suggesting the two stacks are Lancer and Marksman, but this is not directly readable from the badges so class_guess is left as unknown. Skill Details in every battle shows Seo-yoon (Lv 20 badge) with one skill row Triggered 1 / Kills '-', paired against 'Marksman Hero: Vacant'; other hero slots empty. No Hero Overall Stats card on this page."
+ }
+}

@@ -1,0 +1,23 @@
+{
+  "description": "Calibration set 6, 2026-07-03 21:31-21:40 (WOS_BattleReports_FarSeerCalibration_v6.pdf). All Far Seer vs Lv13 Giant Tapir. PANEL CHANGE: Far Seer Lethality rows now +20.0% (was +10.0% in sets 1-5) for all classes - accidental lethality A/B vs set-5 baselines. Heroes: Bradley (marksman card +206.7 -> Marks rows +218.8/+216.8 confirmed again), Renee (lancer card +111.3 -> Lancer rows +123.4/+121.4), Lloyd L~22 (lancer; S1 Bird Invasion L1 'reduces enemy Lethality by 4%'; S2 Iceflare Bomb L1 'every 3 turns: lancers +30% attack, ALL enemy lethality -6% for 1 turn' - tooltips verbatim).",
+  "panel": {"all_classes": {"Attack": 0.121, "Defense": 0.101, "Lethality": 0.200, "Health": 0.100}},
+  "battles": [
+    {"time": "21:31:06", "army": [["Lan", 6, 300]], "hero": "Renee", "beast_losses": 155, "own": [0, 1, 299, 0], "own_power": 20, "clock": {"renee_s1_procs": 9, "turns": "17-18"}, "beast_group_losses": [31, 124], "note": "300 T6 lancers solo w/ Renee card+skills; lancer wall dies in ~17.5 turns vs 31 for 300 T7 inf"},
+    {"time": "21:32:xx", "army": [["Inf", 7, 300]], "hero": null, "beast_losses": 32, "own": [0, 1, 299, 0], "note": "REQUESTED #1: no-hero 300 T7 baseline. vs set-5 Bradley 300 T7 = 35: 32(new panel)/1.0997(leth) = 29.1 old-panel baseline; 35/29.1 = 1.2028 = Bradley multiplier 1.2034 CHECK"},
+    {"time": "21:33:xx", "army": [["Inf", 2, 300]], "hero": "Bradley", "beast_losses": 4, "own": [0, 1, 299, 0], "own_power": 4, "clock": {"bradley_s3_procs": 2, "turns": "8-11"}},
+    {"time": "21:34:xx", "army": [["Inf", 2, 1000]], "hero": "Bradley", "beast_losses": 24, "own": [0, 2, 998, 0], "own_power": 8, "clock": {"bradley_s3_procs": 4, "turns": "16-19"}, "beast_group_losses": [4, 20], "note": "24 = 26(T2-1000 vs MUSK set1) x0.70(Musk->Tapir wall) x1.0997(leth panel) x1.2034(Bradley) = 24.1 EXACT"},
+    {"time": "21:37:0x", "army": [["Inf", 2, 1000]], "hero": "Lloyd", "beast_losses": 21, "own": [0, 2, 998, 0], "clock": {"lloyd_s2_procs": 6, "turns": "18-20"}, "beast_group_losses": [4, 17], "note": "Lloyd offensively inert for infantry: 21 = 24/1.2034 x rounding"},
+    {"time": "21:37:5x", "army": [["Inf", 2, 300]], "hero": "Lloyd+Bradley", "beast_losses": 4, "own": [0, 1, 299, 0], "clock": {"lloyd_s2_procs": 3, "bradley_s3_procs": 2, "turns": "9-11 (both clocks agree)"}},
+    {"time": "21:38:xx", "army": [["Inf", 2, 1000]], "hero": "Lloyd+Bradley", "beast_losses": 25, "own": [0, 2, 998, 0], "clock": {"lloyd_s2_procs": 6, "bradley_s3_procs": 4, "turns": "18-19"}},
+    {"time": "21:39:2x", "army": [["Inf", 7, 1000]], "hero": "Lloyd+Bradley", "beast_losses": 246, "own": [0, 2, 998, 0], "own_power": 56, "clock": {"lloyd_s2_procs": 20, "bradley_s3_procs": 15, "turns": "60-62 (vs 57-58 without Lloyd)"}, "beast_group_losses": [49, 197], "note": "GRAND COMPOSITION CHECK: 177 x 1.10(leth panel) x 1.2034(Bradley) x 1.052(Lloyd duration ext) = 246.4 vs observed 246"}
+  ],
+  "key_findings": [
+    "LETHALITY IS ~LINEAR: panel leth x1.0909 (1.10->1.20) -> kills x1.0997 (three probes: 300 T7 32 vs 29.1; T2 chain; 1000 T7 grand check). Elasticity ~1.0-1.1.",
+    "ENEMY-LETHALITY DEBUFF EXTENDS SURVIVAL ~LINEARLY: Lloyd EV -6% enemy leth -> duration 57.5 -> 60.5 (+5.2%) - incoming damage ~linear in attacker lethality too.",
+    "T2 WALL DURATIONS: 300 -> ~9.5-10 turns, 1000 -> ~17.5. T7/T2 survival ratio 3.26 = own DxH ratio 3.43 (within clock granularity) -> Defense and Health enter SURVIVAL as a ~linear PRODUCT.",
+    "DUAL CLOCKS AGREE in same battle (Lloyd every-3 x Bradley every-4): clock method validated.",
+    "Lloyd offensively inert for pure-infantry armies (S2 lancer attack has no lancers; S1/S2 leth debuffs are defensive).",
+    "MULTIPLICATIVE COMPOSITION VALIDATED END-TO-END: kills = baseline x panel-leth x hero-skills x duration-extension, exact to integer rounding.",
+    "REMAINING PUZZLE: A and L are each LINEAR at the margin, but across tiers per-turn output scales like (A*L)^~0.44, not A*L - a large tier-linked suppressor remains unidentified (same puzzle as solo-vs-mixed dealer factor). This is now THE open question."
+  ]
+}

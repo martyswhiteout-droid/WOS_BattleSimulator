@@ -1,0 +1,46 @@
+{
+  "description": "Far Seer calibration set 3, 2026-07-03 12:36-12:53 (WOS_BattleReports_FarSeerCalibration_3.pdf pages 2-8; page 1 = set 1 duplicate). Deterministic (no proc skills; T6/T7 troops both sides low-tier passives only). Hero experiments: Seo-yoon 'Rallying Beat' (all-troop Attack +5/10/15% at L1/2/3, tooltips verbatim) and Jassier 'Tactical Genius' L2 (+10% damage dealt all troops). Extraction via 7 parallel vision agents, arithmetic-identity verified.",
+  "panel": {"all_classes": {"Attack": 0.121, "Defense": 0.101, "Lethality": 0.100, "Health": 0.100}},
+  "beasts": {
+    "Lv12 Musk Ox": {"bonus": 0.144, "groups": [["Inf", 4.0, 570], ["Lan", 4.0, 670], ["Mar", 4.0, 670]], "unit_power": 9.0},
+    "Lv13 Giant Tapir": {"bonus": 0.185, "groups": [["Inf", 4.2, 150], ["Inf", 4.2, 590], ["Lan", 4.2, 170], ["Lan", 4.2, 690], ["Mar", 4.2, 170], ["Mar", 4.2, 690]], "unit_power": 9.8, "note": "power arithmetic proves ALL groups Lv4.2 (11,230.8 predicted vs 11,234 observed on the 1,146-kill run; badges that read 4.1 are misprints/misreads)"}
+  },
+  "battles": [
+    {"time": "12:36:22", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 1000]], "hero": "Seo-yoon L1 (+5% attack)", "beast_losses": 264},
+    {"time": "12:36:44", "beast": "Lv12 Musk Ox", "army": [["Inf", 2, 2000]], "hero": null, "beast_losses": 74},
+    {"time": "12:37:18", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 1200]], "hero": "Seo-yoon L1", "beast_losses": 349},
+    {"time": "12:38:34", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 1000]], "hero": null, "beast_losses": 252, "note": "4th identical replicate of the 252 run"},
+    {"time": "12:39:07", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 1200]], "hero": "Seo-yoon L2 (+10%)", "beast_losses": 366},
+    {"time": "12:40:18", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 500], ["Lan", 6, 200], ["Mar", 6, 300]], "hero": null, "beast_losses": 1466, "kills_by_class": [112, 394, 960], "beast_group_losses": [570, 670, 226], "note": "beast inf AND lancer groups wiped, marks eroded 226 - absorption chain"},
+    {"time": "12:40:55", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 500], ["Lan", 6, 200], ["Mar", 6, 300]], "hero": null, "beast_losses": 1466, "kills_by_class": [112, 394, 960], "note": "IDENTICAL replicate of 12:40:18 - determinism holds for 3-class armies"},
+    {"time": "12:41:39", "beast": "Lv12 Musk Ox", "army": [["Inf", 7, 500], ["Lan", 6, 200], ["Mar", 6, 300]], "hero": "Seo-yoon L2", "beast_losses": 1910, "censored": true, "note": "FULL WIPE (victory) - only lower bound usable; own injured 1"},
+    {"time": "12:42:45", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1200]], "hero": "Seo-yoon L2", "beast_losses": 257},
+    {"time": "12:43:21", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1300]], "hero": "Seo-yoon L2", "beast_losses": 291},
+    {"time": "12:43:52", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1500]], "hero": "Seo-yoon L2", "beast_losses": 361},
+    {"time": "12:44:55", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1000]], "hero": "Seo-yoon L2", "beast_losses": 195},
+    {"time": "12:46:05", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1000]], "hero": null, "beast_losses": 177, "beast_group_losses": [35, 142, 0, 0, 0, 0]},
+    {"time": "12:47:08", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1200]], "hero": "Jassier L2 (+10% damage dealt)", "beast_losses": 257, "note": "EQUALS Seo-yoon L2 (+10% attack) same config exactly"},
+    {"time": "12:47:32", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1200]], "hero": "Seo-yoon L2", "beast_losses": 257, "note": "replicate of 12:42:45"},
+    {"time": "12:48:17", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1000]], "hero": "Seo-yoon L3 (+15%)", "beast_losses": 204},
+    {"time": "12:49:07", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1500]], "hero": "Seo-yoon L3", "beast_losses": 378},
+    {"time": "12:50:01", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1500], ["Lan", 6, 200]], "hero": "Seo-yoon L3", "beast_losses": 1441},
+    {"time": "12:50:35", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1500], ["Lan", 6, 200]], "hero": "Jassier L2", "beast_losses": 1269},
+    {"time": "12:51:45", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1400], ["Lan", 6, 300]], "hero": null, "beast_losses": 1146, "kills_by_class": [343, 803], "beast_group_losses": [150, 590, 80, 326, 0, 0]},
+    {"time": "12:52:24", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1400], ["Lan", 6, 300]], "hero": "Seo-yoon L3", "beast_losses": 1660},
+    {"time": "12:53:00", "beast": "Lv13 Giant Tapir", "army": [["Inf", 7, 1500], ["Lan", 6, 300]], "hero": "Seo-yoon L3", "beast_losses": 2460, "censored": true, "note": "FULL WIPE (victory)"}
+  ],
+  "tooltips_verbatim": {
+    "Rallying Beat L1": "Seo-yoon beats the war drum to boost morale, increasing all Troops Attack by 5%.",
+    "Rallying Beat L2": "... increasing all Troops Attack by 10%.",
+    "Rallying Beat L3": "... increasing all Troops Attack by 15%.",
+    "Tactical Genius L2 (Jassier)": "Jasser's combination of courage and wisdom enriches the army, increasing damage dealt by 10% for all troops."
+  },
+  "headline_findings": [
+    "ATTACK ELASTICITY = 1.0 EXACTLY when own survival is unchanged: Seo-yoon +5/10/15% attack -> kills x1.048/x1.102/x1.153 (predicted x1.05/x1.10/x1.15; integer rounding).",
+    "ATTACK SKILL == DAMAGE DEALT SKILL per point: Jassier +10% DD gives 257, Seo-yoon +10% attack gives 257, same config. Cannot yet separate 'skill multiplies attack' from 'additive-with-panel + exponent 1.116' because the farm panel is small (12.1%) - needs a big-panel account A/B.",
+    "N-exponent again: Seo L2 Tapir ladder 1000/1200/1300/1500 -> 195/257/291/361: N^1.51-1.55. And 257/1.10 = 233.6 = exactly 177 x 1.2^1.525 - baselines and hero multipliers compose perfectly.",
+    "Determinism extends to 3-class armies (12:40:18 == 12:40:55 to the unit) and to hero configs (12:42:45 == 12:47:32).",
+    "Mixed-class output huge: 500I+200L+300M kills 1,466 vs 252 for 1000I (marks per-unit output ~14x infantry's).",
+    "Lv13 Tapir groups are ALL Lv4.2 (power arithmetic exact at 9.797/unit)."
+  ]
+}

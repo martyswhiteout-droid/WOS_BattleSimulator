@@ -1,0 +1,488 @@
+[
+  {
+    "hero": "Estrella",
+    "troop_type": "Lancer",
+    "generation": "15",
+    "file": "Estrella.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2026/01/%E8%89%BE%E6%96%AF%E9%BB%9B%E6%8B%89%EF%BC%88%E7%94%BB%E5%AE%B6%EF%BC%89.png",
+    "sha1": "fe1087bad08937c4a09bf31caf8759fa2a995bd9",
+    "bytes": 198189
+  },
+  {
+    "hero": "Hank",
+    "troop_type": "Infantry",
+    "generation": "15",
+    "file": "Hank.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2026/01/%E6%B1%89%E5%85%8B.png",
+    "sha1": "bbeeb6f15e716d673b1ba3d9eb539c130d0fa61e",
+    "bytes": 198142
+  },
+  {
+    "hero": "Viveca",
+    "troop_type": "Marksman",
+    "generation": "15",
+    "file": "Viveca.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2026/01/%E7%BB%B4%E8%96%87%E5%8D%A1.png",
+    "sha1": "bbdcb037079f95230c494c17355275f341954c5a",
+    "bytes": 233343
+  },
+  {
+    "hero": "Cara",
+    "troop_type": "Marksman",
+    "generation": "14",
+    "file": "Cara.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2026/01/%E5%8D%A1%E6%8B%89.png",
+    "sha1": "f30d9894dca220355021179a2b0212fe002e7d85",
+    "bytes": 213042
+  },
+  {
+    "hero": "Dominic",
+    "troop_type": "Lancer",
+    "generation": "14",
+    "file": "Dominic.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2026/01/%E5%A4%9A%E7%B1%B3%E5%B0%BC%E5%85%8B.png",
+    "sha1": "9200341c7ef5566d335eae6ccdfd1b36b4057740",
+    "bytes": 202036
+  },
+  {
+    "hero": "Elif",
+    "troop_type": "Infantry",
+    "generation": "14",
+    "file": "Elif.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2026/01/%E8%89%BE%E4%B8%BD%E8%8A%99.png",
+    "sha1": "bccc57c19093e713898cca0eb74db3b6aae984ac",
+    "bytes": 213272
+  },
+  {
+    "hero": "Flora",
+    "troop_type": "Lancer",
+    "generation": "13",
+    "file": "Flora.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/08/20250519%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8FFlora.jpg",
+    "sha1": "ecc05b088b66cd0bb4b2f4e8373405bcd39866be",
+    "bytes": 24931
+  },
+  {
+    "hero": "Gisela",
+    "troop_type": "Infantry",
+    "generation": "13",
+    "file": "Gisela.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/08/20250519%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8Fgisela.jpg",
+    "sha1": "cee07510c87a41aa14c1e3c297bf562d5361487b",
+    "bytes": 28818
+  },
+  {
+    "hero": "Vulcanus",
+    "troop_type": "Marksman",
+    "generation": "13",
+    "file": "Vulcanus.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/08/20250519%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8Fvulcanus.jpg",
+    "sha1": "bb99ff73a3f53ac28a98000659174e454e29c5ff",
+    "bytes": 21222
+  },
+  {
+    "hero": "Hervor",
+    "troop_type": "Infantry",
+    "generation": "12",
+    "file": "Hervor.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/05/20250519%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8FHervor-1.jpg",
+    "sha1": "7cd22770f710eef470e2f3efbb66db09af6647d5",
+    "bytes": 89535
+  },
+  {
+    "hero": "Karol",
+    "troop_type": "Lancer",
+    "generation": "12",
+    "file": "Karol.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/05/20250519%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8Fkarol-1.jpg",
+    "sha1": "2e33874d7f54c593ce8b9b88c02cce0384299369",
+    "bytes": 97920
+  },
+  {
+    "hero": "Ligeia",
+    "troop_type": "Marksman",
+    "generation": "12",
+    "file": "Ligeia.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/05/20250519%E8%8B%B1%E9%9B%84%E5%A4%B4%E5%83%8FLigeia-1.jpg",
+    "sha1": "817ece41804089121423dd409d6b7ebee2b7bb4b",
+    "bytes": 91553
+  },
+  {
+    "hero": "Eleonora",
+    "troop_type": "Infantry",
+    "generation": "11",
+    "file": "Eleonora.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/03/eleonora.jpg",
+    "sha1": "eaad5501fd0545f9d06218e882fe399177603a29",
+    "bytes": 114428
+  },
+  {
+    "hero": "Lloyd",
+    "troop_type": "Lancer",
+    "generation": "11",
+    "file": "Lloyd.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/03/Lloyd.jpg",
+    "sha1": "c9ed090ac5f00802266a4553fe56aed38856b86b",
+    "bytes": 54162
+  },
+  {
+    "hero": "Rufus",
+    "troop_type": "Marksman",
+    "generation": "11",
+    "file": "Rufus.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2025/03/rufus.jpg",
+    "sha1": "be0d2a8d6c767270c28ac06808823f6c0484e1fb",
+    "bytes": 58292
+  },
+  {
+    "hero": "Blanchette",
+    "troop_type": "Marksman",
+    "generation": "10",
+    "file": "Blanchette.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/12/blanchette350.jpg",
+    "sha1": "d30f3515ed2fbc6c77082ebccd58a2a63d128ea8",
+    "bytes": 104379
+  },
+  {
+    "hero": "Freya",
+    "troop_type": "Lancer",
+    "generation": "10",
+    "file": "Freya.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/12/freya350.jpg",
+    "sha1": "7a21939d0e078129eba3951501668147e177a8ed",
+    "bytes": 94081
+  },
+  {
+    "hero": "Gregory",
+    "troop_type": "Infantry",
+    "generation": "10",
+    "file": "Gregory.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/12/gregory350.jpg",
+    "sha1": "b98cffa7b68823270e4b524524ed9773f52985a6",
+    "bytes": 96158
+  },
+  {
+    "hero": "Fred",
+    "troop_type": "Lancer",
+    "generation": "9",
+    "file": "Fred.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/08/fred.jpg",
+    "sha1": "d39a1dac65bbc410536b215e3cd1a4de1b5a9637",
+    "bytes": 45400
+  },
+  {
+    "hero": "Magnus",
+    "troop_type": "Infantry",
+    "generation": "9",
+    "file": "Magnus.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/08/magnus.jpg",
+    "sha1": "a860405dc76552da2bd8245bd09c316393d9d491",
+    "bytes": 48250
+  },
+  {
+    "hero": "Xura",
+    "troop_type": "Marksman",
+    "generation": "9",
+    "file": "Xura.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/08/xura.jpg",
+    "sha1": "779f4b830f5e7c0b98afe5c83bb11fb58c7fc09a",
+    "bytes": 57686
+  },
+  {
+    "hero": "Gatot",
+    "troop_type": "Infantry",
+    "generation": "8",
+    "file": "Gatot.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/07/5.jpg",
+    "sha1": "c92a7343c432f041b76ef3463387a71eccfdd136",
+    "bytes": 62662
+  },
+  {
+    "hero": "Hendrik",
+    "troop_type": "Marksman",
+    "generation": "8",
+    "file": "Hendrik.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/07/7.jpg",
+    "sha1": "c619a8ac35d64687eb44d50742613836925d4c53",
+    "bytes": 97765
+  },
+  {
+    "hero": "Sonya",
+    "troop_type": "Lancer",
+    "generation": "8",
+    "file": "Sonya.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/07/6.jpg",
+    "sha1": "02936227b1fcba53ee63b33e8397ddc8a0f67a3c",
+    "bytes": 113731
+  },
+  {
+    "hero": "Bradley",
+    "troop_type": "Marksman",
+    "generation": "7",
+    "file": "Bradley.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/03/20240222_3.jpg",
+    "sha1": "0cc83a925e9f472c85c241ee622420472b37a780",
+    "bytes": 60346
+  },
+  {
+    "hero": "Edith",
+    "troop_type": "Infantry",
+    "generation": "7",
+    "file": "Edith.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/03/20240222_2.jpg",
+    "sha1": "d41a2c87077e4fbc3f403cc6ecdee3e73b8559ff",
+    "bytes": 69781
+  },
+  {
+    "hero": "Gordon",
+    "troop_type": "Lancer",
+    "generation": "7",
+    "file": "Gordon.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/03/20240222_1.jpg",
+    "sha1": "fd37c3b3de26ddc103b61525e381061b0b2db00c",
+    "bytes": 68289
+  },
+  {
+    "hero": "Renee",
+    "troop_type": "Lancer",
+    "generation": "6",
+    "file": "Renee.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/11/rene.jpg",
+    "sha1": "5ba7de8519a9b46e1d7786f6f920bb9e5bef0714",
+    "bytes": 113040
+  },
+  {
+    "hero": "Wayne",
+    "troop_type": "Marksman",
+    "generation": "6",
+    "file": "Wayne.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/11/wayne.jpg",
+    "sha1": "826d5ac3144f58201b95b432465492ade53aa19f",
+    "bytes": 107443
+  },
+  {
+    "hero": "Wu Ming",
+    "troop_type": "Infantry",
+    "generation": "6",
+    "file": "Wu Ming.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/11/wuming.jpg",
+    "sha1": "2e789a003e51e457fab56fd33edc98ba1a9f3cc8",
+    "bytes": 102987
+  },
+  {
+    "hero": "Gwen",
+    "troop_type": "Marksman",
+    "generation": "5",
+    "file": "Gwen.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/1690429616480_2.jpg",
+    "sha1": "6ea649443c16c73a21560cc353e1baa21a7bd78e",
+    "bytes": 84625
+  },
+  {
+    "hero": "Hector",
+    "troop_type": "Infantry",
+    "generation": "5",
+    "file": "Hector.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/1690429616489_3.jpg",
+    "sha1": "d785bc96e3ac59bbb0a851191b63a870b93824bb",
+    "bytes": 92136
+  },
+  {
+    "hero": "Nora",
+    "troop_type": "Lancer",
+    "generation": "5",
+    "file": "Nora.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/1690429616480_2.jpg",
+    "sha1": "6ea649443c16c73a21560cc353e1baa21a7bd78e",
+    "bytes": 84625
+  },
+  {
+    "hero": "Ahmose",
+    "troop_type": "Infantry",
+    "generation": "4",
+    "file": "Ahmose.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/ahmos.png",
+    "sha1": "d6713ff0a6f05348cafc7226fd49fe05a4b12659",
+    "bytes": 201581
+  },
+  {
+    "hero": "Lynn",
+    "troop_type": "Marksman",
+    "generation": "4",
+    "file": "Lynn.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/1690429616507_5.jpg",
+    "sha1": "c3fcc640f1a4163e02fcba9b48b4be83d363acbb",
+    "bytes": 98920
+  },
+  {
+    "hero": "Reina",
+    "troop_type": "Lancer",
+    "generation": "4",
+    "file": "Reina.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/1690429616516_7.jpg",
+    "sha1": "01968da2cec55adc460e3ffe797ce8349ef205ea",
+    "bytes": 97450
+  },
+  {
+    "hero": "Greg",
+    "troop_type": "Marksman",
+    "generation": "3",
+    "file": "Greg.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/greg.png",
+    "sha1": "63bf47de638d33cdf0e1d4eb6d49030115026c00",
+    "bytes": 197900
+  },
+  {
+    "hero": "Logan",
+    "troop_type": "Infantry",
+    "generation": "3",
+    "file": "Logan.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/logan.png",
+    "sha1": "863a04fa3f5bb622713fe5cf9318d0878b7178ac",
+    "bytes": 202543
+  },
+  {
+    "hero": "Mia",
+    "troop_type": "Lancer",
+    "generation": "3",
+    "file": "Mia.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/mia.png",
+    "sha1": "1f552492ec2ed1ec422c3e54f919ffb65a24b662",
+    "bytes": 194339
+  },
+  {
+    "hero": "Alonso",
+    "troop_type": "Marksman",
+    "generation": "2",
+    "file": "Alonso.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/alonso.png",
+    "sha1": "bbde08458902fb59490afe1f678d33cbd4b1b78d",
+    "bytes": 189401
+  },
+  {
+    "hero": "Flint",
+    "troop_type": "Infantry",
+    "generation": "2",
+    "file": "Flint.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/flint.png",
+    "sha1": "04c6ad6f117227011471bf8d4551040f791e23f8",
+    "bytes": 167808
+  },
+  {
+    "hero": "Philly",
+    "troop_type": "Lancer",
+    "generation": "2",
+    "file": "Philly.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/philly.png",
+    "sha1": "df83e5a34e9d4b6d03d4449af88c424cb7564161",
+    "bytes": 183144
+  },
+  {
+    "hero": "Jeronimo",
+    "troop_type": "Infantry",
+    "generation": "1",
+    "file": "Jeronimo.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/jeronimo.png",
+    "sha1": "0964af3d940393adee66129ea1d401ab08ac9e5d",
+    "bytes": 163694
+  },
+  {
+    "hero": "Molly",
+    "troop_type": "Lancer",
+    "generation": "1",
+    "file": "Molly.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/molly.png",
+    "sha1": "f8f97860888bfa4f897d2aba852b54b15e354bc0",
+    "bytes": 175316
+  },
+  {
+    "hero": "Natalia",
+    "troop_type": "Infantry",
+    "generation": "1",
+    "file": "Natalia.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/natalia.png",
+    "sha1": "8a11905b7a77defa89532491f2a4b23e5c3609b1",
+    "bytes": 170964
+  },
+  {
+    "hero": "Zinman",
+    "troop_type": "Marksman",
+    "generation": "1",
+    "file": "Zinman.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/zinman.png",
+    "sha1": "8d0f9a026c3afc6cbef37643505e67c375ced6eb",
+    "bytes": 174874
+  },
+  {
+    "hero": "Bahiti",
+    "troop_type": "Marksman",
+    "generation": "SR",
+    "file": "Bahiti.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/bahiti.png",
+    "sha1": "d9907f0b3016f62f9b23a9aa9146f31509a5a0e2",
+    "bytes": 183318
+  },
+  {
+    "hero": "Jasser",
+    "troop_type": "Marksman",
+    "generation": "SR",
+    "file": "Jasser.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/1.jpg",
+    "sha1": "344fb5a82d365e126e5576faa08d82d9f2dad472",
+    "bytes": 95463
+  },
+  {
+    "hero": "Jessie",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Jessie.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/jessie.png",
+    "sha1": "07932f2430fc734ba084ed50c0216d1bb33fb6a8",
+    "bytes": 185150
+  },
+  {
+    "hero": "Ling Xue",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Ling Xue.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/12/凌雪350.jpg",
+    "sha1": "814b7f537a3d901073822b29b81626053eba1ae5",
+    "bytes": 80773
+  },
+  {
+    "hero": "Lumak Bokan",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Lumak Bokan.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/05/3.png",
+    "sha1": "c5c3a284758bc407dbb478556f966c6479372cc9",
+    "bytes": 183972
+  },
+  {
+    "hero": "Patrick",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Patrick.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/patrick.png",
+    "sha1": "c0d3afff63e8d93fbbfc20eb4599d8df429c973c",
+    "bytes": 162141
+  },
+  {
+    "hero": "Seo-yoon",
+    "troop_type": "Marksman",
+    "generation": "SR",
+    "file": "Seo-yoon.jpg",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/2.jpg",
+    "sha1": "350d94ef19abe69d2e4aae06ee354c9ac1e98424",
+    "bytes": 75732
+  },
+  {
+    "hero": "Sergey",
+    "troop_type": "Infantry",
+    "generation": "SR",
+    "file": "Sergey.png",
+    "source_media": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/05/sergey.png",
+    "sha1": "52426ebae82ee386d1d336d925a4900feda50b83",
+    "bytes": 178288
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "description": "Calibration set 8, 2026-07-03 23:12-23:19 (WOS_BattleReports_FarSeerCalibration_v8.pdf). Far Seer vs Lv13 Tapir, 1000 T7 infantry throughout, lethality panel +20% (President buff). Debuff + stacking experiments. New hero cards documented: Ling Xue (lancer slot, +17.7 Atk/Def), Elif (INFANTRY slot, HUGE card +457.3 Atk/Def -> Inf rows 469.4/467.4), Estrella (lancer slot, +404.1 -> 416.2/414.2), Ligeia (marksman slot, +200.1 -> 212.2/210.2).",
+  "tooltips_verbatim": {
+    "Ling Xue S1 Fearsome Aura L1": "reducing all enemy Troops' Attack by 4%",
+    "Elif S1 Shackling Veil L1": "reducing all enemy Troops' Attack by 5%",
+    "Elif S2 Slash Formation L1": "increasing Troops' Attack by 3% and Troops' Defense by 2%",
+    "Estrella S1 Corrosive Color L1": "reducing the Defense of all enemy troops by 5%",
+    "Estrella S2 Dawn Canvas L1": "increasing the Attack of all allied troops by 3% and their Defense by 2%",
+    "Ligeia S1 Nerf Poison L1": "reducing all enemy Defense by 5% (NOTE: tooltip says DEFENSE, not lethality as expected)"
+  },
+  "battles": [
+    {"time": "23:12:06", "heroes": "Ling Xue + Bradley", "beast_losses": 242, "own": [0, 2, 998, 0], "clock_s3": 14, "turns": "56-59", "note": "BLIND PREDICTION PASSED (adjusted to her actual L1 -4%): predicted T~59.9 -> 14 procs (obs 14); kills predicted 244 (obs 242). Enemy-ATTACK debuff = multiplicative on beast attack, slows incoming, extends battle."},
+    {"time": "23:13:25", "heroes": "Ling Xue + Elif + Bradley (3 heroes)", "result": "VICTORY", "beast_losses": 2460, "censored": true, "own": [0, 1, 102, 897], "clock_s3": 10, "turns": "40-43", "note": "First T7-1000 VICTORY vs Tapir - Elif's giant infantry card (Atk x5.08, Def x4.66 on the actual troops) + stacked attack debuffs (-4%, -5%). Great engine regression battle; too many simultaneous effects for isolation."},
+    {"time": "23:18:45", "heroes": "Estrella only", "beast_losses": 214, "own": [0, 2, 998, 0], "note": "Enemy-DEFENSE debuff check: 177 x 1.0997(leth) x 1.0526(wall D /0.95) x 1.03(S2 atk) x ~1.01(S2 def duration) = 213 vs obs 214. Wall defense divides ~linearly."},
+    {"time": "23:19:07", "heroes": "Estrella + Ligeia", "beast_losses": 224, "own": [0, 2, 998, 0], "note": "SAME-STAT DEBUFF STACKING: second -5% enemy-defense added: 224/214 = x1.0467 vs additive-pool prediction x1.0556 and multiplicative x1.0526. Stacks fully (no cliff), but additive-vs-multiplicative separation is BELOW integer resolution at 5% magnitudes - needs L5-scale debuffs to separate (second-order for the engine)."}
+  ],
+  "key_findings": [
+    "Enemy-ATTACK debuffs: multiplicative on the enemy stat, verified via duration clock (blind prediction passed).",
+    "Enemy-DEFENSE debuffs: divide the wall's defense ~linearly in our kill output (214 check exact within rounding).",
+    "Same-stat debuff stacking: two sources stack ~fully; additive-pool vs multiplicative indistinguishable at 4-5% levels.",
+    "Elif = infantry hero with a very large card - her presence QUINTUPLES a weak farm's infantry panel; caused first T7 victory vs Tapir.",
+    "Ligeia S1 tooltip contradicts expectation (defense, not lethality) - trust tooltips over hearsay."
+  ]
+}

@@ -1,0 +1,645 @@
+{
+  "report_id": "report_007_DeDe_vs_Rooster",
+  "outcome_friendly": "victory",
+  "notes": [
+    "Battle 2025-07-19 23:51:35 at #214 X:597 Y:597 (fortress). Friendly = [RFJ] garrison DEFENDING and WINNING with a near-6-4-0 wall (Inf 70.71% + Lancer 29.28%, ZERO marksmen).",
+    "Injured share 0.35001 both sides (July-2025, X:597 fortress) - structure-dependence holds across three eras at this location type.",
+    "Winner-side Losses 4,054 (DeDe block, infirmary overflow on a winner - smallest infirmary).",
+    "First observation of a RALLY LETHALITY widget (enemy +15%) alongside Rally Attack; friendly defender ran Atk/Def/Leth garrison widgets.",
+    "Gregory (both captains!) S2 crit skill posts DIRECT KILLS: friendly 27 procs -> 96,963 kills, enemy 23 -> 35,837. First crit-channel observation.",
+    "Blanchette (enemy captain) Blood Hunter: 18 procs -> 114,198 direct kills, largest skill-kill figure yet; her S3 12 procs -> 27,827; gun troop-skill 9 -> 21,652.",
+    "Friendly Bradley's marksman troop-skill rows EMPTY (no marks owned) - class-scoping confirmed again; his S3 fired 10x (every 4 turns => battle ran ~40+ turns; Gregory infantry troop-skill 63 procs agrees - long grindy wall battle).",
+    "Enemy captain trio: Gregory/Fred/Blanchette. Fred Floodbringer 10 procs -> 32,818 direct kills; Ambusher 7 -> 12,584. Friendly Freya row-2 proc 20x -> 84,335 direct kills; Freya Ambusher 8 -> 17,731.",
+    "Captain CONFIRMED by Martin: DeDe (city owner, first block). Joiners: XiaoFenSi(Gatot), Butcher(Patrick), DouB(Ling Xue), SongKang(Renee).",
+    "Attacker participant panel unavailable (older report) - enemy side works from overview totals + composition + Jessie x4 joiner_flags fallback. Only per-class kill-share observables are lost."
+  ],
+  "friendly": {
+    "player": "[RFJ]DeDe",
+    "state": 191,
+    "coords": "#214 X:592 Y:600",
+    "role": "Defender",
+    "is_friendly": true,
+    "power_loss": -69062750,
+    "troops": 1506522,
+    "losses": 4054,
+    "injured": 465178,
+    "lightly_injured": 871407,
+    "survivors": 165883,
+    "composition": {
+      "Infantry": {
+        "share": 0.7071,
+        "fc_badge": 9,
+        "tier_level": 11.0
+      },
+      "Lancer": {
+        "share": 0.2928,
+        "fc_badge": 9,
+        "tier_level": 11.0
+      }
+    },
+    "scouted": {
+      "Infantry|Attack": 28.409,
+      "Infantry|Defense": 28.838,
+      "Infantry|Lethality": 25.778,
+      "Infantry|Health": 22.995,
+      "Lancer|Attack": 28.312,
+      "Lancer|Defense": 27.63,
+      "Lancer|Lethality": 24.397,
+      "Lancer|Health": 21.69,
+      "Marksman|Attack": 22.798,
+      "Marksman|Defense": 22.067,
+      "Marksman|Lethality": 23.555,
+      "Marksman|Health": 20.925
+    },
+    "specials": [
+      {
+        "label": "Troops Attack Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Defense Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Lethality Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Health Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Health",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Troops Attack",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Troops Defense",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Defender Troops Attack",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defender Troops Defense",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defender Troops Lethality",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Lethality Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Health Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Health",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Attack Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defense Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Lethality Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Health Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Health",
+        "applies_to": "own"
+      }
+    ],
+    "lead_heroes": [
+      {
+        "name": "Gregory",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Gregory Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Gregory Skill 2 (Crit Rate - direct crit kills)",
+            "triggered": 27,
+            "kills": 96963
+          },
+          {
+            "skill": "Gregory Skill 3",
+            "triggered": 1
+          },
+          {
+            "skill": "icon:infantry-troop-skill (fiery gate)",
+            "triggered": 63,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Freya",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Freya Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Freya Skill 2 (direct-damage proc)",
+            "triggered": 20,
+            "kills": 84335,
+            "identified": false
+          },
+          {
+            "skill": "Freya Skill 3",
+            "triggered": 1
+          },
+          {
+            "skill": "icon:lancer-troop-skill (blue blade)",
+            "triggered": 6,
+            "identified": false
+          },
+          {
+            "skill": "Ambusher (bypass, direct kills)",
+            "triggered": 8,
+            "kills": 17731
+          },
+          {
+            "skill": "icon:lancer troop-skill extra",
+            "triggered": 3,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Bradley",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Bradley Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Bradley Skill 2",
+            "triggered": 1
+          },
+          {
+            "skill": "Bradley Skill 3 (Tactical Assistance, every 4 turns)",
+            "triggered": 10
+          },
+          {
+            "skill": "marksman troop skills: EMPTY (no marks owned)",
+            "triggered": 0
+          }
+        ]
+      }
+    ],
+    "participants": [
+      {
+        "player": "[RFJ]DeDe",
+        "troops": 174589,
+        "kills": 49143,
+        "power_loss": -8227468,
+        "rows": [],
+        "is_captain": true,
+        "flag_hero": "Gregory"
+      },
+      {
+        "player": "[RFJ]XiaoFenSi",
+        "troops": 221556,
+        "kills": 83951,
+        "power_loss": -10192464,
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 9,
+            "kills": 13830,
+            "losses": 0,
+            "injured": 51592,
+            "lightly_injured": 95812,
+            "survivors": 7407
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 9,
+            "kills": 70121,
+            "losses": 0,
+            "injured": 17276,
+            "lightly_injured": 32084,
+            "survivors": 17385
+          }
+        ],
+        "flag_hero": "Gatot"
+      },
+      {
+        "player": "[RFJ]Butcher",
+        "troops": 184148,
+        "kills": 97244,
+        "power_loss": -8156872,
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 9,
+            "kills": 8942,
+            "losses": 0,
+            "injured": 33358,
+            "lightly_injured": 61949,
+            "survivors": 4790
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 9,
+            "kills": 88302,
+            "losses": 0,
+            "injured": 21756,
+            "lightly_injured": 40403,
+            "survivors": 21892
+          }
+        ],
+        "flag_hero": "Patrick"
+      },
+      {
+        "player": "[RFJ]DouB",
+        "troops": 53604,
+        "kills": 4788,
+        "power_loss": -2643872,
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 9,
+            "kills": 4788,
+            "losses": 0,
+            "injured": 17864,
+            "lightly_injured": 33175,
+            "survivors": 2565
+          }
+        ],
+        "flag_hero": "Ling Xue"
+      },
+      {
+        "player": "[RFJ]SongKang",
+        "troops": 190578,
+        "kills": 80106,
+        "power_loss": -8676944,
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": 9,
+            "kills": 11162,
+            "losses": 0,
+            "injured": 41641,
+            "lightly_injured": 77333,
+            "survivors": 5979
+          },
+          {
+            "troop_type": "Lancer",
+            "fc_badge": 9,
+            "kills": 68944,
+            "losses": 0,
+            "injured": 16987,
+            "lightly_injured": 31545,
+            "survivors": 17093
+          }
+        ],
+        "flag_hero": "Renee"
+      },
+      {
+        "player": "[RFJ]ZhiMing DG",
+        "troops": 29526,
+        "kills": 29029,
+        "power_loss": -1083585,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]YeWan",
+        "troops": 301,
+        "kills": 316,
+        "power_loss": -11544,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]MARI",
+        "troops": 189841,
+        "kills": 120403,
+        "power_loss": -8178036,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]VOHRA",
+        "troops": 46772,
+        "kills": 3980,
+        "power_loss": -2197767,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]Bangkokboy 666",
+        "troops": 133148,
+        "kills": 25292,
+        "power_loss": -6413728,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]ZeuS666",
+        "troops": 187859,
+        "kills": 54342,
+        "power_loss": -8835304,
+        "rows": []
+      },
+      {
+        "player": "[RFJ]ChazFerR",
+        "troops": 94600,
+        "kills": 8051,
+        "power_loss": -4445166,
+        "rows": []
+      }
+    ]
+  },
+  "enemy": {
+    "player": "[BKK]Rooster",
+    "state": 214,
+    "coords": "#214 X:606 Y:603",
+    "role": "Attacker",
+    "is_friendly": false,
+    "power_loss": -79237076,
+    "troops": 1590384,
+    "losses": 0,
+    "injured": 556645,
+    "lightly_injured": 1033739,
+    "survivors": 0,
+    "composition": {
+      "Infantry": {
+        "share": 0.4716,
+        "fc_badge": 9,
+        "tier_level": 11.0
+      },
+      "Lancer": {
+        "share": 0.1931,
+        "fc_badge": 9,
+        "tier_level": 10.7
+      },
+      "Marksman": {
+        "share": 0.3352,
+        "fc_badge": 9,
+        "tier_level": 10.7
+      }
+    },
+    "scouted": {
+      "Infantry|Attack": 28.397,
+      "Infantry|Defense": 25.789,
+      "Infantry|Lethality": 29.296,
+      "Infantry|Health": 26.074,
+      "Lancer|Attack": 25.737,
+      "Lancer|Defense": 22.863,
+      "Lancer|Lethality": 27.327,
+      "Lancer|Health": 24.746,
+      "Marksman|Attack": 28.397,
+      "Marksman|Defense": 25.789,
+      "Marksman|Lethality": 29.312,
+      "Marksman|Health": 25.875
+    },
+    "specials": [
+      {
+        "label": "Troops Attack Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Defense Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Lethality Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Troops Health Bonus",
+        "value": 0.2,
+        "source": "item",
+        "stat": "Health",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Troops Attack",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Attack",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Troops Defense",
+        "value": -0.2,
+        "source": "item",
+        "stat": "Defense",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Rally Troops Attack",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Rally Troops Lethality",
+        "value": 0.15,
+        "source": "widget",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Enemy Lethality Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Enemy Health Penalty (Pet Skill)",
+        "value": -0.05,
+        "source": "pet",
+        "stat": "Health",
+        "applies_to": "enemy"
+      },
+      {
+        "label": "Attack Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Attack",
+        "applies_to": "own"
+      },
+      {
+        "label": "Defense Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Defense",
+        "applies_to": "own"
+      },
+      {
+        "label": "Lethality Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Lethality",
+        "applies_to": "own"
+      },
+      {
+        "label": "Health Bonus (Pet Skill)",
+        "value": 0.1,
+        "source": "pet",
+        "stat": "Health",
+        "applies_to": "own"
+      }
+    ],
+    "lead_heroes": [
+      {
+        "name": "Gregory",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Gregory Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Gregory Skill 2 (Crit Rate - direct crit kills)",
+            "triggered": 23,
+            "kills": 35837
+          },
+          {
+            "skill": "Gregory Skill 3",
+            "triggered": 1
+          },
+          {
+            "skill": "icon:infantry-troop-skill (fiery gate)",
+            "triggered": 41,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Fred",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Fred Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Fred Skill 2",
+            "triggered": 1
+          },
+          {
+            "skill": "Fred Skill 3 (Floodbringer, direct kills)",
+            "triggered": 10,
+            "kills": 32818
+          },
+          {
+            "skill": "icon:lancer-troop-skill (blue blade)",
+            "triggered": 10,
+            "identified": false
+          },
+          {
+            "skill": "Ambusher (bypass, direct kills)",
+            "triggered": 7,
+            "kills": 12584
+          },
+          {
+            "skill": "icon:lancer troop-skill extra",
+            "triggered": 1,
+            "identified": false
+          }
+        ]
+      },
+      {
+        "name": "Blanchette",
+        "level": 80,
+        "rows": [
+          {
+            "skill": "Blanchette Skill 1",
+            "triggered": 1
+          },
+          {
+            "skill": "Blanchette Skill 3 (marked targets, direct kills)",
+            "triggered": 12,
+            "kills": 27827
+          },
+          {
+            "skill": "Blanchette Skill 2 (Blood Hunter, direct kills)",
+            "triggered": 18,
+            "kills": 114198
+          },
+          {
+            "skill": "icon:marksman-troop-skill",
+            "triggered": 3,
+            "identified": false
+          },
+          {
+            "skill": "icon:marksman gun (direct kills)",
+            "triggered": 9,
+            "kills": 21652
+          }
+        ]
+      }
+    ],
+    "participants": [],
+    "joiner_flags": [
+      "Jessie",
+      "Jessie",
+      "Jessie",
+      "Jessie"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "description": "Calibration set 7, 2026-07-03 22:10-22:12 (WOS_BattleReports_FarSeerCalibration_v7.pdf). All Far Seer + Bradley (clock + x1.2034), lethality panel still +20% (Supreme President state buff, expires ~22h after 2026-07-03 ~19:00). Tier-duration ladder + Musk duration prediction test + small-N duration.",
+  "battles": [
+    {"time": "22:10:0x", "army": [["Inf", 3, 1000]], "beast": "Lv12 Musk Ox", "beast_losses": 67, "own": [0, 2, 998, 0], "own_power": 12, "clock_s3": 8, "turns": "32-35"},
+    {"time": "22:10:3x", "army": [["Inf", 4, 1000]], "beast": "Lv12 Musk Ox", "beast_losses": 113, "own": [0, 2, 998, 0], "own_power": 18, "clock_s3": 10, "turns": "40-43"},
+    {"time": "22:11:1x", "army": [["Inf", 5, 1000]], "beast": "Lv12 Musk Ox", "beast_losses": 163, "own": [0, 2, 998, 0], "own_power": 26, "clock_s3": 12, "turns": "48-51"},
+    {"time": "22:11:3x", "army": [["Inf", 7, 1000]], "beast": "Lv12 Musk Ox", "beast_losses": 330, "own": [0, 2, 998, 0], "own_power": 56, "clock_s3": 18, "turns": "72-75"},
+    {"time": "22:12:xx", "army": [["Inf", 7, 100]], "beast": "Lv13 Giant Tapir", "beast_losses": 7, "own": [0, 1, 99, 0], "own_power": 28, "clock_s3": 4, "turns": "16-19"}
+  ],
+  "key_findings": [
+    "PREDICTION TEST PASSED: T7-1000 vs Musk predicted 75-84 turns from D*H scaling, observed 72-75.",
+    "CROSS-SET MULTIPLIER VALIDATION x3: kills / 1.2034(Bradley) / 1.0997(leth buff) reproduce set-4 no-hero values EXACTLY: T3 50.6 vs 51, T4 85.4 vs 87, T5 123.2 vs 125. T7-Musk: 330 vs 252x1.3234 = 333.5.",
+    "DURATION vs N locked across 10x range: T7-Tapir N=100/300/1000 -> 17.5/31/57.5 turns: T ~ N^0.515 (both segments 0.52/0.51). Incoming kills/turn ~ N_def^0.485.",
+    "DURATION vs tier: T3/T4/T5/T7-1000-Musk -> 33.5/41.5/49.5/73.5 turns: T ~ (own D*H)^0.8-1.0 (noisy within proc windows).",
+    "EMERGING SHAPE: TOTAL battle kills ~ c x A_eff x L_eff x f(N) with c ~ 4.2-5.3 across T2-T7 (duration nearly drops out) - total lifetime output proportional to A*L while marginal elasticities stay 1.0. Mechanism (retaliation-paced vs side-pooling) still to be pinned by the sim - the protected-lancer runs break pure retaliation, so it is NOT closed yet.",
+    "State-wide Supreme President buff = the +10% lethality; panels self-document, so battles before/after expiry remain comparable via their own panels."
+  ]
+}

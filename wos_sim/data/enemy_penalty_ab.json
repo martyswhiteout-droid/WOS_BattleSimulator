@@ -1,0 +1,20 @@
+{
+  "description": "Enemy-penalty A/B stat panels (Martin, 2026-07-03). Same participants; RIGHT report the enemy activated pet skills Enemy Defense Penalty -5% and Enemy Lethality Penalty -3.5%. Own side (Marlinman) buffs active both times: attack pool 17% (10 item + 7 pet), defense pool 16% (10 item + 6 pet), health 6% (pet).",
+  "rule_confirmed": "displayed = (1 + permanent) x (1 + sum own buffs) / (1 + sum enemy penalties) - 1. Enemy penalties are a DIVISOR. Hypothesis race RMS pct-points: divisor 0.034, multiply-(1-p) 2.020, subtract-from-pool 3.746.",
+  "panels": {
+    "left_no_penalty": {
+      "Infantry": [1011.2, 1043.6, 606.4, 649.9], "Lancer": [1020.6, 1035.7, 615.9, 647.0], "Marksman": [1066.8, 1076.9, 652.2, 692.5]
+    },
+    "right_with_penalty": {
+      "Infantry": [1011.2, 989.4, 582.5, 649.9], "Lancer": [1020.6, 981.6, 591.7, 647.0], "Marksman": [1066.8, 1020.9, 626.8, 692.5]
+    },
+    "order": ["Attack", "Defense", "Lethality", "Health"],
+    "enemy_column_unchanged": [535.3, 503.1, 407.4, 361.0, 544.1, 491.7, 412.7, 360.3, 637.4, 576.2, 461.8, 384.9]
+  },
+  "notes": [
+    "Attack and Health rows identical across A/B (no attack/health penalty active) - clean control.",
+    "The enemy's own displayed stats unchanged by turning on their penalty pets (penalties hit the opponent only).",
+    "At PvP-typical small percentages divisor ~= subtraction, which is why earlier PvP fits worked; at 3.5-5% measured to 0.1 precision the divisor is exact.",
+    "Code updated: reports.standard_pool()/assemble.assemble_battle() now use the divisor form."
+  ]
+}

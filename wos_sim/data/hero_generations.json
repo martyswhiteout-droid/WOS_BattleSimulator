@@ -1,0 +1,218 @@
+{
+"Ahmose": {
+"generation": 4,
+"troop": "Infantry"
+},
+"Alonso": {
+"generation": 2,
+"troop": "Marksman"
+},
+"Bahiti": {
+"generation": "SR",
+"troop": "Marksman"
+},
+"Blanchette": {
+"generation": 10,
+"troop": "Marksman"
+},
+"Bradley": {
+"generation": 7,
+"troop": "Marksman"
+},
+"Cara": {
+"generation": 14,
+"troop": "Marksman"
+},
+"Dominic": {
+"generation": 14,
+"troop": "Lancer"
+},
+"Edith": {
+"generation": 7,
+"troop": "Infantry"
+},
+"Eleonora": {
+"generation": 11,
+"troop": "Infantry"
+},
+"Elif": {
+"generation": 14,
+"troop": "Infantry"
+},
+"Estrella": {
+"generation": 15,
+"troop": "Lancer"
+},
+"Flint": {
+"generation": 2,
+"troop": "Infantry"
+},
+"Flora": {
+"generation": 13,
+"troop": "Lancer"
+},
+"Fred": {
+"generation": 9,
+"troop": "Lancer"
+},
+"Freya": {
+"generation": 10,
+"troop": "Lancer"
+},
+"Gatot": {
+"generation": 8,
+"troop": "Infantry"
+},
+"Gisela": {
+"generation": 13,
+"troop": "Infantry"
+},
+"Gordon": {
+"generation": 7,
+"troop": "Lancer"
+},
+"Greg": {
+"generation": 3,
+"troop": "Marksman"
+},
+"Gregory": {
+"generation": 10,
+"troop": "Infantry"
+},
+"Gwen": {
+"generation": 5,
+"troop": "Marksman"
+},
+"Hank": {
+"generation": 15,
+"troop": "Infantry"
+},
+"Hector": {
+"generation": 5,
+"troop": "Infantry"
+},
+"Hendrik": {
+"generation": 8,
+"troop": "Marksman"
+},
+"Hervor": {
+"generation": 12,
+"troop": "Infantry"
+},
+"Jasser": {
+"generation": "SR",
+"troop": "Marksman"
+},
+"Jeronimo": {
+"generation": 1,
+"troop": "Infantry"
+},
+"Jessie": {
+"generation": "SR",
+"troop": "Lancer"
+},
+"Karol": {
+"generation": 12,
+"troop": "Lancer"
+},
+"Ligeia": {
+"generation": 12,
+"troop": "Marksman"
+},
+"Ling Xue": {
+"generation": "SR",
+"troop": "Lancer"
+},
+"Lloyd": {
+"generation": 11,
+"troop": "Lancer"
+},
+"Logan": {
+"generation": 3,
+"troop": "Infantry"
+},
+"Lumak Bokan": {
+"generation": "SR",
+"troop": "Lancer"
+},
+"Lynn": {
+"generation": 4,
+"troop": "Marksman"
+},
+"Magnus": {
+"generation": 9,
+"troop": "Infantry"
+},
+"Mia": {
+"generation": 3,
+"troop": "Lancer"
+},
+"Molly": {
+"generation": 1,
+"troop": "Lancer"
+},
+"Natalia": {
+"generation": 1,
+"troop": "Infantry"
+},
+"Nora": {
+"generation": 5,
+"troop": "Lancer"
+},
+"Patrick": {
+"generation": "SR",
+"troop": "Lancer"
+},
+"Philly": {
+"generation": 2,
+"troop": "Lancer"
+},
+"Reina": {
+"generation": 4,
+"troop": "Lancer"
+},
+"Renee": {
+"generation": 6,
+"troop": "Lancer"
+},
+"Rufus": {
+"generation": 11,
+"troop": "Marksman"
+},
+"Seo-yoon": {
+"generation": "SR",
+"troop": "Marksman"
+},
+"Sergey": {
+"generation": "SR",
+"troop": "Infantry"
+},
+"Sonya": {
+"generation": 8,
+"troop": "Lancer"
+},
+"Viveca": {
+"generation": 15,
+"troop": "Marksman"
+},
+"Vulcanus": {
+"generation": 13,
+"troop": "Marksman"
+},
+"Wayne": {
+"generation": 6,
+"troop": "Marksman"
+},
+"Wu Ming": {
+"generation": 6,
+"troop": "Infantry"
+},
+"Xura": {
+"generation": 9,
+"troop": "Marksman"
+},
+"Zinman": {
+"generation": 1,
+"troop": "Marksman"
+}
+}

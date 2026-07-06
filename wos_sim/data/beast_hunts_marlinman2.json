@@ -1,0 +1,80 @@
+{
+  "description": "Marlinman calibration set 2, 2026-07-03 07:51-08:12 (WOS_BattleReports_Calibration2.pdf, 18 pages). All attacker troops T11 FC10. Families: hero layering (Rufus marksman-hero / Sonya lancer-hero / both) on 100 lancers vs Lv18 Roc; N=300-mixed repeat runs vs Lv25 Elk; marksman-wall test vs Lv25; buff ladder (10% attack item, then +7% atk / +6% def / +6% hp pet skills, cumulative - buffs cannot be removed once on). Baseline account bonuses as in beast_hunts_marlinman.json. own = [losses, injured, lightly, survivors].",
+  "hero_panel_injection": {
+    "rule": "A hero placed in a class slot injects additive points into the Stat Bonuses panel rows of THEIR OWN class only (their hero-card military stats). Other classes and all beast-side columns unchanged. Not present for vacant slots.",
+    "rufus_marksman_deltas_pct_points": {"Attack": 1321.0, "Defense": 1321.0, "Lethality": 597.7, "Health": 597.7},
+    "sonya_lancer_deltas_pct_points": {"Attack": 780.6, "Defense": 780.6, "Lethality": 189.1, "Health": 175.1},
+    "both_heroes": "both class rows boosted simultaneously, values identical to single-hero runs (no interaction)",
+    "note": "Atk/Def deltas identical within hero, Leth/HP independent - matches 4-stat hero military cards. Hero expedition SKILLS do not appear in the panel (Rufus runs: lancer/infantry rows exactly baseline)."
+  },
+  "buff_algebra": {
+    "rule": "Displayed panel = (1 + permanent) x (1 + sum of temporary buffs) - 1. Temporary buffs (buff items + pet skills) stack ADDITIVELY with each other inside one pool; the pool MULTIPLIES the permanent panel. Verified exact (<0.1 pct-point) on 12 independent class-stat readings.",
+    "checks": [
+      {"stat": "Infantry Attack", "perm": 8.498, "buffs": 0.10, "predicted": 944.8, "observed": 944.7},
+      {"stat": "Lancer Attack", "perm": 8.578, "buffs": 0.10, "predicted": 953.6, "observed": 953.5},
+      {"stat": "Marksman Attack", "perm": 8.973, "buffs": 0.10, "predicted": 997.0, "observed": 997.0},
+      {"stat": "Infantry Attack", "perm": 8.498, "buffs": 0.17, "predicted": 1011.3, "observed": 1011.2},
+      {"stat": "Lancer Attack", "perm": 8.578, "buffs": 0.17, "predicted": 1020.6, "observed": 1020.6},
+      {"stat": "Marksman Attack", "perm": 8.973, "buffs": 0.17, "predicted": 1066.8, "observed": 1066.8},
+      {"stat": "Infantry Defense", "perm": 8.861, "buffs": 0.06, "predicted": 945.3, "observed": 945.2},
+      {"stat": "Lancer Defense", "perm": 8.791, "buffs": 0.06, "predicted": 937.8, "observed": 937.8},
+      {"stat": "Marksman Defense", "perm": 9.146, "buffs": 0.06, "predicted": 975.5, "observed": 975.4},
+      {"stat": "Infantry Health", "perm": 6.074, "buffs": 0.06, "predicted": 649.8, "observed": 649.9},
+      {"stat": "Lancer Health", "perm": 6.047, "buffs": 0.06, "predicted": 647.0, "observed": 647.0},
+      {"stat": "Marksman Health", "perm": 6.476, "buffs": 0.06, "predicted": 692.5, "observed": 692.5}
+    ]
+  },
+  "experiments": {
+    "hero_layering_100lancers_vs_Lv18": {
+      "baseline_ref": "beast_hunts_marlinman.json determinism_5x: incapacitated 13/13/10/13/12 (mean 12.2)",
+      "runs": [
+        {"page": 1, "hero": "Rufus", "time": "07:51:52", "own": [0, 1, 7, 92], "kills": 8645, "lancer_troop_procs": {"blade": 7, "gun": [5, 503], "arrows": 9}, "rufus_rows": [1, 1, 9]},
+        {"page": 2, "hero": "Rufus", "time": "07:53:07", "own": [0, 1, 6, 93], "kills": 8645, "lancer_troop_procs": {"blade": 7, "gun": [8, 2350], "arrows": 9}, "rufus_rows": [1, 1, 5]},
+        {"page": 3, "hero": "Rufus", "time": "07:54:59", "own": [0, 1, 6, 93], "kills": 8645, "lancer_troop_procs": {"blade": 8, "gun": [6, 1561], "arrows": 14}, "rufus_rows": [1, 1, 3]},
+        {"page": 4, "hero": "Sonya", "time": "07:52:35", "own": [0, 1, 0, 99], "kills": 8645, "sonya_rows_procs_kills": [[1, 0], [4, 1057], [1, 621], [1, 0], [1, 700], [7, 0]]},
+        {"page": 5, "hero": "Sonya", "time": "07:56:5x", "own": [0, 1, 0, 99], "kills": 8645, "sonya_rows_procs_kills": [[1, 0], [4, 1620], [1, 621], [1, 0], [2, 2078], [1, 0]]},
+        {"page": 6, "hero": "Sonya", "time": "07:54:39", "own": [0, 0, 0, 100], "kills": 8645, "sonya_rows_procs_kills": [[1, 0], [4, 1058], [1, 692], [1, 0], [2, 1761], [5, 0]]},
+        {"page": 7, "hero": "both", "time": "08:04:34", "own": [0, 0, 0, 100], "kills": 8645, "sonya_rows_procs_kills": [[1, 0], [4, 2219], [1, 428], [1, 0], [1, 352], [5, 0]], "rufus_rows": [1, 1, null]},
+        {"page": 8, "hero": "both", "time": "08:03:30", "own": [0, 1, 0, 99], "kills": 8645, "sonya_rows_procs_kills": [[1, 0], [4, 2219], [1, 428], [2, 0], [1, 353], [1, 0]], "rufus_rows": [1, 1, null]},
+        {"page": 9, "hero": "both", "time": "08:02:13", "own": [0, 1, 0, 99], "kills": 8645, "sonya_rows_procs_kills": [[1, 0], [4, 1459], [1, 1169], [1, 0], [4, 0]], "rufus_rows": [1, 1, null]}
+      ],
+      "summary": "incapacitated: none 12.2 avg | Rufus-only 8/7/7 | Sonya-only 1/1/0 | both 0/1/1. Rufus has NO marksman troops here, so his panel injection is inert - his ~40% casualty reduction must come from battle-time hero skills (S1 attack buff on all troops -> faster beast wipe -> shorter exposure). Sonya = panel injection on the actual troops + her skills -> near-zero casualties; 'both' saturates at Sonya's floor."
+    },
+    "repeat_300mixed_vs_Lv25": {
+      "note": "Same fight as beast_ladder page 19 (3,692). All defeats, own [0,3,297,0]. Beast group losses show absorption: beast LANCER group takes 0 losses every run; beast INF group (front) takes most; beast MARKS group losses = our lancers' Ambusher bypass only.",
+      "runs": [
+        {"page": 10, "time": "07:53:15", "beast_losses": 4140, "kills_by_class": [160, 2080, 1900], "beast_group_losses": {"inf": 2656, "lancer": 0, "marks": 1484}, "procs": {"gate": 31, "blade": 12, "gun": [6, 296], "arrows": 5, "marks_volley": 11, "marks_gun_kills": 347, "beast_blade": 6, "beast_marks": 4}},
+        {"page": 11, "time": "07:53:46", "beast_losses": 2961, "kills_by_class": [169, 1566, 1226], "beast_group_losses": {"inf": 2229, "lancer": 0, "marks": 732}, "procs": {"gate": 26, "blade": 7, "gun": [7, 153], "arrows": 2, "marks_volley": 8, "marks_gun": [12, 308], "beast_blade": 18, "beast_marks": 6}},
+        {"page": 12, "time": "07:53:56", "beast_losses": 3553, "kills_by_class": [169, 1274, 2110], "beast_group_losses": {"inf": 3167, "lancer": 0, "marks": 386}, "procs": {"gate": 42, "blade": 4, "gun": [5, 105], "arrows": 6, "marks_volley": 6, "marks_gun": [11, 319], "beast_blade": 7, "beast_marks": 2}},
+        {"page": 13, "time": "07:53:36", "beast_losses": 4390, "kills_by_class": [155, 1983, 2252], "beast_group_losses": {"inf": 2968, "lancer": 0, "marks": 1422}, "procs": {"gate": 28, "blade": 13, "gun": [3, 232], "arrows": 2, "marks_volley": 4, "marks_gun": [14, 485], "beast_blade": 5, "beast_marks": 3}}
+      ],
+      "summary": "5-run set incl. original: 3692/4140/2961/3553/4390 - mean 3747, sd ~16%. Beast-side troop-skill procs now visible (right columns)."
+    },
+    "marksman_wall_600marks_400inf_vs_Lv25": {
+      "page": 14, "time": "07:56:12", "result": "defeat",
+      "own": [0, 3, 997, 0], "beast_losses": 25926,
+      "kills_by_class": {"infantry": 1324, "marksman": 24602},
+      "beast_group_losses": {"inf": 14890, "lancer": 11036, "marks": 0},
+      "procs": {"gate": 63, "marks_volley": 3, "marks_gun": [24, 4671], "beast_blade": 15, "beast_marks_gun": 10},
+      "summary": "HEADLINE: 1,000 troops as 600 marks + 400 inf kill 25,926 vs 8,334 for 1,000 pure lancers (same beast) - protected marksmen ~3.1x lancer output. Beast INF group WIPED then absorption moved to beast LANCER group (11,036) while beast MARKS untouched (no bypass: we had no lancers) - receiving-side absorption order Inf->Lancer->Marks confirmed."
+    },
+    "buff_ladder_300mixed_vs_Lv25": {
+      "note": "Cumulative buffs (cannot deactivate): run1 +10% attack item; run2 +7% attack pet; run3 +6% defense pet; run4 +6% health pet. Baseline-family mean 3,747.",
+      "runs": [
+        {"page": 15, "time": "08:06:33", "buffs": {"attack": 0.10}, "beast_losses": 4391, "kills_by_class": [179, 2057, 2155], "beast_group_losses": {"inf": 3125, "lancer": 0, "marks": 1266}},
+        {"page": 16, "time": "08:08:27", "buffs": {"attack": 0.17}, "beast_losses": 5082, "kills_by_class": [181, 2448, 2453], "beast_group_losses": {"inf": 3445, "lancer": 0, "marks": 1637}},
+        {"page": 17, "time": "08:10:3x", "buffs": {"attack": 0.17, "defense": 0.06}, "beast_losses": 4488, "kills_by_class": [213, 2081, 2194], "beast_group_losses": {"inf": 3488, "lancer": 0, "marks": 1000}},
+        {"page": 18, "time": "08:12:17", "buffs": {"attack": 0.17, "defense": 0.06, "health": 0.06}, "beast_losses": 5132, "kills_by_class": [218, 2096, 2818], "beast_group_losses": {"inf": 3966, "lancer": 0, "marks": 1166}}
+      ],
+      "summary": "Attack +10% -> +17% output; attack +17% -> +36% output vs baseline mean (elasticity ~2, super-proportional = survival-time compounding; but within-run RNG sd 16%, so elasticity is 2 +/- ~1). Def/HP buffs add nothing measurable to OUTPUT here (own casualties pinned at 300 wipe; def/hp affect survival time -> weakly visible)."
+    }
+  },
+  "key_findings": [
+    "BUFF ALGEBRA EXACT: panel = (1+permanent)(1+sum(buffs)) - 1; buff pool internally additive (10%+7%=17%), multiplicative vs permanent pool. 12/12 checks.",
+    "HERO PANEL INJECTION: hero-card military stats appear as additive pct-points in own-class panel rows; hero SKILLS never appear in the panel.",
+    "Sonya (own-class hero) removes ~95% of casualties vs Lv18; Rufus (off-class hero) still removes ~40% via battle-time skills alone.",
+    "Marksmen behind an infantry wall deal ~3.1x pure-lancer damage at equal N.",
+    "Beast lancer group NEVER takes losses while beast inf front stands; beast marks losses = our Ambusher bypass. Receiving-side absorption Inf->Lancer->Marks confirmed via beast inf wipe -> lancer erosion in p14.",
+    "Repeat variance at N=300: sd ~16% of mean (5 runs)."
+  ]
+}

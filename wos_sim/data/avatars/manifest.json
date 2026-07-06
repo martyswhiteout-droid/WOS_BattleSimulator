@@ -1,0 +1,488 @@
+[
+  {
+    "hero": "Elif",
+    "troop_type": "Infantry",
+    "generation": "14",
+    "file": "Elif.jpg",
+    "source_media": "xl/media/image4.jpg",
+    "sha1": "175901b6c09849c4074ff12324f60ccfc81752db",
+    "bytes": 14222
+  },
+  {
+    "hero": "Dominic",
+    "troop_type": "Lancer",
+    "generation": "14",
+    "file": "Dominic.jpg",
+    "source_media": "xl/media/image5.jpg",
+    "sha1": "dce63ddf3f984f71894400a6ce2c504538953033",
+    "bytes": 8767
+  },
+  {
+    "hero": "Cara",
+    "troop_type": "Marksman",
+    "generation": "14",
+    "file": "Cara.jpg",
+    "source_media": "xl/media/image6.jpg",
+    "sha1": "d67fdad44efd9152c35fb2f4e13fb9141934a442",
+    "bytes": 8239
+  },
+  {
+    "hero": "Gisela",
+    "troop_type": "Infantry",
+    "generation": "13",
+    "file": "Gisela.jpg",
+    "source_media": "xl/media/image7.jpg",
+    "sha1": "2af896f3a8f238b09feb739326f35b89d3459432",
+    "bytes": 13151
+  },
+  {
+    "hero": "Flora",
+    "troop_type": "Lancer",
+    "generation": "13",
+    "file": "Flora.jpg",
+    "source_media": "xl/media/image8.jpg",
+    "sha1": "5523abb94319c04bddfc92a513fd426062e82a9e",
+    "bytes": 8909
+  },
+  {
+    "hero": "Vulcanus",
+    "troop_type": "Marksman",
+    "generation": "13",
+    "file": "Vulcanus.jpg",
+    "source_media": "xl/media/image9.jpg",
+    "sha1": "1564ef4ef52e92b2e7e347db37e4142c28349b1b",
+    "bytes": 9584
+  },
+  {
+    "hero": "Hervor",
+    "troop_type": "Infantry",
+    "generation": "12",
+    "file": "Hervor.jpg",
+    "source_media": "xl/media/image10.jpg",
+    "sha1": "0614a45f47d134b1fcfbd5d4cf257539f66acf0b",
+    "bytes": 10586
+  },
+  {
+    "hero": "Karol",
+    "troop_type": "Lancer",
+    "generation": "12",
+    "file": "Karol.jpg",
+    "source_media": "xl/media/image11.jpg",
+    "sha1": "0d553cf6686486941858581416be7ac5ac976f71",
+    "bytes": 8347
+  },
+  {
+    "hero": "Ligeia",
+    "troop_type": "Marksman",
+    "generation": "12",
+    "file": "Ligeia.jpg",
+    "source_media": "xl/media/image12.jpg",
+    "sha1": "7c880a9c118eb4e17b905c0931c9746f521ce60a",
+    "bytes": 19949
+  },
+  {
+    "hero": "Eleonora",
+    "troop_type": "Infantry",
+    "generation": "11",
+    "file": "Eleonora.jpg",
+    "source_media": "xl/media/image13.jpg",
+    "sha1": "9b4aca48ebc8001932bc1d6be00cfce628bda9f9",
+    "bytes": 9753
+  },
+  {
+    "hero": "Lloyd",
+    "troop_type": "Lancer",
+    "generation": "11",
+    "file": "Lloyd.jpg",
+    "source_media": "xl/media/image14.jpg",
+    "sha1": "b7f824e3ae9c6dd3e90a0be74bf601a515fb2a79",
+    "bytes": 20563
+  },
+  {
+    "hero": "Rufus",
+    "troop_type": "Marksman",
+    "generation": "11",
+    "file": "Rufus.jpg",
+    "source_media": "xl/media/image15.jpg",
+    "sha1": "db13e0d70e49f0a256251402bcd4d8014e4dc933",
+    "bytes": 9606
+  },
+  {
+    "hero": "Gregory",
+    "troop_type": "Infantry",
+    "generation": "10",
+    "file": "Gregory.jpg",
+    "source_media": "xl/media/image16.jpg",
+    "sha1": "89bc7740299a0c116de3da88f05c8a379e8147a1",
+    "bytes": 8746
+  },
+  {
+    "hero": "Freya",
+    "troop_type": "Lancer",
+    "generation": "10",
+    "file": "Freya.jpg",
+    "source_media": "xl/media/image17.jpg",
+    "sha1": "c85df219c556223a727add56a8748e4a41ee8f93",
+    "bytes": 8794
+  },
+  {
+    "hero": "Blanchette",
+    "troop_type": "Marksman",
+    "generation": "10",
+    "file": "Blanchette.jpg",
+    "source_media": "xl/media/image18.jpg",
+    "sha1": "cb484212108afb6fd28a5fa613b21f40955bcf3b",
+    "bytes": 11987
+  },
+  {
+    "hero": "Magnus",
+    "troop_type": "Infantry",
+    "generation": "9",
+    "file": "Magnus.jpg",
+    "source_media": "xl/media/image19.jpg",
+    "sha1": "92c155773bc00fb2443b50f5aa45e03a60c84636",
+    "bytes": 8192
+  },
+  {
+    "hero": "Fred",
+    "troop_type": "Lancer",
+    "generation": "9",
+    "file": "Fred.jpg",
+    "source_media": "xl/media/image20.jpg",
+    "sha1": "6e5d589ed3df14d4fd84792d474d90c344fefd94",
+    "bytes": 18726
+  },
+  {
+    "hero": "Xura",
+    "troop_type": "Marksman",
+    "generation": "9",
+    "file": "Xura.jpg",
+    "source_media": "xl/media/image21.jpg",
+    "sha1": "b6c91526c2a37ce19fc7425bba51ee8c023eeb15",
+    "bytes": 23819
+  },
+  {
+    "hero": "Gatot",
+    "troop_type": "Infantry",
+    "generation": "8",
+    "file": "Gatot.jpg",
+    "source_media": "xl/media/image22.jpg",
+    "sha1": "f9b7c354850191ab21d8b71e0db7413a814d7551",
+    "bytes": 14646
+  },
+  {
+    "hero": "Sonya",
+    "troop_type": "Lancer",
+    "generation": "8",
+    "file": "Sonya.jpg",
+    "source_media": "xl/media/image23.jpg",
+    "sha1": "291f39c31d2e700d93a8ab9d8f51c7d28183b2ce",
+    "bytes": 10362
+  },
+  {
+    "hero": "Hendrik",
+    "troop_type": "Marksman",
+    "generation": "8",
+    "file": "Hendrik.jpg",
+    "source_media": "xl/media/image24.jpg",
+    "sha1": "b132371d299e1dbd14b1081a9db61eb6d6f2de19",
+    "bytes": 20907
+  },
+  {
+    "hero": "Edith",
+    "troop_type": "Infantry",
+    "generation": "7",
+    "file": "Edith.png",
+    "source_media": "xl/media/image25.png",
+    "sha1": "448fb374ede39d687c9258c08efb1196760336cd",
+    "bytes": 152914
+  },
+  {
+    "hero": "Bradley",
+    "troop_type": "Marksman",
+    "generation": "7",
+    "file": "Bradley.jpg",
+    "source_media": "xl/media/image26.jpg",
+    "sha1": "93a0d0d0107985fc10858fb5a09be58a918e0e31",
+    "bytes": 17852
+  },
+  {
+    "hero": "Gordon",
+    "troop_type": "Lancer",
+    "generation": "7",
+    "file": "Gordon.jpg",
+    "source_media": "xl/media/image27.jpg",
+    "sha1": "a5c54ac2059347b94a1bf453d3482824940aadff",
+    "bytes": 8317
+  },
+  {
+    "hero": "Wu Ming",
+    "troop_type": "Infantry",
+    "generation": "6",
+    "file": "Wu Ming.jpg",
+    "source_media": "xl/media/image28.jpg",
+    "sha1": "aedbfd0eb087f05b6e019c52d3b03c090a946ac0",
+    "bytes": 9693
+  },
+  {
+    "hero": "Renee",
+    "troop_type": "Lancer",
+    "generation": "6",
+    "file": "Renee.jpg",
+    "source_media": "xl/media/image29.jpg",
+    "sha1": "2de9a616d1a8c4571805923bebfe07c41fff70dc",
+    "bytes": 9448
+  },
+  {
+    "hero": "Wayne",
+    "troop_type": "Marksman",
+    "generation": "6",
+    "file": "Wayne.jpg",
+    "source_media": "xl/media/image30.jpg",
+    "sha1": "8dd18447a81e38ef1666bbddd33ce5cf9060c76d",
+    "bytes": 8403
+  },
+  {
+    "hero": "Hector",
+    "troop_type": "Infantry",
+    "generation": "5",
+    "file": "Hector.jpg",
+    "source_media": "xl/media/image31.jpg",
+    "sha1": "214d8f0b7375447febbd1a406347628b60e12136",
+    "bytes": 8636
+  },
+  {
+    "hero": "Nora",
+    "troop_type": "Lancer",
+    "generation": "5",
+    "file": "Nora.jpg",
+    "source_media": "xl/media/image32.jpg",
+    "sha1": "4a098b365e3b3536447dedd5821be51efb459e94",
+    "bytes": 8044
+  },
+  {
+    "hero": "Gwen",
+    "troop_type": "Marksman",
+    "generation": "5",
+    "file": "Gwen.jpg",
+    "source_media": "xl/media/image33.jpg",
+    "sha1": "94f6ea135b3d71668c0af54fbc05695f5bf8ddea",
+    "bytes": 9427
+  },
+  {
+    "hero": "Ahmose",
+    "troop_type": "Infantry",
+    "generation": "4",
+    "file": "Ahmose.jpg",
+    "source_media": "xl/media/image34.jpg",
+    "sha1": "e86fc78f98357c656a63c0efde824fcd650ee299",
+    "bytes": 8826
+  },
+  {
+    "hero": "Reina",
+    "troop_type": "Lancer",
+    "generation": "4",
+    "file": "Reina.jpg",
+    "source_media": "xl/media/image35.jpg",
+    "sha1": "e2e770791a9e3cda281e07684bd97c0a93090b35",
+    "bytes": 8836
+  },
+  {
+    "hero": "Lynn",
+    "troop_type": "Marksman",
+    "generation": "4",
+    "file": "Lynn.jpg",
+    "source_media": "xl/media/image36.jpg",
+    "sha1": "3f08189d042d06075b6d22f99abf252c1761074f",
+    "bytes": 8585
+  },
+  {
+    "hero": "Logan",
+    "troop_type": "Infantry",
+    "generation": "3",
+    "file": "Logan.jpg",
+    "source_media": "xl/media/image37.jpg",
+    "sha1": "33ae7c4b2828f74a6d9bbe4f5ca6f8c1a7557743",
+    "bytes": 8567
+  },
+  {
+    "hero": "Mia",
+    "troop_type": "Lancer",
+    "generation": "3",
+    "file": "Mia.jpg",
+    "source_media": "xl/media/image38.jpg",
+    "sha1": "aaff609e8faaafd95c3a6a705dc3fb54f9dc3e9f",
+    "bytes": 8483
+  },
+  {
+    "hero": "Greg",
+    "troop_type": "Marksman",
+    "generation": "3",
+    "file": "Greg.jpg",
+    "source_media": "xl/media/image39.jpg",
+    "sha1": "6398b4a63ea6dc06ab161f8736d2bbcf797e1aff",
+    "bytes": 7984
+  },
+  {
+    "hero": "Flint",
+    "troop_type": "Infantry",
+    "generation": "2",
+    "file": "Flint.png",
+    "source_media": "xl/media/image40.png",
+    "sha1": "bd13d32498216ae725d0533cfa5a008edd2603f1",
+    "bytes": 126570
+  },
+  {
+    "hero": "Philly",
+    "troop_type": "Lancer",
+    "generation": "2",
+    "file": "Philly.jpg",
+    "source_media": "xl/media/image41.jpg",
+    "sha1": "2dbe8087112ef17f9701ecbdda7d55d74ed7839e",
+    "bytes": 7848
+  },
+  {
+    "hero": "Alonso",
+    "troop_type": "Marksman",
+    "generation": "2",
+    "file": "Alonso.png",
+    "source_media": "xl/media/image42.png",
+    "sha1": "bbde08458902fb59490afe1f678d33cbd4b1b78d",
+    "bytes": 189401
+  },
+  {
+    "hero": "Jeronimo",
+    "troop_type": "Infantry",
+    "generation": "1",
+    "file": "Jeronimo.jpg",
+    "source_media": "xl/media/image43.jpg",
+    "sha1": "d5426df9467574f71aa56b8294a6f8ee6c88e53a",
+    "bytes": 7293
+  },
+  {
+    "hero": "Natalia",
+    "troop_type": "Infantry",
+    "generation": "1",
+    "file": "Natalia.png",
+    "source_media": "xl/media/image44.png",
+    "sha1": "8a11905b7a77defa89532491f2a4b23e5c3609b1",
+    "bytes": 170964
+  },
+  {
+    "hero": "Zinman",
+    "troop_type": "Marksman",
+    "generation": "1",
+    "file": "Zinman.jpg",
+    "source_media": "xl/media/image45.jpg",
+    "sha1": "30509cdb29ff4851682af0a88b5c880bca53f4af",
+    "bytes": 7895
+  },
+  {
+    "hero": "Molly",
+    "troop_type": "Lancer",
+    "generation": "1",
+    "file": "Molly.jpg",
+    "source_media": "xl/media/image46.jpg",
+    "sha1": "3487516fcc6c64bb6e736c5d7eb996c95340a7c3",
+    "bytes": 7962
+  },
+  {
+    "hero": "Ling Xue",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Ling Xue.jpg",
+    "source_media": "xl/media/image47.jpg",
+    "sha1": "72e6818a34c32174908ed057d386b6ed231bbbe1",
+    "bytes": 17119
+  },
+  {
+    "hero": "Lumak Bokan",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Lumak Bokan.jpg",
+    "source_media": "xl/media/image48.jpg",
+    "sha1": "ad3a1f89df9ddb81b8b78321bdee4e58bfc24ea0",
+    "bytes": 7538
+  },
+  {
+    "hero": "Jasser",
+    "troop_type": "Marksman",
+    "generation": "SR",
+    "file": "Jasser.jpg",
+    "source_media": "xl/media/image49.jpg",
+    "sha1": "753a53d8c468a48e71175b67940f36b9579865d5",
+    "bytes": 9198
+  },
+  {
+    "hero": "Seo-yoon",
+    "troop_type": "Marksman",
+    "generation": "SR",
+    "file": "Seo-yoon.jpg",
+    "source_media": "xl/media/image50.jpg",
+    "sha1": "a3b32a87b74b5386939cc8a204f2eaf2993fb41c",
+    "bytes": 7255
+  },
+  {
+    "hero": "Jessie",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Jessie.png",
+    "source_media": "xl/media/image51.png",
+    "sha1": "66a5c0c8635f6c92ac57830847a19e37801dbc26",
+    "bytes": 139070
+  },
+  {
+    "hero": "Bahiti",
+    "troop_type": "Marksman",
+    "generation": "SR",
+    "file": "Bahiti.jpg",
+    "source_media": "xl/media/image52.jpg",
+    "sha1": "3cca85032eb1d03d8c22e3ab7a812a2553dc8fc8",
+    "bytes": 7670
+  },
+  {
+    "hero": "Patrick",
+    "troop_type": "Lancer",
+    "generation": "SR",
+    "file": "Patrick.jpg",
+    "source_media": "xl/media/image53.jpg",
+    "sha1": "8292adb1a38b91e7e2d8aa34ce849a8f824b384c",
+    "bytes": 6897
+  },
+  {
+    "hero": "Sergey",
+    "troop_type": "Infantry",
+    "generation": "SR",
+    "file": "Sergey.png",
+    "source_media": "xl/media/image54.png",
+    "sha1": "52426ebae82ee386d1d336d925a4900feda50b83",
+    "bytes": 178288
+  },
+  {
+    "hero": "Estrella",
+    "troop_type": "Lancer",
+    "generation": "15",
+    "file": "Estrella.png",
+    "source_media": "E:\\WOS\\Battle Simulator\\prototype\\avatars\\Estrella.png",
+    "sha1": "fe1087bad08937c4a09bf31caf8759fa2a995bd9",
+    "bytes": 198189
+  },
+  {
+    "hero": "Hank",
+    "troop_type": "Infantry",
+    "generation": "15",
+    "file": "Hank.png",
+    "source_media": "E:\\WOS\\Battle Simulator\\prototype\\avatars\\Hank.png",
+    "sha1": "bbeeb6f15e716d673b1ba3d9eb539c130d0fa61e",
+    "bytes": 198142
+  },
+  {
+    "hero": "Viveca",
+    "troop_type": "Marksman",
+    "generation": "15",
+    "file": "Viveca.png",
+    "source_media": "E:\\WOS\\Battle Simulator\\prototype\\avatars\\Viveca.png",
+    "sha1": "bbdcb037079f95230c494c17355275f341954c5a",
+    "bytes": 233343
+  }
+]

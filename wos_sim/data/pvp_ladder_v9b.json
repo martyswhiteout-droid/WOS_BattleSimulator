@@ -1,0 +1,18 @@
+{
+  "description": "FIXED-ATTACKER PvP ladder (2026-07-04, WOS_BattleReports_LadderCalibration_v9b.pdf). Attacker 沃军 FIXED at 10,000 (5,000 T10 inf + 5,000 T6 marks, Bradley only) EVERY battle; defender [RTS]Colonel Muller (T7 inf + T6 marks, 50-50) VARIES 3K/6K/10K/16K. No-proc (deterministic). All attacker VICTORY, defender wiped, attacker MARKS untouched (all attacker casualties = infantry). This is the decisive def_ed probe. 10K rung from v9 (10Kv10K).",
+  "attacker_fixed": {"inf_tier": 10, "inf": 5000, "marks_tier": 6, "marks": 5000, "hero": "Bradley"},
+  "rungs": [
+    {"def_total": 3000,  "def_inf": 1500, "def_marks": 1500, "att_inf_incap": 169,  "att_inf_survivors": 4831, "def_severe": 1050,  "bradley_s3_procs": 2, "turns_est": 8,  "power_loss_att": 4260},
+    {"def_total": 6000,  "def_inf": 3000, "def_marks": 3000, "att_inf_incap": 447,  "att_inf_survivors": 4553, "def_severe": 2100,  "bradley_s3_procs": 3, "turns_est": 12, "power_loss_att": 11147},
+    {"def_total": 10000, "def_inf": 5000, "def_marks": 5000, "att_inf_incap": 966,  "att_inf_survivors": 4034, "def_severe": 3500,  "bradley_s3_procs": 4, "turns_est": 16, "power_loss_att": 24069, "source": "v9 10Kv10K"},
+    {"def_total": 16000, "def_inf": 8000, "def_marks": 8000, "att_inf_incap": 1835, "att_inf_survivors": 3165, "def_severe": 5600,  "bradley_s3_procs": 6, "turns_est": 24, "power_loss_att": 45653}
+  ],
+  "analysis": {
+    "casualty_exponent": "attacker casualties 169/447/966/1835 vs defender 3K/6K/10K/16K -> casualties ~ N_def^1.42 (precise; log-log slope 1.42).",
+    "duration_exponent": "Bradley S3 procs 2/3/4/6 -> ~8/12/16/24 turns -> T ~ N_def^0.66 (coarse, +-4 turns).",
+    "def_ed_naive": "simple model casualties~N_def^(1+def_ed) -> def_ed~0.42 (FRONTAGE-LIMITED, near beast 0.48). CONTRADICTS the v9 symmetric ladder's constant-loss-fraction (which alone implied def_ed~1).",
+    "resolution": "The contradiction means the kernel is a 2-COUNT structure: each side's kills/turn depend on BOTH its own count AND the enemy's count (target-abundance). From casualties(1.42) + duration(0.66): attacker target-abundance b~0.34, defender count-exponent d~0.76. The symmetric ladder's constant fraction is then consistent (self-similar). Single 'def_ed' is too simple; engine needs the 2-count terms.",
+    "verdict": "The frontage/sublinear effect IS real in PvP (defender output sublinear in its count), plus a target-abundance term. This is NEW structure the pvp_engine lacks (currently attacker-linear a=1,b=0; defender N_def^def_ed, e=0)."
+  },
+  "next": "MIRROR ladder to over-determine: FIX the defender (e.g. 6K), VARY the attacker 3K/6K/10K/16K -> isolates the attacker's own exponents (a, e) independently. Then fit the full 2-count kernel to all three ladders."
+}

@@ -1,0 +1,38 @@
+{
+  "description": "MatiBlizzard farm ([M00], weak account) Bradley skill-ladder experiment, 2026-07-03 09:41-09:49 (WOS_BattleReports_CalibrationBradley.pdf, 7 pages). Fixed army 30 troops (10 Inf T10 + 10 Lancer T9 + 10 Marks T9, pre-FC green badges) vs Lv13 Giant Tapir (+18.5%), one battle per config, hero profile screenshot per page. Bradley Lv56 SSR in MARKSMAN slot. Config changes are IRREVERSIBLE (stars/skill levels only go up). own = [losses, injured, lightly, survivors]; every 30-troop run is an own-side wipe [0,3,27,0].",
+  "attacker_panel_no_hero": {
+    "Infantry": {"Attack": 1.674, "Defense": 1.512, "Lethality": 0.952, "Health": 0.970},
+    "Lancer":   {"Attack": 1.569, "Defense": 1.412, "Lethality": 1.040, "Health": 1.081},
+    "Marksman": {"Attack": 1.674, "Defense": 1.522, "Lethality": 0.982, "Health": 1.011}
+  },
+  "bradley_card_expedition_1star": {"Marksman Attack": 1.4469, "Marksman Defense": 1.4469, "Marksman Lethality": 0.0483, "Marksman Health": 0.0483},
+  "panel_marksman_by_config": {
+    "no_hero": [167.4, 152.2, 98.2, 101.1],
+    "1star":   [312.1, 296.9, 103.1, 106.0],
+    "2star":   [374.1, 358.9, 103.1, 106.0],
+    "note": "1-star deltas 144.7/144.7/4.9/4.9 == card values EXACTLY (card screenshot on p2). 2-star card grew to 206.7/206.7/4.9/4.9. Skill upgrades (p3->p6) changed the panel NOT AT ALL - skills are panel-invisible, stars/level grow the card."
+  },
+  "bradley_skill_ladders_ingame_text": {
+    "Veteran's Might (S1)": {"effect": "Attack +X% for all troops", "ladder": [0.05, 0.10, 0.15, 0.20, 0.25]},
+    "Power Shot (S2)": {"effect": "Damage Dealt to Lancers +X%, to Infantry +Y% for all troops", "L2": [0.12, 0.10], "L3": [0.18, 0.15], "ladder_inferred": "Lancers 6%/lv, Infantry 5%/lv"},
+    "Tactical Assistance (S3)": {"effect": "Damage Dealt +X% for all troops for 2 turns every 4 turns", "ladder": [0.06, 0.12, 0.18, 0.24, 0.30], "unlocks_at": "2 stars"}
+  },
+  "battles": [
+    {"page": 1, "time": "09:41:32", "config": "no hero", "beast_losses": 160, "kills_by_class": [7, 72, 81], "beast_group_losses": [23, 95, 0, 0, 8, 34], "procs": {"lancer_blade": 9, "marks_volley": 5}},
+    {"page": 2, "time": "09:42:22", "config": "1star S1L2 S2L2", "beast_losses": 253, "kills_by_class": [11, 72, 170], "beast_group_losses": [44, 175, 0, 0, 6, 28], "procs": {"lancer_blade": 6, "bradley_rows": [1, 1, 7]}},
+    {"page": 3, "time": "09:45:06", "config": "2star +S3L1", "beast_losses": 263, "kills_by_class": [7, 59, 197], "beast_group_losses": [50, 197, 0, 0, 3, 13], "procs": {"lancer_blade": 6, "bradley_rows": [1, 1, 9, 5]}},
+    {"page": 4, "time": "~09:46", "config": "S3L2", "beast_losses": 297, "kills_by_class": [12, 87, 198], "beast_group_losses": [50, 198, 0, 0, 9, 40], "procs": {"lancer_blade": 10, "bradley_rows": [1, 1, 9, 5]}},
+    {"page": 5, "time": "09:47:16", "config": "S1L3", "beast_losses": 287, "kills_by_class": [12, 67, 208], "beast_group_losses": [54, 214, 0, 0, 3, 16], "procs": {"lancer_blade": 7, "bradley_rows": [1, 1, 9, 3]}},
+    {"page": 6, "time": "09:48:22", "config": "S2L3", "beast_losses": 324, "kills_by_class": [13, 95, 216], "beast_group_losses": [54, 217, 0, 0, 10, 43], "procs": {"lancer_blade": 12, "bradley_rows": [1, 1, 9, 4]}},
+    {"page": 7, "time": "09:49:25", "config": "S3L3 + ARMY CHANGED to 120 (100 Inf T10 + 10 L + 10 M)", "result": "VICTORY", "beast_losses": 2460, "own": [0, 1, 45, 74], "kills_by_class": [527, 656, 1277], "beast_group_losses": [150, 590, 170, 690, 170, 690], "procs": {"lancer_blade": 18, "bradley_rows": [1, 1, 16, 4]}}
+  ],
+  "beast_structure_refined": "Lv13 Giant Tapir = SIX groups: Inf 150+590 (Lv4.2), Lancer 170+690 (Lv4.1), Marks 170+690 (Lv4.1) - subgroup split of the known 740/860/860.",
+  "key_findings": [
+    "CARD INJECTION PROVEN BY DOCUMENT: hero-card Expedition stats (+144.69/+144.69/+4.83/+4.83) == panel deltas to the display digit.",
+    "Stars grow the CARD (2star: +206.7); skill levels grow only battle-time effects; panel cleanly separates the two.",
+    "No-hero -> 1star: marksman kills 81 -> 170 (x2.10) - the single strongest clean signal for the attack->damage exponent fit (panel-documented x1.54 eff attack + S2 DD+10% vs infantry front).",
+    "Per-skill-level deltas (3-6% EV) are BELOW single-run RNG noise (lancer kill column swings 59-95 across configs with no lancer-relevant change). Skill-ladder resolution needs ~5 repeats per config.",
+    "Absorption reconfirmed: beast lancer groups take ZERO losses in every 30-troop run; beast marks losses = Ambusher bypass only.",
+    "p7: adding a 100-inf wall turns DEFEAT (324 kills) into VICTORY (2,460 wipe) with 10x fewer proportional casualties - wall economics again."
+  ]
+}

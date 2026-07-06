@@ -1,0 +1,222 @@
+{
+  "report_id": "report_005_Marty_vs_ShiJia",
+  "outcome_friendly": "defeat",
+  "notes": [
+    "Battle 2026-03-29 00:09:11 at #183 X:597 Y:597 - SAME fortress as report_004, 48 minutes later. Marty re-defended with the same (healed) 1,771,872 troops, adjusted composition (more Inf/Lancers, fewer Marks), and lost again - decisively (enemy kept 610,446 survivors).",
+    "Both sides injured share = 0.35001 again.",
+    "Enemy attacker used the SAME captain trio as Bepo in report_004 (Gisela/Flora/Vulcanus) with Jessie x3 + Renee flags - an apparent meta recipe.",
+    "Attacker lancers took ZERO casualties in every block again (450,667 lancers, 100% survived) - 5/5 reports.",
+    "Marty captain block: only 5,360 marksmen in his own march this time.",
+    "Digits reconciled via identities: Little Miku Fans troops badge = 34,387 (not 34,367); Tanjiro troops 27,865; AllMightChaz troops 213,894. Side totals and all kills badges close exactly.",
+    "Flag heroes (Martin): defender joiners Gatot/Ahmose/Nora/Vulcanus; attacker joiners Jessie/Jessie/Renee/Jessie."
+  ],
+  "friendly": {
+    "player": "[RFJ]Marty 191",
+    "state": 191,
+    "coords": "#183 X:596 Y:606",
+    "role": "Defender",
+    "is_friendly": true,
+    "power_loss": -91784864,
+    "troops": 1771872,
+    "losses": 0,
+    "injured": 620168,
+    "lightly_injured": 1151704,
+    "survivors": 0,
+    "composition": {
+      "Infantry": {"share": 0.616415, "fc_badge": 10, "tier_level": 11.0},
+      "Lancer":   {"share": 0.174280, "fc_badge": 10, "tier_level": 11.0},
+      "Marksman": {"share": 0.209305, "fc_badge": 10, "tier_level": 11.0}
+    },
+    "scouted": {
+      "Infantry|Attack": 38.285, "Infantry|Defense": 31.571,
+      "Infantry|Lethality": 32.656, "Infantry|Health": 32.103,
+      "Lancer|Attack": 38.285, "Lancer|Defense": 31.571,
+      "Lancer|Lethality": 32.606, "Lancer|Health": 32.082,
+      "Marksman|Attack": 36.229, "Marksman|Defense": 29.870,
+      "Marksman|Lethality": 31.968, "Marksman|Health": 31.399
+    },
+    "specials": [
+      {"label": "Troops' Attack Bonus", "value": 0.20, "source": "item", "stat": "Attack", "applies_to": "own"},
+      {"label": "Troops' Defense Bonus", "value": 0.20, "source": "item", "stat": "Defense", "applies_to": "own"},
+      {"label": "Troops' Lethality Bonus", "value": 0.20, "source": "item", "stat": "Lethality", "applies_to": "own"},
+      {"label": "Troops' Health Bonus", "value": 0.20, "source": "item", "stat": "Health", "applies_to": "own"},
+      {"label": "Enemy Troops' Attack", "value": -0.20, "source": "item", "stat": "Attack", "applies_to": "enemy"},
+      {"label": "Enemy Troops' Defense", "value": -0.20, "source": "item", "stat": "Defense", "applies_to": "enemy"},
+      {"label": "Defender Troops' Attack", "value": 0.15, "source": "widget", "stat": "Attack", "applies_to": "own"},
+      {"label": "Defender Troops' Lethality", "value": 0.15, "source": "widget", "stat": "Lethality", "applies_to": "own"},
+      {"label": "Defender Troops' Health", "value": 0.15, "source": "widget", "stat": "Health", "applies_to": "own"},
+      {"label": "Enemy Defense Penalty (Pet Skill)", "value": -0.10, "source": "pet", "stat": "Defense", "applies_to": "enemy"},
+      {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -0.05, "source": "pet", "stat": "Lethality", "applies_to": "enemy"},
+      {"label": "Enemy Health Penalty (Pet Skill)", "value": -0.05, "source": "pet", "stat": "Health", "applies_to": "enemy"},
+      {"label": "Attack Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Attack", "applies_to": "own"},
+      {"label": "Defense Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Defense", "applies_to": "own"},
+      {"label": "Lethality Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Lethality", "applies_to": "own"},
+      {"label": "Health Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Health", "applies_to": "own"},
+      {"label": "Title-based Troops' Lethality", "value": 0.20, "source": "title", "stat": "Lethality", "applies_to": "own"}
+    ],
+    "lead_heroes": [
+      {"name": "Gisela", "level": 80, "rows": [
+        {"skill": "Gisela Skill 1", "triggered": 1},
+        {"skill": "Gisela Skill 2 (chance-based, when hit)", "triggered": 16},
+        {"skill": "Gisela Skill 3 (proc)", "triggered": 18, "identified": false},
+        {"skill": "icon:infantry-troop-skill (fiery gate)", "triggered": 65, "identified": false}
+      ]},
+      {"name": "Flora", "level": 80, "rows": [
+        {"skill": "Flora proc skill", "triggered": 46, "identified": false},
+        {"skill": "Flora stats-based", "triggered": 1},
+        {"skill": "Flora Skill 3 (proc)", "triggered": 11, "identified": false},
+        {"skill": "icon:lancer-troop-skill (blue blade)", "triggered": 6, "identified": false},
+        {"skill": "Ambusher (bypass, direct kills)", "triggered": 9, "kills": 34470},
+        {"skill": "icon:extra lancer row", "triggered": 1, "identified": false}
+      ]},
+      {"name": "Ligeia", "level": 80, "rows": [
+        {"skill": "Ligeia Skill 1", "triggered": 1},
+        {"skill": "Ligeia Skill 2 (direct-damage proc)", "triggered": 3, "kills": 9927, "identified": false},
+        {"skill": "Ligeia Skill 3 (proc)", "triggered": 3, "identified": false},
+        {"skill": "icon:marksman-troop-skill", "triggered": 6, "identified": false},
+        {"skill": "icon:marksman-troop-skill (gun, direct kills)", "triggered": 1, "kills": 2690, "identified": false}
+      ]}
+    ],
+    "participants": [
+      {"player": "[RFJ]Marty 191", "is_captain": true, "troops": 165282, "kills": 70673, "power_loss": -8561652, "flag_hero": "Gisela", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 3704, "losses": 0, "injured": 30961, "lightly_injured": 57499, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 66367, "losses": 0, "injured": 25012, "lightly_injured": 46450, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 602, "losses": 0, "injured": 1876, "lightly_injured": 3484, "survivors": 0}]},
+      {"player": "[RFJ]Butcher", "troops": 219995, "kills": 51574, "power_loss": -11396000, "flag_hero": "Gatot", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 6289, "losses": 0, "injured": 52668, "lightly_injured": 97811, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 42659, "losses": 0, "injured": 16079, "lightly_injured": 29859, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 2626, "losses": 0, "injured": 8253, "lightly_injured": 15325, "survivors": 0}]},
+      {"player": "[RFJ]BiattiShrek", "troops": 243708, "kills": 52476, "power_loss": -12624600, "flag_hero": "Ahmose", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 6024, "losses": 0, "injured": 50444, "lightly_injured": 93680, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 40178, "losses": 0, "injured": 15144, "lightly_injured": 28122, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 6274, "losses": 0, "injured": 19712, "lightly_injured": 36606, "survivors": 0}]},
+      {"player": "[RFJ]jurimari", "troops": 198905, "kills": 39732, "power_loss": -10303464, "flag_hero": "Nora", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 5249, "losses": 0, "injured": 43956, "lightly_injured": 81632, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 29903, "losses": 0, "injured": 11271, "lightly_injured": 20930, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 4580, "losses": 0, "injured": 14391, "lightly_injured": 26725, "survivors": 0}]},
+      {"player": "[RFJ]Little Miku Fans", "troops": 34387, "kills": 20465, "power_loss": -1781328, "flag_hero": "Vulcanus", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 540, "losses": 0, "injured": 4526, "lightly_injured": 8404, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 19925, "losses": 0, "injured": 7510, "lightly_injured": 13947, "survivors": 0}]},
+      {"player": "[RFJ]Tanjiro", "troops": 27865, "kills": 5628, "power_loss": -1443740, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 395, "losses": 0, "injured": 3313, "lightly_injured": 6150, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 3617, "losses": 0, "injured": 1364, "lightly_injured": 2531, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 1616, "losses": 0, "injured": 5078, "lightly_injured": 9429, "survivors": 0}]},
+      {"player": "[RFJ]Panwbupa", "troops": 253440, "kills": 55505, "power_loss": -13128340, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 7036, "losses": 0, "injured": 58919, "lightly_injured": 109421, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 44304, "losses": 0, "injured": 16699, "lightly_injured": 31010, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 4165, "losses": 0, "injured": 13087, "lightly_injured": 24304, "survivors": 0}]},
+      {"player": "[RFJ]Lacus Annevy", "troops": 102876, "kills": 8153, "power_loss": -1329036, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 1985, "losses": 0, "injured": 16627, "lightly_injured": 30878, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 6168, "losses": 0, "injured": 19380, "lightly_injured": 35991, "survivors": 0}]},
+      {"player": "[RFJ]Bangkok Saja Boy", "troops": 235872, "kills": 32493, "power_loss": -12218436, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 6803, "losses": 0, "injured": 56973, "lightly_injured": 105806, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 19939, "losses": 0, "injured": 7516, "lightly_injured": 13956, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 5751, "losses": 0, "injured": 18068, "lightly_injured": 33553, "survivors": 0}]},
+      {"player": "[RFJ]AllMightChaz", "troops": 213894, "kills": 33877, "power_loss": -11079872, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 4467, "losses": 0, "injured": 37413, "lightly_injured": 69480, "survivors": 0},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 19874, "losses": 0, "injured": 7491, "lightly_injured": 13911, "survivors": 0},
+        {"troop_type": "Marksman", "fc_badge": 10, "kills": 9536, "losses": 0, "injured": 29960, "lightly_injured": 55639, "survivors": 0}]},
+      {"player": "[RFJ]QingWa Shanks", "troops": 75648, "kills": 3161, "power_loss": -3918596, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 10, "kills": 3161, "losses": 0, "injured": 26477, "lightly_injured": 49171, "survivors": 0}]}
+    ]
+  },
+  "enemy": {
+    "player": "[HED]ShiJia",
+    "state": 183,
+    "coords": "#183 X:604 Y:592",
+    "role": "Attacker",
+    "is_friendly": false,
+    "power_loss": -53547946,
+    "troops": 1678246,
+    "losses": 0,
+    "injured": 373737,
+    "lightly_injured": 694063,
+    "survivors": 610446,
+    "composition": {
+      "Infantry": {"share": 0.511316, "fc_badge": 9, "tier_level": 10.8},
+      "Lancer":   {"share": 0.268535, "fc_badge": 9, "tier_level": 10.9},
+      "Marksman": {"share": 0.220147, "fc_badge": 9, "tier_level": 10.9}
+    },
+    "scouted": {
+      "Infantry|Attack": 36.783, "Infantry|Defense": 30.768,
+      "Infantry|Lethality": 24.772, "Infantry|Health": 24.561,
+      "Lancer|Attack": 36.434, "Lancer|Defense": 29.479,
+      "Lancer|Lethality": 24.022, "Lancer|Health": 23.192,
+      "Marksman|Attack": 36.783, "Marksman|Defense": 30.268,
+      "Marksman|Lethality": 24.311, "Marksman|Health": 24.067
+    },
+    "specials": [
+      {"label": "Troops' Attack Bonus", "value": 0.20, "source": "item", "stat": "Attack", "applies_to": "own"},
+      {"label": "Troops' Defense Bonus", "value": 0.20, "source": "item", "stat": "Defense", "applies_to": "own"},
+      {"label": "Troops' Lethality Bonus", "value": 0.20, "source": "item", "stat": "Lethality", "applies_to": "own"},
+      {"label": "Troops' Health Bonus", "value": 0.20, "source": "item", "stat": "Health", "applies_to": "own"},
+      {"label": "Enemy Troops' Attack", "value": -0.20, "source": "item", "stat": "Attack", "applies_to": "enemy"},
+      {"label": "Enemy Troops' Defense", "value": -0.20, "source": "item", "stat": "Defense", "applies_to": "enemy"},
+      {"label": "Rally Troops' Attack", "value": 0.15, "source": "widget", "stat": "Attack", "applies_to": "own"},
+      {"label": "Enemy Defense Penalty (Pet Skill)", "value": -0.10, "source": "pet", "stat": "Defense", "applies_to": "enemy"},
+      {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -0.05, "source": "pet", "stat": "Lethality", "applies_to": "enemy"},
+      {"label": "Enemy Health Penalty (Pet Skill)", "value": -0.05, "source": "pet", "stat": "Health", "applies_to": "enemy"},
+      {"label": "Attack Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Attack", "applies_to": "own"},
+      {"label": "Defense Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Defense", "applies_to": "own"},
+      {"label": "Lethality Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Lethality", "applies_to": "own"},
+      {"label": "Health Bonus (Pet Skill)", "value": 0.10, "source": "pet", "stat": "Health", "applies_to": "own"}
+    ],
+    "lead_heroes": [
+      {"name": "Gisela", "level": 80, "rows": [
+        {"skill": "Gisela Skill 1", "triggered": 1},
+        {"skill": "Gisela Skill 2 (chance-based, when hit)", "triggered": 19},
+        {"skill": "Gisela Skill 3 (proc)", "triggered": 16, "identified": false},
+        {"skill": "icon:infantry-troop-skill (fiery gate)", "triggered": 34, "identified": false}
+      ]},
+      {"name": "Flora", "level": 80, "rows": [
+        {"skill": "Flora proc skill", "triggered": 65, "identified": false},
+        {"skill": "Flora stats-based", "triggered": 1},
+        {"skill": "Flora Skill 3 (proc)", "triggered": 11, "identified": false},
+        {"skill": "icon:lancer-troop-skill (blue blade)", "triggered": 10, "identified": false},
+        {"skill": "Ambusher (bypass, direct kills)", "triggered": 6, "kills": 13165}
+      ]},
+      {"name": "Vulcanus", "level": 80, "rows": [
+        {"skill": "Vulcanus Skill 1", "triggered": 1},
+        {"skill": "Vulcanus Skill 2 (Target DT proc, direct kills)", "triggered": 20, "kills": 56872},
+        {"skill": "Vulcanus Skill 3 (proc)", "triggered": 15, "identified": false},
+        {"skill": "icon:marksman-troop-skill", "triggered": 4, "identified": false},
+        {"skill": "icon:marksman-troop-skill (gun, direct kills)", "triggered": 13, "kills": 33827, "identified": false}
+      ]}
+    ],
+    "participants": [
+      {"player": "[HED]ShiJia", "is_captain": true, "troops": 261768, "kills": 78857, "power_loss": -7800488, "flag_hero": "Gisela", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 14439, "losses": 0, "injured": 49957, "lightly_injured": 92775, "survivors": 32652},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 59560, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 78530},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 4858, "losses": 0, "injured": 2749, "lightly_injured": 5105, "survivors": 0}]},
+      {"player": "[HED]WoJiuShiZhuanTou", "troops": 180680, "kills": 79992, "power_loss": -6352830, "flag_hero": "Jessie", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 4069, "losses": 0, "injured": 15439, "lightly_injured": 28672, "survivors": 10093},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 24998, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 36136},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 50925, "losses": 0, "injured": 31619, "lightly_injured": 58721, "survivors": 0}]},
+      {"player": "[HED]RED", "troops": 191900, "kills": 64995, "power_loss": -5847924, "flag_hero": "Jessie", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 9476, "losses": 0, "injured": 32796, "lightly_injured": 60905, "survivors": 21439},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 43660, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 57570},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 11859, "losses": 0, "injured": 6717, "lightly_injured": 12473, "survivors": 0}]},
+      {"player": "[HED]Lazy Pig", "troops": 239892, "kills": 78742, "power_loss": -6743768, "flag_hero": "Renee", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 12438, "losses": 0, "injured": 43047, "lightly_injured": 79943, "survivors": 28141},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 61857, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 81564},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 4447, "losses": 0, "injured": 2519, "lightly_injured": 4678, "survivors": 0}]},
+      {"player": "[HED]Pikachuu", "troops": 186040, "kills": 67993, "power_loss": -5759124, "flag_hero": "Jessie", "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 8421, "losses": 0, "injured": 29145, "lightly_injured": 54125, "survivors": 19052},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 42327, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 55812},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 17245, "losses": 0, "injured": 9768, "lightly_injured": 18138, "survivors": 0}]},
+      {"player": "[HED]Ann", "troops": 248880, "kills": 84294, "power_loss": -7584260, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 12290, "losses": 0, "injured": 42534, "lightly_injured": 78989, "survivors": 27805},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 56624, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 74664},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 15380, "losses": 0, "injured": 8711, "lightly_injured": 16177, "survivors": 0}]},
+      {"player": "[HED]BingXue", "troops": 221676, "kills": 128188, "power_loss": -10120832, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 1824, "losses": 0, "injured": 6314, "lightly_injured": 11725, "survivors": 4128},
+        {"troop_type": "Lancer", "fc_badge": 10, "kills": 16576, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 21858},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 193, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 310},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 109595, "losses": 0, "injured": 62070, "lightly_injured": 115271, "survivors": 0}]},
+      {"player": "[HED]LalaBubu", "troops": 147410, "kills": 37107, "power_loss": -3338720, "rows": [
+        {"troop_type": "Infantry", "fc_badge": 9, "kills": 5410, "losses": 0, "injured": 25192, "lightly_injured": 46785, "survivors": 16469},
+        {"troop_type": "Lancer", "fc_badge": 9, "kills": 24927, "losses": 0, "injured": 0, "lightly_injured": 0, "survivors": 44223},
+        {"troop_type": "Marksman", "fc_badge": 9, "kills": 6770, "losses": 0, "injured": 5160, "lightly_injured": 9581, "survivors": 0}]}
+    ]
+  }
+}

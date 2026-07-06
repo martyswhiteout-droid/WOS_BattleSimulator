@@ -1,0 +1,47 @@
+{
+  "description": "MIRROR PvP ladder (2026-07-04, WOS_BattleReports two screenshots). DEFENDER FIXED at 6,000 ([RTS]Colonel Muller: 3,000 T7 inf + 3,000 T6 marks) EVERY battle; ATTACKER (沃草泥的马: T10 inf + T6 marks 50/50, Bradley only) VARIES 3K/6K/10K/16K. Completes the 2-count identification: v9 varied both, v9b fixed the attacker, this fixes the defender -> attacker's own-count exponent is now isolated. All attacker VICTORY, defender fully wiped, attacker MARKS untouched (all attacker casualties = infantry, severe+light).",
+  "defender_fixed": {"inf_tier": 7, "inf": 3000, "marks_tier": 6, "marks": 3000, "hero": "[RTS]Colonel Muller", "total": 6000},
+  "rungs": [
+    {"att_total": 3000,  "att_inf": 1500, "att_marks": 1500, "att_inf_incap": 775, "att_inf_severe": 272, "att_inf_light": 503, "att_inf_survivors": 725,   "def_severe": 2100, "bradley_high_procs": 7, "power_loss_att": 19312, "source": "NEW screenshot B"},
+    {"att_total": 6000,  "att_inf": 3000, "att_marks": 3000, "att_inf_incap": 579, "att_inf_severe": 203, "att_inf_light": 376, "att_inf_survivors": 2421,  "def_severe": 2100, "bradley_high_procs": 4, "power_loss_att": 14413, "source": "v9 6Kv6K (same defender)"},
+    {"att_total": 10000, "att_inf": 5000, "att_marks": 5000, "att_inf_incap": 447, "att_inf_survivors": 4553,                                                "def_severe": 2100, "bradley_high_procs": 3, "power_loss_att": 11147, "source": "v9b 6K rung (same defender)"},
+    {"att_total": 16000, "att_inf": 8000, "att_marks": 8000, "att_inf_incap": 343, "att_inf_severe": 121, "att_inf_light": 222, "att_inf_survivors": 7657, "att_total_survivors": 15657, "def_severe": 2100, "bradley_high_procs": 2, "power_loss_att": 8591,  "source": "NEW screenshot A"},
+    {"att_total": 20000, "att_inf": 10000,"att_marks": 10000,"att_inf_incap": 338, "att_inf_severe": 119, "att_inf_light": 219, "att_inf_survivors": 9662, "att_total_survivors": 19662, "def_severe": 2100, "bradley_high_procs": 2, "power_loss_att": 8449,  "source": "NEW 2026-07-04b, attacker-heavy confirmation rung; kernel pred 329 (-2.7%)"}
+  ],
+  "high_corner_note": "16k->343 and 20k->338 are nearly FLAT where a pure power law keeps declining (kernel: 362, 329). The observed high-attacker curve flattens ~5% above the model - a small real wobble (likely a casualty floor from the opening exchange before the wall fully forms). A 9-point refit barely moves E,K (1.4291->1.4235, 0.1308->0.1305; RMSE 0.0286->0.0280) so the kernel is KEPT as-is; 20k is predicted at -2.7%.",
+  "mixed_composition_point": {
+    "att_total": 7500, "composition": "3000 T10 inf + 1500 T6 lancer + 3000 T6 marks (40/20/40)",
+    "inf_incap": 485, "inf_survivors": 2515, "lancer_marks_untouched": true, "def_severe": 2100,
+    "deterministic": true,
+    "kernel_pred_if_5050_7500": 506, "delta_vs_5050": "-4%",
+    "note": "CORRECTION 2026-07-04 (Martin): the lancers are T6 -> NO Ambusher (unlocks T7) and NO Crystal Lance (Fire-Crystal/T11+) -> this battle is DETERMINISTIC, not stochastic. I had wrongly assumed a proc from the lancer CLASS; the skill panel is ground truth - if a proc isn't in the panel it doesn't exist. So this is a CLEAN deterministic non-50/50 composition point (only composition changed vs the 50/50 ladder; no proc confound). The total-count kernel predicts a same-size 50/50 army at 506; observed mixed = 485, i.e. composition shifts casualties only ~-4%. One point, but clean: the kernel is roughly composition-robust here. Engine proc gating fixed to match (Ambusher tier>=7, Crystal Lance tier>=11)."
+  },
+  "consistency_checks": "ALL PASS. Both new reports internally consistent: survivors = total - severe - light; attacker total kills = defender severe bucket (2100) every battle; defender total kills = attacker SEVERE bucket (272 @3K, 121 @16K); defender wiped (2100 severe + 3900 light = 6000). Attacker marks untouched both.",
+  "key_finding": "The 3K attacker WON despite being outnumbered 2:1 by the 6K T7 defender (I had flagged this as a coin-flip risk) - the T10 tier edge carried it, so all four rungs are clean uncensored attacker-casualty points. No fallback 4K/5K rung needed.",
+  "reduced_form_fit": {
+    "law": "att_inf_incap = k * N_att^u * N_def^v  (N = TOTAL troops each side, composition fixed 50/50)",
+    "k": 0.1068, "u_own": -0.465, "v_enemy": 1.451,
+    "quality": "OLS over all 8 UNIQUE (N_att,N_def) points across v9+v9b+v9c. log-space RMSE 0.026; max abs error 4.6% (16K rung). This single law reconciles all three ladders - the controlled campaign successfully identified the reduced casualty kernel that the 8 uncontrolled whale reports could NOT.",
+    "unique_points": [[4000,3000,244],[6000,6000,579],[10000,10000,966],[10000,3000,169],[10000,6000,447],[10000,16000,1835],[3000,6000,775],[16000,6000,343]]
+  },
+  "duration_proxy": {"law": "bradley_high_procs = m * N_att^s * N_def^t (COARSE integer proxy for turn count)", "s_att": -0.673, "t_def": 0.704, "note": "bigger attacker -> faster wipe -> fewer procs; bigger defender -> longer battle"},
+  "mechanistic_kernel_preliminary": {
+    "form": "each side kill-rate R = c * N_own^p * N_enemy^q (2-count: own-frontage + target-abundance)",
+    "attacker_offense": {"own_p_alpha": 0.67, "enemy_q_beta": 0.30},
+    "defender_offense": {"own_p_gamma": 0.75, "enemy_q_delta": 0.21},
+    "reading": "NEAR-SYMMETRIC: both sides' offense is sublinear in their OWN count (~0.71, frontage-limited) with a target-abundance term (~0.25). Derived by hand from casualty-exponents (u,v) + duration-exponents (s,t); the duration side is COARSE (integer procs) so alpha/gamma/beta/delta carry ~+-0.1 uncertainty. The turn-by-turn engine fit (workflow) will pin these precisely.",
+    "prior_beast_engine": "beast frontage exponent was ed=0.483 (single-sided vs a beast); PvP two-army frontage is ~0.7 - a DIFFERENT regime, as expected."
+  },
+  "confirmed_kernel": {
+    "solved": true,
+    "module": "wos_sim/pvp_kernel.py",
+    "law": "att_inf_incap = N_att - (N_att^E - K*N_def^E)^(1/E)  [TOTAL counts, 50/50 comp]",
+    "E": 1.4291, "K": 0.1308, "ed_per_turn": 1.5709,
+    "per_turn_kernel": "R_side = k * N_own * N_enemy^(ed-1); linear own + target-abundance 0.571 on enemy",
+    "validation": "train log-RMSE 0.0286 (max 5.6%), leave-one-rung-out CV 0.0400 (beats OLS baseline CV 0.0434); params rock-stable across folds. Independently re-derived from scratch -> identical E,K.",
+    "provenance": "derive-pvp-kernel design-panel workflow (2026-07-04): 4 kernel families (asym_power, sym_power, saturation, beast_port) each fit + adversarially leave-one-rung-out CV. WINNER beast_port. asym/sym reduce to the SAME 2-param law (gauge-degenerate; only E and K identifiable from a full-wipe defender - the individual own/enemy exponent split touches only DURATION). saturation degenerated to ~linear-own (W huge), corroborating beast_port.",
+    "regime": "50/50 comp only; T10-attacker-vs-T7-defender only (K bakes in the tier gap); attacker-wins-full-wipe only; no procs. HIGH confidence inside this box.",
+    "not_unified": "enemy_ab=0.571 transplanted onto r6/r8 (~1.6M troops) with the small-battle rate -> scale blowup, mutual-wipe turn 1. pvp_engine keeps its own r6/r8 calibration (enemy_ab defaults 0.0). Two regimes, not yet one kernel."
+  },
+  "status": "SOLVED for its regime. Kernel in wos_sim/pvp_kernel.py, regression-guarded (check #7, ALL GREEN). Open (non-blocking): another attacker-heavy rung for the +5.6% corner; a non-50/50 comp rung; a different tier matchup to test ed universality."
+}
