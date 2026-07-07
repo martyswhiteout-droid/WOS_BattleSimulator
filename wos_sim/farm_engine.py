@@ -27,7 +27,10 @@ Per-class kc absorbs the cross-class flatness (same-tier solo classes kill
 nearly flat despite A*L ratios 1:2.5:3.05 - a class-linked, not
 durability-linked, effect: see STATUS round-2 diagnostic).
 
-Run:  py -m wos_sim.farm_engine [maxfev]
+Run:
+  py -m wos_sim.farm_engine          # quick stored-parameter QA check
+  py -m wos_sim.farm_engine de [n]   # expensive differential evolution fit
+  py -m wos_sim.farm_engine fit      # coordinate-descent fit
 """
 
 from dataclasses import replace
@@ -297,13 +300,25 @@ def fit_de(seed=0, maxiter=60, popsize=18, workers=1):
 
 
 if __name__ == "__main__":
-    import sys
-    mode = sys.argv[1] if len(sys.argv) > 1 else "de"
+    mode = sys.argv[1].lower() if len(sys.argv) > 1 else "check"
     keys = ("ki", "kl", "km", "kb", "ed", "qd", "qh", "cm", "bpow", "so", "pin", "pc")
-    if mode == "de":
-        prm, fun = fit_de(maxiter=int(sys.argv[2]) if len(sys.argv) > 2 else 60)
-        print(f"DE (ed={ED_PIN} cm={CM_PIN} pinned):", flush=True)
-    else:
+    verbose = False
+    if mode in ("check", "best"):
+        prm = dict(BEST_PARAMS)
+        print("BEST_PARAMS check:", flush=True)
+    elif mode == "de" or mode.isdigit():
+        maxiter = int(sys.argv[2]) if mode == "de" and len(sys.argv) > 2 else (
+            int(mode) if mode.isdigit() else 60)
+        prm, fun = fit_de(maxiter=maxiter)
+        verbose = True
+        print(f"DE (ed={ED_PIN} cm={CM_PIN} pinned, maxiter={maxiter}):", flush=True)
+    elif mode == "fit":
         prm = fit()
+        verbose = True
+        print("Coordinate fit:", flush=True)
+    else:
+        raise SystemExit(
+            "usage: py -m wos_sim.farm_engine [check|best|de [maxiter]|fit]"
+        )
     print("BEST:", "  ".join(f"{k}={prm[k]:.4f}" for k in keys), flush=True)
-    print(f"loss={loss(prm, verbose=True):.5f}")
+    print(f"loss={loss(prm, verbose=verbose):.5f}")

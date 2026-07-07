@@ -1,6 +1,6 @@
 # QA Report
 
-Date: 2026-07-06
+Date: 2026-07-07
 
 Verdict: FAIL - not QA-certified yet.
 
@@ -24,8 +24,9 @@ Infantry skips its base attack on those trigger turns, and the Damage Taken
 reduction window starts on the following turn for 2 turns.
 
 Known stale workbook rows are normalized at load time: Cara S1, Vulcanus S3,
-Flora S3, Jeronimo S3, Hector S1, Nora S3, Philly S3, Alonso S1/S2, Lynn S3,
-and Wayne S2. Negative amount rows now keep negative per-proc signs.
+Flora S3, Jeronimo S3, Hector S1/S3, Nora S3, Philly S3, Alonso S1/S2,
+Lynn S1/S3, Rufus S2, Mia S1, Dominic S2, and Wayne S2. Negative amount rows
+now keep negative per-proc signs.
 
 All-class direct-damage rows now emit per receiver class instead of collapsing
 to the captain troop. Specific target rows now lock packets to the requested
@@ -44,6 +45,25 @@ Passive hero stat-skill rows now also apply in the turn engine. This fixes a
 Final Stats regression where DD/DT skills such as Nora S1 applied, but stat
 skills such as Gatot S1 / Hank S1 / Cara S1 were skipped as if already folded
 into the panel.
+Static passive hero stat skills now compose multiplicatively, matching the
+legacy `ModifierBoard.skillmult` rule. Chance-based modifier proc sources are
+now separated from effect receivers: explicit all-troop attack / all-troop
+chance source text rolls independently per live attacking troop class, while
+generic all-troop receiver effects such as Gisela S2/S3, Hector S1, Philly S3,
+and Molly S1 fire once from the captain/global source. Raw widget rows are
+filtered by Rally/Garrison context.
+
+Same-source duration effects now refresh instead of self-stacking, except for
+explicitly stackable Lynn S3. DD/DT multipliers are floored at zero effective
+damage so overlapping debuffs cannot produce negative damage. Lynn S1 is now a
+shared one-turn Damage Dealt buff instead of instant skill packets. Hector S3 is
+now a discrete 25% damage proc instead of a passive EV-folded DD bonus.
+
+Next-attack Damage Taken rows now have a packet path: paired rows such as Gwen
+S2 fold into the direct packet for the struck target class, and DT-only rows
+such as Blanchette S3 emit class-targeted skill packets. Target-text rows for
+Rufus S2, Mia S1, and Dominic S2 now use `EffectReceiver.Target` instead of a
+fixed enemy class.
 
 Damage modifiers are split by damage category: Normal, Skills, and Both. Skill
 only Damage Taken / Damage Dealt rows no longer amplify ordinary base attacks.
@@ -80,13 +100,13 @@ Scored directly from `wos_sim/data/pvp_t12_report_001.json` and
 
 | Anchor | Predicted | Expected | Gate Status |
 |---|---|---|---|
-| report 001 | A wins, 5 turns, mixed survivors: Inf 560,650 / Lan 301,938 / Marks 563,130, total 1,425,719 | A wins, 16 turns, only Marksman survivors, 62,364 | G1/G2/G3 FAIL |
-| report 002 | A wins, 17 turns, mixed survivors: Inf 270,069 / Lan 459,133 / Marks 357,991, total 1,087,192 | A wins, 25 turns, only Lancer survivors, 118,068 | G1/G2/G3 FAIL |
+| report 001 | A wins, 2 turns, mixed survivors: Inf 675,953 / Lan 317,235 / Marks 635,605, total 1,628,793 | A wins, 16 turns, only Marksman survivors, 62,364 | G1/G2/G3 FAIL |
+| report 002 | A wins, 32 turns, mixed survivors: Lan 54,922 / Marks 236,084, total 291,006 | A wins, 25 turns, only Lancer survivors, 118,068 | G1/G2/G3 FAIL |
 
 G4 remains failed because one shared calibrated parameter set has not yet been
-fitted. G5/G7 are now represented by strict anchor tests, but those tests are
-marked expected-failure until calibration and remaining source mismatches are
-resolved.
+fitted. G5/G7 are represented by strict anchor tests, but those tests are
+marked expected-failure and the green unit-test count must not be read as
+anchor acceptance until those expected failures are removed.
 
 ## Structural Gates
 
@@ -96,7 +116,7 @@ G8 honesty: PASS for current engine metadata policy. Turn-engine predictions
 remain uncalibrated and should not be reported as certified.
 
 G10 hero source alignment: FAIL. The live wiki audit completed with 145 checks
-and 19 non-ok rows. See `ENGINE_REBUILD/SKILL_SOURCE_AUDIT.md`.
+and 18 non-ok rows. See `ENGINE_REBUILD/SKILL_SOURCE_AUDIT.md`.
 
 G11 troop rule alignment: PARTIAL. Structural tests cover Crystal Lance no-proc
 behavior, Ambusher proc suppression/forcing, Volley extra attack behavior,
@@ -107,16 +127,19 @@ rules sign-off remains pending.
 
 | Command | Result |
 |---|---|
-| `py -m pytest wos_sim\predictor\tests\test_pvp_turn_engine.py -q -p no:cacheprovider` | 29 passed, 2 expected failures, 9 subtests passed |
-| `py -m pytest wos_sim\predictor\tests -q -p no:cacheprovider` | 72 passed, 8 skipped, 2 expected failures, 9 subtests passed |
+| `py -m pytest wos_sim\predictor\tests\test_pvp_turn_engine.py -q -p no:cacheprovider` | 40 passed, 2 expected failures, 20 subtests passed |
+| `py -m pytest wos_sim\predictor\tests -q -p no:cacheprovider` | 83 passed, 8 skipped, 2 expected failures, 20 subtests passed |
 | `py -m wos_sim.regression` | ALL GREEN |
-| `py -m wos_sim.skill_source_audit --live --output ENGINE_REBUILD\SKILL_SOURCE_AUDIT.md` | FAIL: 145 checks, 19 non-ok |
+| `py -m wos_sim.farm_engine` | PASS: quick BEST_PARAMS check, loss=1.97335 |
+| `py -m wos_sim.skill_source_audit --live --output ENGINE_REBUILD\SKILL_SOURCE_AUDIT.md` | FAIL: 145 checks, 18 non-ok |
 
 ## Remaining Work
 
-1. Resolve or document the 19 live source-audit mismatches.
+1. Resolve or document the 18 live source-audit mismatches.
 2. Persist Hank, Estrella, and Viveca into the physical `Hero Profile` and
    `Hero Skills` workbook tabs without relying on supplemental loader rows.
-3. Calibrate one shared `TURN_PARAMS` set against both T12 anchors.
-4. Re-run G1-G11 and update this report to PASS or CONDITIONAL only if the gate
+3. Rebuild Hector S2's 10-attack / 85% decay mechanic as a discrete runtime
+   effect; it remains represented by stale workbook EV rows.
+4. Calibrate one shared `TURN_PARAMS` set against both T12 anchors.
+5. Re-run G1-G11 and update this report to PASS or CONDITIONAL only if the gate
    evidence supports it.

@@ -84,7 +84,7 @@ def base_strike_damage(src, tgt_front, p, own_front=None, marks_dd=1.0):
     dmg = (p[_KC[src.troop]] * src.n * (src.astat[A] * src.astat[L])
            / (tgt_front.astat[D] ** qd * tgt_front.astat[H] ** qh)
            / interpolated_tier_power(src.tier) ** so
-           * (1.0 + src.dd) * (1.0 + tgt_front.dt))
+           * max(0.0, 1.0 + src.dd) * max(0.0, 1.0 + tgt_front.dt))
     if src.troop == TroopType.MARKSMAN:
         dmg *= marks_dd
     if own_front is not None and src is own_front:

@@ -537,29 +537,29 @@
       ]
     },
     "Gwen": {
-      "source_url": "https://www.whiteoutsurvival.wiki/heroes/gwen/",
+      "source_url": "https://www.whiteoutsurvival.wiki/heroes/gwen-2/",
       "avatar": "avatars/Gwen.jpg",
       "skills": [
         {
           "slot": "skill_1",
-          "name": "Combined Arms",
-          "effect": "Norah is well trained in combined arms tactics, decreasing Damage Taken by 3%/6%/9%/12%/15% and boosting Damage Dealt by 3%/6%/9%/12%/15% for Infantry and Marksman.",
-          "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/hero_skill_icon_500255.png",
-          "icon": "assets/hero_skills/gwen/skill_1.png"
+          "name": "Eagle Vision",
+          "effect": "Gwen provides unfettered vision of ennemy weakpoint during fligths, increasing target's Damage Taken by 5%/10%/15%/20%/25% .",
+          "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/hero_skill_icon_500264.png",
+          "icon": "assets/hero_skills/gwen-2/skill_1.png"
         },
         {
           "slot": "skill_2",
-          "name": "Sneak Strike",
-          "effect": "Norah has an eye for weaknesses, granting her Lancers a 20% chance of dealing 20%/40%/60%/80%/100% extra damage to all enemies on attack.",
-          "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/hero_skill_icon_500254.png",
-          "icon": "assets/hero_skills/gwen/skill_2.png"
+          "name": "Air Dominance",
+          "effect": "Gwen dominates the skies, dealing 20%/40%/60%/80%/100% extra damage once every five attacks and grants 5%/7.5%/10%/12.5%/15% extra damage to the next attack from any source.",
+          "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/hero_skill_icon_500265.png",
+          "icon": "assets/hero_skills/gwen-2/skill_2.png"
         },
         {
           "slot": "skill_3",
-          "name": "Momentum",
-          "effect": "Norah motivates our troops, increasing all troops' Damage Dealt by 5%/10%/15%/20%/25% and reducing their damage taken by 5%/10%/15%/20%/25% every 5 attack made by lancer for 2 turns.",
-          "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/hero_skill_icon_500256.png",
-          "icon": "assets/hero_skills/gwen/skill_3.png"
+          "name": "Blastmaster",
+          "effect": "Gwen equips her troops with grenades, dealing 10%/20%/30%/40%/50% extra damage to all ennemies once every 4 attacks.",
+          "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/09/hero_skill_icon_500266.png",
+          "icon": "assets/hero_skills/gwen-2/skill_3.png"
         }
       ]
     },
@@ -793,22 +793,22 @@
       ]
     },
     "Ling Xue": {
-      "source_url": "https://www.whiteoutsurvival.wiki/heroes/ling-xue/",
+      "source_url": "https://www.whiteoutsurvival.wiki/heroes/ling-shuang/",
       "avatar": "avatars/Ling Xue.jpg",
       "skills": [
         {
           "slot": "skill_1",
-          "name": "Furchteinflößende Aura",
-          "effect": "Der vernichtende Angriff von Ling Xue hat die feindliche Formation zerstört und reduziert den feindlichen Schwadron-Angriff um 4/8/12/16/20% .",
+          "name": "Fearsome Aura",
+          "effect": "Ling Xue's withering assault has disturbed enemies' formation, reducing all enemy Troops' Attack by 4%/8%/12%/16%/20% .",
           "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/12/凌雪5.png",
-          "icon": "assets/hero_skills/ling-xue/skill_1.png"
+          "icon": "assets/hero_skills/ling-shuang/skill_1.png"
         },
         {
           "slot": "skill_2",
-          "name": "Komplette Kontrolle",
-          "effect": "Die praktische, disziplinierte Anweisung von Ling Xue erhöht die Trainingsgeschwindigkeit um 4/8/12/16/20% .",
+          "name": "Total Control",
+          "effect": "Ling Xue's hands-on, disciplined instruction increases Training Speed by 4%/8%/12%/16%/20% .",
           "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2024/12/凌雪2.png",
-          "icon": "assets/hero_skills/ling-xue/skill_2.png"
+          "icon": "assets/hero_skills/ling-shuang/skill_2.png"
         }
       ]
     },
@@ -1022,29 +1022,29 @@
       ]
     },
     "Nora": {
-      "source_url": "https://www.whiteoutsurvival.wiki/heroes/nora/",
+      "source_url": "https://www.whiteoutsurvival.wiki/heroes/gwen/",
       "avatar": "avatars/Nora.jpg",
       "skills": [
         {
           "slot": "skill_1",
-          "name": "Armes Combinées",
-          "effect": "Norah est bien entraînée à la tactique des armes combinées, réduisant les dégâts reçus de 3%/6%/9%/12%/15% et boostant les dégâts infligés par l'Infanterie et les Tireurs de 3%/6%/9%/12%/15%",
+          "name": "Combined Arms",
+          "effect": "Norah is well trained in combined arms tactics, decreasing Damage Taken by 3%/6%/9%/12%/15% and boosting Damage Dealt by 3%/6%/9%/12%/15% for Infantry and Marksman.",
           "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/hero_skill_icon_500255.png",
-          "icon": "assets/hero_skills/nora/skill_1.png"
+          "icon": "assets/hero_skills/gwen/skill_1.png"
         },
         {
           "slot": "skill_2",
-          "name": "Frappe Furtive",
-          "effect": "Norah a l'œil pour repérer les faiblesses, ce qui donne 20 % de chances à ses Lanciers d'infliger 20%/40%/60%/80%/100% de dégâts supplémentaires à tous les ennemis lors d'une attaque.",
+          "name": "Sneak Strike",
+          "effect": "Norah has an eye for weaknesses, granting her Lancers a 20% chance of dealing 20%/40%/60%/80%/100% extra damage to all enemies on attack.",
           "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/hero_skill_icon_500254.png",
-          "icon": "assets/hero_skills/nora/skill_2.png"
+          "icon": "assets/hero_skills/gwen/skill_2.png"
         },
         {
           "slot": "skill_3",
-          "name": "Elan",
-          "effect": "Nora motive ses troupes, augmentant les dégâts infligés par toutes les troupes de 5%/10%/15%/20%/25% , et réduisant les dégâts reçus de 5%/10%/15%/20%/25% toutes les 5 attaques des lanciers pendant 2 tours.",
+          "name": "Momentum",
+          "effect": "Norah motivates our troops, increasing all troops' Damage Dealt by 5%/10%/15%/20%/25% and reducing their damage taken by 5%/10%/15%/20%/25% every 5 attack made by lancer for 2 turns.",
           "source_icon_url": "https://gom-s3-user-avatar.s3.us-west-2.amazonaws.com/wp-content/uploads/2023/10/hero_skill_icon_500256.png",
-          "icon": "assets/hero_skills/nora/skill_3.png"
+          "icon": "assets/hero_skills/gwen/skill_3.png"
         }
       ]
     },

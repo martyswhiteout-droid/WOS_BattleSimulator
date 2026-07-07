@@ -19,7 +19,7 @@
       "name": "Crystal Lance",
       "aliases": ["Crystal Lance I", "Crystal Lance II", "crystal_lance"],
       "troop": "Lancer",
-      "icon": "assets/troop_skills/crystal_lance.png",
+      "icon": "assets/troop_skills/Crystal_lance.png",
       "effect": "Chance to deal double damage."
     },
     "incandescent_field": {
@@ -33,7 +33,7 @@
       "name": "Volley",
       "aliases": ["Volley", "volley"],
       "troop": "Marksman",
-      "icon": "assets/troop_skills/volley.png",
+      "icon": "assets/troop_skills/Volley.png",
       "effect": "Attacks have a chance to strike twice."
     },
     "crystal_gunpowder": {

@@ -30,7 +30,10 @@ FRONTEND_JS = ROOT / "prototype" / "assets" / "skill_display.js"
 TROOP_DISPLAY = DATA_DIR / "troop_skills.json"
 BASE_URL = "https://www.whiteoutsurvival.wiki/heroes/{slug}/"
 SLUG_OVERRIDES = {
+    "Gwen": "gwen-2",
     "Hank": "hank-2",
+    "Ling Xue": "ling-shuang",
+    "Nora": "gwen",
     "Viveca": "viveca-2",
 }
 

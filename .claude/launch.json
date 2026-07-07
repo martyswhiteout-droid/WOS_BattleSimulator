@@ -6,6 +6,12 @@
       "runtimeExecutable": "E:/WOS/Battle Simulator/.venv/Scripts/python.exe",
       "runtimeArgs": ["-m", "uvicorn", "wos_sim.predictor.server:app", "--port", "8137"],
       "port": 8137
+    },
+    {
+      "name": "prototype-verify",
+      "runtimeExecutable": "E:/WOS/Battle Simulator/.venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "uvicorn", "wos_sim.predictor.server:app", "--port", "8138"],
+      "port": 8138
     }
   ]
 }

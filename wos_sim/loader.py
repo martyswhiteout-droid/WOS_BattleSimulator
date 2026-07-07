@@ -455,6 +455,16 @@ def _normalize_skill_effect(effect: SkillEffect) -> SkillEffect:
         e = replace(e, amount=-abs(e.amount),
                     amount_per_proc=-abs(e.amount_per_proc or e.amount))
 
+    if e.hero == "Hector" and e.source == SkillSource.SKILL_3:
+        e = replace(
+            e,
+            mechanic=SkillMechanic.CHANCE_BASED,
+            probability=0.25,
+            amount=0.50,
+            amount_per_proc=2.0,
+            category=SkillCategory.DAMAGE_DEALT,
+        )
+
     if (e.hero == "Nora" and e.source == SkillSource.SKILL_3
             and e.attribute == SkillAttribute.DAMAGE_TAKEN):
         e = replace(e, amount=-abs(e.amount),
@@ -497,14 +507,51 @@ def _normalize_skill_effect(effect: SkillEffect) -> SkillEffect:
                     duration_unit=TriggerUnit.TURNS,
                     category=SkillCategory.DAMAGE_DEALT)
 
+    if e.hero == "Lynn" and e.source == SkillSource.SKILL_1:
+        e = replace(
+            e,
+            mechanic=SkillMechanic.TURN_BASED,
+            frequency=1.0,
+            trigger_unit=None,
+            duration=1.0,
+            duration_unit=TriggerUnit.TURNS,
+            category=SkillCategory.DAMAGE_DEALT,
+        )
+
     if e.hero == "Lynn" and e.source == SkillSource.SKILL_3:
         e = replace(e, trigger_unit=TriggerUnit.STRIKES,
                     duration=None, duration_unit=None)
+
+    if (e.hero == "Rufus" and e.source == SkillSource.SKILL_2
+            and e.attribute == SkillAttribute.DAMAGE_TAKEN
+            and e.side == AffectingSide.FOE):
+        e = replace(e, receiver=EffectReceiver.TARGET, specific_target="Target")
+
+    if (e.hero == "Dominic" and e.source == SkillSource.SKILL_2
+            and e.attribute == SkillAttribute.DAMAGE_TAKEN
+            and e.side == AffectingSide.FOE):
+        e = replace(e, receiver=EffectReceiver.TARGET, specific_target="Target")
+
+    if (e.hero == "Mia" and e.source == SkillSource.SKILL_1
+            and e.attribute == SkillAttribute.DAMAGE_TAKEN
+            and e.side == AffectingSide.FOE):
+        if e.receiver == EffectReceiver.INFANTRY:
+            e = replace(e, receiver=EffectReceiver.TARGET, specific_target="Target")
 
     if e.hero == "Wayne" and e.source == SkillSource.SKILL_2:
         e = replace(e, trigger_unit=TriggerUnit.STRIKES)
 
     return e
+
+
+def _should_skip_skill_effect(effect: SkillEffect) -> bool:
+    return (
+        effect.hero == "Mia"
+        and effect.source == SkillSource.SKILL_1
+        and effect.attribute == SkillAttribute.DAMAGE_TAKEN
+        and effect.side == AffectingSide.FOE
+        and effect.receiver != EffectReceiver.TARGET
+    )
 
 
 def _skill_effect_from_values(row) -> SkillEffect:
@@ -606,7 +653,7 @@ def load_skill_book(path: Path | str = WORKBOOK_PATH) -> SkillBook:
         name = _HERO_NAME_FIXES.get(str(name).strip(), str(name).strip())
         source = _SKILL_SOURCE_FIXES.get(str(source).strip(), str(source).strip())
         category = category or _infer_skill_category(str(attribute).strip())
-        book.add(_normalize_skill_effect(SkillEffect(
+        effect = _normalize_skill_effect(SkillEffect(
             hero=name,
             source=SkillSource(source),
             context=CombatContext(context),
@@ -627,11 +674,15 @@ def load_skill_book(path: Path | str = WORKBOOK_PATH) -> SkillBook:
             duration_unit=None if duration_unit is None
                           else TriggerUnit(str(duration_unit).strip()),
             multiplier=multiplier,
-        )))
+        ))
+        if not _should_skip_skill_effect(effect):
+            book.add(effect)
     loaded = set(book.heroes())
     for row in _SUPPLEMENTAL_SKILL_ROWS:
         if row[0] not in loaded:
-            book.add(_skill_effect_from_values(row))
+            effect = _skill_effect_from_values(row)
+            if not _should_skip_skill_effect(effect):
+                book.add(effect)
     _add_display_only_skills(book)
     _SKILL_BOOK_CACHE.clear()              # keep only the latest workbook version
     _SKILL_BOOK_CACHE[key] = book

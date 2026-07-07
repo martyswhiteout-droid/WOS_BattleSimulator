@@ -202,7 +202,7 @@ class TestCatalogCoverage(unittest.TestCase):
         ), apply_legacy_skills=False)
         report = catalog_classification_report(con)
         self.assertEqual(report["unclassified"], [])
-        self.assertGreaterEqual(report["widgets"], 6)
+        self.assertGreaterEqual(report["widgets"], 3)
         self.assertGreaterEqual(report["troop_skills"], 12)
         self.assertEqual(report["t12"], 6)
 
@@ -477,6 +477,12 @@ class TestCatalogCoverage(unittest.TestCase):
                     joiners=["Gatot"], widgets_in_panel=True)
         enemy = _side("garrison", leads={"Infantry": "", "Lancer": "", "Marksman": ""},
                       joiners=[], widgets_in_panel=True)
+        low_quality = {
+            cls: ClassQuality(tier=6, fc=0, t12_stack=0)
+            for cls in ("Infantry", "Lancer", "Marksman")
+        }
+        own.quality = low_quality
+        enemy.quality = low_quality
         own.panel_is_final = True
         enemy.panel_is_final = True
         con = construct.build(Matchup(own, enemy), apply_legacy_skills=False)
@@ -497,6 +503,7 @@ class TestCatalogCoverage(unittest.TestCase):
             widgets_in_panel=True,
         )
         own_no_joiner.panel_is_final = True
+        own_no_joiner.quality = low_quality
         base_con = construct.build(Matchup(own_no_joiner, enemy),
                                    apply_legacy_skills=False)
         base_skills = skill_defs_from_matchup(base_con, {"engine": "turn"})
@@ -511,7 +518,8 @@ class TestCatalogCoverage(unittest.TestCase):
         )
         self.assertAlmostEqual(
             mods.stat[("attacker", TroopType.INFANTRY, StatType.DEFENSE)],
-            base_mods.stat[("attacker", TroopType.INFANTRY, StatType.DEFENSE)] + 0.30,
+            (1.0 + base_mods.stat[("attacker", TroopType.INFANTRY, StatType.DEFENSE)])
+            * 1.30 - 1.0,
         )
 
     def test_qa_named_static_stat_skills_emit_turn_engine_mods(self):
@@ -537,6 +545,257 @@ class TestCatalogCoverage(unittest.TestCase):
                                          "captain", troop, 0)
                 mods = pvp_turn_engine._passive_mods([skill], stacks, stacks)
                 self.assertAlmostEqual(mods.stat[(side, troop, stat)], expected)
+
+    def test_static_hero_stat_skills_stack_multiplicatively(self):
+        book = load_skill_book()
+        stacks = {
+            troop: TypeStack(troop, 12, 100_000, 100_000,
+                             {A: 100.0, D: 100.0, L: 100.0, H: 100.0}, 100.0)
+            for troop in TroopType
+        }
+        skills = []
+        for hero, source in (
+            ("Seo-yoon", SkillSource.SKILL_1),
+            ("Gregory", SkillSource.SKILL_1),
+            ("Jeronimo", SkillSource.SKILL_2),
+        ):
+            rows = tuple(row for row in book.for_hero(hero) if row.source == source)
+            skills.append(_make_hero_skill(hero, source, rows, "attacker",
+                                           "captain", TroopType.INFANTRY, len(skills)))
+        mods = pvp_turn_engine._passive_mods(skills, stacks, stacks)
+        factor = 1.0 + mods.stat[("attacker", TroopType.INFANTRY, StatType.ATTACK)]
+        self.assertAlmostEqual(factor, 1.25 * 1.15 * 1.25)
+
+    def test_all_troop_attack_chance_modifiers_roll_per_attack(self):
+        class SeqRng:
+            def __init__(self, values):
+                self.values = iter(values)
+
+            def random(self):
+                return next(self.values)
+
+        book = load_skill_book()
+        stacks = {troop: TypeStack(troop, 12, 100_000, 100_000, {}, 100)
+                  for troop in TroopType}
+        cases = [
+            ("Alonso", SkillSource.SKILL_2, TroopType.MARKSMAN),
+            ("Greg", SkillSource.SKILL_2, TroopType.INFANTRY),
+            ("Rufus", SkillSource.SKILL_3, TroopType.MARKSMAN),
+        ]
+        for hero, source, troop in cases:
+            with self.subTest(hero=hero, source=source.value):
+                rows = tuple(row for row in book.for_hero(hero) if row.source == source)
+                skill = _make_hero_skill(hero, source, rows, "attacker",
+                                         "captain", troop, 0)
+                self.assertEqual(len(_trigger_count_for_skill(
+                    skill, 1, stacks, 0, SeqRng([0.1, 0.9, 0.1]), {})), 2)
+                self.assertEqual(len(_trigger_count_for_skill(
+                    skill, 1, stacks, 0, SeqRng([0.9, 0.9, 0.9]), {})), 0)
+                self.assertEqual(len(_trigger_count_for_skill(
+                    skill, 1, stacks, 0, SeqRng([0.1, 0.1, 0.1]), {})), 3)
+
+    def test_all_troop_effect_receivers_do_not_imply_all_troop_triggers(self):
+        class SeqRng:
+            def __init__(self, values):
+                self.values = iter(values)
+
+            def random(self):
+                return next(self.values)
+
+        book = load_skill_book()
+        stacks = {troop: TypeStack(troop, 12, 100_000, 100_000, {}, 100)
+                  for troop in TroopType}
+        cases = [
+            ("Gisela", SkillSource.SKILL_2, TroopType.INFANTRY),
+            ("Gisela", SkillSource.SKILL_3, TroopType.INFANTRY),
+            ("Hector", SkillSource.SKILL_1, TroopType.INFANTRY),
+            ("Philly", SkillSource.SKILL_3, TroopType.LANCER),
+            ("Molly", SkillSource.SKILL_1, TroopType.INFANTRY),
+        ]
+        for hero, source, troop in cases:
+            with self.subTest(hero=hero, source=source.value):
+                rows = tuple(row for row in book.for_hero(hero) if row.source == source)
+                skill = _make_hero_skill(hero, source, rows, "attacker",
+                                         "captain", troop, 0)
+                self.assertEqual(
+                    _trigger_count_for_skill(skill, 1, stacks, 0, SeqRng([0.1]), {}),
+                    [troop],
+                )
+                self.assertEqual(
+                    _trigger_count_for_skill(skill, 1, stacks, 0, SeqRng([0.9]), {}),
+                    [],
+                )
+
+    def test_same_skill_duration_reproc_refreshes_instead_of_stacking(self):
+        book = load_skill_book()
+        rows = tuple(row for row in book.for_hero("Greg")
+                     if row.source == SkillSource.SKILL_2)
+        skill = _make_hero_skill("Greg", SkillSource.SKILL_2, rows,
+                                 "attacker", "captain", TroopType.INFANTRY, 0)
+        stacks = {troop: TypeStack(troop, 12, 100_000, 100_000, {}, 100)
+                  for troop in TroopType}
+        active = []
+        pvp_turn_engine._add_active_effect(
+            active, pvp_turn_engine._ActiveEffect(skill, 1, 2))
+        pvp_turn_engine._add_active_effect(
+            active, pvp_turn_engine._ActiveEffect(skill, 2, 3))
+        self.assertEqual(len(active), 1)
+        self.assertEqual(active[0].expires_after, 3)
+        mods = pvp_turn_engine._build_mods(
+            pvp_turn_engine._Mods(), active, 2, stacks, stacks)
+        self.assertAlmostEqual(
+            mods.normal_dd[("defender", TroopType.INFANTRY)],
+            -0.50,
+        )
+
+    def test_damage_modifier_view_is_floored_at_zero_multiplier(self):
+        stack = TypeStack(TroopType.INFANTRY, 12, 100_000, 100_000,
+                          {A: 100.0, D: 100.0, L: 100.0, H: 100.0}, 100.0)
+        mods = pvp_turn_engine._Mods()
+        mods.add_dd("attacker", TroopType.INFANTRY, -1.5)
+        view = pvp_turn_engine._stack_view(stack, "attacker", mods)
+        self.assertEqual(view.dd, -1.0)
+
+    def test_lynn_skill_1_is_one_shared_damage_dealt_buff_not_damage_packets(self):
+        class SeqRng:
+            def __init__(self, values):
+                self.values = iter(values)
+
+            def random(self):
+                return next(self.values)
+
+        book = load_skill_book()
+        rows = tuple(row for row in book.for_hero("Lynn")
+                     if row.source == SkillSource.SKILL_1)
+        skill = _make_hero_skill("Lynn", SkillSource.SKILL_1, rows,
+                                 "attacker", "captain", TroopType.MARKSMAN, 0)
+        stacks = {troop: TypeStack(troop, 12, 100_000, 100_000, {}, 100)
+                  for troop in TroopType}
+        self.assertFalse(skill.deals_damage)
+        self.assertEqual(
+            _trigger_count_for_skill(skill, 1, stacks, 0, SeqRng([0.1]), {}),
+            [TroopType.MARKSMAN],
+        )
+        active = [pvp_turn_engine._ActiveEffect(skill, 1, 1)]
+        mods = pvp_turn_engine._build_mods(
+            pvp_turn_engine._Mods(), active, 1, stacks, stacks)
+        self.assertAlmostEqual(
+            mods.normal_dd[("attacker", TroopType.INFANTRY)],
+            0.50,
+        )
+
+    def test_next_attack_damage_taken_rows_are_routed_to_packets(self):
+        book = load_skill_book()
+        rows = tuple(row for row in book.for_hero("Blanchette")
+                     if row.source == SkillSource.SKILL_3)
+        skill = _make_hero_skill("Blanchette", SkillSource.SKILL_3, rows,
+                                 "attacker", "captain", TroopType.MARKSMAN, 0)
+        astat = {A: 100.0, D: 100.0, L: 100.0, H: 100.0}
+        own = {troop: TypeStack(troop, 12, 100_000, 100_000, dict(astat), 100)
+               for troop in TroopType}
+        enemy = {troop: TypeStack(troop, 12, 100_000, 100_000, dict(astat), 100)
+                 for troop in TroopType}
+        packets = pvp_turn_engine._skill_packets(
+            skill, [TroopType.MARKSMAN], own, enemy, pvp_turn_engine._Mods(),
+            dict(pvp_turn_engine.BEST_PARAMS), 1.0, 1.0, 1.0, 1.0)
+        self.assertEqual(
+            {pkt.target_types for pkt in packets},
+            {(TroopType.LANCER,), (TroopType.MARKSMAN,)},
+        )
+        self.assertTrue(all(pkt.magnitude > 0 for pkt in packets))
+
+    def test_non_target_next_attack_dt_rows_fold_into_direct_packets(self):
+        book = load_skill_book()
+        rows = tuple(row for row in book.for_hero("Gwen")
+                     if row.source == SkillSource.SKILL_2)
+        no_dt_rows = tuple(row for row in rows
+                           if not pvp_turn_engine._is_next_attack_dt_row(row))
+        skill = _make_hero_skill("Gwen", SkillSource.SKILL_2, rows,
+                                 "attacker", "captain", TroopType.LANCER, 0)
+        no_dt_skill = _make_hero_skill("Gwen", SkillSource.SKILL_2, no_dt_rows,
+                                       "attacker", "captain", TroopType.LANCER, 0)
+        astat = {A: 100.0, D: 100.0, L: 100.0, H: 100.0}
+        own = {troop: TypeStack(troop, 12, 100_000, 100_000, dict(astat), 100)
+               for troop in TroopType}
+        enemy = {troop: TypeStack(troop, 12, 100_000, 100_000, dict(astat), 100)
+                 for troop in TroopType}
+        params = dict(pvp_turn_engine.BEST_PARAMS)
+        with_dt = pvp_turn_engine._skill_packets(
+            skill, [TroopType.INFANTRY], own, enemy, pvp_turn_engine._Mods(),
+            params, 1.0, 1.0, 1.0, 1.0)
+        without_dt = pvp_turn_engine._skill_packets(
+            no_dt_skill, [TroopType.INFANTRY], own, enemy, pvp_turn_engine._Mods(),
+            params, 1.0, 1.0, 1.0, 1.0)
+        self.assertAlmostEqual(
+            sum(pkt.magnitude for pkt in with_dt)
+            / sum(pkt.magnitude for pkt in without_dt),
+            1.15,
+        )
+
+    def test_target_text_rows_are_normalized_to_target_receiver(self):
+        book = load_skill_book()
+        cases = [
+            ("Rufus", SkillSource.SKILL_2),
+            ("Mia", SkillSource.SKILL_1),
+            ("Dominic", SkillSource.SKILL_2),
+        ]
+        for hero, source in cases:
+            with self.subTest(hero=hero, source=source.value):
+                rows = tuple(row for row in book.for_hero(hero) if row.source == source)
+                target_rows = [
+                    row for row in rows
+                    if row.attribute == SkillAttribute.DAMAGE_TAKEN
+                    and row.side == AffectingSide.FOE
+                    and row.amount_per_proc != 0
+                ]
+                self.assertEqual(len(target_rows), 1)
+                self.assertEqual(target_rows[0].receiver, EffectReceiver.TARGET)
+
+    def test_hector_skill_3_is_discrete_damage_proc_not_passive_ev(self):
+        class SeqRng:
+            def __init__(self, values):
+                self.values = iter(values)
+
+            def random(self):
+                return next(self.values)
+
+        book = load_skill_book()
+        rows = tuple(row for row in book.for_hero("Hector")
+                     if row.source == SkillSource.SKILL_3)
+        skill = _make_hero_skill("Hector", SkillSource.SKILL_3, rows,
+                                 "attacker", "captain", TroopType.INFANTRY, 0)
+        stacks = {troop: TypeStack(troop, 12, 100_000, 100_000, {}, 100)
+                  for troop in TroopType}
+        self.assertFalse(skill.is_passive)
+        self.assertTrue(skill.deals_damage)
+        self.assertEqual(len(_trigger_count_for_skill(
+            skill, 1, stacks, 0, SeqRng([0.1, 0.9, 0.1]), {})), 2)
+
+    def test_raw_widget_rows_are_filtered_by_battle_context(self):
+        def widget_slots(role, hero):
+            side = SideProfile(
+                role=role,
+                troops_total=1000,
+                panel=_panel(),
+                formation={"Infantry": 1.0, "Lancer": 0.0, "Marksman": 0.0},
+                lead_heroes={"Infantry": hero},
+                widgets_in_panel=False,
+            )
+            foe = SideProfile(
+                role="garrison" if role == "rally" else "rally",
+                troops_total=1000,
+                panel=_panel(),
+                formation={"Infantry": 1.0, "Lancer": 0.0, "Marksman": 0.0},
+                widgets_in_panel=False,
+            )
+            con = construct.build(Matchup(side, foe), apply_legacy_skills=False)
+            return [skill for skill in skill_defs_from_matchup(con, {"engine": "turn"})
+                    if skill.owner == hero and skill.slot == "widget"]
+
+        self.assertEqual(widget_slots("rally", "Elif"), [])
+        self.assertEqual(len(widget_slots("garrison", "Elif")), 1)
+        self.assertEqual(len(widget_slots("rally", "Vulcanus")), 1)
+        self.assertEqual(widget_slots("garrison", "Vulcanus"), [])
 
     def test_next_attack_duration_rows_are_not_whole_turn_mods(self):
         book = load_skill_book()
@@ -726,7 +985,12 @@ class TestTurnEngineIntegration(unittest.TestCase):
         self.assertEqual(len(elif_rows), 1)
         slots = {skill["slot"] for skill in elif_rows[0]["skills"]
                  if skill.get("source") == "hero"}
-        self.assertGreaterEqual(slots, {"skill_1", "skill_2", "skill_3", "widget"})
+        self.assertGreaterEqual(slots, {"skill_1", "skill_2", "skill_3"})
+        self.assertNotIn("widget", slots)
+        own_slots = [skill["slot"] for row in fc.skill_telemetry["own"]
+                     if row["kind"] == "hero"
+                     for skill in row["skills"]]
+        self.assertIn("widget", own_slots)
 
     def test_t12_anchor_jsons_are_scoreable_from_report_files(self):
         for filename in ("pvp_t12_report_001.json", "pvp_t12_report_002.json"):

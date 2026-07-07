@@ -7,14 +7,19 @@ Telemetry is written from the same packet applications that remove troops.
 """
 from __future__ import annotations
 
+import json
 import random
+import re
 from collections import defaultdict
 from dataclasses import dataclass, field, replace
+from functools import lru_cache
+from pathlib import Path
 from typing import Iterable
 
 from wos_sim.loader import load_skill_book
 from wos_sim.models import (
     AffectingSide,
+    CombatContext,
     DamageCategory,
     EffectReceiver,
     SkillAttribute,
@@ -65,6 +70,12 @@ TURN_PARAMS = {
     "ambush_frac": 1.0,
     "cara_burst": 1.0,
 }
+SKILL_DISPLAY_PATH = Path(__file__).resolve().parent / "data" / "skill_display" / "hero_skills.json"
+_ALL_TROOP_ATTACK_RE = re.compile(r"\ball\s+troops?\s+(?:normal\s+)?attacks?\b")
+_ALL_TROOPS_HAVE_CHANCE_RE = re.compile(
+    r"\b(?:grant(?:s|ing)?|give|gives)\s+all\s+troops?\s+a\s+(?:\d+\s+)*\d+\s+chance\b"
+    r"|\ball\s+troops?\s+have\s+a\s+(?:\d+\s+)*\d+\s+chance\b"
+)
 
 
 @dataclass
@@ -143,6 +154,10 @@ class _Mods:
 
     def add_stat(self, side: str, troop: TroopType, stat: StatType, value: float):
         self.stat[(side, troop, stat)] = self.stat.get((side, troop, stat), 0.0) + value
+
+    def mul_stat(self, side: str, troop: TroopType, stat: StatType, value: float):
+        key = (side, troop, stat)
+        self.stat[key] = (1.0 + self.stat.get(key, 0.0)) * (1.0 + value) - 1.0
 
     def add_dd(self, side: str, troop: TroopType, value: float,
                category: DamageCategory = DamageCategory.BOTH):
@@ -264,6 +279,8 @@ def _row_is_direct_damage_for_skill(row: SkillEffect,
                                     rows: Iterable[SkillEffect]) -> bool:
     if row.hero == "Renee" and row.source in (SkillSource.SKILL_2, SkillSource.SKILL_3):
         return False
+    if row.hero == "Lynn" and row.source == SkillSource.SKILL_1:
+        return False
     if not _row_is_direct_damage(row):
         return False
     rows = tuple(rows)
@@ -330,6 +347,37 @@ def _unique_troops(troops: Iterable[TroopType | None]) -> list[TroopType]:
     return out
 
 
+@lru_cache(maxsize=1)
+def _display_skill_effects() -> dict[tuple[str, str], str]:
+    try:
+        display = json.loads(SKILL_DISPLAY_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    out = {}
+    for hero, record in (display.get("heroes") or {}).items():
+        for skill in record.get("skills") or []:
+            slot = skill.get("slot")
+            effect = skill.get("effect")
+            if slot and effect:
+                out[(str(hero).casefold(), str(slot))] = str(effect)
+    return out
+
+
+def _normalized_skill_effect_text(skill: SkillDef) -> str:
+    text = _display_skill_effects().get((skill.owner.casefold(), skill.slot), "")
+    text = text.casefold().replace("'", "").replace("’", "").replace("â€™", "")
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _text_says_each_troop_can_proc(skill: SkillDef) -> bool:
+    text = _normalized_skill_effect_text(skill)
+    return bool(
+        _ALL_TROOP_ATTACK_RE.search(text)
+        or _ALL_TROOPS_HAVE_CHANCE_RE.search(text)
+    )
+
+
 def _direct_trigger_troops(skill: SkillDef) -> list[TroopType]:
     rows = tuple(skill.rows)
     return _unique_troops(
@@ -339,13 +387,15 @@ def _direct_trigger_troops(skill: SkillDef) -> list[TroopType]:
     )
 
 
-def _modifier_trigger_troops(skill: SkillDef) -> list[TroopType]:
+def _modifier_trigger_troops(skill: SkillDef) -> list[TroopType | None]:
+    if _skill_probability(skill) < 1.0 and _text_says_each_troop_can_proc(skill):
+        return list(ORDER)
     if skill.troop is not None:
         return [skill.troop]
-    return _unique_troops(_row_troop(row) for row in skill.rows)
+    return [None]
 
 
-def _trigger_candidate_troops(skill: SkillDef) -> list[TroopType]:
+def _trigger_candidate_troops(skill: SkillDef) -> list[TroopType | None]:
     direct = _direct_trigger_troops(skill)
     return direct or _modifier_trigger_troops(skill)
 
@@ -359,7 +409,11 @@ def _filter_by_probability(candidates: Iterable[TroopType | None],
 
 
 def _uses_per_attack_probability(skill: SkillDef, prob: float) -> bool:
-    return prob < 1.0 and bool(_direct_trigger_troops(skill))
+    if prob >= 1.0:
+        return False
+    if _direct_trigger_troops(skill):
+        return True
+    return len(_modifier_trigger_troops(skill)) > 1
 
 
 def _skill_probability(skill: SkillDef) -> float:
@@ -416,14 +470,21 @@ def _slug_owner(hero: str, slot: str, role: str, side: str, ordinal: int) -> str
     return f"{side}:{role}:{hero}:{slot}:{ordinal}"
 
 
-def _hero_rows(book, hero: str, source: SkillSource) -> tuple[SkillEffect, ...]:
-    return tuple(e for e in book.for_hero(hero) if e.source == source)
+def _hero_rows(book, hero: str, source: SkillSource,
+               context: CombatContext | None = None) -> tuple[SkillEffect, ...]:
+    return tuple(
+        e for e in book.for_hero(hero)
+        if e.source == source and (context is None or e.context in (CombatContext.ALL, context))
+    )
 
 
 def _is_damage_bearing_rows(rows: Iterable[SkillEffect]) -> bool:
     rows = tuple(rows)
     for row in rows:
         if _row_is_direct_damage_for_skill(row, rows):
+            return True
+    for row in rows:
+        if _is_next_attack_dt_row(row):
             return True
     return False
 
@@ -446,6 +507,28 @@ def _hero_skill_start_turn(hero: str, slot: str) -> int:
 
 def _skill_pauses_attack(skill: SkillDef) -> bool:
     return skill.owner.casefold() == "ahmose" and skill.slot == "skill_1"
+
+
+def _skill_allows_self_stacking(skill: SkillDef) -> bool:
+    return skill.owner.casefold() == "lynn" and skill.slot == "skill_3"
+
+
+def _add_active_effect(active_effects: list[_ActiveEffect], effect: _ActiveEffect):
+    if effect.skill.troop_skill or _skill_allows_self_stacking(effect.skill):
+        active_effects.append(effect)
+        return
+    for idx, existing in enumerate(active_effects):
+        if existing.skill.source_id != effect.skill.source_id:
+            continue
+        if existing.expires_after < effect.starts_at - 1:
+            continue
+        active_effects[idx] = _ActiveEffect(
+            effect.skill,
+            min(existing.starts_at, effect.starts_at),
+            max(existing.expires_after, effect.expires_after),
+        )
+        return
+    active_effects.append(effect)
 
 
 def _is_mark_companion_skill(skill: SkillDef) -> bool:
@@ -564,6 +647,9 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
         return getattr(profile, "stats_mode", "scouted") == "scouted"
 
     def add_side(profile, units, side: str, t12_levels):
+        battle = (CombatContext.GARRISON
+                  if getattr(profile, "role", "rally") == "garrison"
+                  else CombatContext.RALLY)
         ordinal = 0
         for cls, hero in (profile.lead_heroes or {}).items():
             if not hero:
@@ -574,7 +660,7 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
             if not widgets_in_panel(profile):
                 sources.append(SkillSource.WIDGET)
             for source in sources:
-                rows = _hero_rows(book, hero, source)
+                rows = _hero_rows(book, hero, source, battle)
                 if rows:
                     defs.append(_make_hero_skill(hero, source, rows, side, "captain",
                                                  troop, hero_ordinal))
@@ -582,7 +668,7 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
         for hero in (profile.joiners or [])[:4]:
             if not hero:
                 continue
-            rows = _hero_rows(book, hero, SkillSource.SKILL_1)
+            rows = _hero_rows(book, hero, SkillSource.SKILL_1, battle)
             if rows:
                 defs.append(_make_hero_skill(hero, SkillSource.SKILL_1, rows, side,
                                              "joiner", None, ordinal))
@@ -653,8 +739,8 @@ def _stack_view(stack: TypeStack, side: str, mods: _Mods,
     return replace(
         stack,
         astat=astat,
-        dd=stack.dd + dd,
-        dt=stack.dt + dt,
+        dd=max(stack.dd + dd, -1.0),
+        dt=max(stack.dt + dt, -1.0),
     )
 
 
@@ -674,7 +760,12 @@ def _apply_row_to_mods(mods: _Mods, row: SkillEffect, skill: SkillDef,
         if troop is None:
             continue
         if row.attribute in STAT_ATTRS:
-            mods.add_stat(target_side, troop, STAT_ATTRS[row.attribute], amount)
+            if (row.mechanic == SkillMechanic.STATS_BASED
+                    and not skill.is_widget
+                    and skill.role in ("captain", "joiner")):
+                mods.mul_stat(target_side, troop, STAT_ATTRS[row.attribute], amount)
+            else:
+                mods.add_stat(target_side, troop, STAT_ATTRS[row.attribute], amount)
         elif row.attribute == SkillAttribute.DAMAGE_DEALT:
             mods.add_dd(target_side, troop, amount, row.damage_category)
         elif row.attribute == SkillAttribute.DAMAGE_TAKEN:
@@ -870,14 +961,14 @@ def _trigger_count_for_skill(skill: SkillDef, turn: int,
         ]
     if freq is None:
         direct = alive(_direct_trigger_troops(skill))
-        candidates = direct or [skill.troop]
+        candidates = direct or alive(_modifier_trigger_troops(skill)) or [skill.troop]
         return _filter_by_probability(candidates, prob, rng) if per_attack_prob else candidates
     n = max(int(freq), 1)
     if trigger == TriggerUnit.TURNS or trigger is None:
         if turn < skill.start_turn or (turn - skill.start_turn) % n != 0:
             return []
         direct = alive(_direct_trigger_troops(skill))
-        candidates = direct or [skill.troop]
+        candidates = direct or alive(_modifier_trigger_troops(skill)) or [skill.troop]
         return _filter_by_probability(candidates, prob, rng) if per_attack_prob else candidates
     if trigger == TriggerUnit.STRIKES:
         fired = []
@@ -893,6 +984,8 @@ def _trigger_count_for_skill(skill: SkillDef, turn: int,
     if trigger == TriggerUnit.ATTACKS:
         fired = []
         event_no = side_attack_events
+        candidates = _trigger_candidate_troops(skill)
+        global_candidate = candidates == [None]
         for troop in ORDER:
             st = stacks.get(troop)
             if st is None or st.n <= EPS:
@@ -900,7 +993,9 @@ def _trigger_count_for_skill(skill: SkillDef, turn: int,
             event_no += 1
             if event_no % n != 0:
                 continue
-            candidates = _trigger_candidate_troops(skill)
+            if global_candidate:
+                fired.append(None)
+                continue
             if candidates and troop not in candidates and _direct_trigger_troops(skill):
                 continue
             fired.append(troop if troop in candidates else (skill.troop or troop))
@@ -971,17 +1066,25 @@ def _damage_for(src: TypeStack, target: TypeStack, own_front: TypeStack | None,
     return base_strike_damage(src_v, tgt_v, p, own_front=own_front_v, marks_dd=marks_dd)
 
 
-def _instant_target_dt(skill: SkillDef, rows: tuple[SkillEffect, ...]) -> float:
+def _is_next_attack_dt_row(row: SkillEffect) -> bool:
+    return (
+        row.side == AffectingSide.FOE
+        and row.attribute == SkillAttribute.DAMAGE_TAKEN
+        and row.duration_unit in (TriggerUnit.ATTACKS, TriggerUnit.STRIKES,
+                                  TriggerUnit.RECEIVED)
+        and _row_amount(row) > 0
+    )
+
+
+def _instant_target_dt(skill: SkillDef, rows: tuple[SkillEffect, ...],
+                       target_troop: TroopType) -> float:
     bonus = 0.0
     for row in rows:
         if _row_is_direct_damage_for_skill(row, rows):
             continue
-        if row.attribute != SkillAttribute.DAMAGE_TAKEN:
+        if not _is_next_attack_dt_row(row):
             continue
-        if row.receiver != EffectReceiver.TARGET:
-            continue
-        if row.duration_unit not in (TriggerUnit.ATTACKS, TriggerUnit.STRIKES,
-                                     TriggerUnit.RECEIVED):
+        if row.receiver != EffectReceiver.TARGET and _row_troop(row) != target_troop:
             continue
         bonus += _row_amount(row)
     return bonus
@@ -1050,7 +1153,7 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
 
     skill_rows = tuple(skill.rows)
     rows = [r for r in skill_rows if _row_is_direct_damage_for_skill(r, skill_rows)]
-    instant_dt = _instant_target_dt(skill, skill_rows)
+    dt_damage_rows = [] if rows else [r for r in skill_rows if _is_next_attack_dt_row(r)]
     for troop in trigger_troops or [skill.troop]:
         src_candidates = [own[troop]] if troop in own else [s for s in own.values() if s.n > EPS]
         for row in rows:
@@ -1070,6 +1173,7 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
                     continue
                 base = _damage_for(src, front, own_front, skill.side, target_side,
                                    mods, p, marks_dd, DamageCategory.SKILLS)
+                instant_dt = _instant_target_dt(skill, skill_rows, front.troop)
                 if instant_dt:
                     base *= max(0.0, 1.0 + instant_dt)
                 if front.troop == TroopType.INFANTRY:
@@ -1081,6 +1185,24 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
                 packets.append(DamagePacket(
                     skill, skill.side, base * amount * scale,
                     "backline" if targets else "front", targets))
+        for row in dt_damage_rows:
+            target_troops = _receivers_for(row, _front(enemy).troop if _front(enemy) else None)
+            for src in src_candidates:
+                if src.n <= EPS:
+                    continue
+                for target_troop in target_troops:
+                    front = enemy.get(target_troop)
+                    if front is None or front.n <= EPS:
+                        continue
+                    base = _damage_for(src, front, own_front, skill.side, target_side,
+                                       mods, p, marks_dd, DamageCategory.SKILLS)
+                    if front.troop == TroopType.INFANTRY:
+                        base *= target_inf_dt
+                    base *= target_enemy_out
+                    amount = _row_amount(row) * float(p.get("K_skill", 1.0))
+                    packets.append(DamagePacket(
+                        skill, skill.side, base * amount * scale,
+                        "backline", (target_troop,)))
     return packets
 
 
@@ -1165,12 +1287,12 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
                     paused_attacks[skill.side].add(pause_troop)
                 if _should_track_active_effect(skill, dependent_mods):
                     starts_at = _effect_start_turn(skill, t)
-                    active_effects.append(_ActiveEffect(
+                    _add_active_effect(active_effects, _ActiveEffect(
                         skill, starts_at, starts_at + _skill_duration(skill) - 1))
                 for companion in _mark_companion_skills(skills, skill):
                     companion.triggers += len(trigger_troops)
                     starts_at = t + 1
-                    active_effects.append(_ActiveEffect(
+                    _add_active_effect(active_effects, _ActiveEffect(
                         companion, starts_at,
                         starts_at + _skill_duration(companion) - 1))
 
@@ -1215,7 +1337,8 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
                     candidate.triggers += len(second_triggers)
                     if _should_track_active_effect(candidate, dependent_mods):
                         starts_at = _effect_start_turn(candidate, t)
-                        active_effects.append(
+                        _add_active_effect(
+                            active_effects,
                             _ActiveEffect(
                                 candidate, starts_at,
                                 starts_at + _skill_duration(candidate) - 1))

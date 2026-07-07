@@ -208,22 +208,19 @@ def engine_meta(attacker_units, defender_units, params=None) -> dict:
         return {"path": "pvp_turn_engine", "calibrated": False,
                 "model_error": 0.5, "stochastic": True,
                 "near_even": True, "confidence": "coin_flip",
-                "note": "Turn-by-turn skill engine: catalog-driven skill "
-                        "telemetry is structural, calibration remains pending. "
-                        "Render near-even T12 outputs as high variance until QA "
-                        "locks TURN_PARAMS."}
+                "note": "Turn-by-turn skill engine: skill telemetry is shown, "
+                        "but PvP calibration is still pending. Treat near-even "
+                        "T12 outputs as high variance."}
     if _kernel_box(attacker_units, defender_units, params) is not None:
         return {"path": "pvp_kernel", "calibrated": True,
                 "model_error": pvp_kernel.MODEL_ERROR, "stochastic": False,
-                "note": "validated garrison-wipe kernel (T10-vs-T7 ~50/50, "
-                        "ladder-like panels; leave-one-out CV +-4.5%)"}
+                "note": "Validated garrison-wipe matchup class; typical model "
+                        "error is about +-4.5% in this calibration box."}
     stoch = _has_procs(attacker_units, defender_units, params)
     return {"path": "general", "calibrated": False, "model_error": 0.5,
             "stochastic": stoch,
-            "note": "UNCALIBRATED (coarse floor, not a band) - the general engine "
-                    "matches only the r6/r8 whale anchor; off-anchor it misses "
-                    "casualties by up to ~85% and the winner ~50% of the time. "
-                    "Render as directional, NOT a prediction interval."
+            "note": "Uncalibrated matchup class: use the forecast as directional "
+                    "rather than as a precise prediction interval."
                     + ("" if stoch else " Deterministic (no procs).")}
 
 

@@ -87,7 +87,7 @@ Mode: live wiki fetch
 | Wayne | skill_3 | mismatch | Workbook tokens not found in wiki text: 100%, 25% chance |
 | Hector | skill_1 | ok | Workbook mechanics align with wiki tokens. |
 | Hector | skill_2 | mismatch | Workbook tokens not found in wiki text: 12.5%, 50% |
-| Hector | skill_3 | mismatch | Workbook tokens not found in wiki text: 50% |
+| Hector | skill_3 | ok | Workbook mechanics align with wiki tokens. |
 | Nora | skill_1 | ok | Workbook mechanics align with wiki tokens. |
 | Nora | skill_2 | mismatch | Workbook tokens not found in wiki text: 20% chance |
 | Nora | skill_3 | mismatch | Workbook tokens not found in wiki text: every 5 attacks, for 2 turns |

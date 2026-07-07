@@ -5,17 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Whiteout Tactics — Battle Predictor</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" media="print" onload="this.media='all'"
-      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/chakra-petch-400.ttf') format('truetype')}
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:500;font-display:swap;src:url('assets/fonts/chakra-petch-500.ttf') format('truetype')}
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/chakra-petch-600.ttf') format('truetype')}
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:700;font-display:swap;src:url('assets/fonts/chakra-petch-700.ttf') format('truetype')}
+  @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/ibm-plex-mono-400.ttf') format('truetype')}
+  @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url('assets/fonts/ibm-plex-mono-500.ttf') format('truetype')}
+  @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/ibm-plex-mono-600.ttf') format('truetype')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/inter-400.ttf') format('truetype')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('assets/fonts/inter-500.ttf') format('truetype')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('assets/fonts/inter-600.ttf') format('truetype')}
   :root{
     --void:#0A1017;--void-2:#0C141D;--panel:#111C26;--panel-2:#16232F;
     --line:#1E2E3B;--line-soft:#182531;
     --ice:#5FD2E0;--ice-bright:#8CEDF3;--ice-deep:#2E9AAB;--ice-ghost:rgba(95,210,224,.10);
     --ember:#F0913D;--ember-bright:#FDB765;--ember-deep:#B5652A;--ember-ghost:rgba(240,145,61,.10);
-    --loss:#E5533B;--mutual:#5C7182;--white:#EAF3F7;--mute:#8AA2B0;--mute-2:#5E7382;--faint:#3C4E5C;--ok:#57D3A3;
+    --loss:#E5533B;--mutual:#5C7182;--white:#EAF3F7;--mute:#8AA2B0;--mute-2:#95AAB7;--faint:#78909F;--ok:#57D3A3;
     --r:14px;--r-sm:9px;--shadow:0 18px 40px -24px rgba(0,0,0,.9);
     --disp:'Chakra Petch',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
   }
@@ -28,6 +34,7 @@
   h1,h2,h3,h4{margin:0}
   button{font-family:inherit}
   :focus-visible{outline:2px solid var(--ice);outline-offset:2px;border-radius:4px}
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mute-2)}
 
   /* header */
@@ -57,11 +64,12 @@
     padding:9px 14px;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
   .tab:hover{color:var(--white)}
   .tab[aria-selected="true"]{color:var(--ice-bright);background:var(--panel-2);border-color:var(--ice-deep);border-bottom-color:var(--ice)}
-  .tab .x{font-family:var(--mono);font-size:12px;color:var(--faint)}
+  .tab .x{font-family:var(--mono);font-size:12px;color:var(--faint);background:transparent;border:0;border-radius:6px;min-width:24px;min-height:24px;padding:0;display:grid;place-items:center;cursor:pointer}
   .tab .x:hover{color:var(--loss)}
   .tab-add{font-family:var(--mono);font-size:15px;color:var(--mute-2);background:transparent;border:1px dashed var(--line);border-radius:8px;
     width:34px;height:34px;cursor:pointer}
   .tab-add:hover{color:var(--ice);border-color:var(--ice-deep)}
+  .tab-add:disabled{opacity:.45;cursor:not-allowed}
   .config-actions{margin-left:auto;display:flex;align-items:center;gap:9px}
   .ghost-btn{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mute);background:transparent;
     border:1px solid var(--line);border-radius:8px;padding:9px 13px;cursor:pointer;transition:border-color .15s,color .15s}
@@ -75,7 +83,12 @@
     display:flex;align-items:center;gap:8px;box-shadow:0 10px 26px -12px rgba(95,210,224,.75),inset 0 1px 0 rgba(255,255,255,.4);
     transition:transform .12s,filter .2s}
   .run:hover{transform:translateY(-1px);filter:brightness(1.06)}
+  .run:disabled,.refresh:disabled{opacity:.55;cursor:wait;transform:none;filter:saturate(.6)}
   .run .dot{width:7px;height:7px;border-radius:50%;background:#04191c}
+  .run-status{border:1px solid var(--line);border-radius:999px;background:var(--void-2);color:var(--mute);font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:8px 11px;min-height:34px;cursor:pointer}
+  .run-status.running{color:var(--ice-bright);border-color:var(--ice-deep)}
+  .run-status.done{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
+  .run-status.failed{color:var(--loss);border-color:color-mix(in srgb,var(--loss) 45%,var(--line))}
 
   /* ---------- Section 2 : input ---------- */
   /* side tint via layered backgrounds — NOT overflow:hidden, so hero dropdowns aren't clipped */
@@ -129,11 +142,11 @@
   .me input[type=range]{accent-color:var(--ice)}
   .foe input[type=range]{accent-color:var(--ember)}
   input[type=range]{width:100%}
-  input[type=checkbox]{accent-color:var(--ice)}
+  input[type=checkbox]{accent-color:var(--ice);min-width:16px;min-height:16px}
 
   .troops-me{display:flex;align-items:center;gap:8px;width:100%;justify-content:flex-end}
   .troops-me input{max-width:150px}
-  .eqchk{font-family:var(--mono);font-size:10px;letter-spacing:.02em;color:var(--mute);display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer}
+  .eqchk{font-family:var(--mono);font-size:10px;letter-spacing:.02em;color:var(--mute);display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;min-height:28px;padding:4px}
   .foe .num-only{max-width:150px}
 
   .formrow{display:flex;gap:6px;width:100%}
@@ -151,11 +164,13 @@
   .stat-panel .lab{font-size:10.5px}
   .stat-name{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--mute);font-weight:500;white-space:nowrap;text-transform:none}
   .stat-panel input{max-width:120px}
+  .pct-suffix{font-family:var(--mono);font-size:11px;color:var(--mute);align-self:center;margin-left:5px}
   .seg-toggle{display:inline-flex;align-items:center;border:1px solid var(--ice-deep);border-radius:8px;overflow:hidden;background:var(--void-2)}
   .seg-toggle button{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--mute);background:transparent;border:0;padding:5px 10px;cursor:pointer}
   .seg-toggle button[aria-pressed="true"]{background:var(--ice-ghost);color:var(--ice-bright)}
   .stats-type{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--mute)}
   .final-stats .fnum{font-family:var(--mono);font-size:12px;font-weight:700}
+  .final-stats .fnum .cmp{font-size:10px;margin-left:5px;opacity:.9}
   .final-stats .fnum.higher{color:#61e6a6}
   .final-stats .fnum.lower{color:#ff6f61}
   .final-stats .fnum.equal{color:var(--white)}
@@ -192,7 +207,7 @@
   .lead-cls{width:26px;height:26px;flex:none;border-radius:7px;display:grid;place-items:center;font-size:14px;background:var(--void);border:1px solid var(--line)}
   .me .lead-cls{color:var(--ice)} .foe .lead-cls{color:var(--ember)}
   .lead-row .hpick{flex:0 1 260px;min-width:0;max-width:260px}
-  .gear-check{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;color:var(--mute);white-space:nowrap}
+  .gear-check{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;color:var(--mute);white-space:nowrap;min-height:28px;padding:4px}
   .gear-check input{width:14px;height:14px;margin:0;accent-color:var(--ice)}
   .foe .gear-check input{accent-color:var(--ember)}
   .widget-impact{min-width:86px;font-family:var(--mono);font-size:10.5px;color:#61e6a6;white-space:nowrap}
@@ -248,6 +263,8 @@
     background:var(--ember-ghost);border-radius:7px;padding:4px 10px;letter-spacing:.1em;text-transform:uppercase;font-size:10px;cursor:help}
   .fc-meta .prov.validated{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:rgba(87,211,163,.10)}
   .fc-body{padding:22px clamp(14px,2vw,24px) 26px;position:relative}
+  .forecast.stale .fc-body{opacity:.55;filter:saturate(.6)}
+  .stale-chip{position:absolute;right:18px;top:54px;z-index:5;border:1px solid color-mix(in srgb,var(--ember) 45%,transparent);background:rgba(240,145,61,.13);color:var(--ember-bright);border-radius:999px;padding:6px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em}
   .fc-error{display:none;margin-bottom:16px;padding:11px 14px;border-radius:9px;font-size:13px;
     color:var(--loss);background:rgba(229,83,59,.10);border:1px solid color-mix(in srgb,var(--loss) 45%,transparent)}
   .fc-part{padding:24px 0;border-top:1px solid var(--line-soft)}
@@ -376,10 +393,10 @@
   .catcol .cbar{width:100%;border-radius:5px 5px 0 0;min-height:3px;transition:height .5s}
   .catcol.def .cbar{background:linear-gradient(180deg,var(--ember),var(--ember-deep))}
   .catcol.win .cbar{background:linear-gradient(180deg,var(--ice),var(--ice-deep))}
-  .catx{display:flex;gap:10px;margin-top:8px}
-  .catx div{flex:1;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:var(--mute);line-height:1.3}
-  .catx .n{display:block;color:var(--faint);font-size:8px;margin-bottom:2px}
-  .catx .csub{font-size:7.5px;color:var(--faint);margin-top:3px;line-height:1.25;letter-spacing:0}
+  .catx{display:flex;gap:10px;margin-top:8px;align-items:flex-start}
+  .catx div{flex:1;min-width:0;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.02em;color:var(--mute);line-height:1.3;overflow-wrap:anywhere}
+  .catx .n{display:block;color:var(--faint);font-size:10px;margin-bottom:2px}
+  .catx .csub{font-size:10px;color:var(--faint);margin-top:3px;line-height:1.25;letter-spacing:0}
 
   /* honesty */
   .honesty{margin-top:24px;display:flex;gap:14px;align-items:flex-start;
@@ -396,6 +413,9 @@
   .tab-rename{font-family:var(--disp);font-weight:600;font-size:12.5px;width:130px;padding:3px 7px;background:var(--void);color:var(--white);border:1px solid var(--ice-deep);border-radius:6px}
   .input-toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:12px 0 4px}
   .input-toolbar .run{margin-left:auto}
+  .session-note{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--void-2);border-radius:999px;padding:6px 9px;color:var(--mute);font-family:var(--mono);font-size:11px}
+  .session-note button{border:0;background:transparent;color:var(--mute);cursor:pointer;min-width:24px;min-height:24px;border-radius:6px}
+  .session-note button:hover{color:var(--white)}
   .seedinfo{background:none;border:0;color:var(--mute-2);cursor:help;font-size:11px;padding:0;line-height:1}
   .seedinfo:hover{color:var(--ice)}
   .mini-field label{display:flex;align-items:center;gap:5px}
@@ -418,11 +438,12 @@
   .fbody{flex:1;min-width:0}
   .fname{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
   .fctrls{display:flex;align-items:center;gap:8px}
-  .fbtn{width:26px;height:26px;flex:none;border-radius:8px;border:1px solid var(--fc);background:var(--void);color:var(--fc);font-size:15px;font-weight:700;cursor:pointer;line-height:1;display:grid;place-items:center}
+  .fbtn{width:30px;height:30px;flex:none;border-radius:8px;border:1px solid var(--fc);background:var(--void);color:var(--fc);font-size:15px;font-weight:700;cursor:pointer;line-height:1;display:grid;place-items:center}
   .fbtn:hover:not(:disabled){background:color-mix(in srgb,var(--fc) 16%,var(--void))}
   .fbtn:disabled{opacity:.3;cursor:default}
-  .form-ctl input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:9px;border-radius:6px;outline:none;margin:0;
+  .form-ctl input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:9px;border-radius:6px;margin:0;
     background:linear-gradient(90deg,var(--fc) 0 var(--fill,50%),var(--tk) var(--fill,50%) 100%)}
+  .form-ctl input[type=range]:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
   .form-ctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.5)}
   .form-ctl input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);cursor:pointer}
   .form-ctl input[type=range]:disabled{opacity:.7}
@@ -436,14 +457,15 @@
   .rail-head{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
   .rail-tabs{display:flex;flex-direction:column;gap:6px}
   .rail-tabs .tab{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
-    border-radius:9px;border:1px solid var(--line);border-left:3px solid transparent;background:var(--void-2);
+    border-radius:9px;border:1px solid var(--line);background:var(--void-2);
     padding:11px 12px;font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.02em;color:var(--mute);cursor:pointer;transition:color .15s,background .15s,border-color .15s}
   .rail-tabs .tab:hover{color:var(--white)}
-  .rail-tabs .tab[aria-selected="true"]{color:var(--ice-bright);background:var(--panel-2);border-color:var(--ice-deep);border-left-color:var(--ice)}
-  .rail-tabs .tab .x{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .rail-tabs .tab[aria-selected="true"]{color:var(--ice-bright);background:var(--panel-2);border-color:var(--ice-deep)}
+  .rail-tabs .tab .x{font-family:var(--mono);font-size:11px;color:var(--faint);background:transparent;border:0;border-radius:6px;min-width:24px;min-height:24px;padding:0;display:grid;place-items:center;cursor:pointer}
   .rail-tabs .tab .x:hover{color:var(--loss)}
   .rail-add{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--mute);background:transparent;border:1px dashed var(--line);border-radius:9px;padding:10px;cursor:pointer;transition:border-color .15s,color .15s}
   .rail-add:hover{border-color:var(--ice-deep);color:var(--ice-bright)}
+  .rail-add:disabled{opacity:.45;cursor:not-allowed}
   .rail-hint{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.04em;line-height:1.4}
 
   /* refresh button (forecast header) */
@@ -460,6 +482,11 @@
     font-family:var(--mono);font-size:8.5px;color:var(--mute-2);padding-top:18px;padding-bottom:2px}
   .cvbody{flex:1;position:relative}
   .rxcap{text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--mute);letter-spacing:.06em;margin-top:3px}
+  .tip-pop{position:fixed;z-index:200;max-width:min(320px,calc(100vw - 24px));background:var(--panel-2);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:10px 12px;color:var(--white);font-size:12px;line-height:1.45}
+  .telemetry-empty{font-family:var(--mono);font-size:11px;color:var(--mute);border:1px solid var(--line-soft);border-radius:9px;padding:12px;background:var(--void-2)}
+  .mini-field label,.formcell .cap,.qgrid2 .qlbl,.hpick-it .cls,.oseg .otag,.haze .hlabel,.caliper .clabel,
+  .vaxis,.caxis,.rx,.rxcap,.cbox .mtitle,.skill-slot,.skill-role,.skill-copy small,.skill-stat span,
+  .skill-spark-label,.rail-hint{font-size:10px}
 
   @media (max-width:960px){
     .layout{grid-template-columns:1fr}
@@ -484,6 +511,15 @@
     .qclass-mid{display:none}
     .vs-pill{display:none}
   }
+  @media (max-width:520px){
+    main{padding-inline:10px}
+    .input{padding-inline:10px}
+    .input-toolbar .run{margin-left:0}
+    .run,.ghost-btn,.refresh,.run-status{min-height:42px}
+    .catbars{gap:6px}
+    .catx{gap:6px}
+    .skill-line{grid-template-columns:30px minmax(0,1fr);gap:7px}
+  }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -492,15 +528,15 @@
 <header class="bar">
   <div class="flake">❄</div>
   <div class="brand"><h1>Whiteout Tactics</h1><p>Battle Predictor</p></div>
-  <div class="bar-note">Prototype · static mock</div>
+  <div class="bar-note">Live engine · local</div>
 </header>
 
 <main class="layout">
 
   <aside class="config-rail">
     <div class="rail-head">Configs</div>
-    <div class="rail-tabs" id="tabs">
-      <button class="tab" aria-selected="true"><span class="tname">Config 1</span></button>
+    <div class="rail-tabs" id="tabs" role="tablist" aria-label="Forecast configs">
+      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Config 1</span><button class="x" type="button" aria-label="Close config">x</button></div>
     </div>
     <button class="rail-add" id="tabAdd" title="New / load config (max 5)">+ New config</button>
     <div class="rail-hint">double-click to rename · click to switch</div>
@@ -516,6 +552,7 @@
       <div class="mini-field"><label>Runs</label>
         <select class="val" id="runsSel" title="Monte-Carlo runs per forecast"><option>100</option><option>500</option><option selected>1000</option></select></div>
       <button class="run" id="runBtn"><span class="dot"></span>Run forecast</button>
+      <button class="run-status" id="runStatus" type="button" hidden></button>
     </div>
     <div class="sides-head">
       <div class="side-title me">
@@ -571,7 +608,7 @@
         <label class="chk right"><input type="checkbox" id="maxFoe" checked> Max Buff - Enemy</label>
       </div>
       <div id="itemBuffs"></div>
-      <div class="mtitle" style="text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin:14px 0 8px">Pet buffs</div>
+      <div class="mtitle" style="text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin:14px 0 8px">Pet buffs</div>
       <div id="petBuffs"></div>
     </div>
 
@@ -586,7 +623,7 @@
       <div class="title">Lead Heroes</div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="capMe"></div></div>
-        <div class="lab lead-labels"><span>Infantry</span><span>Lancers</span><span>Marksman</span></div>
+        <div class="lab lead-labels"><span>Infantry</span><span>Lancers</span><span>Marksmen</span></div>
         <div class="foe"><div class="hero-lane" id="capFoe"></div></div>
       </div>
     </div>
@@ -611,9 +648,10 @@
   <!-- ========= 3 · FORECAST ========= -->
   <div class="sec-head"><h2>Forecast</h2><div class="rule"></div></div>
   <section class="forecast">
+    <div class="stale-chip" id="staleChip" hidden>inputs changed - re-run</div>
     <div class="sim-overlay" id="simProgress">
-      <div class="sim-box">
-        <div class="st">Running 10 simulations…</div>
+        <div class="sim-box">
+        <div class="st">Simulating...</div>
         <div class="sim-track"><div class="sim-fill" id="simFill"></div></div>
         <div class="sim-pct" id="simPct">0%</div>
       </div>
@@ -630,9 +668,9 @@
       <div class="fc-part">
         <div class="verdict">
           <div>
-            <div class="pct" id="pctNum">68.4%</div>
+            <div class="pct" id="pctNum">--</div>
             <div class="plabel">probability of win</div>
-            <div class="eff" id="effNote">+4.2% mutual wipe counts as your win → <b>72.6% effective</b></div>
+            <div class="eff" id="effNote">Run a forecast to populate results</div>
             <div class="err">
               <div class="mc">sampling error<b>± 0.5%</b></div>
               <div class="mdl">model error<b>± 12%</b></div>
@@ -641,9 +679,9 @@
           <div>
             <div class="obar-wrap">
               <div class="obar" id="obar">
-                <div class="oseg win" style="flex-basis:68.4%"><span class="otag">Win</span><span class="oval">68.4</span></div>
-                <div class="oseg mut" style="flex-basis:4.2%"><span class="oval">4.2</span></div>
-                <div class="oseg loss" style="flex-basis:27.4%"><span class="otag">Loss</span><span class="oval">27.4</span></div>
+                <div class="oseg win" style="flex-basis:0%"><span class="otag">Win</span><span class="oval">--</span></div>
+                <div class="oseg mut" style="flex-basis:0%"><span class="oval">--</span></div>
+                <div class="oseg loss" style="flex-basis:0%"><span class="otag">Loss</span><span class="oval">--</span></div>
               </div>
               <div class="boundary haze" id="haze" style="left:56.4%;width:24%"><span class="hlabel">model ± 12%</span></div>
               <div class="boundary caliper" id="caliper" style="left:68.4%"><span class="clabel">± 0.5%</span></div>
@@ -716,14 +754,15 @@
     </div>
   </section>
 
-  <div class="foot">prototype · static mock — no engine wired · configs (left) → input → forecast</div>
+  <div class="foot">configs (left) → input → forecast · live local engine</div>
   </div>
 </main>
+<div id="liveStatus" class="sr-only" aria-live="polite"></div>
 
 <script src="assets/skill_display.js"></script>
 <script src="assets/widget_effects.js"></script>
 <script>
-const ROSTER = [{"n":"Hank","c":"I","f":"Hank.png","g":"15"},{"n":"Estrella","c":"L","f":"Estrella.png","g":"15"},{"n":"Viveca","c":"M","f":"Viveca.png","g":"15"},{"n":"Cara","c":"M","f":"Cara.jpg","g":"14"},{"n":"Dominic","c":"L","f":"Dominic.jpg","g":"14"},{"n":"Elif","c":"I","f":"Elif.jpg","g":"14"},{"n":"Flora","c":"L","f":"Flora.jpg","g":"13"},{"n":"Gisela","c":"I","f":"Gisela.jpg","g":"13"},{"n":"Vulcanus","c":"M","f":"Vulcanus.jpg","g":"13"},{"n":"Hervor","c":"I","f":"Hervor.jpg","g":"12"},{"n":"Karol","c":"L","f":"Karol.jpg","g":"12"},{"n":"Ligeia","c":"M","f":"Ligeia.jpg","g":"12"},{"n":"Eleonora","c":"I","f":"Eleonora.jpg","g":"11"},{"n":"Lloyd","c":"L","f":"Lloyd.jpg","g":"11"},{"n":"Rufus","c":"M","f":"Rufus.jpg","g":"11"},{"n":"Blanchette","c":"M","f":"Blanchette.jpg","g":"10"},{"n":"Freya","c":"L","f":"Freya.jpg","g":"10"},{"n":"Gregory","c":"I","f":"Gregory.jpg","g":"10"},{"n":"Fred","c":"L","f":"Fred.jpg","g":"9"},{"n":"Magnus","c":"I","f":"Magnus.jpg","g":"9"},{"n":"Xura","c":"M","f":"Xura.jpg","g":"9"},{"n":"Gatot","c":"I","f":"Gatot.jpg","g":"8"},{"n":"Hendrik","c":"M","f":"Hendrik.jpg","g":"8"},{"n":"Sonya","c":"L","f":"Sonya.jpg","g":"8"},{"n":"Bradley","c":"M","f":"Bradley.jpg","g":"7"},{"n":"Edith","c":"I","f":"Edith.png","g":"7"},{"n":"Gordon","c":"L","f":"Gordon.jpg","g":"7"},{"n":"Renee","c":"L","f":"Renee.jpg","g":"6"},{"n":"Wayne","c":"M","f":"Wayne.jpg","g":"6"},{"n":"Wu Ming","c":"I","f":"Wu Ming.jpg","g":"6"},{"n":"Gwen","c":"M","f":"Gwen.jpg","g":"5"},{"n":"Hector","c":"I","f":"Hector.jpg","g":"5"},{"n":"Nora","c":"L","f":"Nora.jpg","g":"5"},{"n":"Ahmose","c":"I","f":"Ahmose.jpg","g":"4"},{"n":"Lynn","c":"M","f":"Lynn.jpg","g":"4"},{"n":"Reina","c":"L","f":"Reina.jpg","g":"4"},{"n":"Greg","c":"M","f":"Greg.jpg","g":"3"},{"n":"Logan","c":"I","f":"Logan.jpg","g":"3"},{"n":"Mia","c":"L","f":"Mia.jpg","g":"3"},{"n":"Alonso","c":"M","f":"Alonso.png","g":"2"},{"n":"Flint","c":"I","f":"Flint.png","g":"2"},{"n":"Philly","c":"L","f":"Philly.jpg","g":"2"},{"n":"Jeronimo","c":"I","f":"Jeronimo.jpg","g":"1"},{"n":"Molly","c":"L","f":"Molly.jpg","g":"1"},{"n":"Natalia","c":"I","f":"Natalia.png","g":"1"},{"n":"Zinman","c":"M","f":"Zinman.jpg","g":"1"},{"n":"Bahiti","c":"M","f":"Bahiti.jpg","g":"SR"},{"n":"Jasser","c":"M","f":"Jasser.jpg","g":"SR"},{"n":"Jessie","c":"L","f":"Jessie.png","g":"SR"},{"n":"Ling Xue","c":"L","f":"Ling Xue.jpg","g":"SR"},{"n":"Lumak Bokan","c":"L","f":"Lumak Bokan.jpg","g":"SR"},{"n":"Patrick","c":"L","f":"Patrick.jpg","g":"SR"},{"n":"Seo-yoon","c":"M","f":"Seo-yoon.jpg","g":"SR"},{"n":"Sergey","c":"I","f":"Sergey.png","g":"SR"}];
+const ROSTER = [{"n":"Hank","c":"I","f":"Hank.png","g":"15"},{"n":"Estrella","c":"L","f":"Estrella.png","g":"15"},{"n":"Viveca","c":"M","f":"Viveca.png","g":"15"},{"n":"Cara","c":"M","f":"Cara.jpg","g":"14"},{"n":"Dominic","c":"L","f":"Dominic.jpg","g":"14"},{"n":"Elif","c":"I","f":"Elif.jpg","g":"14"},{"n":"Flora","c":"L","f":"Flora.jpg","g":"13"},{"n":"Gisela","c":"I","f":"Gisela.jpg","g":"13"},{"n":"Vulcanus","c":"M","f":"Vulcanus.jpg","g":"13"},{"n":"Hervor","c":"I","f":"Hervor.jpg","g":"12"},{"n":"Karol","c":"L","f":"Karol.jpg","g":"12"},{"n":"Ligeia","c":"M","f":"Ligeia.jpg","g":"12"},{"n":"Eleonora","c":"I","f":"Eleonora.jpg","g":"11"},{"n":"Lloyd","c":"L","f":"Lloyd.jpg","g":"11"},{"n":"Rufus","c":"M","f":"Rufus.jpg","g":"11"},{"n":"Blanchette","c":"M","f":"Blanchette.jpg","g":"10"},{"n":"Freya","c":"L","f":"Freya.jpg","g":"10"},{"n":"Gregory","c":"I","f":"Gregory.jpg","g":"10"},{"n":"Fred","c":"L","f":"Fred.jpg","g":"9"},{"n":"Magnus","c":"I","f":"Magnus.jpg","g":"9"},{"n":"Xura","c":"M","f":"Xura.jpg","g":"9"},{"n":"Gatot","c":"I","f":"Gatot.jpg","g":"8"},{"n":"Hendrik","c":"M","f":"Hendrik.jpg","g":"8"},{"n":"Sonya","c":"L","f":"Sonya.jpg","g":"8"},{"n":"Bradley","c":"M","f":"Bradley.jpg","g":"7"},{"n":"Edith","c":"I","f":"Edith.png","g":"7"},{"n":"Gordon","c":"L","f":"Gordon.jpg","g":"7"},{"n":"Renee","c":"L","f":"Renee.jpg","g":"6"},{"n":"Wayne","c":"M","f":"Wayne.jpg","g":"6"},{"n":"Wu Ming","c":"I","f":"Wu Ming.jpg","g":"6"},{"n":"Gwen","c":"M","f":"Gwen-official.jpg","g":"5"},{"n":"Hector","c":"I","f":"Hector.jpg","g":"5"},{"n":"Nora","c":"L","f":"Nora.jpg","g":"5"},{"n":"Ahmose","c":"I","f":"Ahmose.jpg","g":"4"},{"n":"Lynn","c":"M","f":"Lynn.jpg","g":"4"},{"n":"Reina","c":"L","f":"Reina.jpg","g":"4"},{"n":"Greg","c":"M","f":"Greg.jpg","g":"3"},{"n":"Logan","c":"I","f":"Logan.jpg","g":"3"},{"n":"Mia","c":"L","f":"Mia.jpg","g":"3"},{"n":"Alonso","c":"M","f":"Alonso.png","g":"2"},{"n":"Flint","c":"I","f":"Flint.png","g":"2"},{"n":"Philly","c":"L","f":"Philly.jpg","g":"2"},{"n":"Jeronimo","c":"I","f":"Jeronimo.jpg","g":"1"},{"n":"Molly","c":"L","f":"Molly.jpg","g":"1"},{"n":"Natalia","c":"I","f":"Natalia.png","g":"1"},{"n":"Zinman","c":"M","f":"Zinman.jpg","g":"1"},{"n":"Bahiti","c":"M","f":"Bahiti.jpg","g":"SR"},{"n":"Jasser","c":"M","f":"Jasser.jpg","g":"SR"},{"n":"Jessie","c":"L","f":"Jessie.png","g":"SR"},{"n":"Ling Xue","c":"L","f":"Ling Xue.jpg","g":"SR"},{"n":"Lumak Bokan","c":"L","f":"Lumak Bokan.jpg","g":"SR"},{"n":"Patrick","c":"L","f":"Patrick.jpg","g":"SR"},{"n":"Seo-yoon","c":"M","f":"Seo-yoon.jpg","g":"SR"},{"n":"Sergey","c":"I","f":"Sergey.png","g":"SR"}];
 const CLS={I:"Infantry",L:"Lancer",M:"Marksman"};
 const CLASS_ORDER={I:0,L:1,M:2};
 const genRank=g=>g==='SR'?0:(+g||0);
@@ -735,31 +774,45 @@ const $=(s,r=document)=>r.querySelector(s); const el=(t,c)=>{const e=document.cr
 const enc=s=>encodeURIComponent(s); const avatar=f=>"avatars/"+enc(f);
 
 /* ---------- hero picker ---------- */
-let openPop=null, openWrap=null;
-function closeHeroPicker(){
+let openPop=null, openWrap=null, heroPickerSeq=0;
+function closeHeroPicker(opts={}){
+  const trigger=openWrap?openWrap.querySelector('.hpick-btn'):null;
   if(openWrap)openWrap.style.zIndex='';
   if(openPop){ openPop.classList.remove('open'); openPop.style.left=''; openPop.style.top=''; }
+  if(trigger){ trigger.setAttribute('aria-expanded','false'); if(opts.returnFocus) trigger.focus(); }
   openPop=null; openWrap=null;
 }
 document.addEventListener('click', closeHeroPicker);
-document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeHeroPicker(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeHeroPicker({returnFocus:true}); });
 window.addEventListener('resize', closeHeroPicker);
 function heroPicker(filter, def){
   const list = filter ? HERO_LIST.filter(h=>h.c===filter) : HERO_LIST;
   let cur = list.find(h=>h.n===def) || list[0];
   const wrap=el('div','hpick');
+  const listId='hero-list-'+(++heroPickerSeq);
   const btn=el('button','hpick-btn'); const pop=el('div','hpick-pop');
+  btn.type='button'; btn.setAttribute('aria-haspopup','listbox'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls',listId);
   const search=el('input','hpick-search'); search.type='text'; search.placeholder='Search hero…'; pop.appendChild(search);
-  const listBox=el('div'); pop.appendChild(listBox);
+  const listBox=el('div'); listBox.id=listId; listBox.setAttribute('role','listbox'); pop.appendChild(listBox);
   function draw(){ wrap.dataset.hero=cur.n; btn.title=cur.n; btn.innerHTML=''; const im=el('img'); im.src=avatar(cur.f); im.alt=''; im.loading='lazy';
     const sp=el('span'); sp.textContent=cur.n; const ic=el('i'); ic.textContent='▾';
     btn.append(im,sp,ic); }
+  function choose(h){ cur=h; draw(); wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true})); closeHeroPicker(); }
+  function focusOption(delta){
+    const opts=[...listBox.querySelectorAll('.hpick-it')];
+    if(!opts.length)return;
+    const idx=Math.max(0,opts.indexOf(document.activeElement));
+    opts[(idx+delta+opts.length)%opts.length].focus();
+  }
   function items(q=''){ listBox.innerHTML='';
     list.filter(h=>h.n.toLowerCase().includes(q.toLowerCase())).forEach(h=>{
       const it=el('button','hpick-it'); const im=el('img'); im.src=avatar(h.f); im.alt=''; im.loading='lazy';
       const sp=el('span'); sp.textContent=h.n; const cl=el('span','cls'); cl.textContent=(h.g==='SR'?'SR':'G'+h.g);
+      it.type='button'; it.setAttribute('role','option'); it.setAttribute('aria-selected',String(h.n===cur.n));
       it.append(im,sp,cl);
-      it.onclick=(e)=>{e.stopPropagation();cur=h;draw();wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true}));close();}; listBox.appendChild(it); }); }
+      it.onclick=(e)=>{e.stopPropagation();choose(h);};
+      it.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();focusOption(1);} else if(e.key==='ArrowUp'){e.preventDefault();focusOption(-1);} else if(e.key==='Enter'){e.preventDefault();choose(h);} else if(e.key==='Escape'){e.preventDefault();closeHeroPicker({returnFocus:true});} };
+      listBox.appendChild(it); }); }
   function place(){
     const rb=btn.getBoundingClientRect(), vw=window.innerWidth||document.documentElement.clientWidth, vh=window.innerHeight||document.documentElement.clientHeight;
     const pw=pop.offsetWidth||230, ph=Math.min(pop.offsetHeight||280, vh-16);
@@ -772,14 +825,16 @@ function heroPicker(filter, def){
     pop.style.left=left+'px'; pop.style.top=top+'px';
   }
   function open(){ closeHeroPicker();                        // close any other picker (resets its z-index)
-    pop.classList.add('open'); wrap.style.zIndex='200';      // lift this picker above the rows below it
+    pop.classList.add('open'); wrap.style.zIndex='200'; btn.setAttribute('aria-expanded','true');      // lift this picker above the rows below it
     openPop=pop; openWrap=wrap; items(search.value);
     place();
     setTimeout(()=>search.focus(),0); }
-  function close(){ closeHeroPicker(); }
+  function close(){ closeHeroPicker({returnFocus:true}); }
   btn.onclick=(e)=>{e.stopPropagation(); pop.classList.contains('open')?close():open();};
+  btn.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();open();setTimeout(()=>focusOption(1),0);} };
   pop.onclick=e=>e.stopPropagation();
   search.oninput=()=>items(search.value);
+  search.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();focusOption(1);} else if(e.key==='Escape'){e.preventDefault();closeHeroPicker({returnFocus:true});} };
   draw(); items();
   wrap.setHero=function(name){ const h=list.find(x=>x.n===name); if(h){ cur=h; draw(); wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true})); } };   // for Load config
   wrap.append(btn); document.body.appendChild(pop); return wrap;
@@ -794,9 +849,9 @@ const HERO_GEN_STAT={15:[19.6156,4.9],14:[17.9143,4.475],13:[16.2129,4.05],12:[1
 function buildStats(){ const p=$('#statPanel'); p.innerHTML='';
   Object.keys(STAT_DEF).forEach(cls=>STATS.forEach((st,i)=>{
     const row=el('div','duo');
-    const me=el('div','me'); const mi=el('input'); mi.type='number'; mi.step='0.1'; mi.value=STAT_DEF[cls][i]; me.appendChild(mi);
+    const me=el('div','me'); const mi=el('input'); mi.type='number'; mi.step='0.1'; mi.value=STAT_DEF[cls][i]; mi.setAttribute('aria-label','My '+cls+' '+st+' %'); const ms=el('span','pct-suffix'); ms.textContent='%'; me.append(mi,ms);
     const lab=el('div','lab stat-name'); lab.textContent=cls+' '+st;
-    const foe=el('div','foe'); const fi=el('input'); fi.type='number'; fi.step='0.1'; fi.value=STAT_DEF[cls][i]; foe.appendChild(fi);
+    const foe=el('div','foe'); const fi=el('input'); fi.type='number'; fi.step='0.1'; fi.value=STAT_DEF[cls][i]; fi.setAttribute('aria-label','Enemy '+cls+' '+st+' %'); const fs=el('span','pct-suffix'); fs.textContent='%'; foe.append(fi,fs);
     row.append(me,lab,foe); p.appendChild(row);
   })); }
 function buildFinalStats(){ const p=$('#finalStatsPanel'); p.innerHTML='';
@@ -981,13 +1036,26 @@ function skillIcon(skill){
   if(skill.icon){
     const img=el('img','skill-icon'); img.src=skill.icon; img.alt=''; img.loading='lazy';
     if(tip) img.title=tip;
+    if(tip) img.addEventListener('click',e=>{ e.stopPropagation(); showTip(tip,img); });
     img.onerror=()=>{ img.replaceWith(skillIcon({name:skill.name, effect:skill.effect})); };
     return img;
   }
   const miss=el('div','skill-icon missing'); miss.textContent=(skill.name||'?').slice(0,1).toUpperCase();
   if(tip) miss.title=tip;
+  if(tip) miss.addEventListener('click',e=>{ e.stopPropagation(); showTip(tip,miss); });
   return miss;
 }
+function showTip(text,anchor){
+  let tip=$('#touchTip');
+  if(tip&&tip.textContent===text){ tip.remove(); return; }
+  if(tip) tip.remove();
+  tip=el('div','tip-pop'); tip.id='touchTip'; tip.textContent=text; document.body.appendChild(tip);
+  const r=anchor.getBoundingClientRect(), vw=innerWidth, vh=innerHeight;
+  const tw=tip.offsetWidth, th=tip.offsetHeight;
+  tip.style.left=Math.max(12,Math.min(r.left,vw-tw-12))+'px';
+  tip.style.top=Math.max(12,Math.min(r.bottom+8,vh-th-12))+'px';
+}
+document.addEventListener('click',()=>{ const tip=$('#touchTip'); if(tip) tip.remove(); });
 function skillMetric(label, dist, cls, animate){
   const wrap=el('div','skill-stat'), lab=el('span'); lab.textContent=label;
   const val=el('b'); val.textContent=label==='Kills'&&!hasSignal(dist)?'—':fmtDist(dist);
@@ -1061,7 +1129,7 @@ function buildSkillTelemetry(animate){
   const part=$('#skillTelemetryPart'), mount=$('#skillTelemetry'), tel=FORECAST.skill_telemetry;
   if(!part||!mount) return;
   const own=(tel&&tel.own)||[], enemy=(tel&&tel.enemy)||[];
-  if(!tel||!(own.length||enemy.length)){ part.classList.add('hidden'); mount.innerHTML=''; return; }
+  if(!tel||!(own.length||enemy.length)){ part.classList.remove('hidden'); mount.innerHTML='<div class="telemetry-empty">No skill telemetry for this matchup.</div>'; return; }
   part.classList.remove('hidden'); mount.innerHTML='';
   const og=telemetryGroups(own), eg=telemetryGroups(enemy), troops=['Infantry','Lancer','Marksman'];
   troops.forEach(troop=>{
@@ -1145,46 +1213,66 @@ function initInteractions(){
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true'); updateFinalStats();
   });
-  document.querySelector('.input').addEventListener('input',updateFinalStats);
-  document.querySelector('.input').addEventListener('change',updateFinalStats);
-  document.querySelector('.input').addEventListener('herochange',updateFinalStats);
+  const inputZone=document.querySelector('.input');
+  const onInputChanged=()=>{ updateFinalStats(); markForecastStale(); scheduleAutosave(); };
+  inputZone.addEventListener('input',onInputChanged);
+  inputZone.addEventListener('change',onInputChanged);
+  inputZone.addEventListener('herochange',onInputChanged);
   // max buff toggles: checked = max item/pet assumptions, unchecked = zero buffs.
   $('#maxMe').addEventListener('change',e=>setMaxBuffControls('me',e.target.checked)); setMaxBuffControls('me',true);
   $('#maxFoe').addEventListener('change',e=>setMaxBuffControls('foe',e.target.checked)); setMaxBuffControls('foe',true);
-  // tabs + double-click rename
-  function makeRenamable(tab){
-    tab.addEventListener('dblclick',e=>{ e.stopPropagation();
+  // tabs + rename
+  function startRename(tab){
       const name=tab.querySelector('.tname'); if(!name)return;
       const orig=name.textContent;
       const inp=el('input','tab-rename'); inp.type='text'; inp.value=orig;
       name.replaceWith(inp); inp.focus(); inp.select();
       let done=false;
       const commit=save=>{ if(done)return; done=true;                       // Enter commits directly, blur is a fallback
-        const s=el('span','tname'); s.textContent=save?(inp.value.trim()||orig):orig; inp.replaceWith(s); };
+        const s=el('span','tname'); s.textContent=save?(inp.value.trim()||orig):orig; inp.replaceWith(s); snapshotTab(tab); scheduleAutosave(); };
       inp.addEventListener('keydown',ev=>{ if(ev.key==='Enter'){ev.preventDefault();commit(true);} else if(ev.key==='Escape')commit(false); });
       inp.addEventListener('blur',()=>commit(true));
-    });
   }
-  $('#tabs').addEventListener('click',e=>{ const t=e.target.closest('.tab'); if(!t)return;
-    const arr=[...document.querySelectorAll('#tabs .tab')];
-    arr.forEach(x=>x.setAttribute('aria-selected','false')); t.setAttribute('aria-selected','true');
-    loadForecast(arr.indexOf(t)); });                       // switching a config changes the forecast
-  document.querySelectorAll('.tab').forEach(makeRenamable);
+  $('#tabs').addEventListener('dblclick',e=>{ const t=e.target.closest('.tab'); if(t) startRename(t); });
+  $('#tabs').addEventListener('click',e=>{
+    const close=e.target.closest('.x');
+    if(close){ e.stopPropagation(); closeTab(close.closest('.tab')); return; }
+    const t=e.target.closest('.tab'); if(t) selectTab(t);
+  });
+  $('#tabs').addEventListener('keydown',e=>{
+    const t=e.target.closest('.tab'); if(!t)return;
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectTab(t); }
+    else if(e.key==='F2'){ e.preventDefault(); startRename(t); }
+    else if(e.key==='Delete'){ e.preventDefault(); closeTab(t); }
+  });
   let tabN=1;
   $('#tabAdd').addEventListener('click',()=>{ if(document.querySelectorAll('#tabs .tab').length>=5)return;
-    tabN++; const t=el('button','tab'); t.setAttribute('aria-selected','false');
-    const nm=el('span','tname'); nm.textContent='Config '+tabN;
-    const x=el('span','x'); x.textContent='✕'; x.title='close'; x.onclick=(ev)=>{ev.stopPropagation();t.remove();};
-    t.append(nm,x); $('#tabs').appendChild(t); makeRenamable(t); });
+    snapshotTab(activeTab()); tabN++;
+    const cfg=formToConfig(); cfg.name='Config '+tabN;
+    const t=makeTab(cfg.name,cfg,null); selectTab(t);
+  });
+  updateTabAddState();
   // run / refresh — identical: both call the SAME handler (same profile, n, seed, fetch)
   function triggerRun(e){ const b=e&&e.currentTarget; if(b){ b.style.filter='brightness(1.25)'; setTimeout(()=>b.style.filter='',220); } runForecast(); }
   $('#runBtn').addEventListener('click',triggerRun);
   $('#refreshBtn').addEventListener('click',triggerRun);
+  $('#runStatus').addEventListener('click',()=>{ (lastRunFailed?$('#fcError'):document.querySelector('.forecast'))?.scrollIntoView({block:'center'}); });
   $('#saveBtn').addEventListener('click',saveConfig);
   $('#loadBtn').addEventListener('click',loadConfig);
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter'||openPop) return;
+    const target=e.target;
+    if(!inputZone.contains(target)) return;
+    if(/^(BUTTON|SELECT|TEXTAREA)$/i.test(target.tagName)) return;
+    e.preventDefault(); runForecast();
+  });
 }
 /* ---------- real forecast pipeline (POST /api/predict) ---------- */
 let FORECAST=null;
+const tabState=new Map();
+let applyingConfig=false, activeRun=null, autosaveTimer=null, lastRunFailed=false;
+const AUTOSAVE_KEY='wos:lastConfig:v1', DEFAULT_SEED=4471;
+let activeSeed=DEFAULT_SEED;
 const setText=(sel,txt)=>{const e=$(sel); if(e)e.textContent=txt;};
 const pctN=x=>x*100;
 
@@ -1295,7 +1383,8 @@ function updateFinalStats(){
     const key=n.dataset.cls+'|'+n.dataset.stat;
     const own=n.dataset.side==='me'?me[key]:foe[key];
     const opp=n.dataset.side==='me'?foe[key]:me[key];
-    n.textContent=(Number.isFinite(own)?own:0).toFixed(1)+'%';
+    const glyph=own>opp?'▲':own<opp?'▼':'=';
+    n.innerHTML=(Number.isFinite(own)?own:0).toFixed(1)+'% <span class="cmp">'+glyph+'</span>';
     n.classList.toggle('higher',own>opp);
     n.classList.toggle('lower',own<opp);
     n.classList.toggle('equal',own===opp);
@@ -1354,13 +1443,104 @@ function buildProfile(which){   // 'me' | 'foe'
 function activeTabName(){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); return t?t.textContent.trim():'Config 1'; }
 function renameActiveTab(name){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); if(t)t.textContent=name; }
 function currentRuns(){ return parseInt(($('#runsSel').value||'1000').replace(/[^0-9]/g,''))||1000; }
+function activeTab(){ return document.querySelector('#tabs .tab[aria-selected="true"]'); }
+function setTabSelected(tab,on){ tab.setAttribute('aria-selected',String(on)); tab.tabIndex=on?0:-1; }
+function updateTabAddState(){
+  const add=$('#tabAdd'), count=document.querySelectorAll('#tabs .tab').length;
+  if(!add)return;
+  const capped=count>=5;
+  add.disabled=capped;
+  add.title=capped?'Maximum 5 configs':'New config (max 5)';
+}
+function setRunStatus(state,msg){
+  const chip=$('#runStatus'); if(!chip)return;
+  chip.hidden=!state; chip.className='run-status '+(state||''); chip.textContent=msg||'';
+}
+function setRunBusy(on){
+  ['#runBtn','#refreshBtn'].forEach(sel=>{ const b=$(sel); if(b)b.disabled=on; });
+  const fc=document.querySelector('.forecast'); if(fc) fc.setAttribute('aria-busy',String(on));
+}
+function markForecastStale(msg='inputs changed - re-run'){
+  if(applyingConfig) return;
+  const fc=document.querySelector('.forecast'), chip=$('#staleChip');
+  if(fc) fc.classList.add('stale');
+  if(chip){ chip.hidden=false; chip.textContent=msg; }
+}
+function clearForecastStale(){
+  document.querySelector('.forecast')?.classList.remove('stale');
+  const chip=$('#staleChip'); if(chip) chip.hidden=true;
+}
+function snapshotTab(tab){
+  if(!tab||applyingConfig) return;
+  tabState.set(tab,{config:formToConfig(), forecast:FORECAST});
+}
+function restoreTab(tab){
+  const st=tabState.get(tab);
+  let needsRun=false;
+  applyingConfig=true;
+  try{
+    if(st&&st.config) configToForm(st.config);
+    FORECAST=st&&st.forecast?st.forecast:null;
+    if(FORECAST){ renderCharts(false); clearForecastStale(); }
+    else needsRun=true;
+  } finally { applyingConfig=false; updateFinalStats(); }
+  if(needsRun) markForecastStale('Run this config');
+}
+function selectTab(tab){
+  if(!tab||tab===activeTab()) return;
+  snapshotTab(activeTab());
+  document.querySelectorAll('#tabs .tab').forEach(t=>setTabSelected(t,false));
+  setTabSelected(tab,true);
+  restoreTab(tab);
+}
+function closeTab(tab){
+  const tabs=[...document.querySelectorAll('#tabs .tab')];
+  if(tabs.length<=1) return;
+  const idx=tabs.indexOf(tab), wasActive=tab.getAttribute('aria-selected')==='true';
+  tabState.delete(tab); tab.remove(); updateTabAddState();
+  if(wasActive){
+    const next=tabs[idx+1]||tabs[idx-1];
+    if(next&&next.isConnected){ setTabSelected(next,true); restoreTab(next); }
+  }
+}
+function makeTab(name, cfg, forecast){
+  const t=el('div','tab'); t.setAttribute('role','tab'); t.tabIndex=-1; t.setAttribute('aria-selected','false');
+  const nm=el('span','tname'); nm.textContent=name;
+  const x=el('button','x'); x.type='button'; x.setAttribute('aria-label','Close config'); x.textContent='x';
+  t.append(nm,x); $('#tabs').appendChild(t);
+  tabState.set(t,{config:cfg||formToConfig(), forecast:forecast||null});
+  updateTabAddState();
+  return t;
+}
+function scheduleAutosave(){
+  if(applyingConfig) return;
+  clearTimeout(autosaveTimer);
+  autosaveTimer=setTimeout(()=>{
+    try{ snapshotTab(activeTab()); localStorage.setItem(AUTOSAVE_KEY,JSON.stringify(formToConfig())); }catch(_){}
+  },800);
+}
+function showSessionNote(msg){
+  let note=$('#sessionNote');
+  if(!note){ note=el('div','session-note'); note.id='sessionNote'; note.innerHTML='<span></span><button type="button" aria-label="Dismiss restored-session note">x</button>'; $('.input-toolbar').appendChild(note); note.querySelector('button').onclick=()=>note.remove(); }
+  note.querySelector('span').textContent=msg;
+}
+function restoreAutosave(){
+  let raw=null; try{ raw=localStorage.getItem(AUTOSAVE_KEY); }catch(_){}
+  if(!raw) return false;
+  try{
+    const cfg=JSON.parse(raw); if(!cfg||!cfg.own||!cfg.enemy)return false;
+    applyingConfig=true; configToForm(cfg); renameActiveTab(cfg.name||'Config 1');
+    return true;
+  }catch(_){ return false; }
+  finally{ applyingConfig=false; updateFinalStats(); }
+}
 function formToConfig(){ var own=buildProfile('me'), enemy=buildProfile('foe');
   own._ui_buffs=readBuffControls('me'); enemy._ui_buffs=readBuffControls('foe');   // exact save/load of the item/pet split
   own._ui_max_buff=$('#maxMe').checked; enemy._ui_max_buff=$('#maxFoe').checked;
   own._ui_input_panel=readInputPanel('me'); enemy._ui_input_panel=readInputPanel('foe');
   own._ui_max_gears=readGearControls('me'); enemy._ui_max_gears=readGearControls('foe');
   own._ui_stats_type=selectedStatsType(); enemy._ui_stats_type=selectedStatsType();
-  return { wos_config:1, name:activeTabName(), runs:currentRuns(), seed:4471, own:own, enemy:enemy }; }
+  return { wos_config:1, name:activeTabName(), runs:currentRuns(), seed:activeSeed, own:own, enemy:enemy }; }
 
 const CONFIG_PICKER_OPTIONS={id:'wos-battle-configs',startIn:'documents',
   types:[{description:'WoS config JSON',accept:{'application/json':['.json']}}]};
@@ -1404,11 +1584,15 @@ async function loadConfigFile(file){
   if(!cfg||!cfg.own||!cfg.enemy){ showError('Not a WoS config file (missing own/enemy).'); return; }
   const opt=[...$('#runsSel').options].find(o=>+o.textContent.replace(/[^0-9]/g,'')===cfg.runs); if(opt)$('#runsSel').value=opt.value;
   renameActiveTab(cfg.name||stripJsonExt(file.name));
+  applyingConfig=true;
   try{ configToForm(cfg); }catch(err){ showError('Could not apply config: '+err.message); return; }
+  finally{ applyingConfig=false; updateFinalStats(); }
+  snapshotTab(activeTab());
   hideError(); runForecast();
 }
 function configToForm(cfg){
   const own=cfg.own||{}, enemy=cfg.enemy||{};
+  activeSeed=cfg.seed||DEFAULT_SEED;
   const myR=own.role==='garrison'?'Garrison':'Rally';
   document.querySelectorAll('#roleToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.role===myR?'true':'false'));
   $('#foeRole').textContent = myR==='Rally'?'Garrison':'Rally';
@@ -1452,15 +1636,22 @@ function applyPanel(which,panel){ const inp=[...document.querySelectorAll('#stat
 function applyHeroes(id,names){ [...document.querySelectorAll(id+' .hpick')].forEach((p,i)=>{ if(names[i]&&p.setHero) p.setHero(names[i]); }); }
 
 async function runForecast(){
-  showProgress(true); hideError();
+  if(activeRun) activeRun.abort();
+  const controller=new AbortController();
+  activeRun=controller; lastRunFailed=false;
+  showProgress(true); hideError(); setRunBusy(true); setRunStatus('running','Running...');
   try{
     const n=currentRuns();
     const res=await fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({own:buildProfile('me'), enemy:buildProfile('foe'), n, seed:4471})});
+      body:JSON.stringify({own:buildProfile('me'), enemy:buildProfile('foe'), n, seed:activeSeed}), signal:controller.signal});
+    if(activeRun!==controller) return;
     if(!res.ok){ let m='Request failed ('+res.status+')'; try{const e=await res.json(); m=(e.problems||[e.detail]).filter(Boolean).join(' · ')||m;}catch(_){} throw new Error(m); }
-    FORECAST=await res.json(); renderCharts(true);
-  }catch(err){ showError(err.message||'Could not reach the engine — is the server running?'); }
-  finally{ showProgress(false); }
+    FORECAST=await res.json(); renderCharts(true); clearForecastStale(); setRunStatus('done','Done'); setText('#liveStatus','Forecast updated - win chance '+pctN(FORECAST.verdict.win.p).toFixed(1)+'%'); snapshotTab(activeTab()); scheduleAutosave();
+  }catch(err){
+    if(err&&err.name==='AbortError') return;
+    lastRunFailed=true; setRunStatus('failed','Failed'); showError(err.message||'Could not reach the engine — is the server running?');
+  }
+  finally{ if(activeRun===controller){ activeRun=null; setRunBusy(false); showProgress(false); } }
 }
 
 function renderCharts(animate){
@@ -1490,7 +1681,7 @@ function setVerdict(){
     setText('#haze .hlabel','model ± '+meStr+'%');
     if(mdl) mdl.innerHTML='model error<b>± '+meStr+'%</b>';
   } else {
-    hz.style.display=''; hz.style.left=Math.max(0,win-me)+'%'; hz.style.width=Math.min(100,2*me)+'%';
+    hz.style.display=''; hz.style.left=Math.max(0,win-se)+'%'; hz.style.width=Math.min(100,2*se)+'%';
     setText('#haze .hlabel','directional range');
     if(mdl) mdl.innerHTML='confidence<b>directional</b>';
   }
@@ -1507,10 +1698,10 @@ function renderMeta(){
     if(calibrated){ const me=pctN(eng.model_error); prov.textContent='Validated ± '+(me<10?me.toFixed(1):me.toFixed(0))+'%'; }
     else { prov.textContent='Uncalibrated · directional'; }
     prov.title=eng.note||''; prov.classList.toggle('validated', calibrated); }
-  setText('.fc-meta .conv', eng.stochastic ? '● '+FORECAST.n.toLocaleString()+' sims' : '● deterministic · single outcome');
+  setText('.fc-meta .conv', eng.stochastic ? '● '+'stochastic' : '● deterministic · single outcome');
 }
 
-// config tabs just re-run in v1 (real per-tab state is a build item)
+// Kept for older callers; config tabs now restore their own saved form/forecast state.
 function loadForecast(){ runForecast(); }
 
 // progress overlay (time-estimated fill while the request is in flight) + error banner
@@ -1518,7 +1709,7 @@ function showProgress(on){ const ov=$('#simProgress'); if(!ov)return; const fill
   if(on){
     const runs=currentRuns(), expectedMs=Math.max(3500, runs*180);
     ov._runId=(ov._runId||0)+1; const id=ov._runId, started=Date.now(); let last=0;
-    st.textContent='Running '+runs.toLocaleString()+' simulations...';
+    st.textContent='Simulating...';
     ov.classList.add('on'); fill.style.width='0%'; pct.textContent='0%';
     clearInterval(ov._t);
     ov._t=setInterval(()=>{
@@ -1527,9 +1718,8 @@ function showProgress(on){ const ov=$('#simProgress'); if(!ov)return; const fill
       const tail=88+(1-Math.exp(-(Math.max(0,elapsed-expectedMs))/9000))*10;
       const p=Math.min(98,Math.max(last,elapsed<expectedMs?early:tail));
       last=p; fill.style.width=p+'%'; pct.textContent=Math.floor(p)+'%';
-      if(p>=96) st.textContent='Finalizing skill telemetry...';
-      else if(p>=88) st.textContent='Resolving hero procs and kills...';
-      else if(p>=45) st.textContent='Running turn engine simulations...';
+      if(p>=92) st.textContent='Finalizing...';
+      else st.textContent='Simulating...';
     },120);
   } else {
     const id=ov._runId;
@@ -1537,17 +1727,22 @@ function showProgress(on){ const ov=$('#simProgress'); if(!ov)return; const fill
     if(st) st.textContent='Rendering results...';
     setTimeout(()=>{ if(ov._runId===id) ov.classList.remove('on'); },260);
   } }
-function showError(msg){ let e=$('#fcError'); if(!e){ e=el('div','fc-error'); e.id='fcError'; $('.fc-body').prepend(e); }
-  e.textContent='⚠ '+msg; e.style.display='block'; }
+function showError(msg){ let e=$('#fcError'); if(!e){ e=el('div','fc-error'); e.id='fcError'; e.setAttribute('role','alert'); $('.fc-body').prepend(e); }
+  e.textContent='⚠ '+msg; e.style.display='block';
+  e.scrollIntoView({block:'center'}); }   // instant jump: reliable + right for an alert
 function hideError(){ const e=$('#fcError'); if(e) e.style.display='none'; }
 
 window.addEventListener('DOMContentLoaded',()=>{
   buildStats(); buildFinalStats(); buildFormation(); buildItemBuffs(); buildPetBuffs(); buildQuality(); buildHeroes();
   initAccordions();
   initInteractions();
+  const restored=restoreAutosave();
+  if(restored) showSessionNote('Restored your last session');
   updateFinalStats();
+  snapshotTab(activeTab());
   runForecast();   // initial forecast from the live engine
 });
 </script>
 </body>
 </html>
+
