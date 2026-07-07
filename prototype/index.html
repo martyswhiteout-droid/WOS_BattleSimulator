@@ -233,6 +233,7 @@
   .hpick-btn:hover{border-color:var(--ice-deep)}
   .foe .hpick-btn:hover{border-color:var(--ember-deep)}
   .hpick-btn img{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel-2)}
+  .empty-avatar{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--void);border:1px dashed var(--line);color:var(--mute-2);font-family:var(--mono);font-size:13px}
   .hpick-btn span{font-size:12.5px;font-weight:500;white-space:nowrap}   /* no ellipsis — show the whole name */
   .hpick-btn i{margin-left:auto;font-style:normal;color:var(--mute-2);font-size:10px}
   .hpick-pop{position:fixed;z-index:120;top:0;left:0;width:min(230px,calc(100vw - 16px));max-height:min(280px,calc(100vh - 16px));overflow:auto;
@@ -242,6 +243,7 @@
   .hpick-it{display:flex;align-items:center;gap:9px;width:100%;background:transparent;border:0;border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--white);text-align:left}
   .hpick-it:hover{background:var(--ice-ghost)}
   .hpick-it img{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel)}
+  .hpick-it .empty-avatar{width:28px;height:28px}
   .hpick-it span{font-size:13px}
   .hpick-it .cls{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--mute-2);letter-spacing:.1em}
 
@@ -488,17 +490,35 @@
   .vaxis,.caxis,.rx,.rxcap,.cbox .mtitle,.skill-slot,.skill-role,.skill-copy small,.skill-stat span,
   .skill-spark-label,.rail-hint{font-size:10px}
 
+  /* collapsed-section summary chip (visible only while collapsed) */
+  .iblock>.title .sum{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:none;
+    color:var(--ice);opacity:.85;margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42%}
+  .iblock:not(.collapsed)>.title .sum{display:none}
+  /* collapsible forecast part (skill telemetry is ~9.5k px on mobile) */
+  .fc-part.tcollapsed>*:not(.h){display:none}
+  .fc-part>.h{position:relative}
+  .fc-part>.h .accordion-toggle{right:0}
+
   @media (max-width:960px){
     .layout{grid-template-columns:1fr}
     .config-rail{position:static}
     .rail-tabs{flex-direction:row;overflow-x:auto;padding-bottom:4px}
     .rail-tabs .tab{white-space:nowrap;flex:none}
-    .buffs-title{grid-template-columns:1fr!important;justify-items:start}
+    /* KEEP me|enemy pairs side by side: the label spans on top, the two sides sit below.
+       Stacking the sides (old behavior) tripled page length and killed comparison. */
+    .duo{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
+    .duo .lab{order:-1;grid-column:1/-1;text-align:left;margin-top:2px}
+    .duo .me,.duo .foe{justify-self:stretch}
+    .sides-head{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+    .buffs-title{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px 10px}
+    .buffs-title .ctr{order:-1;grid-column:1/-1;text-align:left}
     .buffs-title .left,.buffs-title .right{justify-self:start}
     .stats-type{display:flex;margin-top:8px}
-    .duo,.quality,.sides-head{grid-template-columns:1fr}
-    .duo .lab{text-align:left;margin-top:6px}
-    .duo .me,.duo .foe{justify-self:stretch}
+    .quality{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px}
+    .qmid{display:none}
+    .qcard::before{content:attr(data-cls);display:block;font-family:var(--mono);font-size:9.5px;
+      letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin-bottom:6px}
+    .me .form-stack{margin-left:0}
     .me .formrow,.me .hero-lane,.me .slider-wrap,.troops-me{justify-content:flex-start}
     .hero-lane{flex-wrap:wrap}
     .config-actions{flex-wrap:wrap;margin-left:0}
@@ -508,17 +528,44 @@
     .skill-slot{order:-1;justify-content:flex-start}
     .skill-line{grid-template-columns:30px minmax(0,1fr)}
     .skill-stat{grid-column:2}
-    .qclass-mid{display:none}
     .vs-pill{display:none}
+    .iblock,.forecast,.fc-error{scroll-margin-top:70px}
+  }
+  @media (max-width:700px){
+    /* keep browser focus-scrolls clear of the fixed bottom toolbar */
+    html{scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+    /* thumb-zone toolbar: Save/Load/Runs/Run/status pinned to the bottom */
+    .input-toolbar{position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(10,16,23,.96);border-top:1px solid var(--line);
+      flex-wrap:nowrap;overflow-x:auto;backdrop-filter:blur(10px)}
+    .input-toolbar .run{margin-left:auto;flex:none}
+    .input-toolbar .ghost-btn,.input-toolbar .mini-field,.input-toolbar .run-status,.session-note{flex:none}
+    body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+    /* iOS zooms the page when focusing inputs under 16px - prevent it */
+    input[type=number],input[type=text],select{font-size:16px}
   }
   @media (max-width:520px){
     main{padding-inline:10px}
     .input{padding-inline:10px}
-    .input-toolbar .run{margin-left:0}
     .run,.ghost-btn,.refresh,.run-status{min-height:42px}
+    .fc-body{padding-inline:8px}
+    /* outcome buckets: keep bars and labels aligned, scroll the card instead of clipping */
+    .cats{overflow-x:auto}
+    .catbars,.catx{min-width:430px}
     .catbars{gap:6px}
     .catx{gap:6px}
     .skill-line{grid-template-columns:30px minmax(0,1fr);gap:7px}
+  }
+  @media (any-pointer:coarse){   /* any-pointer: also covers touchscreen laptops / 2-in-1s */
+    html{touch-action:manipulation}
+    input[type=checkbox]{width:18px;height:18px}
+    .chk,.eqchk,.gear-check{min-height:30px}
+    .form-ctl button{min-width:34px;min-height:34px}
+    .accordion-toggle{width:36px;height:36px}
+    .form-ctl input[type=range]::-webkit-slider-thumb{width:26px;height:26px}
+    .form-ctl input[type=range]::-moz-range-thumb{width:26px;height:26px}
+    .rail-tabs .tab .x{min-width:28px;min-height:28px;display:inline-grid;place-items:center}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -575,10 +622,10 @@
       <div class="duo">
         <div class="me"><div class="troops-me">
           <label class="eqchk"><input type="checkbox" id="eqTroops" checked> equal</label>
-          <input type="number" id="myTroops" value="1000000" step="1000">
+          <input type="number" id="myTroops" value="1000000" step="1000" inputmode="numeric">
         </div></div>
         <div class="lab">Total troops</div>
-        <div class="foe"><input type="number" class="num-only" id="foeTroops" value="1000000" step="1000" disabled></div>
+        <div class="foe"><input type="number" class="num-only" id="foeTroops" value="1000000" step="1000" inputmode="numeric" disabled></div>
       </div>
       <div class="duo" style="margin-top:14px;align-items:start">
         <div class="me"><div class="form-stack" id="formMe"></div></div>
@@ -772,6 +819,7 @@ const DEFAULT_JOINERS_ME=['Hendrik','Jessie','Blanchette','Mia'];
 const DEFAULT_JOINERS_FOE=['Gatot','Patrick','Ling Xue','Wu Ming'];
 const $=(s,r=document)=>r.querySelector(s); const el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const enc=s=>encodeURIComponent(s); const avatar=f=>"avatars/"+enc(f);
+const fmtPct=v=>Number.isFinite(+v)?(+v).toFixed(2).replace(/\.?0+$/,''):'0';
 
 /* ---------- hero picker ---------- */
 let openPop=null, openWrap=null, heroPickerSeq=0;
@@ -785,18 +833,23 @@ function closeHeroPicker(opts={}){
 document.addEventListener('click', closeHeroPicker);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeHeroPicker({returnFocus:true}); });
 window.addEventListener('resize', closeHeroPicker);
-function heroPicker(filter, def){
+function heroPicker(filter, def, opts={}){
   const list = filter ? HERO_LIST.filter(h=>h.c===filter) : HERO_LIST;
-  let cur = list.find(h=>h.n===def) || list[0];
+  const allowNone=!!opts.allowNone, noneLabel=opts.noneLabel||'No joiner';
+  const noneHero={n:'', c:'', f:'', g:'', none:true};
+  let cur = allowNone && (def==null || def==='') ? noneHero : (list.find(h=>h.n===def) || list[0]);
   const wrap=el('div','hpick');
+  if(allowNone) wrap.dataset.allowNone='1';
   const listId='hero-list-'+(++heroPickerSeq);
   const btn=el('button','hpick-btn'); const pop=el('div','hpick-pop');
   btn.type='button'; btn.setAttribute('aria-haspopup','listbox'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls',listId);
   const search=el('input','hpick-search'); search.type='text'; search.placeholder='Search hero…'; pop.appendChild(search);
   const listBox=el('div'); listBox.id=listId; listBox.setAttribute('role','listbox'); pop.appendChild(listBox);
-  function draw(){ wrap.dataset.hero=cur.n; btn.title=cur.n; btn.innerHTML=''; const im=el('img'); im.src=avatar(cur.f); im.alt=''; im.loading='lazy';
-    const sp=el('span'); sp.textContent=cur.n; const ic=el('i'); ic.textContent='▾';
-    btn.append(im,sp,ic); }
+  function draw(){ wrap.dataset.hero=cur.none?'':cur.n; btn.title=cur.none?noneLabel:cur.n; btn.innerHTML='';
+    if(cur.none){ const empty=el('span','empty-avatar'); empty.textContent='–'; btn.appendChild(empty); }
+    else { const im=el('img'); im.src=avatar(cur.f); im.alt=''; im.loading='lazy'; btn.appendChild(im); }
+    const sp=el('span'); sp.textContent=cur.none?noneLabel:cur.n; const ic=el('i'); ic.textContent='▾';
+    btn.append(sp,ic); }
   function choose(h){ cur=h; draw(); wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true})); closeHeroPicker(); }
   function focusOption(delta){
     const opts=[...listBox.querySelectorAll('.hpick-it')];
@@ -805,11 +858,14 @@ function heroPicker(filter, def){
     opts[(idx+delta+opts.length)%opts.length].focus();
   }
   function items(q=''){ listBox.innerHTML='';
-    list.filter(h=>h.n.toLowerCase().includes(q.toLowerCase())).forEach(h=>{
+    const rows=(allowNone ? [noneHero] : []).concat(list).filter(h=>h.none || h.n.toLowerCase().includes(q.toLowerCase()));
+    rows.forEach(h=>{
       const it=el('button','hpick-it'); const im=el('img'); im.src=avatar(h.f); im.alt=''; im.loading='lazy';
-      const sp=el('span'); sp.textContent=h.n; const cl=el('span','cls'); cl.textContent=(h.g==='SR'?'SR':'G'+h.g);
+      if(h.none){ im.remove(); const empty=el('span','empty-avatar'); empty.textContent='–'; it.appendChild(empty); }
+      else it.appendChild(im);
+      const sp=el('span'); sp.textContent=h.none?noneLabel:h.n; const cl=el('span','cls'); cl.textContent=h.none?'NONE':(h.g==='SR'?'SR':'G'+h.g);
       it.type='button'; it.setAttribute('role','option'); it.setAttribute('aria-selected',String(h.n===cur.n));
-      it.append(im,sp,cl);
+      it.append(sp,cl);
       it.onclick=(e)=>{e.stopPropagation();choose(h);};
       it.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();focusOption(1);} else if(e.key==='ArrowUp'){e.preventDefault();focusOption(-1);} else if(e.key==='Enter'){e.preventDefault();choose(h);} else if(e.key==='Escape'){e.preventDefault();closeHeroPicker({returnFocus:true});} };
       listBox.appendChild(it); }); }
@@ -836,7 +892,10 @@ function heroPicker(filter, def){
   search.oninput=()=>items(search.value);
   search.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();focusOption(1);} else if(e.key==='Escape'){e.preventDefault();closeHeroPicker({returnFocus:true});} };
   draw(); items();
-  wrap.setHero=function(name){ const h=list.find(x=>x.n===name); if(h){ cur=h; draw(); wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true})); } };   // for Load config
+  wrap.setHero=function(name){
+    if(allowNone && (name==null || name==='')){ cur=noneHero; draw(); wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true})); return; }
+    const h=list.find(x=>x.n===name); if(h){ cur=h; draw(); wrap.dispatchEvent(new CustomEvent('herochange',{bubbles:true})); }
+  };   // for Load config
   wrap.append(btn); document.body.appendChild(pop); return wrap;
 }
 
@@ -849,9 +908,9 @@ const HERO_GEN_STAT={15:[19.6156,4.9],14:[17.9143,4.475],13:[16.2129,4.05],12:[1
 function buildStats(){ const p=$('#statPanel'); p.innerHTML='';
   Object.keys(STAT_DEF).forEach(cls=>STATS.forEach((st,i)=>{
     const row=el('div','duo');
-    const me=el('div','me'); const mi=el('input'); mi.type='number'; mi.step='0.1'; mi.value=STAT_DEF[cls][i]; mi.setAttribute('aria-label','My '+cls+' '+st+' %'); const ms=el('span','pct-suffix'); ms.textContent='%'; me.append(mi,ms);
+    const me=el('div','me'); const mi=el('input'); mi.type='number'; mi.step='0.01'; mi.inputMode='decimal'; mi.value=STAT_DEF[cls][i]; mi.setAttribute('aria-label','My '+cls+' '+st+' %'); const ms=el('span','pct-suffix'); ms.textContent='%'; me.append(mi,ms);
     const lab=el('div','lab stat-name'); lab.textContent=cls+' '+st;
-    const foe=el('div','foe'); const fi=el('input'); fi.type='number'; fi.step='0.1'; fi.value=STAT_DEF[cls][i]; fi.setAttribute('aria-label','Enemy '+cls+' '+st+' %'); const fs=el('span','pct-suffix'); fs.textContent='%'; foe.append(fi,fs);
+    const foe=el('div','foe'); const fi=el('input'); fi.type='number'; fi.step='0.01'; fi.inputMode='decimal'; fi.value=STAT_DEF[cls][i]; fi.setAttribute('aria-label','Enemy '+cls+' '+st+' %'); const fs=el('span','pct-suffix'); fs.textContent='%'; foe.append(fi,fs);
     row.append(me,lab,foe); p.appendChild(row);
   })); }
 function buildFinalStats(){ const p=$('#finalStatsPanel'); p.innerHTML='';
@@ -878,9 +937,9 @@ function buildPetBuffs(){ const c=$('#petBuffs'); c.innerHTML='';
   rows.forEach(([label,max])=>{ const row=el('div','duo buff-row');
     row.append(sideSlider('me',max), labCell(label,'pet'), sideSlider('foe',max)); c.appendChild(row); }); }
 function sideSlider(side,max){ const d=el('div',side); const w=el('div','slider-wrap');
-  const mag=Math.abs(max), neg=max<0, fmt=v=>(neg?'-':'+')+v+'%';   // 0 on the left, max magnitude on the right
-  const r=el('input'); r.type='range'; r.min=0; r.max=mag; r.step=1; r.value=mag; r.classList.add('maxlock-'+side);
-  const o=el('output'); o.textContent=fmt(mag); r.oninput=()=>o.textContent=fmt(r.value);
+  const mag=Math.abs(max), neg=max<0;   // 0 on the left, max magnitude on the right
+  const r=el('input'); r.type='range'; r.min=0; r.max=mag; r.step=0.01; r.value=mag; r.classList.add('maxlock-'+side);
+  const o=el('output'); o.textContent=fmtPct(mag).replace(/^/,(neg?'-':'+'))+'%'; r.oninput=()=>o.textContent=fmtPct(r.value).replace(/^/,(neg?'-':'+'))+'%';
   if(side==='me') w.append(o,r); else w.append(r,o); d.appendChild(w); return d; }
 
 function buildFormation(){
@@ -892,7 +951,7 @@ function buildFormation(){
       const ic=el('div','fic'); ic.textContent=glyph[cl];
       const body=el('div','fbody'); const nm=el('div','fname'); nm.textContent=cl; const ctr=el('div','fctrls');
       const minus=el('button','fbtn'); minus.type='button'; minus.textContent='−';
-      const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=1; r.value=init[cl];
+      const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=0.01; r.value=init[cl];
       const plus=el('button','fbtn'); plus.type='button'; plus.textContent='+';
       const val=el('div','fval'); val.textContent=init[cl]+'%';
       if(auto){ r.disabled=minus.disabled=plus.disabled=true; }
@@ -900,12 +959,12 @@ function buildFormation(){
       C[cl]={r,val,minus,plus};
     });
     const paint=()=>['Infantry','Lancer','Marksman'].forEach(cl=>{
-      C[cl].val.textContent=C[cl].r.value+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
+      C[cl].val.textContent=fmtPct(C[cl].r.value)+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
     const recalc=changed=>{
       let inf=+C.Infantry.r.value, lan=+C.Lancer.r.value;
       if(inf+lan>100){ if(changed==='Lancer') lan=100-inf; else inf=100-lan; }
       inf=Math.max(0,Math.min(100,inf)); lan=Math.max(0,Math.min(100,lan));
-      C.Infantry.r.value=inf; C.Lancer.r.value=lan; C.Marksman.r.value=Math.max(0,100-inf-lan); paint();
+      C.Infantry.r.value=fmtPct(inf); C.Lancer.r.value=fmtPct(lan); C.Marksman.r.value=fmtPct(Math.max(0,100-inf-lan)); paint();
     };
     ['Infantry','Lancer'].forEach(cl=>{
       C[cl].r.addEventListener('input',()=>recalc(cl));
@@ -918,12 +977,13 @@ function buildFormation(){
 function buildQuality(){ const c=$('#quality'); c.innerHTML='';
   const glyph={Infantry:'🛡',Lancer:'⚔',Marksman:'🏹'};
   ['Infantry','Lancer','Marksman'].forEach(cl=>{      // one grid row per class: [me card | class | foe card]
-    c.appendChild(qCard('me'));
+    c.appendChild(qCard('me',cl));
     const mid=el('div','qmid'); mid.innerHTML='<span class="qg">'+glyph[cl]+'</span>'+cl; c.appendChild(mid);
-    c.appendChild(qCard('foe'));
+    c.appendChild(qCard('foe',cl));
   }); }
-function qCard(side){                                  // two lines: FC/Tier/T12 labels, then the controls
-  const card=el('div','qcard '+side); const g=el('div','qgrid2');
+function qCard(side,cls){                              // two lines: FC/Tier/T12 labels, then the controls
+  const card=el('div','qcard '+side); card.dataset.cls=cls||'';   // mobile hides .qmid; the card labels itself
+  const g=el('div','qgrid2');
   ['FC','Tier','T12 stack'].forEach(t=>g.appendChild(qlbl(t)));
   const fc=fcSelect(), tier=tierSelect();
   const t12wrap=el('div','t12wrap'); const t12=el('input'); t12.type='range'; t12.min=0;t12.max=24;t12.step=1;t12.value=24;
@@ -951,8 +1011,8 @@ function buildHeroes(){
   });
   lead($('#capMe'),DEFAULT_LEAD_HEROES,'me');   // Inf, Lan, Mar — one per line
   lead($('#capFoe'),DEFAULT_LEAD_HEROES,'foe');
-  DEFAULT_JOINERS_ME.forEach(n=>$('#joinMe').appendChild(heroPicker(null,n)));
-  DEFAULT_JOINERS_FOE.forEach(n=>$('#joinFoe').appendChild(heroPicker(null,n)));
+  DEFAULT_JOINERS_ME.forEach(n=>$('#joinMe').appendChild(heroPicker(null,n,{allowNone:true,noneLabel:'No joiners'})));
+  DEFAULT_JOINERS_FOE.forEach(n=>$('#joinFoe').appendChild(heroPicker(null,n,{allowNone:true,noneLabel:'No joiners'})));
 }
 
 /* ---------- forecast charts (mock data) ---------- */
@@ -1049,13 +1109,15 @@ function showTip(text,anchor){
   let tip=$('#touchTip');
   if(tip&&tip.textContent===text){ tip.remove(); return; }
   if(tip) tip.remove();
-  tip=el('div','tip-pop'); tip.id='touchTip'; tip.textContent=text; document.body.appendChild(tip);
+  tip=el('div','tip-pop'); tip.id='touchTip'; tip.setAttribute('role','tooltip'); tip.textContent=text; document.body.appendChild(tip);
   const r=anchor.getBoundingClientRect(), vw=innerWidth, vh=innerHeight;
   const tw=tip.offsetWidth, th=tip.offsetHeight;
   tip.style.left=Math.max(12,Math.min(r.left,vw-tw-12))+'px';
   tip.style.top=Math.max(12,Math.min(r.bottom+8,vh-th-12))+'px';
 }
 document.addEventListener('click',()=>{ const tip=$('#touchTip'); if(tip) tip.remove(); });
+addEventListener('scroll',()=>{ const tip=$('#touchTip'); if(tip) tip.remove(); },{passive:true});   // a fixed tip must not float over unrelated content
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ const tip=$('#touchTip'); if(tip) tip.remove(); } });
 function skillMetric(label, dist, cls, animate){
   const wrap=el('div','skill-stat'), lab=el('span'); lab.textContent=label;
   const val=el('b'); val.textContent=label==='Kills'&&!hasSignal(dist)?'—':fmtDist(dist);
@@ -1156,6 +1218,37 @@ function buildCats(animate){ const bars=$('#catBars'), xs=$('#catX'); bars.inner
     const x=el('div'); x.innerHTML='<span class="n">'+(i+1)+'</span>'+mt[0]+'<br>'+mt[1]+'<div class="csub">'+mt[3]+'</div>'; xs.appendChild(x);
   }); }
 
+/* collapsed-section summary chips: show each section's state without opening it */
+function accordionSummary(block){
+  const t=((block.querySelector(':scope > .title')||{}).textContent||'').toLowerCase();
+  try{
+    if(t.includes('troops')){
+      const tr=+($('#myTroops').value)||0, f=readFormation('#formMe');
+      const n=tr>=1e6?(tr/1e6).toFixed(1).replace(/\.0$/,'')+'M':tr>=1e3?Math.round(tr/1e3)+'K':String(tr);
+      return n+' · '+Math.round((f.Infantry||0)*100)+'/'+Math.round((f.Lancer||0)*100)+'/'+Math.round((f.Marksman||0)*100);
+    }
+    if(t.includes('input stats')){
+      const mode=(document.querySelector('#statsTypeToggle [aria-pressed="true"]')||{dataset:{}}).dataset.mode||'base';
+      const vals=Object.values(readPanel('me'));
+      const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length*100:0;
+      return mode.charAt(0).toUpperCase()+mode.slice(1)+' · avg '+Math.round(avg)+'%';
+    }
+    if(t.includes('buffs')) return ($('#maxMe').checked?'Max':'Custom')+' / '+($('#maxFoe').checked?'Max':'Custom');
+    if(t.includes('quality')){
+      const q=readQuality('me'), cs=CLASSES.map(c=>q[c]||{});
+      const same=cs.every(x=>x.tier===cs[0].tier&&x.fc===cs[0].fc&&x.t12_stack===cs[0].t12_stack);
+      return same?('T'+cs[0].tier+' · FC'+cs[0].fc+' · '+cs[0].t12_stack):'mixed';
+    }
+    if(t.includes('lead')){ const n=readHeroes('#capMe').filter(Boolean).length; return n+' lead'+(n===1?'':'s'); }
+    if(t.includes('joiner')){ const n=readHeroes('#joinMe').filter(Boolean).length; return n+' joiner'+(n===1?'':'s'); }
+  }catch(_){}
+  return '';
+}
+function updateAccordionSummaries(){
+  document.querySelectorAll('.input .iblock').forEach(b=>{
+    const s=b.querySelector(':scope > .title .sum'); if(s) s.textContent=accordionSummary(b);
+  });
+}
 function initAccordions(){
   document.querySelectorAll('.input .iblock').forEach((block,i)=>{
     if(block.dataset.accordionReady)return;
@@ -1175,24 +1268,36 @@ function initAccordions(){
       const open=btn.getAttribute('aria-expanded')==='true';
       btn.setAttribute('aria-expanded',String(!open));
       btn.textContent=open?'▸':'▾';
-      btn.title=open?'Expand section':'Collapse section';
+      btn.title=(open?'Expand ':'Collapse ')+(btn.dataset.sec||'section');
       btn.setAttribute('aria-label',btn.title);
       body.hidden=open;
       block.classList.toggle('collapsed',open);
+      if(open) updateAccordionSummaries();   // chip becomes visible on collapse - fill it fresh
     });
     title.appendChild(btn);
     const titleText=title.textContent.replace(/\s+/g,' ').trim().toLowerCase();
-    const startsCollapsed=titleText.includes('input stats assumptions') || titleText.includes('buffs') || titleText.includes('troop quality');
+    title.appendChild(el('span','sum'));   // summary chip (filled by updateAccordionSummaries)
+    // distinct accessible names: 7 toggles must not all read "Expand section"
+    const secName=titleText.includes('troops &')?'Troops & formation':titleText.includes('input stats')?'Input stats':
+      titleText.includes('buffs')?'Buffs':titleText.includes('quality')?'Troop quality':titleText.includes('lead')?'Lead heroes':
+      titleText.includes('joiner')?'Joiner heroes':titleText.includes('final')?'Final stats':'section';
+    btn.dataset.sec=secName;
+    btn.title='Collapse '+secName; btn.setAttribute('aria-label',btn.title);
+    // mobile: start everything collapsed except Troops & formation - stacked-open the page is ~19 screens
+    const mobile=window.matchMedia&&matchMedia('(max-width:700px)').matches;
+    const startsCollapsed=mobile ? !titleText.includes('troops &')
+      : (titleText.includes('input stats assumptions') || titleText.includes('buffs') || titleText.includes('troop quality'));
     if(startsCollapsed){
       btn.setAttribute('aria-expanded','false');
       btn.textContent='>';
-      btn.title='Expand section';
-      btn.setAttribute('aria-label','Expand section');
+      btn.title='Expand '+secName;
+      btn.setAttribute('aria-label',btn.title);
       body.hidden=true;
       block.classList.add('collapsed');
     }
     block.dataset.accordionReady='1';
   });
+  updateAccordionSummaries();
 }
 
 /* ---------- interactions ---------- */
@@ -1212,9 +1317,10 @@ function initInteractions(){
   $('#statsTypeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true'); updateFinalStats();
+    updateAccordionSummaries();   // the toggle sits in the title, clickable while collapsed - keep the chip honest
   });
   const inputZone=document.querySelector('.input');
-  const onInputChanged=()=>{ updateFinalStats(); markForecastStale(); scheduleAutosave(); };
+  const onInputChanged=()=>{ updateFinalStats(); markForecastStale(); scheduleAutosave(); updateAccordionSummaries(); };
   inputZone.addEventListener('input',onInputChanged);
   inputZone.addEventListener('change',onInputChanged);
   inputZone.addEventListener('herochange',onInputChanged);
@@ -1384,7 +1490,7 @@ function updateFinalStats(){
     const own=n.dataset.side==='me'?me[key]:foe[key];
     const opp=n.dataset.side==='me'?foe[key]:me[key];
     const glyph=own>opp?'▲':own<opp?'▼':'=';
-    n.innerHTML=(Number.isFinite(own)?own:0).toFixed(1)+'% <span class="cmp">'+glyph+'</span>';
+    n.innerHTML=(Number.isFinite(own)?own:0).toFixed(2)+'% <span class="cmp">'+glyph+'</span>';
     n.classList.toggle('higher',own>opp);
     n.classList.toggle('lower',own<opp);
     n.classList.toggle('equal',own===opp);
@@ -1433,11 +1539,12 @@ function buildProfile(which){   // 'me' | 'foe'
   const leadMap=leadHeroMap(which);
   const _t=parseInt((which==='me'?$('#myTroops'):$('#foeTroops')).value,10);   // 0 stays 0 -> server rejects, not silently defaulted
   const troops=Number.isNaN(_t)?1000000:_t;
+  const joiners=readHeroes(which==='me'?'#joinMe':'#joinFoe');
   return { role, troops_total:troops, stats_mode:'scouted',
     formation:readFormation(which==='me'?'#formMe':'#formFoe'),
     quality:readQuality(which), panel:readPanel(which),
     panel_is_final:true, widgets_in_panel:true, own_buffs:{}, debuffs_on_enemy:{},
-    lead_heroes:leadMap, joiners:readHeroes(which==='me'?'#joinMe':'#joinFoe') }; }
+    lead_heroes:leadMap, joiners:joiners.length?joiners:null }; }
 
 /* ---------- save / load config (a config = both side profiles as JSON) ---------- */
 function activeTabName(){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); return t?t.textContent.trim():'Config 1'; }
@@ -1483,7 +1590,7 @@ function restoreTab(tab){
     FORECAST=st&&st.forecast?st.forecast:null;
     if(FORECAST){ renderCharts(false); clearForecastStale(); }
     else needsRun=true;
-  } finally { applyingConfig=false; updateFinalStats(); }
+  } finally { applyingConfig=false; updateFinalStats(); updateAccordionSummaries(); }
   if(needsRun) markForecastStale('Run this config');
 }
 function selectTab(tab){
@@ -1620,8 +1727,8 @@ function configToForm(cfg){
   updateFinalStats();
 }
 function applyFormation(id,f){ const r=[...document.querySelectorAll(id+' .form-ctl input[type=range]')]; if(r.length<2)return;
-  if(f.Infantry!=null) r[0].value=Math.round(f.Infantry*100);
-  if(f.Lancer!=null) r[1].value=Math.round(f.Lancer*100);
+  if(f.Infantry!=null) r[0].value=fmtPct(f.Infantry*100);
+  if(f.Lancer!=null) r[1].value=fmtPct(f.Lancer*100);
   r[1].dispatchEvent(new Event('input')); }        // recalc -> marksman + fill
 function applyQuality(which,q){ const cards=[...document.querySelectorAll('#quality .qcard.'+which)];
   ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const cfg=q[c]; if(!cfg||!cards[i])return;
@@ -1633,7 +1740,13 @@ function applyQuality(which,q){ const cards=[...document.querySelectorAll('#qual
 function applyPanel(which,panel){ const inp=[...document.querySelectorAll('#statPanel .duo .'+which+' input')];
   const C=['Infantry','Lancer','Marksman'], S=['Attack','Defense','Lethality','Health'];
   inp.forEach((x,i)=>{ const k=C[Math.floor(i/4)]+'|'+S[i%4]; if(panel[k]!=null) x.value=+(panel[k]*100).toFixed(2); }); }
-function applyHeroes(id,names){ [...document.querySelectorAll(id+' .hpick')].forEach((p,i)=>{ if(names[i]&&p.setHero) p.setHero(names[i]); }); }
+function applyHeroes(id,names){
+  const arr=Array.isArray(names)?names:[];
+  [...document.querySelectorAll(id+' .hpick')].forEach((p,i)=>{
+    if(arr[i]) p.setHero&&p.setHero(arr[i]);
+    else if(p.dataset.allowNone) p.setHero&&p.setHero(null);
+  });
+}
 
 async function runForecast(){
   if(activeRun) activeRun.abort();
@@ -1732,13 +1845,45 @@ function showError(msg){ let e=$('#fcError'); if(!e){ e=el('div','fc-error'); e.
   e.scrollIntoView({block:'center'}); }   // instant jump: reliable + right for an alert
 function hideError(){ const e=$('#fcError'); if(e) e.style.display='none'; }
 
+/* skill telemetry is by far the longest forecast part (~9.5k px at 375px):
+   collapsible everywhere, collapsed by default on mobile */
+function initTelemetryCollapse(){
+  const part=$('#skillTelemetryPart'); if(!part||part.dataset.collapseReady) return;
+  const head=part.querySelector(':scope > .h'); if(!head) return;
+  const btn=el('button','accordion-toggle'); btn.type='button';
+  btn.setAttribute('aria-controls','skillTelemetry');
+  const set=(collapsed)=>{ part.classList.toggle('tcollapsed',collapsed);
+    btn.textContent=collapsed?'>':'▾';
+    btn.title=(collapsed?'Expand':'Collapse')+' Skill details';
+    btn.setAttribute('aria-label',btn.title);
+    btn.setAttribute('aria-expanded',String(!collapsed)); };
+  btn.addEventListener('click',()=>set(!part.classList.contains('tcollapsed')));
+  head.appendChild(btn);
+  set(window.matchMedia&&matchMedia('(max-width:700px)').matches);
+  part.dataset.collapseReady='1';
+}
+
+/* provisional-badge tooltip: skill icons already have their own tap popover
+   (showTip); give the confidence badge the same treatment, plus a keyboard path
+   (tab + Enter/Space) - title= alone only ever shows on mouse hover */
+function initProvTip(){
+  const prov=$('#fcProv'); if(!prov) return;
+  prov.setAttribute('tabindex','0');
+  const show=e=>{ const t=prov.getAttribute('title'); if(!t) return; e.stopPropagation(); showTip(t,prov); };
+  prov.addEventListener('click',show);
+  prov.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(e); } });
+}
+
 window.addEventListener('DOMContentLoaded',()=>{
   buildStats(); buildFinalStats(); buildFormation(); buildItemBuffs(); buildPetBuffs(); buildQuality(); buildHeroes();
   initAccordions();
   initInteractions();
+  initProvTip();
+  initTelemetryCollapse();
   const restored=restoreAutosave();
   if(restored) showSessionNote('Restored your last session');
   updateFinalStats();
+  updateAccordionSummaries();   // chips were computed from defaults before the autosave restore
   snapshotTab(activeTab());
   runForecast();   // initial forecast from the live engine
 });

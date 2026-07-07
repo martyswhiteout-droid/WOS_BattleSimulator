@@ -112,20 +112,88 @@ overlay as-is; this is a mirror, not a replacement.
   can never show run-to-run variance. Suggestion: keep the reproducible default,
   add a small "new seed 🎲" control that re-rolls and displays the seed used.
 
-## P2-3 · Mobile (375px)
+## P2-3 · Mobile overhaul (375–430px) — ✅ SHIPPED 2026-07-07 (do not redo)
 
-- **Jump to results:** covered by P1-3's chip. Also consider a sticky mini-verdict
-  bar at top once results exist.
-- **Bucket labels clip** at the forecast card's right edge (overflow:hidden) —
-  let the label row wrap or shrink instead of clipping invisible.
-- **Tap targets:** checkboxes measured 13×13px, tab ✕ 9×15px, steppers 26×26px.
-  Keep the visual size, grow the hit area (padding or `::after` overlay) to ≥24px
-  now, 44px where layout allows.
-- **Autosave:** debounce (~1s) `formToConfig()` → `localStorage`; on load, if a
-  snapshot exists and differs from defaults, restore it and show a dismissible
-  "restored your last session" note. Today an accidental refresh loses everything.
-- **Tooltips are hover-only** (dead on touch): for skill icons, make tap toggle a
-  small popover with the same text; `title` stays for desktop hover.
+**Status:** M1–M6 implemented, adversarially reviewed, and verified live at 375/1360px.
+Page height at 375px: 15,628px → **4,640px**; me/enemy pairs stay side-by-side; sections
+collapse with live summary chips (distinct `aria-label`s per toggle); toolbar pins to the
+thumb zone with `scroll-padding-bottom` so focus-scrolls clear it; 16px inputs (no iOS
+focus-zoom); `any-pointer:coarse` hit-area rules; skill-telemetry section collapsible
+(collapsed by default on mobile); `#touchTip` popover now dismisses on scroll + Escape,
+has `role=tooltip`, and the confidence badge (`#fcProv`) is keyboard-reachable
+(tabindex + Enter/Space). Desktop layout regression-checked.
+**Leftovers:** M7 manifest/home-screen (optional, not done); skill icons still have no
+keyboard path to their tooltips (54 icons, needs focusable buttons); real-device pass
+(iOS focus-zoom, scroll-dismiss, safe-area insets) — verified in emulation only.
+**Note:** collapsed-section summary chips + the Skill-details collapse toggle are also
+visible on desktop (deliberate: fixes the "collapsed accordions hide state" finding).
+
+Original spec below, kept for reference:
+
+**Root cause first:** the responsive CSS exists (breakpoints at 960/520px) but its
+strategy is wrong. At ≤960px, `.duo,.quality,.sides-head{grid-template-columns:1fr}`
+stacks every *me | label | enemy* pair into one column. That (a) triples the length
+of every paired section — the page measures ~15,600px (~19 screens) at 375px — and
+(b) destroys the side-by-side me-vs-enemy comparison, which is the product's core
+mental model. Fix the strategy, not just the symptoms — in this order:
+
+### M1 · Keep the pairs side-by-side (the big win)
+At ≤960px, do NOT stack the sides. Make paired rows 2-up with the label spanning:
+```css
+.duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.duo .lab{grid-column:1/-1;text-align:left;margin-top:6px}
+```
+Two ~170px inputs fit fine at 375px (values are ≤6 digits). Apply the same to
+`.sides-head`, buff rows, and `.quality` (class label spans, me/foe cards side by
+side). Keep a persistent MY SIDE / ENEMY header (or ice/ember dots) at the top of
+each section so side identity survives without the desktop columns. Expected
+result: page length roughly halves AND comparison is restored.
+
+### M2 · Collapse-by-default with live summary chips
+At ≤700px, start every input accordion collapsed except Troops + Formation. Each
+collapsed header shows its state as a summary chip so nothing must be opened to
+check: "Formation 50/20/30", "Buffs Max/Max", "Quality T12·FC10·24 ×3",
+"Heroes 3 leads · 4 joiners", "Stats ~1300%". Compute the chips from the existing
+`read*()` functions. This turns ~19 screens into ~3.
+
+### M3 · Sticky bottom action bar (thumb zone)
+At ≤700px: fixed bottom bar with Run (primary), the inline status chip from P1-3
+(Running… / Done ✓ / Failed ⚠), and a "↓ results" jump. Pad with
+`env(safe-area-inset-bottom)`. Desktop keeps the current button placement.
+
+### M4 · Touch ergonomics
+- **Hit areas ≥44px** for checkboxes (now 13×13), steppers (26×26), tab ✕ (9×15),
+  and slider thumbs (grow thumb to ~28px on coarse pointers). Keep visual size;
+  grow the interactive box via padding or an `::after` overlay.
+- **Stop iOS focus-zoom:** inputs are 13px — iOS auto-zooms the page on focus.
+  At ≤700px give all text/number inputs `font-size:16px`.
+- **Right keyboard:** `inputmode="decimal"` on every numeric field (stats, troops).
+- `touch-action:manipulation` on body (kills double-tap-zoom delay on buttons).
+- **Tooltips:** on `@media (pointer:coarse)`, tap toggles a small popover with the
+  same text (skill icons, confidence badge); `title` stays for desktop hover.
+
+### M5 · Forecast fit
+- Outcome-bucket label row currently **clips invisibly** at the card edge
+  (overflow:hidden) — let it wrap or shrink.
+- Charts go full-bleed at ≤520px (trim card padding-inline); thin the rounds-chart
+  x-axis labels; after the first forecast, show a sticky mini-verdict chip so the
+  headline number survives scrolling.
+
+### M6 · State safety
+- Debounced (~1s) `formToConfig()` → `localStorage`; restore on load with a
+  dismissible "restored your last session" note. Mobile tabs get discarded
+  constantly — today that loses every input.
+- `scroll-margin-top` on section anchors so the sticky header doesn't cover them.
+
+### M7 · Optional app-ification
+Web manifest + icons so it can be added to the home screen as a standalone app;
+pairs with the self-hosted-fonts item (P3-2) for offline-friendly use mid-rally.
+
+### Mobile acceptance bar
+375×812 and 390×844: no horizontal scroll anywhere; collapsed-state page height
+≤ ~5,000px; focusing any input does NOT zoom the page (iOS); Run + status reachable
+by thumb without scrolling; Lighthouse mobile tap-target audit passes; the me/enemy
+pair for any stat is visible in one glance without horizontal panning.
 
 ## P3-1 · Type & contrast floor
 
