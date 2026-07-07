@@ -191,6 +191,24 @@ def main():
     ok &= _check("hero-gen relayer wired into construct (Gen2 inf < Gen13)",
                  g2 < g13 * 0.8, f"gen2 atk {g2:.0f} vs gen13 {g13:.0f}")
 
+    # 12. Turn-engine anchor winners (2026-07-08 recalibration): the three real
+    #     T12 anchors must all rank ATTACKER as the winner on the production
+    #     path (deterministic seed 0). Magnitudes live in the near-even chaos
+    #     zone and are NOT asserted here - winner inversion is the regression.
+    try:
+        from .anchor_eval import anchors as _anchors, run_turn as _run_turn
+        anchor_ok = True
+        detail = []
+        for _name, _matchup in _anchors():
+            _con, _res = _run_turn(_matchup, None, seed=0)
+            anchor_ok &= _res.winner == "A"
+            detail.append(f"{_name}:{_res.winner}/{_res.turns}t")
+        ok &= _check("turn engine ranks all three T12 anchors (winner=A)",
+                     anchor_ok, " ".join(detail))
+    except Exception as exc:                       # anchor data must stay loadable
+        ok &= _check("turn engine ranks all three T12 anchors (winner=A)",
+                     False, f"harness error: {exc}")
+
     print(f"\n{'ALL GREEN' if ok else 'REGRESSIONS PRESENT'}")
     sys.exit(0 if ok else 1)
 

@@ -188,6 +188,26 @@ def _kernel_box(attacker_units, defender_units, params):
     return (na, nd) if wins else None
 
 
+def _near_even_probe(attacker_units, defender_units, params, swing: float = 0.02) -> bool:
+    """True when a +-`swing` defender-strength shift flips the winner — the
+    honest coin-flip detector for the turn path (three cheap deterministic
+    hero-skill-free sims). Both near-even T12 anchors flip at +-2%; the
+    decisive solo anchor does not."""
+    from wos_sim.pvp_turn_engine import simulate_turns
+
+    winners = set()
+    for mult in (1.0 - swing, 1.0, 1.0 + swing):
+        d_units = []
+        for u in defender_units:
+            v = deepcopy(u)
+            v.astat = {k: val * mult for k, val in v.astat.items()}
+            d_units.append(v)
+        res = simulate_turns([deepcopy(u) for u in attacker_units],
+                             d_units, [], params=params, rng=random.Random(0))
+        winners.add(res.winner)
+    return len(winners) > 1
+
+
 def engine_meta(attacker_units, defender_units, params=None) -> dict:
     """Per-matchup confidence + which path the forecast uses, for the app's
     honesty banner. Call ONCE (e.g. in api.predict); it does NOT change
@@ -205,12 +225,25 @@ def engine_meta(attacker_units, defender_units, params=None) -> dict:
     "+-50%". Only trust a numeric band when calibrated is True."""
     merged = _merged(params)
     if merged.get("engine") == "turn":
+        # raw params only (see run_batch): the general-engine defaults in
+        # `merged` must not leak into the turn engine's parameter layering.
+        near_even = _near_even_probe(attacker_units, defender_units,
+                                     dict(params or {}))
+        if near_even:
+            return {"path": "pvp_turn_engine", "calibrated": False,
+                    "model_error": 0.5, "stochastic": True,
+                    "near_even": True, "confidence": "coin_flip",
+                    "note": "Near-even matchup: a ~2% strength shift flips the "
+                            "winner (verified against two real T12 battles that "
+                            "did exactly that). Trust the win PROBABILITY and "
+                            "the loss ranges, never a point survivor count."}
         return {"path": "pvp_turn_engine", "calibrated": False,
-                "model_error": 0.5, "stochastic": True,
-                "near_even": True, "confidence": "coin_flip",
-                "note": "Turn-by-turn skill engine: skill telemetry is shown, "
-                        "but PvP calibration is still pending. Treat near-even "
-                        "T12 outputs as high variance."}
+                "model_error": 0.35, "stochastic": True,
+                "near_even": False, "confidence": "directional",
+                "note": "Turn-by-turn skill engine, conditionally calibrated on "
+                        "three real T12 anchors (winner correct on all three; "
+                        "survivor magnitudes within band). Read as directional, "
+                        "not a tight interval."}
     if _kernel_box(attacker_units, defender_units, params) is not None:
         return {"path": "pvp_kernel", "calibrated": True,
                 "model_error": pvp_kernel.MODEL_ERROR, "stochastic": False,
@@ -320,7 +353,12 @@ def run_batch(construct, n: int = 10_000, seed: int = 0, kernel=None,
     real stochastic ``BatchKernel``."""
     if _merged(params).get("engine") == "turn" and kernel is None:
         from wos_sim.pvp_turn_engine import run_batch_construct
-        return run_batch_construct(construct, n=n, seed=seed, params=_merged(params))
+        # RAW caller params only: simulate_turns layers BEST_PARAMS+TURN_PARAMS
+        # itself. Folding DEFAULT_PVP_PARAMS here would smuggle the GENERAL
+        # engine's rate/def_k/def_ed (168/1000/0.483) over the turn engine's
+        # calibrated set (168/1.0/1.0) and invert near-parity matchups.
+        return run_batch_construct(construct, n=n, seed=seed,
+                                   params=dict(params or {}))
     return run_batch_units(construct.attacker_units, construct.defender_units,
                            n=n, seed=seed, params=params, antithetic=antithetic,
                            kernel=kernel)

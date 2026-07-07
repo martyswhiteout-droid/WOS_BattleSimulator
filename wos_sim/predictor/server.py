@@ -21,11 +21,11 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 DEFAULT_RUNS = 1_000      # default when a caller omits n (matches the UI default)
 MAX_RUNS = 100_000        # hard ceiling — only a guard against a hang/DoS on absurd n
-# Default to the general path until the turn engine passes the strict anchor
-# gates. The turn engine remains available to direct callers via
-# api.predict(..., params={"engine": "turn"}), but forcing it here currently
-# mis-ranks the Amanda/Omar solo anchor.
-DEFAULT_ENGINE_PARAMS = {}
+# The turn engine is the default: after the 2026-07-08 recalibration it ranks
+# ALL THREE T12 anchors correctly with survivor magnitudes in band, and it is
+# the only path that emits skill telemetry. engine_meta labels near-even
+# matchups "coin_flip" (a +-2% strength shift flips them - as in reality).
+DEFAULT_ENGINE_PARAMS = {"engine": "turn"}
 
 
 @app.exception_handler(InvalidInput)

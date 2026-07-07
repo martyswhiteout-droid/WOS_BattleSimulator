@@ -1,8 +1,102 @@
 # QA Report
 
-Date: 2026-07-07
+Date: 2026-07-08 (calibration pass; supersedes the 2026-07-07 FAIL report below)
 
-Verdict: FAIL - not QA-certified yet.
+Verdict: **CONDITIONAL** - certified for winner/ranking + magnitude bands on
+the three real T12 anchors; NOT certified for survivor-type on anchor 2 or for
+point survivor counts anywhere near even (which the engine now explicitly
+labels coin_flip).
+
+## 2026-07-08 Calibration Pass (Claude)
+
+Structural fixes, in causal order (all verified against per-turn traces):
+
+1. **Additive debuff stacking abolished.** Hero stat rows (captain + joiner,
+   timed included) now compose MULTIPLICATIVELY, with a floor
+   (`stat_floor=0.4`) on the composed multiplier. Before: -25%/-25%/-60% kits
+   stacked additively to -97.8% defense and blew damage up through `def^qd`
+   (anchor 1 ended in a 2-turn blowout with 1.49M auto kills on turn 2).
+2. **Wounded-keep-fighting fire mode** (`fire_mode="start"`): a stack fires at
+   its STARTING strength until it breaks. All three anchors show
+   constant-in-time absolute casualty rates (A1 defender ~117k/turn at 1.87M
+   live AND ~130k/turn in the endgame at 348k live) - not Lanchester taper.
+   This is what makes deep near-mutual annihilation reproducible.
+3. **Defender scale re-based to per-capita parity** (`def_k=1.0, def_ed=1.0`).
+   The inherited general-engine pair (1000/0.483) made small garrisons fire at
+   1.74x the attacker scale and rally-size ones at 0.57x, which inverted the
+   decisive solo anchor (A3) while leaving near-even rallies shallow.
+4. **Diminishing returns on stacked modifiers** (`mod_gamma=0.30`): raw
+   multiplicative kits predicted a 3-4x exchange edge; the anchors show
+   ~0.9-1.1x real. Compression exponent applied to all composed stat/dd/dt
+   modifiers.
+5. **Integration fix:** `kernel.run_batch`/`engine_meta` no longer leak the
+   GENERAL engine's `DEFAULT_PVP_PARAMS` (rate/def_k/def_ed) into the turn
+   engine's parameter layering (this silently overrode TURN_PARAMS on the API
+   path and inverted near-parity matchups end-to-end).
+6. **Honesty labels:** `engine_meta` now runs a +-2% defender-strength probe;
+   if the winner flips, the matchup is labeled `confidence="coin_flip"` /
+   `near_even=true` and the note says to trust the win probability, never a
+   point survivor count. Decisive matchups are labeled `directional`.
+   Verified: A1 flips (matches reality - it was won by 3.45%), A3 does not.
+7. The API server default is now the turn engine (`engine="turn"`), since it
+   outperforms the general path on every anchor and emits skill telemetry.
+
+Fit log: coarse+refine grids in `wos_sim/fit_turn_params.py` (deterministic,
+seed 0, replayable); scorecards from `wos_sim/anchor_eval.py`. Gate total went
+5/27 -> 17/27, with all winner/magnitude-critical gates green.
+
+## Locked Parameters (2026-07-08)
+
+| Parameter | Value | Meaning |
+|---|---:|---|
+| rate | 168.0 | global damage scale (duration knob) |
+| def_k | 1.0 | garrison per-capita parity |
+| def_ed | 1.0 | no frontage exponent on live count |
+| fire_mode | "start" | stacks fire at starting strength until broken |
+| mod_gamma | 0.30 | diminishing returns on stacked skill modifiers |
+| stat_floor | 0.4 | floor on composed per-stat multiplier |
+| K_skill | 1.0 | skill-packet scale (unchanged) |
+| ambush_proc | 0.20 | ambusher proc chance (unchanged) |
+| ambush_frac | 1.0 | ambusher magnitude (unchanged) |
+| cara_burst | 1.0 | backline-burst magnitude (unchanged) |
+
+## Anchor Scores (2026-07-08, deterministic seed 0)
+
+| Anchor | Predicted | Real | Verdict |
+|---|---|---|---|
+| A1 report_001 (rally, near-even) | A wins, 18t, MARKSMAN survive, 79,293 | A wins, 16t, MARKSMAN survive, 62,364 | winner/type/survivors PASS; turns +1 over gate; triggers: att Elif 11 (12+-1 PASS), Cara 7 (6+-1 PASS), Vulcanus SK2 7 (exact), SK3 6 (exact); def Elif 10 vs 15 FAIL |
+| A2 report_002 (rally, near-even) | A wins, 23t, 61,184 survivors | A wins, 25t, LANCER survive, 118,068 | winner/turns/survivor-count PASS; survivor TYPE = marksman FAIL (real: lancers) |
+| A3 Amanda/Omar (solo, decisive) | A wins (p=0.997), 15t, 51.3% survivors, wall holds (lancer loss 0%, inf survives 6.4%) | A wins, 19-20t, 34.3%, lancer loss 0%, inf survivors 1.8% | winner/wall-structure/def-wiped PASS; turns -2 under gate; marks_loss 7.8% vs 66% FAIL (bypass too weak) |
+
+End-to-end via `api.predict` (the UI path): A1 p_win=0.48 labeled coin_flip
+(real: won by 3.45% - a coin flip that landed), A2 p_win=0.995, A3 p_win=0.997
+labeled directional.
+
+## The honest residual (why CONDITIONAL, not PASS)
+
+One family of gaps remains: **discrete backline-bypass procs are too weak and
+purely scalar.** Reality's A2 lancer-survival and A3 66% marksman bleed both
+require the defender's Ambusher/backline skills to REDISTRIBUTE damage onto
+the enemy backline in discrete procs. Scalar amplification (`ambush_frac` etc.)
+was swept and REJECTED: it tips the near-even knife-edge into defender wins
+before it produces the right class mix. This needs redistribution mechanics
+(bypass share carved out of front damage, per-proc), not bigger knobs - see
+`06_NEXT_FIXES.md` P2 notes. Near-even fragility itself is REAL (verified: a
++-2% strength shift flips A1's winner, exactly like the two real battles),
+so point survivor counts near even are unknowable in principle; the engine now
+says so instead of pretending.
+
+## G10 audit note (anchor kits)
+
+Of the 18 live-audit mismatches, the ONLY anchor-kit row is **Vulcanus
+skill_3** - the wiki text omits the "every 3 turns" cadence. Martin's real
+trigger counts CONFIRM the workbook cadence empirically (6 triggers at 16
+turns, 9 at 25: exactly every-3-turns). Documented exception, not a defect.
+Blanchette's flagged rows are skill_2/3, which joiners never contribute.
+
+---
+
+# Superseded: QA Report of 2026-07-07 (FAIL)
 
 This report reflects the build after the QA pass for mixed-skill cadence,
 damage-category channels, owner-troop strike cadence, strict T12 anchor gates,

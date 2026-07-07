@@ -27,7 +27,7 @@
     "survivors": 0, "incap": 1868495, "survivor_frac": 0.0,
     "lead_heroes": {"Infantry": "Elif", "Lancer": "Dominic", "Marksman": "Cara"},
     "lead_hero_gens": {"Infantry": 14, "Lancer": 14, "Marksman": 14},
-    "joiner_flags": ["Eleanora", "Ligeia", "Renee", "Blanchette"],
+    "joiner_flags": ["Eleonora", "Ligeia", "Renee", "Blanchette"],
     "n_participants": 10,
     "composition": {
       "Infantry": {"count": 979228, "avg_tier": 11.0},

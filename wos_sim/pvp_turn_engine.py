@@ -62,9 +62,32 @@ STAT_ATTRS = {
 }
 TROOP_BY_NAME = {t.value: t for t in TroopType}
 TURN_PARAMS = {
+    # Locked 2026-07-08 against the three T12 anchors (pvp_t12_report_001/002 +
+    # Scenarios/Calibration_Amanda_Omar.json) via wos_sim.fit_turn_params /
+    # wos_sim.anchor_eval. Result: all three winners correct; A1 survivors 79k
+    # (real 62k), A2 61k (real 118k), A3 51% (real 34%); durations 18/23/15
+    # (real 16/25/19-20); A1 trigger oracles within +-1. Known CONDITIONAL gap:
+    # A2 survivor TYPE (marksman vs real lancers) needs proc-redistributed
+    # bypass, not scalar knobs - see ENGINE_REBUILD/QA_REPORT.md.
     "rate": 168.0,
-    "def_k": 1000.0,
-    "def_ed": 0.483,
+    # Per-capita parity: the garrison fires like the attacker (def_ed=1).
+    # The legacy def_k=1000/def_ed=0.483 pair made SMALL garrisons hyper-
+    # effective (1.74x at 218k) and rally-size ones feeble (0.57x at 1.87M),
+    # which inverted the decisive solo anchor.
+    "def_k": 1.0,
+    "def_ed": 1.0,
+    # Wounded-keep-fighting: stacks fire at STARTING strength until broken.
+    # All three anchors show constant-in-time absolute casualty rates
+    # (A1 defender ~117k/turn at 1.87M live AND ~130k/turn at 348k live),
+    # not the live-count taper of Lanchester dynamics.
+    "fire_mode": "start",
+    # Diminishing returns on stacked skill modifiers: raw multiplicative kits
+    # predict a 3-4x exchange edge; the anchors show ~0.9-1.1x real.
+    "mod_gamma": 0.30,
+    # Floor on the composed per-stat modifier: stacked debuffs can never push
+    # an effective stat below floor x its panel value (additive stacking used
+    # to reach -97.8% defense and blow up damage through def^qd).
+    "stat_floor": 0.4,
     "K_skill": 1.0,
     "ambush_proc": 0.20,
     "ambush_frac": 1.0,
@@ -731,21 +754,37 @@ def _enemy_stacks(side: str, a, d):
 
 
 def _stack_view(stack: TypeStack, side: str, mods: _Mods,
-                channel: DamageCategory = DamageCategory.NORMAL) -> TypeStack:
+                channel: DamageCategory = DamageCategory.NORMAL,
+                stat_floor: float = 0.25, mod_gamma: float = 1.0) -> TypeStack:
+    """Stack with skill modifiers applied.
+
+    ``mod_gamma`` compresses every composed modifier multiplier toward 1
+    (diminishing returns on stacked bonuses): all three T12 anchors show that
+    nominally huge kits (+45% DD, -60% debuffs) net out to a ~0.9-1.1x real
+    exchange ratio, while raw multiplicative stacking predicts 3-4x.
+    """
     astat = dict(stack.astat)
     for stat in (A, D, L, H):
-        astat[stat] *= 1.0 + mods.stat.get((side, stack.troop, stat), 0.0)
+        mult = 1.0 + mods.stat.get((side, stack.troop, stat), 0.0)
+        if mod_gamma != 1.0:
+            mult = mult ** mod_gamma if mult > 0.0 else 0.0
+        astat[stat] *= max(stat_floor, mult)
     if channel == DamageCategory.SKILLS:
         dd = mods.skill_dd.get((side, stack.troop), 0.0)
         dt = mods.skill_dt.get((side, stack.troop), 0.0)
     else:
         dd = mods.normal_dd.get((side, stack.troop), 0.0)
         dt = mods.normal_dt.get((side, stack.troop), 0.0)
+    dd_total = max(stack.dd + dd, -1.0)
+    dt_total = max(stack.dt + dt, -1.0)
+    if mod_gamma != 1.0:
+        dd_total = (1.0 + dd_total) ** mod_gamma - 1.0
+        dt_total = (1.0 + dt_total) ** mod_gamma - 1.0
     return replace(
         stack,
         astat=astat,
-        dd=max(stack.dd + dd, -1.0),
-        dt=max(stack.dt + dt, -1.0),
+        dd=dd_total,
+        dt=dt_total,
     )
 
 
@@ -776,9 +815,11 @@ def _apply_row_to_mods(mods: _Mods, row: SkillEffect, skill: SkillDef,
         if troop is None:
             continue
         if row.attribute in STAT_ATTRS:
-            if (row.mechanic == SkillMechanic.STATS_BASED
-                    and not skill.is_widget
-                    and skill.role in ("captain", "joiner")):
+            if not skill.is_widget and skill.role in ("captain", "joiner"):
+                # hero stat rows compose MULTIPLICATIVELY (GAME_RULES 6l), for
+                # timed rows too: additive stacking let -25%/-25%/-60% kits
+                # reach -97.8% and blow up damage through def^qd (A1 2-turn
+                # blowout). _stack_view floors the composed multiplier.
                 mods.mul_stat(target_side, troop, STAT_ATTRS[row.attribute], amount)
             else:
                 mods.add_stat(target_side, troop, STAT_ATTRS[row.attribute], amount)
@@ -1076,8 +1117,17 @@ def _damage_for(src: TypeStack, target: TypeStack, own_front: TypeStack | None,
                 src_side: str, target_side: str, mods: _Mods, p: dict,
                 marks_dd: float,
                 channel: DamageCategory = DamageCategory.NORMAL) -> float:
-    src_v = _stack_view(src, src_side, mods, channel)
-    tgt_v = _stack_view(target, target_side, mods, channel)
+    floor = float(p.get("stat_floor", 0.25))
+    gamma = float(p.get("mod_gamma", 1.0))
+    src_v = _stack_view(src, src_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
+    tgt_v = _stack_view(target, target_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
+    if p.get("fire_mode", "live") == "start" and src_v.n > EPS:
+        # wounded-keep-fighting: a stack fires at its STARTING strength until
+        # it breaks. All three anchors show constant-in-time absolute casualty
+        # rates proportional to starting army size (A1 defender: ~117k/turn at
+        # 1.87M live AND ~130k+/turn in the endgame at 348k live), not the
+        # live-count taper of Lanchester dynamics.
+        src_v = replace(src_v, n=src_v.n0)
     own_front_v = src_v if own_front is src else own_front
     return base_strike_damage(src_v, tgt_v, p, own_front=own_front_v, marks_dd=marks_dd)
 
@@ -1316,14 +1366,28 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
         a_md, a_idt, a_eo = _side_t12(p, "attacker", t)
         d_md, d_idt, d_eo = _side_t12(p, "defender", t)
         rate = float(p.get("rate", 1.0))
+        atk_scale = rate
         def_scale = rate * float(p.get("def_k", 1.0))
         def_ed = float(p.get("def_ed", 1.0))
         d_fire_count = sum(st.n for st in d.values() if st.n > EPS)
         if def_ed != 1.0 and d_fire_count > 0:
             def_scale *= d_fire_count ** (def_ed - 1.0)
+        # target-abundance (controlled farm-ladder E-11: per-turn R ~
+        # N_enemy^0.571): each side's output also scales with the RECEIVER's
+        # live count, normalized at 1M so `rate` keeps its magnitude. This is
+        # the anti-snowball term - the anchors show near-CONSTANT absolute
+        # mutual casualty rates to the end (A1 ~109k/t vs ~117k/t for 16
+        # turns), not Lanchester taper. enemy_ab=0 restores the legacy form.
+        enemy_ab = float(p.get("enemy_ab", 0.0))
+        if enemy_ab != 0.0:
+            a_fire_count = sum(st.n for st in a.values() if st.n > EPS)
+            if d_fire_count > 0:
+                atk_scale *= (d_fire_count / 1e6) ** enemy_ab
+            if a_fire_count > 0:
+                def_scale *= (a_fire_count / 1e6) ** enemy_ab
 
         a_packets = _base_packets(
-            "attacker", a, d, mods, p, rate, a_md, d_idt, d_eo,
+            "attacker", a, d, mods, p, atk_scale, a_md, d_idt, d_eo,
             paused_attacks["attacker"])
         d_packets = _base_packets(
             "defender", d, a, mods, p, def_scale, d_md, a_idt, a_eo,
@@ -1332,7 +1396,7 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
         for skill, trigger_troops in fired:
             own = _side_stacks(skill.side, a, d)
             enemy = _enemy_stacks(skill.side, a, d)
-            scale = rate if skill.side == "attacker" else def_scale
+            scale = atk_scale if skill.side == "attacker" else def_scale
             marks_dd = a_md if skill.side == "attacker" else d_md
             target_inf_dt = d_idt if skill.side == "attacker" else a_idt
             target_enemy_out = d_eo if skill.side == "attacker" else a_eo

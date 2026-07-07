@@ -559,3 +559,25 @@ validated band to real app matchups (T11/T12 vs garrison tiers, real panel gaps)
 with mostly-provisional bands, or run a few targeted ladders to make the common
 app matchups validated. NOT gating on panels (impractical) - documented instead.
 Did NOT edit api.py/summary.py (front-end's layer); gave them the 3-line wiring.
+
+## 18. Turn-engine recalibration against three anchors — CONDITIONAL certified (2026-07-08, Claude)
+
+The turn engine was rebuilt from 5/27 to 17/27 anchor gates and is now the
+**default API path** (it outranks the general engine on every anchor and emits
+skill telemetry). Structural fixes: multiplicative debuff composition + floor
+(was additive to −97.8% defense → 2-turn blowups), wounded-keep-fighting fire
+mode (stacks fire at starting strength — the anchors show constant absolute
+casualty rates, not Lanchester taper), defender per-capita parity
+(def_k 1000/def_ed 0.483 → 1.0/1.0; the old pair inverted the decisive solo
+anchor), mod_gamma=0.30 diminishing returns (kits netted 3-4x, reality ~1x),
+and a kernel fix so the general engine's params no longer leak into the turn
+path end-to-end. engine_meta now runs a ±2% perturbation probe and labels
+near-even matchups `coin_flip` (A1 flips — as it did in reality at 3.45%).
+Verdicts: A1 winner/type/survivors PASS (79k vs real 62k), A2 winner/turns/
+count PASS but survivor-TYPE still marksman (real: lancers), A3 winner + wall
+structure PASS (lancer 0% loss, inf barely survives) but marksman bypass bleed
+7.8% vs real 66%. Honest residual: discrete bypass REDISTRIBUTION mechanics
+(not scalar knobs — swept and rejected: they tip the knife-edge). Tools:
+`wos_sim/anchor_eval.py` (scorecard/traces), `wos_sim/fit_turn_params.py`
+(replayable grid fit); regression #12 guards all three anchor winners.
+See ENGINE_REBUILD/QA_REPORT.md (CONDITIONAL, 2026-07-08).
