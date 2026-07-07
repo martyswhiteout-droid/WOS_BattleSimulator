@@ -329,10 +329,11 @@
   .median{margin-bottom:6px}
   .median .mlab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--mute-2);margin-bottom:4px}
   .median .mlab .lv{color:var(--ice-bright)} .median .mlab .rv{color:var(--ember-bright)}
-  .mbar{height:18px;display:flex;background:var(--void);border-radius:6px;overflow:hidden}
-  .mbar .ml{margin-left:auto;background:linear-gradient(90deg,var(--ice-deep),var(--ice));display:flex;align-items:center;justify-content:flex-end;padding-right:5px;font-family:var(--mono);font-size:9px;color:#04191c;transition:width .5s}
-  .mbar .sep{width:1px;background:var(--white);opacity:.4}
-  .mbar .mr{background:linear-gradient(90deg,var(--ember),var(--ember-deep));display:flex;align-items:center;padding-left:5px;font-family:var(--mono);font-size:9px;color:#2a0f06;transition:width .5s}
+  /* diverging bar: divider pinned at center, cyan grows left / ember grows right */
+  .mbar{height:18px;position:relative;background:var(--void);border-radius:6px;overflow:hidden}
+  .mbar .ml{position:absolute;top:0;bottom:0;right:50%;background:linear-gradient(90deg,var(--ice-deep),var(--ice));display:flex;align-items:center;justify-content:flex-end;padding-right:5px;font-family:var(--mono);font-size:9px;color:#04191c;transition:width .5s;overflow:hidden}
+  .mbar .sep{position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--white);opacity:.45;z-index:2}
+  .mbar .mr{position:absolute;top:0;bottom:0;left:50%;background:linear-gradient(90deg,var(--ember),var(--ember-deep));display:flex;align-items:center;padding-left:5px;font-family:var(--mono);font-size:9px;color:#2a0f06;transition:width .5s;overflow:hidden}
   .cbox .mtitle{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute-2);margin:12px 0 6px;text-align:center}
 
   /* rounds */
@@ -450,6 +451,15 @@
   .form-ctl input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);cursor:pointer}
   .form-ctl input[type=range]:disabled{opacity:.7}
   .fval{font-family:var(--mono);font-size:12px;color:var(--white);background:var(--void);border:1px solid var(--line);border-radius:7px;padding:4px 7px;min-width:46px;text-align:center;flex:none}
+  /* count-entry mode: number of troops per type (Marksman = Total - Inf - Lan) */
+  .fcount{display:none;align-items:center;gap:8px;margin-top:2px;width:100%}
+  .form-stack.count-mode .fctrls{display:none}
+  .form-stack.count-mode .fcount{display:flex}
+  .fcount input{font-family:var(--mono);font-size:12px;color:var(--white);background:var(--void);border:1px solid var(--line);border-radius:7px;padding:5px 8px;flex:1;min-width:0}
+  .fcount input:focus-visible{outline:2px solid var(--ice);outline-offset:1px}
+  .fcount input[readonly]{opacity:.65;color:var(--mute);cursor:default}
+  .fcunit{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute-2);flex:none}
+  .formation-mode{margin-left:8px;vertical-align:middle}
 
   /* config left rail */
   .layout{display:grid;grid-template-columns:210px 1fr;gap:22px;align-items:start}
@@ -544,6 +554,8 @@
     body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     /* iOS zooms the page when focusing inputs under 16px - prevent it */
     input[type=number],input[type=text],select{font-size:16px}
+    /* reclaim width for the troop-count input (section title already says "Troops") */
+    .fcount .fcunit{display:none}
   }
   @media (max-width:520px){
     main{padding-inline:10px}
@@ -629,7 +641,12 @@
       </div>
       <div class="duo" style="margin-top:14px;align-items:start">
         <div class="me"><div class="form-stack" id="formMe"></div></div>
-        <div class="lab">Formation %<small>Mar = auto</small></div>
+        <div class="lab">Formation
+          <span class="seg-toggle formation-mode" id="formModeToggle">
+            <button type="button" data-fmode="pct" aria-pressed="true">%</button>
+            <button type="button" data-fmode="count" aria-pressed="false">Count</button>
+          </span>
+          <small>Mar = auto</small></div>
         <div class="foe"><div class="form-stack" id="formFoe"></div></div>
       </div>
     </div>
@@ -955,24 +972,71 @@ function buildFormation(){
       const plus=el('button','fbtn'); plus.type='button'; plus.textContent='+';
       const val=el('div','fval'); val.textContent=init[cl]+'%';
       if(auto){ r.disabled=minus.disabled=plus.disabled=true; }
-      ctr.append(minus,r,plus,val); body.append(nm,ctr); row.append(ic,body); stack.appendChild(row);
-      C[cl]={r,val,minus,plus};
+      ctr.append(minus,r,plus,val);
+      // count-entry view (Infantry/Lancer editable; Marksman read-only leftover)
+      const cwrap=el('div','fcount'); const cnt=el('input');
+      cnt.type='number'; cnt.min=0; cnt.step=1000; cnt.inputMode='numeric';
+      cnt.setAttribute('aria-label',(side==='me'?'My ':'Enemy ')+cl+' troop count');
+      if(auto){ cnt.readOnly=true; cnt.tabIndex=-1; }
+      const cunit=el('div','fcunit'); cunit.textContent=auto?'auto':'troops';
+      cwrap.append(cnt,cunit);
+      body.append(nm,ctr,cwrap); row.append(ic,body); stack.appendChild(row);
+      C[cl]={r,val,minus,plus,cnt};
     });
+    const totalOf=()=>{ const t=parseInt(($(side==='me'?'#myTroops':'#foeTroops').value)||'0',10); return Number.isNaN(t)?0:t; };
     const paint=()=>['Infantry','Lancer','Marksman'].forEach(cl=>{
       C[cl].val.textContent=fmtPct(C[cl].r.value)+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
+    const syncCountsFromFractions=()=>{ const total=totalOf();
+      ['Infantry','Lancer','Marksman'].forEach(cl=>{ C[cl].cnt.value=Math.round(+C[cl].r.value/100*total); }); };
+    // %-mode: sliders are canonical (Marksman = 100 - Inf - Lan)
     const recalc=changed=>{
       let inf=+C.Infantry.r.value, lan=+C.Lancer.r.value;
       if(inf+lan>100){ if(changed==='Lancer') lan=100-inf; else inf=100-lan; }
       inf=Math.max(0,Math.min(100,inf)); lan=Math.max(0,Math.min(100,lan));
-      C.Infantry.r.value=fmtPct(inf); C.Lancer.r.value=fmtPct(lan); C.Marksman.r.value=fmtPct(Math.max(0,100-inf-lan)); paint();
+      C.Infantry.r.value=fmtPct(inf); C.Lancer.r.value=fmtPct(lan); C.Marksman.r.value=fmtPct(Math.max(0,100-inf-lan));
+      paint(); syncCountsFromFractions();
+    };
+    // count-mode: typed counts are canonical -> derive fractions into the sliders
+    const clampInt=v=>{ v=parseInt(v||'0',10); return (Number.isNaN(v)||v<0)?0:v; };
+    const recalcCount=changed=>{
+      const total=totalOf();
+      // no single class may exceed the total; the field just edited wins, the other gives way,
+      // Marksman takes whatever is left. (Without the per-field cap a stranded over-total count
+      // would force the other classes to 0 and read as "not editable".)
+      let inf=Math.min(clampInt(C.Infantry.cnt.value), total);
+      let lan=Math.min(clampInt(C.Lancer.cnt.value), total);
+      if(inf+lan>total){
+        if(changed==='Infantry') lan=total-inf;
+        else if(changed==='Lancer') inf=total-lan;
+        else lan=total-inf;                 // total shrank: Infantry holds, Lancer absorbs
+      }
+      inf=Math.max(0,inf); lan=Math.max(0,lan);
+      const mar=Math.max(0,total-inf-lan);
+      C.Infantry.cnt.value=inf; C.Lancer.cnt.value=lan; C.Marksman.cnt.value=mar;
+      if(total>0){ C.Infantry.r.value=fmtPct(inf/total*100); C.Lancer.r.value=fmtPct(lan/total*100); C.Marksman.r.value=fmtPct(mar/total*100); }
+      else { C.Infantry.r.value=0; C.Lancer.r.value=0; C.Marksman.r.value=0; }
+      paint();
     };
     ['Infantry','Lancer'].forEach(cl=>{
       C[cl].r.addEventListener('input',()=>recalc(cl));
       C[cl].minus.addEventListener('click',()=>{C[cl].r.value=Math.max(0,+C[cl].r.value-1);recalc(cl);});
       C[cl].plus.addEventListener('click',()=>{C[cl].r.value=Math.min(100,+C[cl].r.value+1);recalc(cl);});
+      C[cl].cnt.addEventListener('input',()=>recalcCount(cl));
     });
+    // Total changed: count-mode re-slices Marksman + fractions (Inf/Lan counts persist); %-mode just refreshes the count view
+    $(side==='me'?'#myTroops':'#foeTroops').addEventListener('input',()=>{
+      if(stack.classList.contains('count-mode')) recalcCount(); else syncCountsFromFractions(); });
+    stack._form={syncCountsFromFractions, recalcCount};
     recalc();
   });
+}
+// switch the formation input between % sliders and absolute troop counts (both sides)
+function setFormationMode(mode){
+  const count=mode==='count';
+  ['#formMe','#formFoe'].forEach(sel=>{ const st=$(sel); if(!st)return;
+    st.classList.toggle('count-mode',count);
+    if(count && st._form) st._form.syncCountsFromFractions(); });
+  document.querySelectorAll('#formModeToggle button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.fmode===mode)));
 }
 function buildQuality(){ const c=$('#quality'); c.innerHTML='';
   const glyph={Infantry:'🛡',Lancer:'⚔',Marksman:'🏹'};
@@ -1319,6 +1383,9 @@ function initInteractions(){
     b.setAttribute('aria-pressed','true'); updateFinalStats();
     updateAccordionSummaries();   // the toggle sits in the title, clickable while collapsed - keep the chip honest
   });
+  // formation % <-> count entry mode
+  $('#formModeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+    setFormationMode(b.dataset.fmode); });
   const inputZone=document.querySelector('.input');
   const onInputChanged=()=>{ updateFinalStats(); markForecastStale(); scheduleAutosave(); updateAccordionSummaries(); };
   inputZone.addEventListener('input',onInputChanged);
@@ -1386,6 +1453,18 @@ const pctN=x=>x*100;
 function readHeroes(id){ return [...document.querySelectorAll(id+' .hpick')].map(p=>p.dataset.hero).filter(Boolean); }
 function readFormation(id){ const r=[...document.querySelectorAll(id+' .form-ctl input[type=range]')];
   return {Infantry:(+r[0].value)/100, Lancer:(+r[1].value)/100, Marksman:(+r[2].value)/100}; }
+// exact per-class troop counts sent to the engine (typed directly in count mode,
+// derived from % x total otherwise). Marksman = total - Inf - Lan so the counts
+// sum to the total exactly - the engine uses these numbers, not rounded fractions.
+function readCounts(id,total){
+  const st=document.querySelector(id), cn=[...document.querySelectorAll(id+' .fcount input')];
+  let inf,lan;
+  if(st && st.classList.contains('count-mode') && cn.length>=2){
+    inf=parseInt(cn[0].value||'0',10)||0; lan=parseInt(cn[1].value||'0',10)||0;
+  } else { const f=readFormation(id); inf=Math.round(f.Infantry*total); lan=Math.round(f.Lancer*total); }
+  inf=Math.max(0,Math.min(inf,total)); lan=Math.max(0,Math.min(lan,total));
+  if(inf+lan>total) lan=total-inf;
+  return {Infantry:inf, Lancer:lan, Marksman:Math.max(0,total-inf-lan)}; }
 function readQuality(which){ const cards=[...document.querySelectorAll('#quality .qcard.'+which)]; const q={};
   ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const s=cards[i].querySelectorAll('select');
     q[c]={fc:+s[0].value, tier:+s[1].value, t12_stack:+cards[i].querySelector('input[type=range]').value}; }); return q; }
@@ -1542,6 +1621,7 @@ function buildProfile(which){   // 'me' | 'foe'
   const joiners=readHeroes(which==='me'?'#joinMe':'#joinFoe');
   return { role, troops_total:troops, stats_mode:'scouted',
     formation:readFormation(which==='me'?'#formMe':'#formFoe'),
+    formation_counts:readCounts(which==='me'?'#formMe':'#formFoe', troops),
     quality:readQuality(which), panel:readPanel(which),
     panel_is_final:true, widgets_in_panel:true, own_buffs:{}, debuffs_on_enemy:{},
     lead_heroes:leadMap, joiners:joiners.length?joiners:null }; }

@@ -94,6 +94,45 @@ class TestStatsModeAndSkills(unittest.TestCase):
         with_skill = construct.effective_stats(side, SideProfile(), "Infantry", board, "A")[StatType.ATTACK]
         self.assertAlmostEqual(with_skill, base * 1.25)
 
+    def test_final_panel_skips_own_permanent_stat_skill_but_keeps_enemy_debuff(self):
+        from wos_sim.troop_catalog import troop_base_stats
+
+        panel = {(c, s): 10.0 for c in CLASSES for s in ("Attack", "Defense", "Lethality", "Health")}
+        own = SideProfile(
+            role="rally",
+            troops_total=1000,
+            panel=dict(panel),
+            panel_is_final=True,
+            widgets_in_panel=True,
+            formation={"Infantry": 1.0, "Lancer": 0.0, "Marksman": 0.0},
+            lead_heroes={"Infantry": "Gisela"},
+            quality={"Infantry": ClassQuality(tier=12, fc=10)},
+        )
+        enemy = SideProfile(
+            role="garrison",
+            troops_total=1000,
+            panel=dict(panel),
+            panel_is_final=True,
+            widgets_in_panel=True,
+            formation={"Infantry": 0.0, "Lancer": 1.0, "Marksman": 0.0},
+            lead_heroes={"Lancer": "Karol", "Marksman": "Vulcanus"},
+            quality={"Lancer": ClassQuality(tier=12, fc=10)},
+        )
+        con = construct.build(Matchup(own, enemy))
+        own_inf = next(u for u in con.attacker_units if u.troop == TroopType.INFANTRY)
+        enemy_lan = next(u for u in con.defender_units if u.troop == TroopType.LANCER)
+        own_base = troop_base_stats(12, 10, TroopType.INFANTRY)[StatType.ATTACK]
+        enemy_base = troop_base_stats(12, 10, TroopType.LANCER)[StatType.ATTACK]
+
+        self.assertAlmostEqual(
+            own_inf.astat[StatType.ATTACK],
+            own_base * (1 + 10.0) * 0.80,
+        )
+        self.assertAlmostEqual(
+            enemy_lan.astat[StatType.ATTACK],
+            enemy_base * (1 + 10.0),
+        )
+
     def test_build_routes_joiner_dd_skill_into_unit_dd(self):
         own = SideProfile(role="rally", troops_total=1000, joiners=["Jessie"])   # +25% Damage Dealt
         con = construct.build(Matchup(own, SideProfile(role="garrison", troops_total=1000)))

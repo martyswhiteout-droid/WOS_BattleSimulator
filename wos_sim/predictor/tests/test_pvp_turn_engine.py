@@ -472,7 +472,7 @@ class TestCatalogCoverage(unittest.TestCase):
         widget = next(skill for skill in row["skills"] if skill["slot"] == "widget")
         self.assertEqual(widget["triggers"], 1)
 
-    def test_final_panel_turn_engine_applies_passive_hero_stat_skills(self):
+    def test_non_final_panel_turn_engine_applies_passive_hero_stat_skills(self):
         own = _side("rally", leads={"Infantry": "", "Lancer": "", "Marksman": ""},
                     joiners=["Gatot"], widgets_in_panel=True)
         enemy = _side("garrison", leads={"Infantry": "", "Lancer": "", "Marksman": ""},
@@ -483,8 +483,8 @@ class TestCatalogCoverage(unittest.TestCase):
         }
         own.quality = low_quality
         enemy.quality = low_quality
-        own.panel_is_final = True
-        enemy.panel_is_final = True
+        own.panel_is_final = False
+        enemy.panel_is_final = False
         con = construct.build(Matchup(own, enemy), apply_legacy_skills=False)
         skills = skill_defs_from_matchup(con, {"engine": "turn"})
         mods = pvp_turn_engine._passive_mods(
@@ -520,6 +520,36 @@ class TestCatalogCoverage(unittest.TestCase):
             mods.stat[("attacker", TroopType.INFANTRY, StatType.DEFENSE)],
             (1.0 + base_mods.stat[("attacker", TroopType.INFANTRY, StatType.DEFENSE)])
             * 1.30 - 1.0,
+        )
+
+    def test_final_panel_turn_engine_suppresses_own_static_stat_rows_only(self):
+        own = _side(
+            "rally",
+            leads={"Infantry": "Gisela", "Lancer": "", "Marksman": ""},
+            joiners=[],
+            widgets_in_panel=True,
+        )
+        enemy = _side(
+            "garrison",
+            leads={"Infantry": "", "Lancer": "Karol", "Marksman": "Vulcanus"},
+            joiners=[],
+            widgets_in_panel=True,
+        )
+        own.panel_is_final = True
+        enemy.panel_is_final = True
+        con = construct.build(Matchup(own, enemy), apply_legacy_skills=False)
+        skills = skill_defs_from_matchup(con, {"engine": "turn"})
+        stacks = {
+            troop: TypeStack(troop, 12, 100_000, 100_000,
+                             {A: 100.0, D: 100.0, L: 100.0, H: 100.0}, 100.0)
+            for troop in TroopType
+        }
+        mods = pvp_turn_engine._passive_mods(skills, stacks, stacks)
+
+        self.assertNotIn(("defender", TroopType.LANCER, StatType.ATTACK), mods.stat)
+        self.assertAlmostEqual(
+            mods.stat[("attacker", TroopType.INFANTRY, StatType.ATTACK)],
+            -0.20,
         )
 
     def test_qa_named_static_stat_skills_emit_turn_engine_mods(self):

@@ -54,7 +54,11 @@ def t12_levels(side: SideProfile):
 
 
 def class_counts(side: SideProfile) -> dict:
-    """Split total troops across classes by the formation fractions."""
+    """Per-class troop counts. Prefers the exact numbers the user typed
+    (``formation_counts``) so the engine uses them directly; falls back to
+    ``troops_total`` x ``formation`` fractions when explicit counts aren't given."""
+    if side.formation_counts:
+        return {c: int(round(side.formation_counts.get(c, 0.0))) for c in CLASSES}
     return {c: round(side.troops_total * side.formation.get(c, 0.0)) for c in CLASSES}
 
 

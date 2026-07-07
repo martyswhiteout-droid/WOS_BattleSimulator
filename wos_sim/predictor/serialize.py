@@ -22,6 +22,7 @@ def profile_from_dict(d: dict) -> SideProfile:
         troops_total=int(d.get("troops_total", 1_000_000)),
         stats_mode=d.get("stats_mode", "scouted"),
         formation=d.get("formation") or {"Infantry": 0.5, "Lancer": 0.2, "Marksman": 0.3},
+        formation_counts={k: float(v) for k, v in (d.get("formation_counts") or {}).items()},
         quality=quality or {c: ClassQuality() for c in CLASSES},
         panel=panel,
         panel_is_final=bool(d.get("panel_is_final", False)),
@@ -36,6 +37,7 @@ def profile_to_dict(p: SideProfile) -> dict:
     return {
         "label": p.label, "role": p.role, "troops_total": p.troops_total,
         "stats_mode": p.stats_mode, "formation": p.formation,
+        "formation_counts": p.formation_counts,
         "quality": {c: {"tier": q.tier, "fc": q.fc, "t12_stack": q.t12_stack}
                     for c, q in p.quality.items()},
         "panel": {f"{c}|{s}": v for (c, s), v in p.panel.items()},

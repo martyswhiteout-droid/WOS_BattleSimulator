@@ -21,7 +21,7 @@ from functools import lru_cache
 from wos_sim.assemble import ModifierBoard, _dedupe_damage_category_splits, _route_effect
 from wos_sim.loader import load_skill_book
 from wos_sim.mechanics import captain_effects
-from wos_sim.models import CombatContext, SkillSource
+from wos_sim.models import CombatContext, SkillAttribute, SkillMechanic, SkillSource
 
 
 @lru_cache(maxsize=1)
@@ -58,6 +58,20 @@ def _side_effects(side, book, context):
     return effects
 
 
+def _final_panel_contains_own_stat_skill(side, effect) -> bool:
+    return (
+        getattr(side, "panel_is_final", False)
+        and effect.side.value == "Friend"
+        and effect.mechanic == SkillMechanic.STATS_BASED
+        and effect.attribute in {
+            SkillAttribute.ATTACK,
+            SkillAttribute.DEFENSE,
+            SkillAttribute.LETHALITY,
+            SkillAttribute.HEALTH,
+        }
+    )
+
+
 def resolve(own_side, enemy_side, own_tag, foe_tag,
             context=CombatContext.RALLY, board=None, book=None) -> ModifierBoard:
     """Route own_side's hero skills into a ModifierBoard under ``own_tag``
@@ -65,5 +79,7 @@ def resolve(own_side, enemy_side, own_tag, foe_tag,
     book = book or skill_book()
     board = board or ModifierBoard()
     for e in _side_effects(own_side, book, context):
+        if _final_panel_contains_own_stat_skill(own_side, e):
+            continue
         _route_effect(board, e, own_tag, foe_tag)
     return board

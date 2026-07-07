@@ -28,6 +28,9 @@ class SideProfile:
     role: str = "rally"                       # "rally" | "garrison"
     troops_total: int = 1_000_000
     formation: dict = field(default_factory=lambda: {"Infantry": 0.5, "Lancer": 0.2, "Marksman": 0.3})
+    # exact per-class troop counts (the numbers the user typed). When present these
+    # are used DIRECTLY as each class's count; `formation` (fractions) is the fallback.
+    formation_counts: dict = field(default_factory=dict)
     quality: dict = field(default_factory=lambda: {c: ClassQuality() for c in CLASSES})
     # how the panel is interpreted (GAME_RULES 6h):
     #   "scouted" -> displayed net value; already includes item/widget/pet buffs

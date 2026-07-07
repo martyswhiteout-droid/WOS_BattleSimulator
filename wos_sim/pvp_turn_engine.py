@@ -109,6 +109,7 @@ class SkillDef:
     is_bypass: bool = False
     bypass_targets: tuple[TroopType, ...] = ()
     special: str | None = None
+    suppress_own_stat_passives: bool = False
     start_turn: int = 1
     triggers: int = 0
     kills: float = 0.0
@@ -554,7 +555,8 @@ def _effect_start_turn(skill: SkillDef, fired_turn: int) -> int:
 
 def _make_hero_skill(hero: str, source: SkillSource, rows: tuple[SkillEffect, ...],
                      side: str, role: str, troop: TroopType | None,
-                     ordinal: int) -> SkillDef:
+                     ordinal: int,
+                     suppress_own_stat_passives: bool = False) -> SkillDef:
     slot = _slot_from_source(source)
     targets = _backline_targets(hero, slot)
     is_widget = source == SkillSource.WIDGET
@@ -573,6 +575,7 @@ def _make_hero_skill(hero: str, source: SkillSource, rows: tuple[SkillEffect, ..
         deals_damage=_is_damage_bearing_rows(rows),
         is_bypass=bool(targets),
         bypass_targets=targets,
+        suppress_own_stat_passives=suppress_own_stat_passives,
         start_turn=_hero_skill_start_turn(hero, slot),
     )
     return skill
@@ -663,7 +666,8 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
                 rows = _hero_rows(book, hero, source, battle)
                 if rows:
                     defs.append(_make_hero_skill(hero, source, rows, side, "captain",
-                                                 troop, hero_ordinal))
+                                                 troop, hero_ordinal,
+                                                 getattr(profile, "panel_is_final", False)))
             ordinal += 1
         for hero in (profile.joiners or [])[:4]:
             if not hero:
@@ -671,7 +675,8 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
             rows = _hero_rows(book, hero, SkillSource.SKILL_1, battle)
             if rows:
                 defs.append(_make_hero_skill(hero, SkillSource.SKILL_1, rows, side,
-                                             "joiner", None, ordinal))
+                                             "joiner", None, ordinal,
+                                             getattr(profile, "panel_is_final", False)))
                 ordinal += 1
         quality = profile.quality or {}
         for u in units:
@@ -750,8 +755,19 @@ def _target_side_for(row: SkillEffect, skill: SkillDef) -> str:
     return "defender" if skill.side == "attacker" else "attacker"
 
 
+def _should_suppress_own_stat_passive(skill: SkillDef, row: SkillEffect) -> bool:
+    return (
+        skill.suppress_own_stat_passives
+        and row.side == AffectingSide.FRIEND
+        and row.mechanic == SkillMechanic.STATS_BASED
+        and row.attribute in STAT_ATTRS
+    )
+
+
 def _apply_row_to_mods(mods: _Mods, row: SkillEffect, skill: SkillDef,
                        a, d, scale: float = 1.0):
+    if _should_suppress_own_stat_passive(skill, row):
+        return
     target_side = _target_side_for(row, skill)
     front = _front(_side_stacks(target_side, a, d))
     front_troop = front.troop if front else None

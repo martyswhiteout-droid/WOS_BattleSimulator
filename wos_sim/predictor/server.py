@@ -21,7 +21,11 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 DEFAULT_RUNS = 1_000      # default when a caller omits n (matches the UI default)
 MAX_RUNS = 100_000        # hard ceiling — only a guard against a hang/DoS on absurd n
-TELEMETRY_ENGINE_PARAMS = {"engine": "turn"}
+# Default to the general path until the turn engine passes the strict anchor
+# gates. The turn engine remains available to direct callers via
+# api.predict(..., params={"engine": "turn"}), but forcing it here currently
+# mis-ranks the Amanda/Omar solo anchor.
+DEFAULT_ENGINE_PARAMS = {}
 
 
 @app.exception_handler(InvalidInput)
@@ -49,7 +53,7 @@ def predict(req: PredictRequest):
     own = serialize.profile_from_dict(req.own)
     enemy = serialize.profile_from_dict(req.enemy)
     fc = api.predict(own, enemy, n=req.n, seed=req.seed,
-                     params=TELEMETRY_ENGINE_PARAMS)
+                     params=DEFAULT_ENGINE_PARAMS)
     return serialize.forecast_to_dict(fc)
 
 

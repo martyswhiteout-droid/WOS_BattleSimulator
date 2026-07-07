@@ -89,7 +89,7 @@ class TestServer(unittest.TestCase):
         self.assertEqual(captured["n"], server.DEFAULT_RUNS)
         self.assertEqual(r.json()["n"], 1)
 
-    def test_predict_enables_turn_engine_telemetry(self):
+    def test_predict_uses_default_engine_params(self):
         captured = {}
         old_predict = server.api.predict
         try:
@@ -112,7 +112,7 @@ class TestServer(unittest.TestCase):
         finally:
             server.api.predict = old_predict
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(captured["params"], server.TELEMETRY_ENGINE_PARAMS)
+        self.assertEqual(captured["params"], server.DEFAULT_ENGINE_PARAMS)
 
     def test_predict_serializes_skill_telemetry_for_frontend(self):
         rec = RunRecord(

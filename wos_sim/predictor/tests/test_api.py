@@ -1,9 +1,11 @@
 """End-to-end: profiles -> construct -> batch -> summary."""
+import json
 import unittest
+from pathlib import Path
 
 from wos_sim.models import StatType, TroopType
 from wos_sim.predictor.profiles import CLASSES, STATS, SideProfile
-from wos_sim.predictor import api
+from wos_sim.predictor import api, serialize
 from wos_sim.predictor.kernel import RunRecord
 from wos_sim.troop_catalog import troop_base_stats
 
@@ -84,6 +86,17 @@ class TestPredict(unittest.TestCase):
         base = troop_base_stats(12, 10, TroopType.INFANTRY)[StatType.ATTACK]
         self.assertAlmostEqual(captured["attack"], base * (1 + 10.0))
         self.assertEqual(captured["dd"], 0.0)
+
+    def test_amanda_omar_final_panel_general_path_no_longer_inverts_winner(self):
+        data = json.loads(
+            (Path(__file__).resolve().parents[3]
+             / "Scenarios" / "Calibration_Amanda_Omar.json").read_text()
+        )
+        own = serialize.profile_from_dict(data["own"])
+        enemy = serialize.profile_from_dict(data["enemy"])
+        fc = api.predict(own, enemy, n=100, seed=data["seed"])
+        self.assertEqual(fc.engine_path, "general")
+        self.assertGreater(fc.p_win.p, 0.95)
 
 
 if __name__ == "__main__":

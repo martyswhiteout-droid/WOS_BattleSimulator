@@ -1,0 +1,53 @@
+{
+  "description": "THIRD PvP anchor (2026-05-18, X:117 Y:117 area, solo attack - NO rally, NO joiners). [SUP]Amanda (attacker) DECISIVE VICTORY over [SOL]Dark X Omar (garrison). NOT near-even: attacker won with 93,432 survivors of 272,772 (34.3%), defender FULLY WIPED. First DECISIVE-regime anchor, first SOLO anchor, first ASYMMETRIC-hero-kit anchor. Input scenario = Scenarios/Calibration_Amanda_Omar.json (front-end export, 1000 runs seed 4471).",
+  "outcome": "attacker_victory_decisive",
+  "attacker": {
+    "player": "[SUP]Amanda", "role": "solo_attack", "power_loss": 9576934,
+    "troops": 272772, "losses": 0, "injured": 53803, "lightly_injured": 125537,
+    "survivors": 93432, "incap": 179340, "survivor_frac": 0.3425,
+    "lead_heroes": {"Infantry": "Gisela", "Lancer": "Flora", "Marksman": "Ligeia"},
+    "joiners": [],
+    "composition": {
+      "Infantry": {"count": 136386, "tier": 12, "fc": 10, "t12_stack": 3},
+      "Lancer":   {"count": 68193,  "tier": 12, "fc": 10, "t12_stack": 1},
+      "Marksman": {"count": 68193,  "tier": 12, "fc": 10, "t12_stack": 2}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 3310.8, "Defense": 3092.2, "Lethality": 2598.8, "Health": 2575.9},
+      "Lancer":   {"Attack": 3299.9, "Defense": 3082.2, "Lethality": 2529.9, "Health": 2505.9},
+      "Marksman": {"Attack": 2928.2, "Defense": 2768.1, "Lethality": 2280.8, "Health": 2078.5}
+    },
+    "per_class_outcome": {
+      "Infantry": {"kills": 4747,  "injured": 40190, "lightly_injured": 93775, "survivors": 2421},
+      "Lancer":   {"kills": 34378, "injured": 0,     "lightly_injured": 0,     "survivors": 68193},
+      "Marksman": {"kills": 26179, "injured": 13613, "lightly_injured": 31762, "survivors": 22818}
+    }
+  },
+  "defender": {
+    "player": "[SOL]Dark X Omar", "role": "garrison", "power_loss": 10496172,
+    "troops": 217673, "losses": 0, "injured": 65304, "lightly_injured": 152369,
+    "survivors": 0, "incap": 217673, "survivor_frac": 0.0,
+    "lead_heroes": {"Infantry": "Gisela", "Lancer": "Karol", "Marksman": "Vulcanus"},
+    "joiners": [],
+    "composition": {
+      "Infantry": {"count": 92352, "tier": 12, "fc": 10, "t12_stack": 0},
+      "Lancer":   {"count": 26917, "tier": 11, "fc": 10, "t12_stack": 0},
+      "Marksman": {"count": 98404, "tier": 11, "fc": 10, "t12_stack": 0}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 3875.1, "Defense": 3205.7, "Lethality": 3108.7, "Health": 3085.1},
+      "Lancer":   {"Attack": 3645.4, "Defense": 3018.6, "Lethality": 3032.6, "Health": 3011.4},
+      "Marksman": {"Attack": 3869.1, "Defense": 3203.7, "Lethality": 3096.4, "Health": 3064.0}
+    },
+    "per_class_outcome": {
+      "Infantry": {"kills": 3316,  "injured": 27706, "lightly_injured": 64646, "survivors": 0},
+      "Lancer":   {"kills": 18612, "injured": 8076,  "lightly_injured": 18841, "survivors": 0},
+      "Marksman": {"kills": 31875, "injured": 29522, "lightly_injured": 68882, "survivors": 0}
+    }
+  },
+  "specials_note": "Both sides: +20% troops A/D/L/H items, -20% enemy A/D items, pets +10% A/D/L/H, enemy pet penalties -10% def/-5% leth/-5% hp. Defender widget: Defender Troops' Attack +15% (attacker has no attacker-side widget - solo attack). All baked into panel_pct (panel_is_final=true, widgets_in_panel=true).",
+  "skill_triggers_note": "From the Skill Details panel (rows are icon-keyed; slot mapping partly uncertain): attacker Gisela x1/x19/x19/x59/x1, defender Gisela x1/x19/x18/x46. Flora (att lancer): x64/x1/x10/x5 + one row 6 triggers 4,759 kills. Karol (def lancer): 3 triggers 368 kills, x1. Ligeia (att marks): x19 w/ 7,328 kills, x19, x5, 6 triggers w/ 903 kills. Vulcanus (def marks): 16 triggers w/ 10,212 kills, x13, 7 triggers w/ 2,499 kills, x1. CLOCK: Gisela every-turn rows x19 both sides -> battle ~19-20 turns; defender Gisela x18 -> def infantry likely died end T18-19. Vulcanus 7-trigger row matches every-3-turns at ~19-20 turns (floor((19-1)/3)+1=7). OPEN PUZZLE: Vulcanus 16-trigger row exceeds the 'every 5 attacks per troop type' formula (~9-12 at this length) - cadence semantics still not fully solved; direct skill kills (both sides ~13k total) are small vs 217k casualties.",
+  "structural_ground_truth": "GOLD per-class facts no rally anchor provides: (1) attacker LANCERS took ZERO casualties across ~19-20 turns -> the infantry wall NEVER fell (2,421 inf survived) -> strict front-to-back absorption held for the ENTIRE battle on the winning side. (2) attacker MARKSMAN lost 66.5% (45,375) while the wall stood -> ALL marksman damage arrived via BYPASS (defender Ambusher procs from 26,917 T11 lancers + any backline skills) -> bypass magnitude is large and sustained. (3) defender fully wiped in ~19-20 turns despite HIGHER panels (+3875 vs +3311 attack) -> count (+25.3%), tier (T12 vs T11 on lancer/marks), T12 stacks (3/1/2 vs 0/0/0), and composition geometry (25% T12 lancers ambushing a 45% marksman-heavy enemy; small 26.9k enemy lancer wall) DOMINATED the panel deficit.",
+  "prediction_failure_2026_07_07": "BOTH engines invert this battle (verified, seed 4471): general aggregate engine p_win=2.6% (median attacker loss 100%, defender keeps ~38%); turn engine p_win=0.0 (attacker wiped in 13 turns, defender loses only 34.5%). Reality: attacker wins with 34.3% survivors, defender wiped, ~19-20 turns. DIAGNOSIS (layered): (L1-BUG) scouted-mode double-count - construct multiplies hero permanent stat skills (skillmult) on top of a scouted panel that ALREADY contains each side's own hero stat effects; with asymmetric kits this skewed attack to x0.800 (attacker, from Vulcanus SK1 -20% enemy attack) vs x1.150 (defender, Karol SK3 +15% own attack double-counted) = x0.70 relative handicap. Invisible in report_001/002 because both sides ran near-identical kits (Elif/Dominic/x) and the error cancelled. (L2-BUG-SUSPECT) enemy-debuff skills (Vulcanus SK1, Ligeia SK1) applied army-wide/permanent/all-rows without wiki verification of target-class/uptime (G10 audit applies). (L3-STRUCTURAL) strip test (all skillmult removed, panel-only stats): defender STILL wins 100% - the engine's stat physics alone gives the defender a 1.21x total-damage index edge, and Lanchester dynamics amplify any edge into a rout; the engine cannot see the attacker's real winning levers = sequencing/counter geometry (cheap late-game kills into 98k squishy T11 marksman after the small 26.9k lancer wall falls) + sustained Ambusher bypass + T12 stacks. This anchor is DECISIVE-regime: the engine is not merely imprecise here, it mis-RANKS the sides. Use as acceptance anchor for the turn-engine calibration alongside report_001/002.",
+  "scenario_input": "Scenarios/Calibration_Amanda_Omar.json"
+}

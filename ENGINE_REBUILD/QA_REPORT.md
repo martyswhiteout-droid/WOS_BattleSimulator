@@ -65,6 +65,15 @@ such as Blanchette S3 emit class-targeted skill packets. Target-text rows for
 Rufus S2, Mia S1, and Dominic S2 now use `EffectReceiver.Target` instead of a
 fixed enemy class.
 
+Final/scouted panels now suppress own-side permanent hero stat multipliers in
+both the legacy/general construct path and the turn-engine passive stat layer.
+Those panels already contain the side's own pre-battle stat skills; enemy
+debuffs and DD/DT battle effects still apply. This fixes the Amanda/Omar
+solo-anchor ranking bug in the default path: the general engine no longer
+inverts the decisive attacker win. The local API no longer forces the
+uncalibrated turn engine by default; callers can still request it explicitly via
+`params={"engine": "turn"}`.
+
 Damage modifiers are split by damage category: Normal, Skills, and Both. Skill
 only Damage Taken / Damage Dealt rows no longer amplify ordinary base attacks.
 
@@ -128,7 +137,7 @@ rules sign-off remains pending.
 | Command | Result |
 |---|---|
 | `py -m pytest wos_sim\predictor\tests\test_pvp_turn_engine.py -q -p no:cacheprovider` | 40 passed, 2 expected failures, 20 subtests passed |
-| `py -m pytest wos_sim\predictor\tests -q -p no:cacheprovider` | 83 passed, 8 skipped, 2 expected failures, 20 subtests passed |
+| `py -m pytest wos_sim\predictor\tests -q -p no:cacheprovider` | 86 passed, 8 skipped, 2 expected failures, 20 subtests passed |
 | `py -m wos_sim.regression` | ALL GREEN |
 | `py -m wos_sim.farm_engine` | PASS: quick BEST_PARAMS check, loss=1.97335 |
 | `py -m wos_sim.skill_source_audit --live --output ENGINE_REBUILD\SKILL_SOURCE_AUDIT.md` | FAIL: 145 checks, 18 non-ok |
@@ -140,6 +149,9 @@ rules sign-off remains pending.
    `Hero Skills` workbook tabs without relying on supplemental loader rows.
 3. Rebuild Hector S2's 10-attack / 85% decay mechanic as a discrete runtime
    effect; it remains represented by stale workbook EV rows.
-4. Calibrate one shared `TURN_PARAMS` set against both T12 anchors.
-5. Re-run G1-G11 and update this report to PASS or CONDITIONAL only if the gate
+4. Calibrate one shared `TURN_PARAMS` set against all three anchors, including
+   `pvp_t12_report_003.json` / `Scenarios\Calibration_Amanda_Omar.json`.
+5. Re-enable the turn engine as the default API path only after the strict
+   anchor gates pass.
+6. Re-run G1-G11 and update this report to PASS or CONDITIONAL only if the gate
    evidence supports it.
