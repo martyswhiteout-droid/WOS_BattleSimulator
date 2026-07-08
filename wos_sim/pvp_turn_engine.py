@@ -71,16 +71,21 @@ TURN_PARAMS = {
     # real 3.45%/6.54%) - the near-even flag + coin_flip labeling carries the
     # honesty. The A2-vs-A4 tension (marks-heavy sides) is the open mechanic:
     # see ENGINE_REBUILD/QA_REPORT.md 2026-07-08 second pass.
-    # (re-touched after the joiner-suppression fix, which strengthened sides
-    # with stat-row joiners: rate 155->168, def_k 0.5->0.45 restores the
-    # 4/4-winner optimum, 21/36 gates.)
+    # (third pass 2026-07-08, after anchor 5 - Marty vs FxCat, the first
+    # attacker-DEFEAT anchor: near-mirror rally where the defender won.)
     "rate": 168.0,
-    # Defender fires at ~half the attacker's per-capita scale. dk=1.0 (parity)
-    # reproduces the deep near-even grinds but INVERTS both decisive solo
-    # anchors (A3/A4); dk~0.45 ranks all four correctly. Winner correctness is
-    # the product-critical property; depth is labeled uncertain instead.
-    "def_k": 0.45,
-    "def_ed": 1.0,
+    # SIZE-DEPENDENT defender scale: def_out = rate * def_k * N_def^(def_ed-1).
+    # The five anchors split into two regimes - rally-vs-garrison at 1.4-1.9M
+    # (A1/A2/A5: defender fights at ~parity, can WIN) vs small solo attacks at
+    # 200-270k (A3/A4: defender ~0.5x). dk=0.0183/ed=1.28 gives ~0.97 parity at
+    # 1.42M and ~0.56 at 210k, ranking A1-A4 correctly with the most realistic
+    # near-even depths (A1 46%/A2 30% survivors vs the flat lock's 74%/67%).
+    # A5's defender WIN remains beyond the model class (near-mirror coin flip;
+    # labeled coin_flip) - the declared, tracked miss. Confounded candidate
+    # discriminators (scale / rally-vs-solo / garrison player count) cannot be
+    # separated with current anchors.
+    "def_k": 0.0183,
+    "def_ed": 1.28,
     # Wounded-keep-fighting: stacks fire at STARTING strength until broken
     # (the anchors show constant-in-time absolute casualty rates, not
     # Lanchester taper).

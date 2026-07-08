@@ -263,11 +263,12 @@ def engine_meta(attacker_units, defender_units, params=None) -> dict:
             return {"path": "pvp_turn_engine", "calibrated": False,
                     "model_error": 0.5, "stochastic": True,
                     "near_even": True, "confidence": "coin_flip",
-                    "note": "Near-even armies: real battles this close have "
-                            "ended anywhere from 3% to 58% survivors on the "
-                            "winning side (verified anchors). Trust the win "
-                            "probability and the winner, never a point "
-                            "survivor count."}
+                    "note": "Near-even armies: a genuine coin flip. Verified "
+                            "real battles this close were won by EITHER side "
+                            "(3%-58% survivors when the attacker won; one "
+                            "defender win at 18%). The displayed win% is the "
+                            "model's internal tendency, NOT a calibrated "
+                            "probability - do not commit troops on it."}
         return {"path": "pvp_turn_engine", "calibrated": False,
                 "model_error": 0.35, "stochastic": True,
                 "near_even": False, "confidence": "directional",

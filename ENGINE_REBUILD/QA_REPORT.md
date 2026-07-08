@@ -1,11 +1,47 @@
 # QA Report
 
-Date: 2026-07-08, second pass (supersedes both earlier reports below)
+Date: 2026-07-08, third pass (supersedes the earlier reports below)
 
-Verdict: **CONDITIONAL** - certified for WINNER/ranking on all FOUR real
-anchors (the product-critical property); NOT certified for near-even survivor
-depth (declared trade-off, labeled coin_flip in engine_meta) or for anchor-2
-survivor type.
+Verdict: **CONDITIONAL** - certified for WINNER/ranking on anchors A1-A4;
+A5 (near-mirror rally, real DEFENDER win) is a declared, tracked miss in the
+coin-flip zone. NOT certified for near-even survivor depth or anchor-2
+survivor type; near-even forecasts carry the coin_flip label stating the
+win% is not a calibrated probability.
+
+## 2026-07-08 THIRD Pass - anchor 5 (Marty vs FxCat): the attacker-DEFEAT anchor
+
+Martin supplied the two standing data asks in one report: a real 4x-Nora rally
+(duplicate joiners) that he LOST (near-mirror 1.42M totals; attacker wiped,
+defender kept 261,433 = 18.4%). Ingested as `pvp_t12_report_005.json` / A5
+(input `Scenarios/Marty_Tygax_4Nora_Gen10_202507.json`).
+
+**Nora exonerated:** engine isolation shows the inversion is joiner-independent
+(0 joiners -> still p_win=1.00, 65% survivors; 4x Nora only moves 65%->83%).
+Duplicate-joiner stacking therefore CANNOT be assessed from this battle; it
+remains an open assumption (additive-then-compressed).
+
+**Cliff back-calculation:** under the flat def_k=0.45 lock the defender needs
+x1.35-1.45 effective strength to reproduce the real defeat - i.e. near-even
+rally defenders fight at >= parity, confirming A1/A2 with a defender-WIN
+witness. A5 disambiguates the def_k tension into two regimes: rally-vs-
+garrison at 1.4-1.9M (defender ~parity; A1/A2/A5) vs small solo attacks
+(defender ~0.5x; A3/A4). Re-locked with the SIZE-DEPENDENT form
+def_k=0.0183/def_ed=1.28 (~0.97 parity at 1.42M, ~0.56 at 210k): A1-A4
+winners correct with the most realistic near-even depths yet (A1 46%, A2 30%
+survivors vs the flat lock's 74%/67%). Confounded discriminator candidates
+(scale / rally-vs-solo / garrison player count 13 vs 1-2) cannot be separated
+with current anchors.
+
+**Declared, tracked miss:** A5's DEFENDER WIN is beyond the current model
+class at any swept configuration (def-parity, cm up to 1.6, all shape knobs) -
+the engine still ranks the attacker ahead ~60-79% survivors. This is the
+near-mirror coin-flip zone: five real battles this close now show wins by
+EITHER side (attacker at 3.45%/6.54%/34%/58% survivors; defender at 18.4%).
+The near-even label now states explicitly that the displayed win% is the
+model's internal tendency, NOT a calibrated probability. Regression #12
+gates A1-A4 winners and reports (does not gate) A5.
+
+---
 
 ## 2026-07-08 SECOND Calibration Pass - anchor 4 (Amanda vs RampageR)
 

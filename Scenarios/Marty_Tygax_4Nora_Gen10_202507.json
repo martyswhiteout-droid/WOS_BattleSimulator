@@ -1,0 +1,208 @@
+{
+  "wos_config": 1,
+  "name": "Marty_Tygax_4Nora_Gen10_202507",
+  "runs": 1000,
+  "seed": 4471,
+  "own": {
+    "role": "rally",
+    "troops_total": 1421184,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5241,
+      "Lancer": 0.47590000000000005,
+      "Marksman": 0
+    },
+    "formation_counts": {
+      "Infantry": 744783,
+      "Lancer": 676401,
+      "Marksman": 0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 9,
+        "tier": 11,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 9,
+        "tier": 10.5,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 26.471,
+      "Infantry|Defense": 23.744,
+      "Infantry|Lethality": 26.506,
+      "Infantry|Health": 23.4,
+      "Lancer|Attack": 17.194000000000003,
+      "Lancer|Defense": 15.517000000000001,
+      "Lancer|Lethality": 23.747,
+      "Lancer|Health": 20.888,
+      "Marksman|Attack": 26.471,
+      "Marksman|Defense": 23.734,
+      "Marksman|Lethality": 26.451999999999998,
+      "Marksman|Health": 23.386
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Gregory",
+      "Lancer": "Mia",
+      "Marksman": "Blanchette"
+    },
+    "joiners": [
+      "Nora",
+      "Nora",
+      "Nora",
+      "Nora"
+    ],
+    "_ui_buffs": {
+      "item": [
+        "20",
+        "20",
+        "20",
+        "20",
+        "-20",
+        "-20"
+      ],
+      "pet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "_ui_max_buff": false,
+    "_ui_input_panel": {
+      "Infantry|Attack": 26.471,
+      "Infantry|Defense": 23.744,
+      "Infantry|Lethality": 26.506,
+      "Infantry|Health": 23.4,
+      "Lancer|Attack": 17.194000000000003,
+      "Lancer|Defense": 15.517000000000001,
+      "Lancer|Lethality": 23.747,
+      "Lancer|Health": 20.888,
+      "Marksman|Attack": 26.471,
+      "Marksman|Defense": 23.734,
+      "Marksman|Lethality": 26.451999999999998,
+      "Marksman|Health": 23.386
+    },
+    "_ui_max_gears": {
+      "Infantry": true,
+      "Lancer": true,
+      "Marksman": true
+    },
+    "_ui_stats_type": "scouted"
+  },
+  "enemy": {
+    "role": "garrison",
+    "troops_total": 1421819,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.4738,
+      "Lancer": 0.33770000000000006,
+      "Marksman": 0.1886
+    },
+    "formation_counts": {
+      "Infantry": 673593,
+      "Lancer": 480107,
+      "Marksman": 268119
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 8,
+        "tier": 10.5,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 8,
+        "tier": 10.5,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 9,
+        "tier": 10.5,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 21.197,
+      "Infantry|Defense": 24.511999999999997,
+      "Infantry|Lethality": 24.388,
+      "Infantry|Health": 27.56,
+      "Lancer|Attack": 22.899,
+      "Lancer|Defense": 26.426,
+      "Lancer|Lethality": 24.749000000000002,
+      "Lancer|Health": 27.919,
+      "Marksman|Attack": 22.899,
+      "Marksman|Defense": 26.426,
+      "Marksman|Lethality": 24.801,
+      "Marksman|Health": 27.969
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Magnus",
+      "Lancer": "Freya",
+      "Marksman": "Blanchette"
+    },
+    "joiners": [
+      "Gregory",
+      "Seo-yoon",
+      "Jessie",
+      "Jessie"
+    ],
+    "_ui_buffs": {
+      "item": [
+        "20",
+        "20",
+        "20",
+        "20",
+        "-20",
+        "-20"
+      ],
+      "pet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "_ui_max_buff": false,
+    "_ui_input_panel": {
+      "Infantry|Attack": 21.197,
+      "Infantry|Defense": 24.511999999999997,
+      "Infantry|Lethality": 24.388,
+      "Infantry|Health": 27.56,
+      "Lancer|Attack": 22.899,
+      "Lancer|Defense": 26.426,
+      "Lancer|Lethality": 24.749000000000002,
+      "Lancer|Health": 27.919,
+      "Marksman|Attack": 22.899,
+      "Marksman|Defense": 26.426,
+      "Marksman|Lethality": 24.801,
+      "Marksman|Health": 27.969
+    },
+    "_ui_max_gears": {
+      "Infantry": true,
+      "Lancer": true,
+      "Marksman": true
+    },
+    "_ui_stats_type": "scouted"
+  }
+}

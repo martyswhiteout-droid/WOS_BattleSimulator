@@ -619,3 +619,19 @@ fix (rate 155→168, def_k 0.5→0.45, γ back to 0.30): 21/36 gates, 4/4 winner
 Remaining honest caveat: 4 identical joiners stack additively pre-compression;
 whether the real game stacks 4 copies of the same joiner passive is UNKNOWN
 (no anchor has duplicate joiners) — flagged for a future anchor.
+
+## 21. Anchor 5 (Marty vs FxCat) — attacker-defeat anchor; third pass (2026-07-08)
+
+Martin's real 4x-Nora rally DEFEAT (near-mirror 1.42M totals; he was wiped,
+defender kept 18.4%) vs sim "100% overwhelming victory". Findings: (1) Nora
+exonerated — 0-joiner run still predicts p_win=1.00/65% survivors, so the
+inversion is in the base matchup; duplicate-joiner stacking remains untestable
+from this battle. (2) Cliff: defender needs ×1.35-1.45 effective strength
+under the flat def_k=0.45 lock → near-even rally defenders fight at ≥parity
+(first defender-WIN witness; confirms A1/A2). (3) Re-locked with size-
+dependent defender scale def_k=0.0183/def_ed=1.28 (parity at 1.4-1.9M rally
+scale, ~0.56 at 200-270k solo scale): A1-A4 winners correct, near-even depths
+much more realistic (A1 46%/A2 30% survivors). (4) A5's defender win is a
+DECLARED tracked miss — the near-mirror coin-flip zone (5 real battles: wins
+by either side); the coin_flip label now says the displayed win% is not a
+calibrated probability. Regression #12 gates A1-A4, reports A5.

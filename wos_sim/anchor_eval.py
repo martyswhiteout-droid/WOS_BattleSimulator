@@ -108,6 +108,14 @@ REALITY = {
                                 inf_surv_frac_band=(0.25, 0.55)),
                skill_kill_share_max=0.20,
                triggers={}),
+    # Marty vs FxCat (rally vs 13-player garrison, near-mirror 1.42M totals,
+    # attacker DEFEAT - the first attacker-loses anchor, and the first with
+    # duplicate joiners: 4x Nora). Real: attacker wiped, defender keeps 18.4%.
+    "A5": dict(winner="D", turns=(20, 45), surv_type=None,
+               att_surv_frac_band=(0.0, 0.02), att_surv_real=0,
+               def_surv_frac_band=(0.08, 0.30), def_surv_real=261_433,
+               def_wiped=False,
+               triggers={}),
 }
 
 
@@ -117,6 +125,7 @@ def anchors() -> list[tuple[str, Matchup]]:
         ("A2", _load_report_anchor(DATA / "pvp_t12_report_002.json")),
         ("A3", _load_scenario_anchor(ROOT / "Scenarios" / "Calibration_Amanda_Omar.json")),
         ("A4", _load_scenario_anchor(ROOT / "Scenarios" / "Calibration_Amanda_Ramp.json")),
+        ("A5", _load_scenario_anchor(ROOT / "Scenarios" / "Marty_Tygax_4Nora_Gen10_202507.json")),
     ]
 
 
@@ -180,9 +189,18 @@ def scorecard(name: str, con, res, is_turn: bool) -> dict:
     if "att_surv_frac_band" in real:
         lo, hi = real["att_surv_frac_band"]
         frac = a_total / sum(a_start.values())
-        checks["att_surv"] = (f"{frac:.1%}", f"[{lo:.0%},{hi:.0%}] real 34.3%",
+        checks["att_surv"] = (f"{frac:.1%}",
+                              f"[{lo:.0%},{hi:.0%}] real {real.get('att_surv_real', '?')}",
                               lo <= frac <= hi)
-    checks["def_wiped"] = (round(d_total), 0, d_total <= max(1.0, 1e-6))
+    if real.get("def_wiped", True):
+        checks["def_wiped"] = (round(d_total), 0, d_total <= max(1.0, 1e-6))
+    if "def_surv_frac_band" in real:
+        lo, hi = real["def_surv_frac_band"]
+        d_start_total = sum(u.n for u in con.defender_units)
+        dfrac = d_total / d_start_total if d_start_total else 0.0
+        checks["def_surv"] = (f"{dfrac:.1%}",
+                              f"[{lo:.0%},{hi:.0%}] real {real.get('def_surv_real', '?')}",
+                              lo <= dfrac <= hi)
     for cls_gate, spec in (real.get("class_gates") or {}).items():
         if cls_gate == "lancer_loss_max":
             loss = 1 - a_surv[TroopType.LANCER] / a_start[TroopType.LANCER]

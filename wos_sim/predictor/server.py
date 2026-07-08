@@ -57,6 +57,25 @@ def predict(req: PredictRequest):
     return serialize.forecast_to_dict(fc)
 
 
+class BattleRequest(BaseModel):
+    own: dict
+    enemy: dict
+    seed: int = 0
+    index: int = 0       # 0-based battle #; reproduced deterministically via CRN
+
+
+@app.post("/api/battle")
+def battle(req: BattleRequest):
+    """One battle's per-turn timeline, reproduced on demand (same seed+index as the
+    forecast, so it matches the averaged run exactly)."""
+    if req.index < 0 or req.index >= MAX_RUNS:
+        raise InvalidInput([f"battle index must be between 0 and {MAX_RUNS - 1:,}"])
+    own = serialize.profile_from_dict(req.own)
+    enemy = serialize.profile_from_dict(req.enemy)
+    return api.battle_timeline(own, enemy, seed=req.seed, index=req.index,
+                               params=DEFAULT_ENGINE_PARAMS)
+
+
 # serve the front-end (index.html + avatars) from the same origin, so
 # `uvicorn wos_sim.predictor.server:app` runs the whole app. Mounted LAST so the
 # /api/* routes above match first.

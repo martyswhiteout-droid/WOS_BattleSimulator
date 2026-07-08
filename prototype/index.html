@@ -364,6 +364,13 @@
   .tl-key{display:inline-flex;gap:12px;align-items:center;margin-left:4px}
   .tl-key i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:middle;margin-right:4px}
   .tl-key .tk-you{background:var(--ice)} .tl-key .tk-enemy{background:var(--ember)}
+  .tl-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
+  .tl-controls .seg-toggle button:disabled{opacity:.4;cursor:not-allowed}
+  .tl-slider{flex:1;min-width:130px;max-width:320px;accent-color:var(--ice);cursor:pointer}
+  .tl-slider:disabled{opacity:.35;cursor:not-allowed}
+  .tl-end{font-family:var(--mono);font-size:9.5px;color:var(--mute-2);white-space:nowrap}
+  .tl-slabel{font-family:var(--mono);font-size:10px;color:var(--ice-bright);white-space:nowrap;min-width:64px}
+  .tl-controls .tl-key{margin-left:auto}
   .tl-block{margin-top:12px}
   .tl-cap{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin-bottom:5px}
   .tl-bars{display:flex;gap:3px;height:96px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:8px;overflow:hidden}
@@ -798,8 +805,18 @@
 
       <!-- battle timeline -->
       <div class="fc-part hidden" id="timelinePart">
-        <div class="h">Battle timeline — average per turn</div>
-        <div class="sub">survivors remaining and troops lost each turn, averaged across the simulations · <span class="tl-key"><i class="tk-you"></i>you<i class="tk-enemy"></i>enemy</span></div>
+        <div class="h">Battle timeline</div>
+        <div class="tl-controls">
+          <span class="seg-toggle" id="tlModeToggle">
+            <button type="button" data-tlmode="avg" aria-pressed="true">Average</button>
+            <button type="button" data-tlmode="battle" aria-pressed="false">Per Battle</button>
+          </span>
+          <span class="tl-end">Battle 1</span>
+          <input type="range" class="tl-slider" id="tlSlider" min="1" max="1" value="1" step="1" disabled aria-label="Battle number">
+          <span class="tl-end" id="tlSmax">Battle 1</span>
+          <span class="tl-slabel" id="tlSlabel"></span>
+          <span class="tl-key"><i class="tk-you"></i>you<i class="tk-enemy"></i>enemy</span>
+        </div>
         <div class="tl-block"><div class="tl-cap">Survivors remaining</div><div class="tl-line" id="tlSurv"></div></div>
         <div class="tl-block"><div class="tl-cap">Troops lost this turn</div><div class="tl-bars" id="tlKill"></div></div>
         <div class="tl-x" id="tlX"></div>
@@ -1192,29 +1209,66 @@ function lineChart(turns, own, enemy, opts){
   turns.forEach((t,i)=>{ const c=el('div'); c.title='Turn '+t+'  •  you '+fmtMetric(own[i])+'  •  enemy '+fmtMetric(enemy[i]); hov.appendChild(c); });
   wrap.appendChild(hov); return wrap;
 }
-function buildTimeline(animate){
-  const part=$('#timelinePart'), tl=FORECAST.battle_timeline;
-  if(!part) return;
-  if(!tl||!tl.turns||!tl.turns.length){ part.classList.add('hidden'); return; }
-  part.classList.remove('hidden');
-  const turns=tl.turns;
-  // survivors remaining -> two line graphs (you ice, enemy ember)
-  const surv=$('#tlSurv'); if(surv){ surv.innerHTML=''; surv.appendChild(lineChart(turns, tl.own_survivors, tl.enemy_survivors, {vh:80})); }
-  // troops lost this turn -> grouped bars
+let TL={avg:null,n:0,req:null,cache:{},token:0}, tlSlideTimer=null;
+function tlRenderCharts(data, animate){
+  const turns=data.turns;
+  const surv=$('#tlSurv'); if(surv){ surv.innerHTML=''; surv.appendChild(lineChart(turns, data.own_survivors, data.enemy_survivors, {vh:80})); }
   const kill=$('#tlKill'); if(kill){ kill.innerHTML='';
-    const max=Math.max(1,...tl.own_killed,...tl.enemy_killed);
+    const max=Math.max(1,...data.own_killed,...data.enemy_killed);
     turns.forEach((t,i)=>{ const col=el('div','tl-col');
-      col.title='Turn '+t+'  •  you lost '+fmtMetric(tl.own_killed[i])+'  •  enemy lost '+fmtMetric(tl.enemy_killed[i]);
+      col.title='Turn '+t+'  •  you lost '+fmtMetric(data.own_killed[i])+'  •  enemy lost '+fmtMetric(data.enemy_killed[i]);
       const by=el('div','b you'), be=el('div','b enemy');
-      const hy=Math.max(0,tl.own_killed[i]/max*100), he=Math.max(0,tl.enemy_killed[i]/max*100);
+      const hy=Math.max(0,data.own_killed[i]/max*100), he=Math.max(0,data.enemy_killed[i]/max*100);
       if(animate){ by.style.height='0%'; be.style.height='0%'; requestAnimationFrame(()=>requestAnimationFrame(()=>{ by.style.height=hy+'%'; be.style.height=he+'%'; })); }
       else { by.style.height=hy+'%'; be.style.height=he+'%'; }
       col.append(by,be); kill.appendChild(col); }); }
   const ax=$('#tlX'); if(ax){ const marks=[], step=Math.max(1,Math.round((turns.length-1)/5));
     for(let i=0;i<turns.length;i+=step) marks.push(turns[i]);
-    if(marks[marks.length-1]!==turns[turns.length-1]) marks.push(turns[turns.length-1]);
+    if(marks.length&&marks[marks.length-1]!==turns[turns.length-1]) marks.push(turns[turns.length-1]);
     ax.innerHTML=marks.map(t=>'<span>'+t+'</span>').join(''); }
-  const cap=$('#tlXcap'); if(cap) cap.textContent='turn →'+(tl.truncated?'  · first '+turns.length+' turns (battle ran longer)':'');
+}
+// fetch one battle's timeline on demand — deterministic via (seed, index), so it
+// matches the averaged run exactly (no new sim). Cached per index.
+function tlFetchBattle(index){
+  if(index in TL.cache) return Promise.resolve(TL.cache[index]);
+  if(!TL.req) return Promise.reject(new Error('no run'));
+  return fetch('/api/battle',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({own:TL.req.own, enemy:TL.req.enemy, seed:TL.req.seed, index:index})})
+    .then(r=>{ if(!r.ok) throw new Error('battle '+r.status); return r.json(); })
+    .then(d=>{ TL.cache[index]=d; return d; });
+}
+// render the current view: Average (all sims) or Per Battle (one sim, fetched on demand)
+function tlUpdate(animate){
+  if(!TL.avg) return;
+  const btn=$('#tlModeToggle [aria-pressed="true"]'), mode=btn?btn.dataset.tlmode:'avg';
+  const slider=$('#tlSlider'), slabel=$('#tlSlabel'), cap=$('#tlXcap');
+  if(mode!=='battle'){
+    if(slider) slider.disabled=true;
+    if(slabel) slabel.textContent='avg · '+(TL.n||0).toLocaleString()+' sims';
+    if(cap) cap.textContent='turn →'+(TL.avg.truncated?'  · first '+TL.avg.turns.length+' turns':'');
+    tlRenderCharts(TL.avg, animate); return;
+  }
+  if(slider) slider.disabled=false;
+  const i=Math.min(TL.n||1,Math.max(1,+((slider&&slider.value)||1)));
+  if(slabel) slabel.textContent='Battle '+i.toLocaleString();
+  if(cap) cap.textContent='turn →';
+  const tok=++TL.token;
+  tlFetchBattle(i-1).then(d=>{ if(tok!==TL.token) return; tlRenderCharts(d, false); })
+    .catch(()=>{ if(tok!==TL.token) return; if(slabel) slabel.textContent='Battle '+i.toLocaleString()+' — restart the server to view'; });
+}
+function buildTimeline(animate){
+  const part=$('#timelinePart'); if(!part) return;
+  const tl=FORECAST.battle_timeline;
+  if(!tl||!tl.turns||!tl.turns.length){ part.classList.add('hidden'); return; }
+  part.classList.remove('hidden');
+  TL.avg=tl; TL.n=FORECAST.n||0; TL.req=LAST_RUN; TL.cache={}; TL.token=0;
+  const slider=$('#tlSlider'), smax=$('#tlSmax'), battleBtn=$('#tlModeToggle [data-tlmode="battle"]');
+  const canBattle=(TL.n>1 && !!TL.req);
+  if(battleBtn){ battleBtn.disabled=!canBattle;
+    if(!canBattle) document.querySelectorAll('#tlModeToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.tlmode==='avg'?'true':'false')); }
+  if(slider){ slider.max=Math.max(1,TL.n); if(+slider.value>TL.n||+slider.value<1) slider.value=1; }
+  if(smax) smax.textContent='Battle '+(TL.n||1).toLocaleString();
+  tlUpdate(animate);
 }
 function fmtMetric(x){ x=Math.round(x||0); return x>=1000?x.toLocaleString():String(x); }
 function fmtDist(d){
@@ -1475,6 +1529,13 @@ function initInteractions(){
   // formation % <-> count entry mode
   $('#formModeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     setFormationMode(b.dataset.fmode); });
+  // battle timeline: Average <-> Per Battle toggle + battle slider
+  const tlm=$('#tlModeToggle'); if(tlm) tlm.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.disabled)return;
+    [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); tlUpdate(false); });
+  const tls=$('#tlSlider'); if(tls) tls.addEventListener('input',()=>{
+    const sl=$('#tlSlabel'); if(sl) sl.textContent='Battle '+(+tls.value).toLocaleString();   // label instantly
+    clearTimeout(tlSlideTimer); tlSlideTimer=setTimeout(()=>tlUpdate(false),90);              // fetch after the slide settles
+  });
   const inputZone=document.querySelector('.input');
   const onInputChanged=()=>{ updateFinalStats(); markForecastStale(); scheduleAutosave(); updateAccordionSummaries(); };
   inputZone.addEventListener('input',onInputChanged);
@@ -1530,7 +1591,7 @@ function initInteractions(){
   });
 }
 /* ---------- real forecast pipeline (POST /api/predict) ---------- */
-let FORECAST=null;
+let FORECAST=null, LAST_RUN=null;   // LAST_RUN: exact {own,enemy,seed} of the current forecast, for on-demand battle fetches
 const tabState=new Map();
 let applyingConfig=false, activeRun=null, autosaveTimer=null, lastRunFailed=false;
 const AUTOSAVE_KEY='wos:lastConfig:v1', DEFAULT_SEED=4471;
@@ -1927,8 +1988,10 @@ async function runForecast(){
   showProgress(true); hideError(); setRunBusy(true); setRunStatus('running','Running...');
   try{
     const n=currentRuns();
+    const body={own:buildProfile('me'), enemy:buildProfile('foe'), n, seed:activeSeed};
+    LAST_RUN={own:body.own, enemy:body.enemy, seed:body.seed};   // freeze inputs for battle fetches (stays consistent even if the form is edited after)
     const res=await fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({own:buildProfile('me'), enemy:buildProfile('foe'), n, seed:activeSeed}), signal:controller.signal});
+      body:JSON.stringify(body), signal:controller.signal});
     if(activeRun!==controller) return;
     if(!res.ok){ let m='Request failed ('+res.status+')'; try{const e=await res.json(); m=(e.problems||[e.detail]).filter(Boolean).join(' · ')||m;}catch(_){} throw new Error(m); }
     FORECAST=await res.json(); renderCharts(true); clearForecastStale(); setRunStatus('done','Done'); setText('#liveStatus','Forecast updated - win chance '+pctN(FORECAST.verdict.win.p).toFixed(1)+'%'); snapshotTab(activeTab()); scheduleAutosave();
