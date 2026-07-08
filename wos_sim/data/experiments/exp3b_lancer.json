@@ -1,0 +1,18 @@
+{
+  "_type": "lancer_vs_marksman",
+  "setup": "same as 3a (repeat)",
+  "outcome": "DEFEAT - marksman defender won",
+  "attacker": {
+    "troops": 20000,
+    "survivors": 0
+  },
+  "defender": {
+    "troops": 20000,
+    "survivors": 4963,
+    "surv_frac": 0.248
+  },
+  "engine": {
+    "winner": "ATTACKER (lancer) - WRONG"
+  },
+  "_extraction": "CONFIRMED by Martin 2026-07-08"
+}

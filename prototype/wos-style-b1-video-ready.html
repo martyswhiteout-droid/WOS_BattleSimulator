@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoS A1 / B1 Split Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:Chakra;src:url("assets/fonts/chakra-petch-700.ttf") format("truetype");font-weight:700}
+  @font-face{font-family:Plex;src:url("assets/fonts/ibm-plex-mono-500.ttf") format("truetype");font-weight:500}
+  @font-face{font-family:InterLocal;src:url("assets/fonts/inter-500.ttf") format("truetype");font-weight:500}
+  *{box-sizing:border-box}
+  :root{
+    --paper:rgba(250,239,224,.78);
+    --paper-strong:rgba(255,247,236,.88);
+    --paper-line:rgba(169,113,62,.44);
+    --ink:#664e3a;
+    --muted:#937966;
+    --amber:#d89142;
+    --amber-dark:#9b5f29;
+    --blue:#669bd0;
+    --red:#ee6363;
+    --cyan:#58d7e7;
+    --orange:#f39a3c;
+  }
+  body{
+    min-height:100vh;
+    margin:0;
+    color:var(--ink);
+    font-family:InterLocal,system-ui,-apple-system,Segoe UI,sans-serif;
+    background:#0a2030;
+    overflow-x:hidden;
+  }
+  .video-placeholder{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    background:
+      radial-gradient(circle at 18% 14%,rgba(251,255,255,.9),transparent 18%),
+      radial-gradient(circle at 78% 4%,rgba(137,205,238,.55),transparent 24%),
+      radial-gradient(circle at 35% 78%,rgba(238,179,101,.24),transparent 22%),
+      linear-gradient(140deg,#091b2b 0%,#225a7b 34%,#e2f6ff 56%,#8bc0d8 74%,#102d42 100%);
+    animation:iceDrift 12s ease-in-out infinite alternate;
+  }
+  .video-placeholder::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(115deg,transparent 0 35%,rgba(255,255,255,.16) 36% 37%,transparent 38% 62%,rgba(255,255,255,.12) 63% 64%,transparent 65%),
+      radial-gradient(circle at 50% 18%,rgba(255,255,255,.36),transparent 20%);
+    mix-blend-mode:screen;
+  }
+  .video-placeholder::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg,rgba(4,18,32,.32),transparent 30%,rgba(3,12,22,.5));
+  }
+  .wrap{max-width:1440px;margin:0 auto;padding:22px}
+  .preview-note{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    margin-bottom:14px;
+    color:rgba(255,255,255,.84);
+    text-shadow:0 2px 8px rgba(0,0,0,.35);
+  }
+  .preview-note h1{margin:0;font-family:Chakra,system-ui;font-size:18px;letter-spacing:.09em;text-transform:uppercase}
+  .preview-note p{max-width:640px;margin:0;font-size:13px;line-height:1.45;color:rgba(255,255,255,.72)}
+  .app{
+    position:relative;
+    display:grid;
+    gap:14px;
+    padding:0;
+    background:transparent;
+  }
+  .top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border-radius:18px;
+    background:linear-gradient(180deg,rgba(255,248,237,.82),rgba(244,227,205,.68));
+    border:1px solid rgba(255,255,255,.62);
+    box-shadow:0 18px 42px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.7);
+    backdrop-filter:blur(12px) saturate(1.2);
+  }
+  .brand{
+    font-family:"Instrument Serif",serif;
+    font-size:34px;
+    letter-spacing:-.03em;
+    color:#76471f;
+    text-shadow:0 1px rgba(255,255,255,.85);
+  }
+  .scenario-tabs{display:flex;align-items:center;gap:8px;margin-left:18px}
+  .scenario{
+    border:1px solid rgba(154,96,41,.34);
+    background:rgba(255,246,235,.72);
+    border-radius:999px;
+    padding:8px 12px;
+    font-family:Chakra,system-ui;
+    box-shadow:inset 0 1px rgba(255,255,255,.7);
+  }
+  .scenario.active{background:linear-gradient(#f7bf65,#d78334);color:white;text-shadow:0 1px #7c451f}
+  .tools{display:flex;gap:5px}
+  .tool,.role span,.chev,.vs{display:grid;place-items:center}
+  .tool{
+    width:31px;
+    height:31px;
+    border-radius:10px;
+    background:rgba(142,91,49,.18);
+    border:1px solid rgba(142,91,49,.22);
+  }
+  .tool img,.role img{width:18px;height:18px;object-fit:contain}
+  .run{
+    margin-left:auto;
+    border:0;
+    border-radius:999px;
+    padding:11px 16px;
+    background:linear-gradient(#ffc56a,#e08631);
+    color:white;
+    font-family:Chakra,system-ui;
+    text-transform:uppercase;
+    text-shadow:0 1px #6b3b18;
+    box-shadow:0 4px 0 rgba(128,70,25,.65),0 10px 22px rgba(117,61,19,.25);
+  }
+  .panel,.forecast,.skill,.stat{
+    border-radius:18px;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    box-shadow:0 18px 48px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.68);
+    backdrop-filter:blur(14px) saturate(1.18);
+    overflow:hidden;
+  }
+  .panel{padding:16px}
+  .side{
+    display:grid;
+    grid-template-columns:1fr 56px 1fr;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .side-name{
+    font-family:Chakra,system-ui;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    text-align:center;
+    color:#76533a;
+    font-size:13px;
+  }
+  .role{
+    display:inline-flex;
+    gap:5px;
+    margin-top:7px;
+    padding:4px;
+    border-radius:13px;
+    background:rgba(213,181,152,.54);
+    box-shadow:inset 0 1px rgba(255,255,255,.5);
+  }
+  .role span{width:36px;height:31px;border-radius:10px}
+  .role .on{background:rgba(255,255,255,.78)}
+  .vs{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    justify-self:center;
+    color:white;
+    font-family:Chakra,system-ui;
+    background:linear-gradient(#db9e61,#bd7430);
+    box-shadow:inset 0 1px rgba(255,255,255,.45);
+  }
+  .title{
+    display:flex;
+    align-items:center;
+    margin:15px 0 9px;
+    font-family:Chakra,system-ui;
+    font-size:12px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:#8d6d56;
+  }
+  .chev{
+    margin-left:auto;
+    width:34px;
+    height:31px;
+    border-radius:10px;
+    background:#d79a5b;
+    color:white;
+    font-size:18px;
+  }
+  .formation-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+  }
+  .form-row{
+    display:grid;
+    grid-template-columns:38px 1fr 58px;
+    gap:9px;
+    align-items:center;
+    padding:9px;
+    border-radius:15px;
+    background:rgba(255,248,239,.78);
+    border:1px solid rgba(213,182,153,.74);
+  }
+  .class-icon{
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    color:white;
+    font-family:Chakra,system-ui;
+    background:linear-gradient(#e9b477,#cc7b34);
+  }
+  .track{height:11px;border-radius:999px;background:#9fb2bd;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:999px;background:#59c861}
+  .pct{font-family:Plex,monospace;text-align:right;font-size:12px}
+  .total{text-align:right;font-family:Chakra,system-ui;font-size:24px;color:#8b5b31;margin-top:7px}
+  .heroes{
+    display:grid;
+    grid-template-columns:1fr 110px 1fr;
+    gap:14px;
+    align-items:center;
+  }
+  .hero-stack{display:grid;gap:9px}
+  .hero{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+    border-radius:999px;
+    padding:6px 12px 6px 6px;
+    background:rgba(255,248,239,.78);
+    border:1px solid rgba(213,182,153,.74);
+    font-family:Chakra,system-ui;
+    white-space:nowrap;
+  }
+  .hero img{width:35px;height:35px;border-radius:50%;object-fit:cover;box-shadow:0 1px 0 rgba(255,255,255,.8)}
+  .mid{
+    text-align:center;
+    font-family:Plex,monospace;
+    font-size:11px;
+    color:#8c755f;
+    text-transform:uppercase;
+    letter-spacing:.11em;
+    line-height:3;
+  }
+  .joiners{display:flex;justify-content:center;gap:8px;flex-wrap:nowrap}
+  .joiners .hero{font-size:12px}
+  .forecast{padding:16px}
+  .forecast-grid{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:center}
+  .num{font-family:"Instrument Serif",serif;font-size:62px;line-height:.8;color:#89572d}
+  .winbar{height:42px;border-radius:14px;display:flex;overflow:hidden;border:1px solid rgba(202,169,140,.8)}
+  .winbar span{display:grid;place-items:center;font-family:Chakra,system-ui;font-size:13px}
+  .win{background:linear-gradient(90deg,var(--red),var(--blue));color:white}
+  .loss{background:rgba(234,211,189,.84);color:#765847}
+  .mini-bars{display:flex;gap:8px;height:86px;align-items:end;margin-top:12px}
+  .mini-bars i{flex:1;border-radius:8px 8px 0 0}
+  .mini-bars i:nth-child(odd){background:linear-gradient(#75d7e8,#38a0bc)}
+  .mini-bars i:nth-child(even){background:linear-gradient(#ffc168,#e47c2b)}
+  .lower{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:14px;
+  }
+  .skill-head{display:grid;grid-template-columns:1fr 1fr}
+  .skill-side{
+    padding:10px;
+    font-family:Chakra,system-ui;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .skill-side:first-child{background:linear-gradient(110deg,#eb5e5e 0 54%,#6d9ed4 54%)}
+  .skill-side:last-child{background:#6d9ed4}
+  .skill-side img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+  .skill-row{
+    display:grid;
+    grid-template-columns:34px 1fr 90px 70px;
+    gap:9px;
+    align-items:center;
+    padding:9px 11px;
+    font-family:Plex,monospace;
+    font-size:12px;
+  }
+  .skill-row:nth-child(odd),.stat-row:nth-child(odd){background:rgba(234,216,195,.8)}
+  .skill-row:nth-child(even),.stat-row:nth-child(even){background:rgba(248,238,227,.84)}
+  .skill-row img{width:30px;height:30px;border-radius:7px}
+  .stat{padding:12px}
+  .stat-row{
+    display:grid;
+    grid-template-columns:1fr 1.15fr 1fr;
+    padding:8px;
+    font-family:Chakra,system-ui;
+    font-size:13px;
+    text-align:center;
+  }
+  .stat-row span:first-child{color:#42a74c}.stat-row span:last-child{color:#d44f4f}
+  @keyframes iceDrift{
+    from{filter:saturate(.96) brightness(.98);transform:scale(1)}
+    to{filter:saturate(1.12) brightness(1.05);transform:scale(1.03)}
+  }
+  @media(max-width:980px){
+    .formation-grid,.lower{grid-template-columns:1fr}
+    .heroes{grid-template-columns:1fr}
+    .mid{line-height:1.8}
+    .joiners{flex-wrap:wrap}
+    .preview-note{display:block}
+    .preview-note p{margin-top:8px}
+  }
+  .top.a1-shell{
+    background:#0b3159;
+    border:3px solid #64b9ef;
+    box-shadow:0 18px 42px rgba(2,26,47,.32),inset 0 1px rgba(255,255,255,.24);
+    backdrop-filter:blur(12px) saturate(1.12);
+  }
+  .top.a1-shell .brand{
+    color:#f7fbff;
+    text-shadow:0 2px 0 rgba(0,0,0,.22);
+  }
+  .top.a1-shell .scenario{
+    color:#235174;
+    background:#d9efff;
+    border:2px solid #72c5ee;
+  }
+  .top.a1-shell .scenario.active{
+    color:white;
+    background:linear-gradient(#55b8ff,#1885ed);
+    border-color:#9fe0ff;
+  }
+  .top.a1-shell .tool{
+    background:linear-gradient(#52b9ff,#1781dc);
+    border:2px solid #9fe0ff;
+  }
+  .panel.a1-section{
+    background:rgba(217,239,255,.88);
+    border:3px solid #64b9ef;
+    color:#31506b;
+  }
+  .panel.a1-section .side-name,
+  .panel.a1-section .title,
+  .panel.a1-section .mid{
+    color:#496c86;
+  }
+  .panel.a1-section .role{
+    background:#67bbef;
+  }
+  .panel.a1-section .role .on{
+    background:#dff7ff;
+  }
+  .panel.a1-section .vs,
+  .panel.a1-section .chev{
+    background:linear-gradient(#52b9ff,#1781dc);
+    border:2px solid #9fe0ff;
+    color:white;
+  }
+  .panel.a1-section .form-row,
+  .panel.a1-section .hero{
+    background:#cae9fb;
+    border:2px solid #67b9e8;
+  }
+  .panel.a1-section .class-icon{
+    background:#77c1ee;
+  }
+  .panel.a1-section .track{
+    background:#587184;
+  }
+  .panel.a1-section .track i{
+    background:#36df58;
+  }
+  .panel.a1-section .total{
+    color:#0d568d;
+  }
+  .split-marker{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:rgba(255,255,255,.78);
+    font-family:Chakra,system-ui;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    font-size:12px;
+    text-shadow:0 2px 8px rgba(0,0,0,.35);
+  }
+  .split-marker::before,
+  .split-marker::after{
+    content:"";
+    height:1px;
+    flex:1;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
+  }
+</style>
+</head>
+<body>
+<div class="video-placeholder" aria-hidden="true"></div>
+<div class="wrap">
+  <div class="preview-note">
+    <h1>A1 Before Final Stats / B1 After Final Stats</h1>
+    <p>Visual-only split direction: setup and inputs use the A1 blue/cinematic language, while Final Stats and output/reporting panels use B1 parchment styling.</p>
+  </div>
+  <main class="app">
+    <div class="top a1-shell">
+      <div class="brand">Whiteout Tactics</div>
+      <div class="scenario-tabs">
+        <span class="scenario active">Scenario 1</span>
+        <span class="scenario">Scenario 2</span>
+        <span class="scenario">Scenario 3</span>
+      </div>
+      <div class="tools">
+        <span class="tool"><img src="assets/ui/rename-pen.png" alt=""></span>
+        <span class="tool"><img src="assets/ui/save-down.png" alt=""></span>
+        <span class="tool"><img src="assets/ui/load-up.png" alt=""></span>
+      </div>
+      <button class="run">Run 100</button>
+    </div>
+
+    <section class="panel a1-section">
+      <div class="side">
+        <div class="side-name">My Side<div class="role"><span class="on"><img src="assets/ui/rally-swords.png" alt=""></span><span><img src="assets/ui/garrison-shield.png" alt=""></span></div></div>
+        <div class="vs">VS</div>
+        <div class="side-name">Enemy<div class="role"><span><img src="assets/ui/rally-swords.png" alt=""></span><span class="on"><img src="assets/ui/garrison-shield.png" alt=""></span></div></div>
+      </div>
+
+      <div class="title">Troops &amp; Formation <span class="chev">v</span></div>
+      <div class="formation-grid">
+        <div class="form-row"><span class="class-icon">I</span><span class="track"><i style="width:50%"></i></span><span class="pct">50.0%</span></div>
+        <div class="form-row"><span class="class-icon">L</span><span class="track"><i style="width:20%"></i></span><span class="pct">20.0%</span></div>
+        <div class="form-row"><span class="class-icon">M</span><span class="track"><i style="width:30%"></i></span><span class="pct">30.0%</span></div>
+      </div>
+      <div class="total">100%</div>
+
+      <div class="title">Lead Heroes <span class="chev">v</span></div>
+      <div class="heroes">
+        <div class="hero-stack"><div class="hero"><img src="avatars/Hank.png" alt="">Hank</div><div class="hero"><img src="avatars/Estrella.png" alt="">Estrella</div><div class="hero"><img src="avatars/Viveca.png" alt="">Viveca</div></div>
+        <div class="mid">Infantry<br>Lancers<br>Marksmen</div>
+        <div class="hero-stack"><div class="hero"><img src="avatars/Hank.png" alt="">Hank</div><div class="hero"><img src="avatars/Estrella.png" alt="">Estrella</div><div class="hero"><img src="avatars/Viveca.png" alt="">Viveca</div></div>
+      </div>
+
+      <div class="title">Joiner Heroes <span class="chev">v</span></div>
+      <div class="joiners">
+        <div class="hero"><img src="avatars/Mia.png" alt="">Mia</div>
+        <div class="hero"><img src="avatars/Jessie.png" alt="">Jessie</div>
+        <div class="hero"><img src="avatars/Blanchette.jpg" alt="">Blanchette</div>
+        <div class="hero"><img src="avatars/Wu%20Ming.jpg" alt="">Wu Ming</div>
+      </div>
+    </section>
+
+    <div class="split-marker">Final Stats starts B1 output styling</div>
+
+    <section class="stat">
+      <div class="title">Final Stats <span class="chev">v</span></div>
+      <div class="stat-row"><span>+3987.3%</span><b>Infantry Attack</b><span>+3862.6%</span></div>
+      <div class="stat-row"><span>+2977.5%</span><b>Infantry Defense</b><span>+3231.0%</span></div>
+      <div class="stat-row"><span>+2802.9%</span><b>Lancer Lethality</b><span>+2612.2%</span></div>
+    </section>
+
+    <section class="forecast">
+      <div class="title">Forecast <span class="chev">v</span></div>
+      <div class="forecast-grid">
+        <div class="num">58%</div>
+        <div>
+          <div class="winbar"><span class="win" style="width:58%">Win</span><span class="loss" style="width:42%">Loss</span></div>
+          <div class="mini-bars"><i style="height:34%"></i><i style="height:49%"></i><i style="height:42%"></i><i style="height:76%"></i><i style="height:54%"></i><i style="height:91%"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="lower">
+      <section class="skill">
+        <div class="skill-head"><div class="skill-side"><img src="avatars/Hank.png" alt="">Hank</div><div class="skill-side"><img src="avatars/Viveca.png" alt="">Viveca</div></div>
+        <div class="skill-row"><img src="assets/hero_skills/hank-2/skill_3.png" alt=""><b>Raging Force</b><span>Triggered</span><span>-</span></div>
+        <div class="skill-row"><img src="assets/troop_skills/crystal_shield.png" alt=""><b>Crystal Shield</b><span>5</span><span>12K</span></div>
+      </section>
+      <section class="stat">
+        <div class="title">Simulation Outcome <span class="chev">v</span></div>
+        <div class="stat-row"><span>625 battles</span><b>50-60% Loss</b><span>410 battles</span></div>
+        <div class="stat-row"><span>225 battles</span><b>60-70% Loss</b><span>330 battles</span></div>
+        <div class="stat-row"><span>150 battles</span><b>70-80% Loss</b><span>260 battles</span></div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "_type": "beast_control",
+  "setup": "20,000 T10 (5k inf+15k lancer) vs Lv18 Titan Roc",
+  "outcome": "DEFEAT (beast not killed)",
+  "attacker": {
+    "troops": 20000,
+    "losses": 0,
+    "injured": 7000,
+    "lightly": 13000,
+    "survivors": 0
+  },
+  "defender_beast": {
+    "survivors": 7176
+  },
+  "note": "beast hunt = separate combat system; not mapped to PvP turn engine",
+  "_extraction": "PROVISIONAL - read from dense screenshots 2026-07-08; VERIFY before using in calibration"
+}

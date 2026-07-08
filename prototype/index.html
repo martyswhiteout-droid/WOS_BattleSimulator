@@ -19,8 +19,8 @@
   :root{
     --void:#0A1017;--void-2:#0C141D;--panel:#111C26;--panel-2:#16232F;
     --line:#1E2E3B;--line-soft:#182531;
-    --ice:#5FD2E0;--ice-bright:#8CEDF3;--ice-deep:#2E9AAB;--ice-ghost:rgba(95,210,224,.10);
-    --ember:#F0913D;--ember-bright:#FDB765;--ember-deep:#B5652A;--ember-ghost:rgba(240,145,61,.10);
+    --ice:#2EA1F2;--ice-bright:#55BFFF;--ice-deep:#1682D8;--ice-ghost:rgba(46,161,242,.12);
+    --ember:#EF5F5F;--ember-bright:#FF8181;--ember-deep:#C94646;--ember-ghost:rgba(239,95,95,.12);
     --loss:#E5533B;--mutual:#5C7182;--white:#EAF3F7;--mute:#8AA2B0;--mute-2:#95AAB7;--faint:#78909F;--ok:#57D3A3;
     --r:14px;--r-sm:9px;--shadow:0 18px 40px -24px rgba(0,0,0,.9);
     --disp:'Chakra Petch',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
@@ -28,7 +28,7 @@
   *{box-sizing:border-box}
   body{margin:0;background:
       radial-gradient(1200px 600px at 50% -10%,rgba(95,210,224,.06),transparent 60%),
-      radial-gradient(900px 500px at 100% 0%,rgba(240,145,61,.05),transparent 55%),var(--void);
+      radial-gradient(900px 500px at 100% 0%,rgba(239,95,95,.05),transparent 55%),var(--void);
     color:var(--white);font-family:var(--body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
   .mono{font-family:var(--mono)}
   h1,h2,h3,h4{margin:0}
@@ -97,11 +97,11 @@
     padding:6px clamp(12px,2vw,22px) 22px;position:relative;
     background:
       linear-gradient(90deg,rgba(95,210,224,.05),transparent 34%),
-      linear-gradient(270deg,rgba(240,145,61,.05),transparent 34%),
+      linear-gradient(270deg,rgba(239,95,95,.05),transparent 34%),
       linear-gradient(180deg,var(--panel),var(--void-2));}
 
   .sides-head{display:grid;grid-template-columns:1fr 168px 1fr;gap:0 16px;align-items:center;
-    position:sticky;top:57px;z-index:20;background:linear-gradient(180deg,var(--panel) 70%,transparent);padding:14px 0 12px;margin-bottom:4px}
+    background:linear-gradient(180deg,var(--panel) 70%,transparent);padding:14px 0 12px;margin-bottom:4px}
   .side-title{display:flex;align-items:center;gap:8px;flex-direction:column}
   .side-title.foe{justify-content:flex-end}
   .side-title .badge{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.06em}
@@ -218,12 +218,12 @@
   .lead-row.foe-row .widget-impact{text-align:left}
   .lead-labels{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;min-height:96px}
   .lead-labels span{display:block}
-  #joinMe,#joinFoe{flex-wrap:wrap;gap:7px;overflow:visible;align-items:flex-start}
-  #joinMe .hpick,#joinFoe .hpick{flex:0 0 auto}        /* size to the hero name, not a squashed 1/4 width */
+  #joinMe,#joinFoe{flex-wrap:nowrap;gap:6px;overflow:visible;align-items:center}
+  #joinMe .hpick,#joinFoe .hpick{flex:0 0 auto;min-width:0}        /* keep all four joiners on one line */
   .lead-row .hpick-btn{width:100%;max-width:none}
-  #joinMe .hpick-btn,#joinFoe .hpick-btn{max-width:none;gap:7px;padding:5px 10px 5px 5px}   /* content width -> full name visible */
-  #joinMe .hpick-btn img,#joinFoe .hpick-btn img{width:28px;height:28px}
-  #joinMe .hpick-btn span,#joinFoe .hpick-btn span{font-size:12.5px}
+  #joinMe .hpick-btn,#joinFoe .hpick-btn{max-width:none;gap:6px;padding:4px 9px 4px 4px;min-height:36px}   /* content width -> full name visible */
+  #joinMe .hpick-btn img,#joinFoe .hpick-btn img{width:26px;height:26px}
+  #joinMe .hpick-btn span,#joinFoe .hpick-btn span{font-size:11.5px}
   #joinMe .hpick-btn i,#joinFoe .hpick-btn i{display:none}   /* drop the chevron on joiners to save width */
 
   /* hero pickers */
@@ -269,7 +269,7 @@
   .fc-meta .prov.validated{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:rgba(87,211,163,.10)}
   .fc-body{padding:22px clamp(14px,2vw,24px) 26px;position:relative}
   .forecast.stale .fc-body{opacity:.55;filter:saturate(.6)}
-  .stale-chip{position:absolute;right:18px;top:54px;z-index:5;border:1px solid color-mix(in srgb,var(--ember) 45%,transparent);background:rgba(240,145,61,.13);color:var(--ember-bright);border-radius:999px;padding:6px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+  .stale-chip{position:absolute;right:18px;top:54px;z-index:5;border:1px solid color-mix(in srgb,var(--ember) 45%,transparent);background:rgba(239,95,95,.13);color:var(--ember-bright);border-radius:999px;padding:6px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em}
   .fc-error{display:none;margin-bottom:16px;padding:11px 14px;border-radius:9px;font-size:13px;
     color:var(--loss);background:rgba(229,83,59,.10);border:1px solid color-mix(in srgb,var(--loss) 45%,transparent)}
   .fc-part{padding:24px 0;border-top:1px solid var(--line-soft)}
@@ -294,7 +294,7 @@
   .oseg .otag{position:absolute;top:5px;left:9px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;z-index:2}
   .oseg.win{background:linear-gradient(180deg,#5fd2e0,#2f9dad);color:#04191c}
   .oseg.mut{background:repeating-linear-gradient(45deg,#4a94a2 0 7px,#3f8291 7px 14px);color:#04191c}
-  .oseg.loss{background:linear-gradient(180deg,#f0913d,#e5533b);color:#2a0f06}
+  .oseg.loss{background:linear-gradient(180deg,#ff8181,#ef5f5f);color:#4e1010}
   .boundary{position:absolute;top:0;bottom:0;pointer-events:none}
   .haze{background:repeating-linear-gradient(45deg,rgba(234,243,247,.16) 0 5px,transparent 5px 10px);
     border-left:1px dashed rgba(234,243,247,.35);border-right:1px dashed rgba(234,243,247,.35);top:-26px;bottom:-30px}
@@ -460,7 +460,7 @@
 
   /* honesty */
   .honesty{margin-top:24px;display:flex;gap:14px;align-items:flex-start;
-    background:linear-gradient(180deg,rgba(240,145,61,.09),rgba(240,145,61,.03));
+    background:linear-gradient(180deg,rgba(239,95,95,.09),rgba(239,95,95,.03));
     border:1px solid color-mix(in srgb,var(--ember) 30%,transparent);border-radius:var(--r-sm);padding:15px 18px}
   .honesty .ic{font-size:18px;color:var(--ember-bright);flex:none}
   .honesty p{margin:0;font-size:12.5px;color:var(--mute);max-width:82ch}
@@ -495,6 +495,7 @@
   .foe .form-ctl{--fc:var(--ember);--tk:#20313d;border-color:color-mix(in srgb,var(--ember) 18%,var(--line))}
   .form-ctl.auto{opacity:.85}
   .fic{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:16px;background:var(--panel-2);color:var(--fc)}
+  .fic img,.lead-cls img,.qg-img{display:block;width:100%;height:100%;object-fit:contain}
   .fbody{flex:1;min-width:0}
   .fname{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
   .fctrls{display:grid;grid-template-columns:30px minmax(92px,1fr) 30px 54px;align-items:center;gap:8px}
@@ -570,6 +571,172 @@
   .fc-part>.h{position:relative}
   .fc-part>.h .accordion-toggle{right:0}
 
+  /* A1 / B1 approved split theme.
+     Setup/input stays blue-cinematic; Final Stats and forecast outputs switch to report parchment. */
+  html{background:#071b2b}
+  :root{
+    --side-blue:#2EA1F2;--side-blue-bright:#55BFFF;--side-blue-deep:#1682D8;
+    --side-red:#EF5F5F;--side-red-bright:#FF8181;--side-red-deep:#C94646;
+    --quiet-blue-border:rgba(49,80,107,.18);--quiet-paper-border:rgba(106,86,71,.18)
+  }
+  body{background-color:#071b2b;background-image:
+      radial-gradient(900px 460px at 20% -12%,rgba(217,239,255,.22),transparent 62%),
+      radial-gradient(720px 360px at 92% 5%,rgba(100,185,239,.16),transparent 58%),
+      linear-gradient(140deg,#071b2b 0%,#123f63 42%,#0a1017 100%)}
+  .bar{
+    --void:#071b2b;--void-2:#0b3159;--panel:#0b3159;--panel-2:#123f70;
+    --line:var(--quiet-blue-border);--line-soft:rgba(49,80,107,.12);--white:#f7fbff;--mute:#badcf0;--mute-2:#d9efff;
+    background:#0b3159;border:0;border-radius:0 0 18px 18px;
+    margin:0 clamp(10px,2vw,22px);box-shadow:0 18px 42px rgba(2,26,47,.32),inset 0 1px rgba(255,255,255,.24)}
+  .bar::after{display:none}
+  .flake{background:linear-gradient(#55BFFF,#2EA1F2);border-color:transparent;color:#fff}
+  .brand h1{font-family:Georgia,'Times New Roman',serif;font-size:22px;letter-spacing:-.02em;text-transform:none;color:#f7fbff;text-shadow:0 2px 0 rgba(0,0,0,.22)}
+  .brand p{color:#d9efff}
+  .bar-note{color:#fff;background:linear-gradient(#FF8181,#EF5F5F);border-color:transparent;text-shadow:0 1px rgba(93,17,17,.55)}
+  .config-rail{
+    --void:#d9efff;--void-2:#cae9fb;--panel:#d9efff;--panel-2:#bde5fb;
+    --line:var(--quiet-blue-border);--line-soft:rgba(49,80,107,.12);--white:#31506b;--mute:#496c86;--mute-2:#5c7e98;
+    background:rgba(217,239,255,.9);border:0;box-shadow:0 18px 42px rgba(2,26,47,.22),inset 0 1px rgba(255,255,255,.55);backdrop-filter:blur(12px) saturate(1.1)}
+  .rail-head{color:#496c86}
+  .rail-tabs .tab{background:#cae9fb;border:0;color:#31506b;border-radius:14px}
+  .rail-tabs .tab:hover{color:#0d568d}
+  .rail-tabs .tab[aria-selected="true"]{color:#fff;background:linear-gradient(#55BFFF,#2EA1F2);border-color:transparent;text-shadow:0 1px rgba(0,0,0,.25)}
+  .tab-tool:hover{background:rgba(24,133,237,.16)}
+  .tab-tool img{filter:none}
+  .rail-add{background:#cae9fb;border:1px dashed rgba(49,80,107,.24);color:#31506b;border-radius:14px}
+  .input{
+    --void:#eaf8ff;--void-2:#cae9fb;--panel:#d9efff;--panel-2:#bde5fb;
+    --line:var(--quiet-blue-border);--line-soft:rgba(49,80,107,.12);
+    --white:#31506b;--mute:#496c86;--mute-2:#5c7e98;--faint:#6f8da4;
+    --ice:#2EA1F2;--ice-bright:#1682D8;--ice-deep:#1682D8;--ice-ghost:rgba(46,161,242,.14);
+    --ember:#EF5F5F;--ember-bright:#C94646;--ember-deep:#C94646;--ember-ghost:rgba(239,95,95,.14);
+    background:rgba(217,239,255,.88);border:0;color:#31506b;box-shadow:0 18px 48px rgba(2,26,47,.24),inset 0 1px rgba(255,255,255,.62);backdrop-filter:blur(14px) saturate(1.1)}
+  .sides-head{background:linear-gradient(180deg,rgba(217,239,255,.96) 70%,rgba(217,239,255,0));border-radius:14px}
+  .side-title.me .badge,.side-title.foe .badge{color:#31506b}
+  .vs-pill{background:linear-gradient(#55BFFF,#2EA1F2);border:0;color:#fff}
+  .role-toggle{background:rgba(46,161,242,.25);border-color:transparent}
+  .role-toggle button[aria-pressed="true"]{background:#dff7ff}
+  .role-static{background:rgba(239,95,95,.16);border-color:transparent}
+  .role-static .role-icon{filter:invert(52%) sepia(94%) saturate(1076%) hue-rotate(321deg) brightness(104%) contrast(92%)}
+  .iblock{border-top-color:rgba(49,80,107,.14)}
+  .iblock>.title{color:#496c86}
+  .accordion-toggle{background:linear-gradient(#55BFFF,#2EA1F2);border:0;color:#fff;box-shadow:0 6px 14px rgba(24,133,237,.22)}
+  .accordion-toggle:hover{background:linear-gradient(#7dcdff,#2EA1F2);color:#0b3159}
+  input[type=text],input[type=number],select,.mini-field .val,.mini-field select{
+    background:#eaf8ff;border-color:rgba(49,80,107,.18);color:#31506b}
+  .me input,.me select,.foe input,.foe select{border-color:rgba(49,80,107,.18)}
+  .fval,.slider-wrap output,.tl-slabel{background:#eaf8ff;border-color:rgba(49,80,107,.18);color:#31506b}
+  .form-ctl,.qcard,.hpick-btn{background:#cae9fb;border:0;color:#31506b}
+  .seg-toggle,.fbtn{border-color:rgba(49,80,107,.18)}
+  .fbtn{background:#eaf8ff}
+  .fic,.lead-cls{background:#9bcdf0;border-color:transparent;overflow:hidden;padding:0}
+  .hpick-pop,.tip-pop{background:#d9efff;border-color:rgba(49,80,107,.18);color:#31506b}
+  .hpick-it{color:#31506b}
+  .hpick-it:hover{background:rgba(24,133,237,.12)}
+  .output-block{
+    --void:#f7efe5;--void-2:#fff6ec;--panel:#f4eadc;--panel-2:#ead8c3;
+    --line:var(--quiet-paper-border);--line-soft:rgba(106,86,71,.12);
+    --white:#6a5647;--mute:#8d6d56;--mute-2:#9a806c;--faint:#a58770;
+    --ice:#2EA1F2;--ice-bright:#1682D8;--ice-deep:#1682D8;--ice-ghost:rgba(46,161,242,.14);
+    --ember:#EF5F5F;--ember-bright:#C94646;--ember-deep:#C94646;--ember-ghost:rgba(239,95,95,.14);
+    background:rgba(250,239,224,.86);border:0;border-radius:18px;margin-top:18px;padding:16px;box-shadow:0 18px 48px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.68);backdrop-filter:blur(14px) saturate(1.18)}
+  .output-block>.title{color:#9a6e4e}
+  .input .iblock.output-block .duo .lab,.input .iblock.output-block .stat-name{color:#857B74}
+  .output-block .final-stats .fnum.equal{color:#857B74}
+  .output-block .final-stats .fnum.higher{color:#6FB858}
+  .output-block .final-stats .fnum.lower{color:#F41918}
+  .output-block .accordion-toggle,.forecast .accordion-toggle{
+    background:linear-gradient(#FF8181,#EF5F5F);border:0;color:#fff;text-shadow:0 1px rgba(93,17,17,.55);box-shadow:0 6px 14px rgba(117,19,19,.16)}
+  .forecast{
+    --void:#f7efe5;--void-2:#fff6ec;--panel:#f4eadc;--panel-2:#ead8c3;
+    --line:var(--quiet-paper-border);--line-soft:rgba(106,86,71,.12);
+    --white:#6a5647;--mute:#8d6d56;--mute-2:#9a806c;--faint:#a58770;
+    --ice:#2EA1F2;--ice-bright:#1682D8;--ice-deep:#1682D8;--ice-ghost:rgba(46,161,242,.14);
+    --ember:#EF5F5F;--ember-bright:#C94646;--ember-deep:#C94646;--ember-ghost:rgba(239,95,95,.14);
+    background:rgba(250,239,224,.86);border:0;border-radius:18px;color:#6a5647;box-shadow:0 18px 48px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.68);backdrop-filter:blur(14px) saturate(1.18)}
+  .sec-head h2{color:#f7fbff;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+  .sec-head .rule{background:linear-gradient(90deg,rgba(255,255,255,.42),transparent)}
+  .forecast .fc-meta{border-bottom-color:rgba(106,86,71,.14);color:#9a806c}
+  .forecast .refresh{background:linear-gradient(#FF8181,#EF5F5F);color:#fff;text-shadow:0 1px rgba(93,17,17,.55);box-shadow:0 8px 20px -12px rgba(117,19,19,.7)}
+  .forecast .fc-part{border-top-color:rgba(106,86,71,.14)}
+  .forecast .fc-part>.h{color:#8d5b31}
+  .forecast .vbody,.forecast .cbox,.forecast .rounds,.forecast .tl-bars,.forecast .tl-line,.forecast .cats,.forecast .skill-card,.forecast .joiner-entry{
+    background:rgba(255,246,236,.84);border-color:rgba(106,86,71,.14);color:#6a5647}
+  .forecast .skill-line{background:rgba(248,238,227,.86);border-color:rgba(106,86,71,.14)}
+  .forecast .skill-name,.forecast .skill-copy b,.forecast .skill-stat b,.forecast .joiner-entry-head b,.forecast .vfoot b{color:#6a5647}
+  .forecast .skill-card.captain{background:linear-gradient(180deg,#ead8c3,#fff6ec)}
+  .forecast .skill-card.joiner-pack{background:rgba(255,246,236,.78)}
+  .forecast .honesty{background:rgba(255,246,236,.78);border-color:rgba(106,86,71,.14)}
+
+  /* Latest A1 polish: white video placeholder + dark setup panels + in-game controls. */
+  html{background:#fff}
+  body{background:#fff;background-image:none}
+  .bar,.config-rail,.input{
+    --void:#0B273D;--void-2:#123B59;--panel:#0B273D;--panel-2:#164A72;
+    --line:rgba(255,255,255,.12);--line-soft:rgba(255,255,255,.09);
+    --white:#EAF6FF;--mute:#B9D2E5;--mute-2:#D2E6F5;--faint:#8FB0C9;
+    color:#EAF6FF;background:#0B273D;border:0;
+    box-shadow:0 18px 42px rgba(2,26,47,.22),inset 0 1px rgba(255,255,255,.08)}
+  .config-rail{background:#0B273D}
+  .rail-head,.brand p,.input .duo .lab,.input .stat-name,.input .fname,.input .qgrid2 .qlbl,.input .qmid,.input .gear-check,.input .eqchk,.input .pct-suffix{color:#B9D2E5}
+  .side-title.me .badge,.side-title.foe .badge{color:#EAF6FF}
+  .sides-head{background:rgba(255,255,255,.08);border-radius:10px}
+  .sec-head h2{color:#0B273D;text-shadow:none}
+  .sec-head .rule{background:linear-gradient(90deg,rgba(11,39,61,.35),transparent)}
+
+  .input .iblock{border-top-color:rgba(255,255,255,.14);padding-top:14px}
+  .input .iblock>.title{
+    justify-content:flex-start;text-align:left;min-height:32px;margin-bottom:14px;padding:7px 44px 7px 12px;
+    background:linear-gradient(180deg,#78B5EA,#5E9DDA);border-radius:9px;color:#fff;
+    text-shadow:0 1px 1px rgba(22,62,99,.65);box-shadow:inset 0 1px rgba(255,255,255,.45),inset 0 -2px rgba(33,99,154,.28);
+    letter-spacing:.04em;font-size:12px}
+  .input .buffs-title{background:linear-gradient(180deg,#78B5EA,#5E9DDA);border-radius:9px;color:#fff}
+  .input .buffs-title .ctr,.input .iblock>.title .chk,.input .stats-type{color:#fff;text-shadow:0 1px 1px rgba(22,62,99,.65)}
+  .input .iblock>.title .sum{color:#EAF6FF;opacity:.9}
+  .input .accordion-toggle,.output-block .accordion-toggle,.forecast .accordion-toggle{
+    right:8px;width:28px;height:26px;background:transparent;border:0;box-shadow:none;color:#fff;text-shadow:0 1px 1px rgba(22,62,99,.65);font-size:0}
+  .accordion-toggle::before{font-size:24px;line-height:1;font-family:var(--disp);content:"⌃"}
+  .accordion-toggle[aria-expanded="false"]::before{content:"⌄"}
+  .input .accordion-toggle:hover,.output-block .accordion-toggle:hover,.forecast .accordion-toggle:hover{background:transparent;color:#fff}
+
+  .input .role-toggle,.input .seg-toggle{
+    gap:5px;overflow:visible;border:0;background:transparent;border-radius:11px;padding:0}
+  .input .role-toggle button,.input .seg-toggle button{
+    position:relative;border:0;border-radius:10px;background:#2B6FA7;color:#CFE4F5;
+    box-shadow:inset 0 1px rgba(255,255,255,.16),inset 0 -2px rgba(0,0,0,.16);
+    text-shadow:0 1px 1px rgba(0,0,0,.45);font-weight:700}
+  .input .role-toggle button[aria-pressed="true"],.input .seg-toggle button[aria-pressed="true"]{
+    background:#89C6F5;color:#fff;box-shadow:inset 0 1px rgba(255,255,255,.5),inset 0 -2px rgba(42,122,184,.24)}
+  .input .role-toggle button img{filter:brightness(0) invert(1);opacity:.86}
+  .input .role-toggle button[aria-pressed="true"] img{opacity:1}
+  .role-static{background:rgba(239,95,95,.16)}
+
+  .run,.refresh,.input .fbtn{
+    background:linear-gradient(180deg,#67BBFF 0%,#46A7F7 58%,#2A8FEA 100%);
+    color:#fff;border:0;border-radius:9px;text-shadow:0 1px 1px rgba(0,54,104,.75);
+    box-shadow:inset 0 2px rgba(255,255,255,.5),inset 0 -3px rgba(18,108,190,.55),0 3px 0 #1666A7}
+  .run .dot{background:#0B273D}
+  .run:hover,.refresh:hover,.input .fbtn:hover:not(:disabled){filter:brightness(1.05);transform:translateY(-1px)}
+  .input .fbtn{color:#fff}
+
+  input[type=text],input[type=number],select,.mini-field .val,.mini-field select,.input .hpick-btn,.input .fval,.input .slider-wrap output{
+    background-color:#E9F4FC;color:#4D6680;border:1px solid #86B4DA;border-radius:8px;
+    box-shadow:inset 0 1px rgba(255,255,255,.7)}
+  select,.mini-field select{
+    appearance:none;-webkit-appearance:none;padding-right:28px;
+    background-image:linear-gradient(45deg,transparent 50%,#7EA9C8 50%),linear-gradient(135deg,#7EA9C8 50%,transparent 50%);
+    background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .input .hpick-btn{border-radius:9px}
+  .input .hpick-btn i{color:#7EA9C8}
+  .input .form-ctl,.input .qcard{background:#D4E8F7;border:0}
+  .input .fic,.input .lead-cls{background:#89BFE8}
+  .input .formation-total{color:#55BFFF;text-shadow:0 1px rgba(0,0,0,.25)}
+  .input .foe .formation-total{color:#FF8181}
+  .input .foe .fbtn{background:linear-gradient(180deg,#FF9090 0%,#EF6868 58%,#DB4F4F 100%);box-shadow:inset 0 2px rgba(255,255,255,.42),inset 0 -3px rgba(177,45,45,.5),0 3px 0 #A83A3A}
+  .input .foe .form-ctl input[type=range]{--fc:#EF5F5F!important}
+  .input .me .form-ctl input[type=range]{--fc:#2EA1F2!important}
+
   @media (max-width:960px){
     .layout{grid-template-columns:1fr}
     .config-rail{position:static}
@@ -640,7 +807,70 @@
     .form-ctl input[type=range]::-moz-range-thumb{width:26px;height:26px}
     .rail-tabs .tab .x{min-width:28px;min-height:28px;display:inline-grid;place-items:center}
   }
+  @media (max-width:700px){
+    .bar{flex-wrap:wrap;align-items:flex-start;gap:9px;margin:0 10px}
+    .top-actions{margin-left:0;width:100%;display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:8px;align-items:end}
+    .top-actions .bar-note{display:none}
+    .top-actions .run{justify-content:center;padding-inline:10px;min-width:0}
+    .top-actions .run-status{max-width:86px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  }
+  @media (max-width:520px){
+    .form-ctl{gap:5px;padding:7px 6px}
+    .fic{width:28px;height:28px;font-size:14px}
+    .fname{font-size:9.5px}
+    .fctrls{grid-template-columns:24px minmax(16px,1fr) 24px 38px;gap:4px}
+    .fbtn,.form-ctl button{width:24px;min-width:24px;height:24px;min-height:24px;border-radius:7px;font-size:13px}
+    .fval{min-width:38px;font-size:9.5px;padding:3px 4px}
+    .form-ctl input[type=range]::-webkit-slider-thumb{width:16px;height:16px}
+    .form-ctl input[type=range]::-moz-range-thumb{width:13px;height:13px}
+  }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ===== section tabs (input + forecast), game Rally/Solo/Events style ===== */
+  .tabgroup{margin:16px 0}
+  .tabbar{display:flex;gap:5px;padding:0 3px}
+  .tab-btn{flex:1;min-width:0;padding:10px 6px;border:0;cursor:pointer;font-family:var(--disp);
+    font-weight:700;font-size:12px;letter-spacing:.02em;line-height:1.15;border-radius:11px 11px 0 0;
+    transition:background .15s,color .15s,transform .08s}
+  .tab-btn:active{transform:translateY(1px)}
+  .tabpanels{border-radius:0 14px 14px 14px;padding:16px}
+  .tabpanel[hidden]{display:none}
+  .tab-ctlrow{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:center;margin:0 0 16px}
+  /* input tabs: mid/light blue (Rally-panel reference) */
+  .input-tabs .tab-btn{background:#a9d0f2;color:#2f597e;box-shadow:inset 0 -3px rgba(30,74,116,.20)}
+  .input-tabs .tab-btn:hover{background:#bcdcf6;color:#1c4f7d}
+  .input-tabs .tab-btn[aria-selected="true"]{background:linear-gradient(180deg,#7EC0F5,#4A97DE);color:#fff;
+    text-shadow:0 1px 1px rgba(22,62,99,.55);box-shadow:inset 0 1px rgba(255,255,255,.55)}
+  .input-tabs .tabpanels{background:#d6e9fa;box-shadow:inset 0 1px rgba(255,255,255,.65),0 10px 24px -16px rgba(2,26,47,.5)}
+  /* forecast tabs: parchment/ember */
+  .forecast-tabs .tab-btn{background:#e7d7c1;color:#8a6a4d;box-shadow:inset 0 -3px rgba(117,80,50,.16)}
+  .forecast-tabs .tab-btn:hover{background:#efe1cd;color:#6a4a2f}
+  .forecast-tabs .tab-btn[aria-selected="true"]{background:linear-gradient(180deg,#FF9E7A,#EF6A4A);color:#fff;
+    text-shadow:0 1px 1px rgba(93,17,17,.5);box-shadow:inset 0 1px rgba(255,255,255,.45)}
+  .forecast-tabs .tabpanels{background:rgba(255,246,236,.6);box-shadow:inset 0 1px rgba(255,255,255,.6)}
+  .forecast-tabs .fc-part{padding-top:8px}
+
+  /* lighter-blue input surface (Rally-panel reference) */
+  .input{background:#dcecfb;color:#2f4d67;
+    --void:#eaf6ff;--void-2:#d4e8f7;--panel:#dcecfb;--panel-2:#c7e2f8;
+    --line:rgba(49,80,107,.16);--line-soft:rgba(49,80,107,.10);
+    --white:#2f4d67;--mute:#496883;--mute-2:#5c7e98;--faint:#7191aa}
+  .input .stat-name,.input .duo .lab,.input .fname,.input .qgrid2 .qlbl,.input .qmid,.input .gear-check,.input .eqchk,.input .pct-suffix,.input .fcunit,.input .tl-cap,.input .tab-ctlrow{color:#496883}
+  .input .side-title .badge{color:#2f4d67}
+  .sides-head{background:transparent}
+  .input input[type=text],.input input[type=number],.input select,.input .fval,.input .slider-wrap output{background:#f2f9ff;border:1px solid rgba(49,80,107,.22);color:#2f4d67}
+  .input .form-ctl,.input .qcard,.input .hpick-btn{background:#c9e3f8;border:0;color:#2f4d67}
+  .input .fic,.input .lead-cls{background:#8fc2ec}
+  .input .stats-type,.input .chk{color:#2f4d67}
+
+  /* Final Stats: game panel header (no collapse arrow; header box == body width) */
+  .input .iblock.output-block{padding:0;overflow:hidden;background:transparent;box-shadow:0 16px 40px -22px rgba(0,0,0,.5);border-radius:14px}
+  .input .iblock.output-block>.title{margin:0;padding:11px 14px;text-align:center;justify-content:center;display:flex;align-items:center;gap:8px;cursor:default;
+    background:linear-gradient(180deg,#efe0cb,#dfcaa9);color:#7d5f41;font-family:var(--disp);font-weight:700;
+    font-size:13px;letter-spacing:.08em;text-transform:uppercase;border-radius:14px 14px 0 0;
+    box-shadow:inset 0 1px rgba(255,255,255,.6);border-bottom:1px solid rgba(106,86,71,.2)}
+  .input .iblock.output-block>.title::after{content:none!important}   /* kill any accordion arrow */
+  .input .iblock.output-block .final-stats{background:rgba(250,239,224,.95);padding:12px 14px;border-radius:0 0 14px 14px}
 </style>
 </head>
 <body>
@@ -705,7 +935,7 @@
             <button type="button" data-fmode="pct" aria-pressed="true">%</button>
             <button type="button" data-fmode="count" aria-pressed="false">Count</button>
           </span>
-          <small>Mar = auto</small></div>
+          </div>
         <div class="foe"><div class="form-stack" id="formFoe"></div></div>
       </div>
     </div>
@@ -756,13 +986,13 @@
       <div class="title">Joiner heroes</div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="joinMe"></div></div>
-        <div class="lab">4 joiners</div>
+        <div class="lab">Joiner heroes</div>
         <div class="foe"><div class="hero-lane" id="joinFoe"></div></div>
       </div>
     </div>
 
     <!-- final stats -->
-    <div class="iblock">
+    <div class="iblock output-block">
       <div class="title">Final Stats</div>
       <div class="stat-panel final-stats" id="finalStatsPanel"></div>
     </div>
@@ -880,7 +1110,7 @@
       <!-- rounds -->
       <div class="fc-part">
         <div class="h">Battle length &amp; who won</div>
-        <div class="sub">bar height = how many simulations ended at that round · up = your wins (blue), down = enemy wins (orange) · independent counts</div>
+        <div class="sub">bar height = how many simulations ended at that round · up = your wins (blue), down = enemy wins (red) · independent counts</div>
         <div class="rounds">
           <div class="rlabels"><span class="win">Win&nbsp;#</span><span class="def">Defeat&nbsp;#</span></div>
           <div class="rplot">
@@ -922,6 +1152,11 @@ const DEFAULT_JOINERS_FOE=['Gatot','Patrick','Ling Xue','Wu Ming'];
 const $=(s,r=document)=>r.querySelector(s); const el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const enc=s=>encodeURIComponent(s); const avatar=f=>"avatars/"+enc(f);
 const fmtPct=v=>Number.isFinite(+v)?(+v).toFixed(1):'0.0';
+const CLASS_ICONS={Infantry:'assets/ui/class-infantry.png',Lancer:'assets/ui/class-lancer.png',Marksman:'assets/ui/class-marksman.png'};
+const CLASS_ICON_BY_CODE={I:CLASS_ICONS.Infantry,L:CLASS_ICONS.Lancer,M:CLASS_ICONS.Marksman};
+function troopIcon(cls, clsName='class-icon-img'){
+  const img=el('img',clsName); img.src=CLASS_ICONS[cls]||CLASS_ICON_BY_CODE[cls]||''; img.alt=''; img.loading='lazy'; return img;
+}
 
 /* ---------- hero picker ---------- */
 let openPop=null, openWrap=null, heroPickerSeq=0;
@@ -1045,12 +1280,11 @@ function sideSlider(side,max){ const d=el('div',side); const w=el('div','slider-
   if(side==='me') w.append(o,r); else w.append(r,o); d.appendChild(w); return d; }
 
 function buildFormation(){
-  const glyph={Infantry:'🛡',Lancer:'⚔',Marksman:'🏹'};
   [['me','#formMe'],['foe','#formFoe']].forEach(([side,sel])=>{
     const stack=$(sel); stack.innerHTML=''; const init={Infantry:50,Lancer:20,Marksman:30}; const C={};
     ['Infantry','Lancer','Marksman'].forEach(cl=>{
       const auto=cl==='Marksman'; const row=el('div','form-ctl'+(auto?' auto':''));
-      const ic=el('div','fic'); ic.textContent=glyph[cl];
+      const ic=el('div','fic'); ic.appendChild(troopIcon(cl));
       const body=el('div','fbody'); const nm=el('div','fname'); nm.textContent=cl; const ctr=el('div','fctrls');
       const minus=el('button','fbtn'); minus.type='button'; minus.textContent='−';
       const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=0.1; r.value=init[cl];
@@ -1129,10 +1363,9 @@ function setFormationMode(mode){
   document.querySelectorAll('#formModeToggle button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.fmode===mode)));
 }
 function buildQuality(){ const c=$('#quality'); c.innerHTML='';
-  const glyph={Infantry:'🛡',Lancer:'⚔',Marksman:'🏹'};
   ['Infantry','Lancer','Marksman'].forEach(cl=>{      // one grid row per class: [me card | class | foe card]
     c.appendChild(qCard('me',cl));
-    const mid=el('div','qmid'); mid.innerHTML='<span class="qg">'+glyph[cl]+'</span>'+cl; c.appendChild(mid);
+    const mid=el('div','qmid'); const iconWrap=el('span','qg'); iconWrap.appendChild(troopIcon(cl,'qg-img')); mid.append(iconWrap,document.createTextNode(cl)); c.appendChild(mid);
     c.appendChild(qCard('foe',cl));
   }); }
 function qCard(side,cls){                              // two lines: FC/Tier/T12 labels, then the controls
@@ -1151,11 +1384,10 @@ function qval(t){const d=el('div','qval');d.textContent=t;return d;}
 function fcSelect(){const s=el('select');for(let i=10;i>=1;i--){const o=el('option');o.value=i;o.textContent=i;if(i===10)o.selected=true;s.appendChild(o);}return s;}
 function tierSelect(){const s=el('select');['10','10.5','11','11.5','12'].forEach(v=>{const o=el('option');o.value=v;o.textContent='T'+v;if(v==='12')o.selected=true;s.appendChild(o);});return s;}
 function buildHeroes(){
-  const gl={I:'🛡',L:'⚔',M:'🏹'};
   const lead=(mount,arr,side)=>arr.forEach(([c,n])=>{
     const row=el('div','lead-row '+(side==='me'?'me-row':'foe-row'));
     row.dataset.cls=CLS[c];
-    const g=el('div','lead-cls'); g.textContent=gl[c];
+    const g=el('div','lead-cls'); g.appendChild(troopIcon(c));
     const gear=el('label','gear-check');
     const gearInput=el('input'); gearInput.type='checkbox'; gearInput.checked=true; gearInput.dataset.maxGear='1'; gearInput.dataset.cls=CLS[c];
     gear.append(gearInput,document.createTextNode('Max Gears'));
@@ -1569,7 +1801,7 @@ function accordionSummary(block){
       const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length*100:0;
       return mode.charAt(0).toUpperCase()+mode.slice(1)+' · avg '+Math.round(avg)+'%';
     }
-    if(t.includes('buffs')) return ($('#maxMe').checked?'Max':'Custom')+' / '+($('#maxFoe').checked?'Max':'Custom');
+    if(t.includes('buffs')) return '';
     if(t.includes('quality')){
       const q=readQuality('me'), cs=CLASSES.map(c=>q[c]||{});
       const same=cs.every(x=>x.tier===cs[0].tier&&x.fc===cs[0].fc&&x.t12_stack===cs[0].t12_stack);
@@ -1588,6 +1820,7 @@ function updateAccordionSummaries(){
 function initAccordions(){
   document.querySelectorAll('.input .iblock').forEach((block,i)=>{
     if(block.dataset.accordionReady)return;
+    if(block.classList.contains('output-block'))return;   // Final Stats: game-panel header, no collapse
     const title=block.querySelector(':scope > .title');
     if(!title)return;
     const body=el('div','accordion-body');
@@ -1939,6 +2172,7 @@ function updateTabAddState(){
 }
 function setRunStatus(state,msg){
   const chip=$('#runStatus'); if(!chip)return;
+  if(state==='done'){ chip.hidden=true; chip.className='run-status'; chip.textContent=''; return; }
   chip.hidden=!state; chip.className='run-status '+(state||''); chip.textContent=msg||'';
 }
 function setRunBusy(on){
@@ -2145,7 +2379,7 @@ async function runForecast(){
       body:JSON.stringify(body), signal:controller.signal});
     if(activeRun!==controller) return;
     if(!res.ok){ let m='Request failed ('+res.status+')'; try{const e=await res.json(); m=(e.problems||[e.detail]).filter(Boolean).join(' · ')||m;}catch(_){} throw new Error(m); }
-    FORECAST=await res.json(); renderCharts(true); clearForecastStale(); setRunStatus('done','Done'); setText('#liveStatus','Forecast updated - win chance '+pctN(FORECAST.verdict.win.p).toFixed(1)+'%'); snapshotTab(activeTab()); scheduleAutosave();
+    FORECAST=await res.json(); renderCharts(true); clearForecastStale(); setRunStatus(null,''); setText('#liveStatus','Forecast updated - win chance '+pctN(FORECAST.verdict.win.p).toFixed(1)+'%'); snapshotTab(activeTab()); scheduleAutosave();
   }catch(err){
     if(err&&err.name==='AbortError') return;
     lastRunFailed=true; setRunStatus('failed','Failed'); showError(err.message||'Could not reach the engine — is the server running?');
@@ -2260,12 +2494,65 @@ function initProvTip(){
   prov.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(e); } });
 }
 
+function selectTabIn(bar, panels, id){
+  [...bar.children].forEach(x=>x.setAttribute('aria-selected', String(x.dataset.tab===id)));
+  [...panels.children].forEach(p=>{ p.hidden = p.dataset.tab!==id; });
+}
+// merge Troops Formation / Stats / Buffs / Troop & FC into 4 horizontal tabs (title controls move into the panel)
+function initInputTabs(){
+  const specs=[['troops &','Troops Formation'],['input stats','Stats'],['buffs','Buffs'],['quality','Troop & FC level']];
+  const found=[];
+  document.querySelectorAll('.input .iblock').forEach(b=>{
+    if(b.classList.contains('output-block')) return;
+    const t=b.querySelector(':scope > .title'); if(!t) return;
+    const txt=t.textContent.replace(/\s+/g,' ').trim().toLowerCase();
+    const idx=specs.findIndex(s=>txt.includes(s[0]));
+    if(idx>=0 && !found[idx]) found[idx]=b;
+  });
+  const present=found.filter(Boolean); if(present.length<2) return;
+  const group=el('div','tabgroup input-tabs'), bar=el('div','tabbar'), panels=el('div','tabpanels');
+  bar.setAttribute('role','tablist');
+  present[0].parentNode.insertBefore(group, present[0]); group.append(bar, panels);
+  specs.forEach((spec,i)=>{ const b=found[i]; if(!b) return; const id='itab'+i, first=present.indexOf(b)===0;
+    const btn=el('button','tab-btn'); btn.type='button'; btn.textContent=spec[1]; btn.dataset.tab=id;
+    btn.setAttribute('role','tab'); btn.setAttribute('aria-selected', String(first)); bar.appendChild(btn);
+    const panel=el('div','tabpanel'); panel.dataset.tab=id; panel.hidden=!first;
+    const title=b.querySelector(':scope > .title');
+    const ctrls=[...title.children].filter(c=>!c.classList.contains('ctr'));   // move toggles/checkboxes in, drop the redundant "Buffs" label
+    if(ctrls.length){ const row=el('div','tab-ctlrow'); ctrls.forEach(c=>row.appendChild(c)); panel.appendChild(row); }
+    title.remove();
+    while(b.firstChild) panel.appendChild(b.firstChild);
+    b.remove(); panels.appendChild(panel);
+  });
+  bar.addEventListener('click',e=>{ const btn=e.target.closest('.tab-btn'); if(btn) selectTabIn(bar,panels,btn.dataset.tab); });
+}
+// group forecast parts into Losses / Timeline / Battle length / Skills (verdict + honesty stay pinned)
+function initForecastTabs(){
+  const fc=document.querySelector('.forecast .fc-body')||document.querySelector('.forecast'); if(!fc) return;
+  const groups=[{name:'Losses',match:['outcome quality','troops lost']},{name:'Timeline',match:['battle timeline']},
+                {name:'Battle length',match:['battle length']},{name:'Skills',match:['skill details']}];
+  const tabParts=[...fc.querySelectorAll(':scope > .fc-part')].filter(p=>!p.querySelector(':scope > .verdict'));
+  if(tabParts.length<2) return;
+  const group=el('div','tabgroup forecast-tabs'), bar=el('div','tabbar'), panels=el('div','tabpanels');
+  bar.setAttribute('role','tablist');
+  tabParts[0].parentNode.insertBefore(group, tabParts[0]); group.append(bar, panels);
+  groups.forEach((g,i)=>{ const id='ftab'+i;
+    const btn=el('button','tab-btn'); btn.type='button'; btn.textContent=g.name; btn.dataset.tab=id;
+    btn.setAttribute('role','tab'); btn.setAttribute('aria-selected', String(i===0)); bar.appendChild(btn);
+    const panel=el('div','tabpanel'); panel.dataset.tab=id; panel.hidden=i!==0; panels.appendChild(panel); });
+  tabParts.forEach(p=>{ const h=((p.querySelector(':scope > .h')||{}).textContent||'').toLowerCase();
+    let gi=groups.findIndex(g=>g.match.some(m=>h.includes(m))); if(gi<0) gi=0;
+    panels.children[gi].appendChild(p); });
+  bar.addEventListener('click',e=>{ const btn=e.target.closest('.tab-btn'); if(btn) selectTabIn(bar,panels,btn.dataset.tab); });
+}
 window.addEventListener('DOMContentLoaded',()=>{
   buildStats(); buildFinalStats(); buildFormation(); buildItemBuffs(); buildPetBuffs(); buildQuality(); buildHeroes();
+  initInputTabs();
   initAccordions();
   initInteractions();
   initProvTip();
   initTelemetryCollapse();
+  initForecastTabs();
   const restored=restoreAutosave();
   if(restored) showSessionNote('Restored your last session');
   updateFinalStats();

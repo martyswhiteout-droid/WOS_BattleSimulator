@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoS AI Style Combinations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Condiment&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:Chakra;src:url("assets/fonts/chakra-petch-700.ttf") format("truetype");font-weight:700}
+  @font-face{font-family:Plex;src:url("assets/fonts/ibm-plex-mono-500.ttf") format("truetype");font-weight:500}
+  @font-face{font-family:InterLocal;src:url("assets/fonts/inter-500.ttf") format("truetype");font-weight:500}
+  *{box-sizing:border-box}
+  :root{--cyan:#5fe7f4;--orange:#ff982f;--ink:#18324a}
+  body{margin:0;background:#e4eff6;color:#122235;font-family:InterLocal,system-ui,-apple-system,Segoe UI,sans-serif}
+  .wrap{max-width:1760px;margin:0 auto;padding:20px}
+  .intro{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:0 0 16px}
+  .intro h1{margin:0;font-family:Chakra,system-ui;font-size:20px;letter-spacing:.08em;text-transform:uppercase;color:#102f50}
+  .intro p{max-width:720px;margin:0;color:#597087;font-size:13px;line-height:1.5}
+  .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+  .variant{position:relative;min-height:640px;border-radius:22px;overflow:hidden;box-shadow:0 22px 50px rgba(23,55,84,.22);isolation:isolate}
+  .variant::before,.variant::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1}
+  .label{position:relative;z-index:2;display:flex;align-items:center;gap:10px;padding:12px 14px;font-family:Chakra,system-ui;font-size:13px;letter-spacing:.09em;text-transform:uppercase}
+  .chip{margin-left:auto;font-family:Plex,monospace;font-size:10px;letter-spacing:.08em;border-radius:999px;padding:5px 8px}
+  .app{position:relative;z-index:1;padding:12px}
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .brand{font-weight:800;letter-spacing:.02em}
+  .run{margin-left:auto;border:0;cursor:pointer}
+  .scenario,.panel,.forecast,.skill,.stat{position:relative;margin-bottom:10px;overflow:hidden}
+  .scenario{display:flex;align-items:center;gap:8px;padding:10px}
+  .scenario b{font-family:Chakra,system-ui}
+  .tools{margin-left:auto;display:flex;gap:5px}
+  .tool,.chev,.role span,.vs{display:grid;place-items:center}
+  .tool{width:27px;height:27px}
+  .tool img,.role img{width:17px;height:17px;object-fit:contain}
+  .panel{padding:12px}
+  .side{display:grid;grid-template-columns:1fr 48px 1fr;align-items:center;gap:8px;margin-bottom:10px}
+  .side-name{font-family:Chakra,system-ui;letter-spacing:.11em;text-transform:uppercase;text-align:center;font-size:12px}
+  .vs{width:42px;height:42px;border-radius:50%;font-family:Chakra,system-ui;font-size:12px;justify-self:center}
+  .role{display:inline-flex;gap:4px;border-radius:12px;padding:3px;margin-top:6px}
+  .role span{width:32px;height:28px;border-radius:9px}
+  .title{font-family:Chakra,system-ui;font-size:11px;letter-spacing:.13em;text-transform:uppercase;margin:12px 0 8px;display:flex;align-items:center}
+  .chev{margin-left:auto;width:28px;height:27px;border-radius:9px;font-size:15px}
+  .form-row{display:grid;grid-template-columns:36px 1fr 52px;gap:8px;align-items:center;margin-bottom:7px;padding:8px;border-radius:13px}
+  .class-icon{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;font-family:Chakra,system-ui}
+  .track{height:10px;border-radius:999px;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:999px}
+  .pct{font-family:Plex,monospace;text-align:right;font-size:12px}
+  .total{text-align:right;font-family:Chakra,system-ui;font-size:19px;margin-top:1px}
+  .heroes{display:grid;grid-template-columns:1fr 80px 1fr;gap:8px;align-items:center}
+  .hero-stack{display:grid;gap:7px}
+  .hero{display:flex;align-items:center;gap:8px;min-width:0;border-radius:999px;padding:5px 9px 5px 5px;font-family:Chakra,system-ui;font-size:12px;white-space:nowrap}
+  .hero img{width:29px;height:29px;border-radius:50%;object-fit:cover;flex:0 0 auto}
+  .joiners{display:flex;gap:6px;white-space:nowrap;justify-content:center;flex-wrap:nowrap}
+  .joiners .hero{font-size:11px;padding-right:8px}
+  .joiners .hero img{width:25px;height:25px}
+  .mid{text-align:center;font-family:Plex,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;line-height:2.6}
+  .forecast{padding:12px}
+  .prob{display:grid;grid-template-columns:112px 1fr;gap:10px;align-items:center}
+  .num{font-family:Chakra,system-ui;font-size:40px;line-height:.9}
+  .winbar{height:35px;border-radius:13px;display:flex;overflow:hidden}
+  .winbar span{display:grid;place-items:center;font-family:Chakra,system-ui;font-size:12px}
+  .mini-bars{display:flex;gap:6px;height:64px;align-items:end;margin-top:9px}
+  .mini-bars i{flex:1;border-radius:7px 7px 0 0}
+  .skill{font-family:Plex,monospace}
+  .skill-head{display:grid;grid-template-columns:1fr 1fr}
+  .skill-side{padding:8px 10px;font-family:Chakra,system-ui;display:flex;align-items:center;gap:8px}
+  .skill-side img{width:32px;height:32px;border-radius:7px;object-fit:cover}
+  .skill-row{display:grid;grid-template-columns:32px 1fr 58px 58px;gap:8px;align-items:center;padding:8px 10px;font-size:10px}
+  .skill-row img{width:27px;height:27px;border-radius:6px}
+  .stat{padding:9px}
+  .stat-row{display:grid;grid-template-columns:1fr 1.1fr 1fr;padding:6px 7px;font-family:Chakra,system-ui;font-size:11px;text-align:center}
+  .accent-word{font-family:"Condiment",cursive;font-size:28px;line-height:.6}
+  @media(max-width:1450px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:960px){.grid{grid-template-columns:1fr}.intro{display:block}.intro p{margin-top:8px}}
+
+  /* Base A: in-game deployment blue */
+  .base-a{background:#113f70;color:#dff6ff}
+  .base-a .label{background:#154e89;color:white;border-bottom:4px solid #31a8ef}
+  .base-a .scenario,.base-a .panel,.base-a .forecast,.base-a .stat,.base-a .skill{background:#d9efff;border:3px solid #64b9ef;color:#31506b}
+  .base-a .top{background:#0b3159;border-radius:15px;padding:10px}
+  .base-a .brand{color:white;font-family:Chakra,system-ui}
+  .base-a .run{background:linear-gradient(#55b8ff,#1885ed);color:white;box-shadow:0 4px 0 #075dae;border-radius:13px;padding:9px 13px;font-family:Chakra,system-ui;text-transform:uppercase}
+  .base-a .tool,.base-a .chev,.base-a .vs{background:linear-gradient(#52b9ff,#1781dc);border:2px solid #9fe0ff;color:white;border-radius:9px}
+  .base-a .role{background:#67bbef}.base-a .role span.on{background:#dff7ff}
+  .base-a .form-row,.base-a .hero{background:#cae9fb;border:2px solid #67b9e8}
+  .base-a .class-icon{background:#77c1ee;color:white}.base-a .track{background:#587184}.base-a .track i{background:#36df58}
+  .base-a .total,.base-a .num{color:#0d568d}.base-a .winbar{border:2px solid #54b7e6}
+  .base-a .win{background:#49c6dd;color:#073c55}.base-a .loss{background:#ff9a3a;color:#552400}
+  .base-a .mini-bars i:nth-child(odd){background:linear-gradient(#6be9ff,#2089c5)}.base-a .mini-bars i:nth-child(even){background:linear-gradient(#ffbd66,#e07025)}
+  .base-a .skill-side{background:#bde5fb;color:#14486f}.base-a .skill-row:nth-child(odd),.base-a .stat-row:nth-child(odd){background:#c9eafd}.base-a .skill-row:nth-child(even),.base-a .stat-row:nth-child(even){background:#eef9ff}
+
+  /* Base B: battle report parchment */
+  .base-b{background:#ead9c5;color:#6a5647}
+  .base-b .label{background:#d9944d;color:white;border-bottom:3px solid #9e6533}
+  .base-b .scenario,.base-b .panel,.base-b .forecast,.base-b .stat,.base-b .skill{background:#f4eadc;border:2px solid #caa98c;color:#6a5647}
+  .base-b .top{background:#f7efe5;border:2px solid #caa98c;border-radius:14px;padding:10px}
+  .base-b .brand{color:#8d5b31;font-family:Chakra,system-ui}
+  .base-b .run{background:linear-gradient(#f8bf65,#d67e2e);color:white;text-shadow:0 1px #73401d;border-radius:12px;padding:9px 13px;font-family:Chakra,system-ui;text-transform:uppercase}
+  .base-b .tool,.base-b .chev,.base-b .vs{background:#d19b64;color:white;border:1px solid #9d714c;border-radius:9px}
+  .base-b .role{background:#e0c2a6}.base-b .role span.on{background:white}
+  .base-b .form-row,.base-b .hero{background:#fff6ec;border:1px solid #d5b699}
+  .base-b .class-icon{background:#e2ac73;color:white}.base-b .track{background:#9fb2bd}.base-b .track i{background:#57c361}
+  .base-b .total,.base-b .num{color:#8e5d32}.base-b .winbar{border:1px solid #caa98c}
+  .base-b .win{background:linear-gradient(90deg,#f06767,#5e94d0);color:white}.base-b .loss{background:#ead3bd;color:#765847}
+  .base-b .mini-bars i:nth-child(odd){background:linear-gradient(#76d6e8,#3d9fbd)}.base-b .mini-bars i:nth-child(even){background:linear-gradient(#ffbd66,#e07025)}
+  .base-b .skill-side:first-child{background:linear-gradient(110deg,#eb5e5e 0 54%,#6d9ed4 54%);color:white}.base-b .skill-side:last-child{background:#6d9ed4;color:white}
+  .base-b .skill-row:nth-child(odd),.base-b .stat-row:nth-child(odd){background:#ead8c3}.base-b .skill-row:nth-child(even),.base-b .stat-row:nth-child(even){background:#f8eee3}
+
+  /* Prompt 1: cinematic serif/video hero */
+  .p1{font-family:InterLocal,system-ui}
+  .p1::before{background:radial-gradient(circle at 22% 12%,rgba(255,255,255,.75),transparent 27%),linear-gradient(180deg,rgba(255,255,255,.96),rgba(238,244,248,.66) 36%,rgba(255,255,255,.95)),linear-gradient(115deg,#d6eef7,#fff,#ccd6dc);animation:cinemaDrift 9s ease-in-out infinite alternate}
+  .p1::after{background:linear-gradient(180deg,rgba(255,255,255,.85),transparent 22%,rgba(255,255,255,.9));mix-blend-mode:screen}
+  .p1 .label{font-family:"Instrument Serif",serif;font-size:21px;letter-spacing:0;text-transform:none}
+  .p1 .chip{background:rgba(0,0,0,.08);color:#333;font-family:InterLocal,system-ui}
+  .p1 .brand{font-family:"Instrument Serif",serif;font-size:25px;letter-spacing:-.02em;text-transform:none}
+  .p1 .scenario,.p1 .panel,.p1 .forecast,.p1 .stat,.p1 .skill{backdrop-filter:blur(12px);box-shadow:0 18px 45px rgba(0,0,0,.1)}
+  .p1 .title{font-family:InterLocal,system-ui;letter-spacing:.18em;color:#6f6f6f}
+  .p1 .num{font-family:"Instrument Serif",serif;font-size:48px}
+  .p1 .accent-word{color:#6f6f6f}
+
+  /* Prompt 2: soft green boomerang video SaaS */
+  .p2{font-family:InterLocal,system-ui}
+  .p2::before{background:radial-gradient(circle at 18% 72%,rgba(194,222,183,.96),transparent 28%),radial-gradient(circle at 82% 20%,rgba(246,251,241,.95),transparent 32%),linear-gradient(130deg,#e6f0dd,#fbf6ed 52%,#b7caa4);animation:boomerangPan 8s ease-in-out infinite alternate}
+  .p2 .label{background:rgba(255,255,255,.68);color:#24311f;border-bottom:0;border-radius:0 0 24px 24px;font-family:InterLocal,system-ui}
+  .p2 .chip{background:#1f2a1d;color:white}
+  .p2 .top{background:rgba(255,255,255,.65)!important;border:1px solid rgba(255,255,255,.7)!important;border-radius:999px!important;box-shadow:0 12px 30px rgba(31,42,29,.12)!important}
+  .p2 .brand{font-family:InterLocal,system-ui;color:#1f2a1d}
+  .p2 .run{background:#1f2a1d!important;color:white!important;border-radius:999px!important;box-shadow:none!important}
+  .p2 .scenario,.p2 .panel,.p2 .forecast,.p2 .stat,.p2 .skill{background:rgba(255,255,255,.64)!important;border:1px solid rgba(255,255,255,.72)!important;color:#2d3a2a!important;border-radius:24px!important;box-shadow:0 20px 45px rgba(31,42,29,.12)!important;backdrop-filter:blur(10px)}
+  .p2 .tool,.p2 .chev,.p2 .vs{background:#3d5638!important;border:0!important;color:white!important;border-radius:999px!important}
+  .p2 .form-row,.p2 .hero{background:rgba(255,255,255,.58)!important;border:1px solid rgba(61,86,56,.18)!important}
+  .p2 .class-icon{background:#85ab8b!important;color:white!important}.p2 .track{background:#aebaa7!important}.p2 .track i{background:#59d164!important}
+  .p2 .num,.p2 .total{color:#336443!important}.p2 .title{color:#4b5b47!important}
+
+  /* Prompt 3: dark-space liquid glass NFT */
+  .p3{font-family:"Anton",Impact,sans-serif;background:#010828!important;color:#eff4ff!important}
+  .p3::before{background:radial-gradient(circle at 18% 20%,rgba(111,255,0,.18),transparent 15%),radial-gradient(circle at 72% 16%,rgba(90,139,255,.22),transparent 19%),radial-gradient(circle at 58% 76%,rgba(183,36,255,.18),transparent 23%),linear-gradient(#010828,#02103d);animation:spacePulse 7s ease-in-out infinite alternate}
+  .p3::after{opacity:.45;background-image:radial-gradient(#eff4ff 1px,transparent 1px);background-size:28px 28px;mix-blend-mode:lighten}
+  .p3 .label{background:rgba(255,255,255,.02)!important;color:#eff4ff;border:0!important;font-family:"Anton",Impact,sans-serif}
+  .p3 .chip{background:#6fff00;color:#010828;font-family:Plex,monospace}
+  .p3 .top,.p3 .scenario,.p3 .panel,.p3 .forecast,.p3 .stat,.p3 .skill{background:rgba(255,255,255,.035)!important;border:1px solid rgba(255,255,255,.28)!important;color:#eff4ff!important;border-radius:26px!important;box-shadow:inset 0 1px 1px rgba(255,255,255,.28),0 24px 50px rgba(0,0,0,.28)!important;backdrop-filter:blur(5px)}
+  .p3 .brand{font-family:"Anton",Impact,sans-serif;color:#eff4ff;text-transform:uppercase}
+  .p3 .run{background:#6fff00!important;color:#010828!important;border-radius:999px!important;box-shadow:0 0 28px rgba(111,255,0,.28)!important;font-family:"Anton",Impact,sans-serif}
+  .p3 .tool,.p3 .chev,.p3 .vs{background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.3)!important;color:#eff4ff!important;border-radius:16px!important}
+  .p3 .role{background:rgba(255,255,255,.06)!important}.p3 .role span.on{background:rgba(111,255,0,.22)!important}
+  .p3 .form-row,.p3 .hero{background:rgba(255,255,255,.045)!important;border:1px solid rgba(255,255,255,.18)!important;color:#eff4ff!important}
+  .p3 .class-icon{background:rgba(111,255,0,.16)!important;color:#6fff00!important}.p3 .track{background:rgba(239,244,255,.22)!important}.p3 .track i{background:#6fff00!important}
+  .p3 .num,.p3 .total,.p3 .accent-word{color:#6fff00!important}.p3 .title,.p3 .mid,.p3 .pct{color:rgba(239,244,255,.72)!important}
+  .p3 .win{background:#6fff00!important;color:#010828!important}.p3 .loss{background:#b724ff!important;color:white!important}
+  .p3 .mini-bars i:nth-child(odd){background:linear-gradient(#6fff00,#1fc7ff)}.p3 .mini-bars i:nth-child(even){background:linear-gradient(#b724ff,#ff982f)}
+  .p3 .skill-side{background:rgba(255,255,255,.08)!important;color:#eff4ff!important}.p3 .skill-row:nth-child(odd),.p3 .skill-row:nth-child(even),.p3 .stat-row:nth-child(odd),.p3 .stat-row:nth-child(even){background:rgba(255,255,255,.045)!important;color:#eff4ff!important}
+
+  @keyframes cinemaDrift{from{filter:saturate(.95);transform:scale(1)}to{filter:saturate(1.15);transform:scale(1.03)}}
+  @keyframes boomerangPan{from{background-position:0 0;filter:saturate(.9)}to{background-position:80px -40px;filter:saturate(1.08)}}
+  @keyframes spacePulse{from{filter:hue-rotate(0deg);transform:scale(1)}to{filter:hue-rotate(10deg);transform:scale(1.025)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>WoS Battle Predictor - A/B x AI Prompt Variations</h1>
+    <p>Visual-only comparison. A keeps the in-game blue deployment shell, B keeps the battle-report parchment shell. 1 is cinematic serif/video, 2 is soft green boomerang-video SaaS, and 3 is dark-space liquid glass.</p>
+  </div>
+  <div class="grid">
+    <section class="variant base-a p1"><div class="label">A1 <span class="accent-word">Cinematic</span><span class="chip">Blue + Serif Video</span></div><div class="app"></div></section>
+    <section class="variant base-a p2"><div class="label">A2 <span class="accent-word">Flow</span><span class="chip">Blue + Green Soft Glass</span></div><div class="app"></div></section>
+    <section class="variant base-a p3"><div class="label">A3 <span class="accent-word">Signal</span><span class="chip">Blue + Space Liquid</span></div><div class="app"></div></section>
+    <section class="variant base-b p1"><div class="label">B1 <span class="accent-word">Cinematic</span><span class="chip">Parchment + Serif Video</span></div><div class="app"></div></section>
+    <section class="variant base-b p2"><div class="label">B2 <span class="accent-word">Flow</span><span class="chip">Parchment + Green Soft Glass</span></div><div class="app"></div></section>
+    <section class="variant base-b p3"><div class="label">B3 <span class="accent-word">Signal</span><span class="chip">Parchment + Space Liquid</span></div><div class="app"></div></section>
+  </div>
+</div>
+
+<template id="mock">
+  <div class="top"><div class="brand">Whiteout Tactics</div><button class="run">Run 100</button></div>
+  <div class="scenario"><b>Scenario 1</b><div class="tools"><span class="tool"><img src="assets/ui/rename-pen.png"></span><span class="tool"><img src="assets/ui/save-down.png"></span><span class="tool"><img src="assets/ui/load-up.png"></span></div></div>
+  <div class="panel">
+    <div class="side">
+      <div class="side-name">My Side<div class="role"><span class="on"><img src="assets/ui/rally-swords.png"></span><span><img src="assets/ui/garrison-shield.png"></span></div></div>
+      <div class="vs">VS</div>
+      <div class="side-name">Enemy<div class="role"><span><img src="assets/ui/rally-swords.png"></span><span class="on"><img src="assets/ui/garrison-shield.png"></span></div></div>
+    </div>
+    <div class="title">Troops &amp; Formation <span class="chev">v</span></div>
+    <div class="form-row"><span class="class-icon">I</span><span class="track"><i style="width:50%"></i></span><span class="pct">50.0%</span></div>
+    <div class="form-row"><span class="class-icon">L</span><span class="track"><i style="width:20%"></i></span><span class="pct">20.0%</span></div>
+    <div class="form-row"><span class="class-icon">M</span><span class="track"><i style="width:30%"></i></span><span class="pct">30.0%</span></div>
+    <div class="total">100%</div>
+    <div class="title">Lead Heroes <span class="chev">v</span></div>
+    <div class="heroes">
+      <div class="hero-stack"><div class="hero"><img src="avatars/Hank.png">Hank</div><div class="hero"><img src="avatars/Estrella.png">Estrella</div><div class="hero"><img src="avatars/Viveca.png">Viveca</div></div>
+      <div class="mid">Infantry<br>Lancers<br>Marksmen</div>
+      <div class="hero-stack"><div class="hero"><img src="avatars/Hank.png">Hank</div><div class="hero"><img src="avatars/Estrella.png">Estrella</div><div class="hero"><img src="avatars/Viveca.png">Viveca</div></div>
+    </div>
+    <div class="title">Joiner Heroes <span class="chev">v</span></div>
+    <div class="joiners"><div class="hero"><img src="avatars/Mia.png">Mia</div><div class="hero"><img src="avatars/Jessie.png">Jessie</div><div class="hero"><img src="avatars/Blanchette.jpg">Blanchette</div><div class="hero"><img src="avatars/Wu%20Ming.jpg">Wu Ming</div></div>
+  </div>
+  <div class="forecast">
+    <div class="title">Forecast</div>
+    <div class="prob"><div class="num">58%</div><div class="winbar"><span class="win" style="width:58%">Win</span><span class="loss" style="width:42%">Loss</span></div></div>
+    <div class="mini-bars"><i style="height:35%"></i><i style="height:50%"></i><i style="height:42%"></i><i style="height:75%"></i><i style="height:54%"></i><i style="height:90%"></i></div>
+  </div>
+  <div class="skill">
+    <div class="skill-head"><div class="skill-side"><img src="avatars/Hank.png">Hank</div><div class="skill-side"><img src="avatars/Viveca.png">Viveca</div></div>
+    <div class="skill-row"><img src="assets/hero_skills/hank-2/skill_3.png"><b>Raging Force</b><span>Triggered</span><span>-</span></div>
+    <div class="skill-row"><img src="assets/troop_skills/crystal_shield.png"><b>Crystal Shield</b><span>5</span><span>12K</span></div>
+  </div>
+  <div class="stat">
+    <div class="title">Final Stats</div>
+    <div class="stat-row"><span>+3987.3%</span><b>Infantry Attack</b><span>+3862.6%</span></div>
+    <div class="stat-row"><span>+2977.5%</span><b>Infantry Defense</b><span>+3231.0%</span></div>
+    <div class="stat-row"><span>+2802.9%</span><b>Lancer Lethality</b><span>+2612.2%</span></div>
+  </div>
+</template>
+<script>
+  const mock = document.querySelector("#mock");
+  document.querySelectorAll(".app").forEach((app) => app.append(mock.content.cloneNode(true)));
+</script>
+</body>
+</html>

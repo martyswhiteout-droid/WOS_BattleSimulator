@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoS Predictor - Whiteout Style Preview</title>
+<style>
+  @font-face{font-family:Chakra;src:url("assets/fonts/chakra-petch-600.ttf") format("truetype");font-weight:600}
+  @font-face{font-family:Chakra;src:url("assets/fonts/chakra-petch-700.ttf") format("truetype");font-weight:700}
+  @font-face{font-family:PlexMono;src:url("assets/fonts/ibm-plex-mono-500.ttf") format("truetype");font-weight:500}
+  :root{
+    --snow:#f5fbff;--ice:#d9f3ff;--mist:#bfe5f5;--blue:#1f6fae;--blue2:#104f84;
+    --deep:#10263f;--navy:#193452;--line:#8cc7df;--gold:#f3b344;--gold2:#c77722;
+    --orange:#ea7e2e;--white:#fff;--ink:#17314d;--muted:#607c92;--green:#2f9c6b;
+    --shadow:0 18px 44px rgba(28,73,110,.22), inset 0 1px 0 rgba(255,255,255,.72);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:
+    radial-gradient(900px 440px at 50% -160px,rgba(93,184,228,.42),transparent 70%),
+    linear-gradient(180deg,#eef9ff 0%,#dceef8 44%,#c8e2f2 100%);min-height:100vh}
+  body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:
+    radial-gradient(circle at 18% 24%,rgba(255,255,255,.85) 0 1px,transparent 2px),
+    radial-gradient(circle at 72% 18%,rgba(255,255,255,.7) 0 1px,transparent 2px),
+    radial-gradient(circle at 42% 80%,rgba(255,255,255,.65) 0 1px,transparent 2px);background-size:120px 120px,160px 160px,190px 190px;opacity:.75}
+  .top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:12px 28px;background:linear-gradient(180deg,#173a61,#0f2947);border-bottom:3px solid var(--gold);box-shadow:0 6px 22px rgba(13,42,72,.28)}
+  .crest{width:44px;height:44px;border-radius:12px;background:linear-gradient(180deg,#fff,var(--ice));border:2px solid #fff;display:grid;place-items:center;box-shadow:inset 0 -5px 12px rgba(33,112,164,.22)}
+  .crest img{width:26px;height:26px;filter:brightness(0) saturate(100%) invert(28%) sepia(68%) saturate(1047%) hue-rotate(179deg)}
+  .brand{color:#fff;font-family:Chakra,system-ui;font-weight:700;letter-spacing:.12em;text-transform:uppercase;line-height:1}
+  .brand small{display:block;margin-top:5px;color:#baeaff;font-family:PlexMono,monospace;font-size:10px;letter-spacing:.18em}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .runbox{display:flex;align-items:center;gap:8px;color:#d9f6ff;font-family:PlexMono,monospace;font-size:11px;text-transform:uppercase}
+  select,.field{height:36px;border-radius:11px;border:2px solid #78c8e8;background:linear-gradient(180deg,#fff,#e5f7ff);color:var(--deep);font-weight:700;padding:0 12px}
+  .primary{height:40px;border:0;border-radius:12px;padding:0 18px;font-family:Chakra,system-ui;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3b2000;background:linear-gradient(180deg,#ffd46b,#f19b2f);box-shadow:0 4px 0 #9c541b,0 12px 22px rgba(218,127,38,.35)}
+  .layout{display:grid;grid-template-columns:230px 1fr;gap:22px;max-width:1240px;margin:24px auto;padding:0 20px}
+  .rail,.panel,.forecast{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(229,247,255,.92));border:2px solid rgba(96,178,216,.75);border-radius:18px;box-shadow:var(--shadow)}
+  .rail{padding:16px;position:sticky;top:86px;align-self:start}
+  .rail h3,.section-title,.forecast h3{margin:0;font-family:Chakra,system-ui;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue2)}
+  .scenario{margin-top:12px;display:grid;grid-template-columns:1fr auto auto auto;gap:5px;align-items:center;background:linear-gradient(180deg,#fefefe,#dff2ff);border:2px solid #9fd7ec;border-radius:14px;padding:10px;color:var(--deep);font-family:Chakra,system-ui;font-weight:700}
+  .iconbtn{width:26px;height:26px;border:1px solid #83bfdb;border-radius:8px;background:#fff;display:grid;place-items:center}
+  .iconbtn img{width:15px;height:15px;object-fit:contain}
+  .panel{padding:18px 22px;margin-bottom:18px}
+  .side-head{display:grid;grid-template-columns:1fr 100px 1fr;align-items:center}
+  .side{text-align:center}
+  .side b{display:block;font-family:Chakra,system-ui;letter-spacing:.14em;color:var(--blue2)}
+  .toggle{margin-top:8px;display:inline-flex;border:2px solid #70bddb;border-radius:14px;overflow:hidden;background:#e9f8ff}
+  .toggle span{width:48px;height:40px;display:grid;place-items:center}
+  .toggle span.on{background:linear-gradient(180deg,#fff,#beeaff)}
+  .toggle img{width:23px;height:23px;filter:brightness(0) saturate(100%) invert(30%) sepia(64%) saturate(879%) hue-rotate(174deg)}
+  .vs{justify-self:center;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff,#d2effb);border:2px solid var(--line);font-family:Chakra;font-weight:700;color:var(--blue2)}
+  .section{margin-top:18px;border-top:2px solid rgba(117,184,215,.35);padding-top:16px}
+  .section-title{display:flex;align-items:center;justify-content:center;gap:10px}
+  .chev{margin-left:auto;width:36px;height:32px;border-radius:10px;background:linear-gradient(180deg,#1d77b4,#10578e);color:#fff;display:grid;place-items:center;border:2px solid #80d9ff}
+  .duo{display:grid;grid-template-columns:1fr 130px 1fr;gap:18px;align-items:center;margin-top:14px}
+  .mid{text-align:center;font-family:PlexMono,monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+  .formation{display:grid;gap:10px}
+  .frow{display:grid;grid-template-columns:42px 1fr 56px;align-items:center;gap:10px;background:linear-gradient(180deg,#fff,#e7f7ff);border:2px solid #a6d9ec;border-radius:16px;padding:9px 11px}
+  .ficon{width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#246ea3,#164b79);color:#fff;display:grid;place-items:center;font-weight:700}
+  .track{height:11px;border-radius:20px;background:#cfe6f1;overflow:hidden}
+  .fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#39b9d0,#89eff8)}
+  .fval{font-family:PlexMono,monospace;font-weight:700;color:var(--blue2);text-align:right}
+  .total{text-align:right;font-family:Chakra;font-size:22px;color:var(--blue2)}
+  .heroes{display:grid;gap:10px}
+  .hero{height:48px;display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#fff,#e7f7ff);border:2px solid #a6d9ec;border-radius:24px;padding:5px 12px 5px 5px;font-family:Chakra;font-weight:700}
+  .hero img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 2px 8px rgba(30,93,132,.22)}
+  .joiners{display:flex;gap:8px;justify-content:flex-end;white-space:nowrap}
+  .joiners .hero{height:40px;padding-right:10px;font-size:13px}
+  .joiners .hero img{width:30px;height:30px}
+  .forecast{padding:20px 22px}
+  .prob{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:center;margin-top:12px}
+  .prob .num{font-family:Chakra;font-size:64px;font-weight:700;color:var(--blue2);line-height:.9;text-shadow:0 2px 0 #fff}
+  .prob small{font-family:PlexMono;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+  .bar{height:48px;border-radius:18px;overflow:hidden;border:2px solid #9fd7ec;display:flex;background:#fff}
+  .bar div{display:grid;place-items:center;font-family:Chakra;font-weight:700}
+  .win{width:58%;background:linear-gradient(180deg,#72e5f1,#28a8cb);color:#08334c}
+  .loss{width:42%;background:linear-gradient(180deg,#ffbd68,#e8752d);color:#472000}
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  .chart{min-height:132px;background:linear-gradient(180deg,#fff,#e8f6fd);border:2px solid #b3dff0;border-radius:16px;padding:14px}
+  .bars{height:86px;display:flex;align-items:end;gap:8px}
+  .bars i{flex:1;border-radius:7px 7px 0 0;background:linear-gradient(180deg,#74e8f1,#278fbc)}
+  .bars i:nth-child(even){background:linear-gradient(180deg,#ffb45c,#e37b2f)}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}.rail{position:static}.prob,.duo,.charts{grid-template-columns:1fr}.joiners{justify-content:flex-start;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="crest"><img src="assets/ui/garrison-shield.png" alt=""></div>
+  <div class="brand">Whiteout Tactics<small>Battle Predictor</small></div>
+  <div class="top-actions">
+    <label class="runbox">Runs <select><option>100</option><option>500</option><option>1000</option></select></label>
+    <button class="primary">Run Forecast</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="rail">
+    <h3>Scenarios</h3>
+    <div class="scenario"><span>Scenario 1</span><button class="iconbtn"><img src="assets/ui/rename-pen.png" alt=""></button><button class="iconbtn"><img src="assets/ui/save-down.png" alt=""></button><button class="iconbtn"><img src="assets/ui/load-up.png" alt=""></button></div>
+  </aside>
+  <section>
+    <div class="panel">
+      <div class="side-head">
+        <div class="side"><b>MY SIDE</b><div class="toggle"><span class="on"><img src="assets/ui/rally-swords.png" alt=""></span><span><img src="assets/ui/garrison-shield.png" alt=""></span></div></div>
+        <div class="vs">VS</div>
+        <div class="side"><b>ENEMY</b><div class="toggle"><span><img src="assets/ui/rally-swords.png" alt=""></span><span class="on"><img src="assets/ui/garrison-shield.png" alt=""></span></div></div>
+      </div>
+      <div class="section">
+        <div class="section-title">Troops &amp; Formation <span class="chev">v</span></div>
+        <div class="duo">
+          <div><div class="formation">
+            <div class="frow"><span class="ficon">I</span><span class="track"><i class="fill" style="width:50%"></i></span><span class="fval">50.0%</span></div>
+            <div class="frow"><span class="ficon">L</span><span class="track"><i class="fill" style="width:20%"></i></span><span class="fval">20.0%</span></div>
+            <div class="frow"><span class="ficon">M</span><span class="track"><i class="fill" style="width:30%"></i></span><span class="fval">30.0%</span></div>
+            <div class="total">100%</div>
+          </div></div>
+          <div class="mid">Formation</div>
+          <div><div class="formation">
+            <div class="frow"><span class="ficon">I</span><span class="track"><i class="fill" style="width:50%"></i></span><span class="fval">50.0%</span></div>
+            <div class="frow"><span class="ficon">L</span><span class="track"><i class="fill" style="width:20%"></i></span><span class="fval">20.0%</span></div>
+            <div class="frow"><span class="ficon">M</span><span class="track"><i class="fill" style="width:30%"></i></span><span class="fval">30.0%</span></div>
+            <div class="total">100%</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">Lead Heroes <span class="chev">v</span></div>
+        <div class="duo">
+          <div class="heroes"><div class="hero"><img src="avatars/Hank.png" alt="">Hank</div><div class="hero"><img src="avatars/Estrella.png" alt="">Estrella</div><div class="hero"><img src="avatars/Viveca.png" alt="">Viveca</div></div>
+          <div class="mid">Infantry<br><br>Lancers<br><br>Marksmen</div>
+          <div class="heroes"><div class="hero"><img src="avatars/Hank.png" alt="">Hank</div><div class="hero"><img src="avatars/Estrella.png" alt="">Estrella</div><div class="hero"><img src="avatars/Viveca.png" alt="">Viveca</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">Joiner Heroes <span class="chev">v</span></div>
+        <div class="duo">
+          <div class="joiners"><div class="hero"><img src="avatars/Renee.jpg" alt="">Renee</div><div class="hero"><img src="avatars/Wu%20Ming.jpg" alt="">Wu Ming</div><div class="hero"><img src="avatars/Jessie.png" alt="">Jessie</div><div class="hero"><img src="avatars/Blanchette.jpg" alt="">Blanchette</div></div>
+          <div class="mid">4 joiners</div>
+          <div class="joiners"><div class="hero"><img src="avatars/Mia.png" alt="">Mia</div><div class="hero"><img src="avatars/Jessie.png" alt="">Jessie</div><div class="hero"><img src="avatars/Blanchette.jpg" alt="">Blanchette</div><div class="hero"><img src="avatars/Wayne.jpg" alt="">Wayne</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="forecast">
+      <h3>Forecast</h3>
+      <div class="prob">
+        <div><div class="num">58.0%</div><small>Probability of win</small></div>
+        <div class="bar"><div class="win">Win 58.0</div><div class="loss">Loss 42.0</div></div>
+      </div>
+      <div class="charts">
+        <div class="chart"><h3>Troops Lost Each Turn</h3><div class="bars"><i style="height:40%"></i><i style="height:52%"></i><i style="height:35%"></i><i style="height:70%"></i><i style="height:44%"></i><i style="height:82%"></i></div></div>
+        <div class="chart"><h3>Simulation Outcome</h3><div class="bars"><i style="height:28%"></i><i style="height:38%"></i><i style="height:48%"></i><i style="height:62%"></i><i style="height:92%"></i><i style="height:55%"></i></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

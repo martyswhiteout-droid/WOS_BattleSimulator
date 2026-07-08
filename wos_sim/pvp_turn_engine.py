@@ -1149,13 +1149,20 @@ def _damage_for(src: TypeStack, target: TypeStack, own_front: TypeStack | None,
     gamma = float(p.get("mod_gamma", 1.0))
     src_v = _stack_view(src, src_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
     tgt_v = _stack_view(target, target_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
-    if p.get("fire_mode", "live") == "start" and src_v.n > EPS:
-        # wounded-keep-fighting: a stack fires at its STARTING strength until
-        # it breaks. All three anchors show constant-in-time absolute casualty
-        # rates proportional to starting army size (A1 defender: ~117k/turn at
-        # 1.87M live AND ~130k+/turn in the endgame at 348k live), not the
-        # live-count taper of Lanchester dynamics.
-        src_v = replace(src_v, n=src_v.n0)
+    # Firing strength blend between LIVE (n = current count, Lanchester taper)
+    # and START (n = starting count, constant casualty rate). fire_blend in
+    # [0,1]: 0 = live, 1 = start. Pure start over-fires a nearly-dead stack (a
+    # 1-troop stack dealt a full-strength volley -> forced mutual annihilation
+    # and a defender-favoring near-mirror bug, Martin's mirror experiments
+    # 2026-07-08). A partial blend keeps the ~constant casualty-rate shape the
+    # T12 anchors show while letting a dying stack taper in the endgame.
+    fire_blend = p.get("fire_blend")
+    if fire_blend is None:
+        fire_blend = 1.0 if p.get("fire_mode", "live") == "start" else 0.0
+    fire_blend = float(fire_blend)
+    if fire_blend > 0.0 and src_v.n > EPS:
+        n_eff = src_v.n + fire_blend * (src_v.n0 - src_v.n)
+        src_v = replace(src_v, n=n_eff)
     own_front_v = src_v if own_front is src else own_front
     return base_strike_damage(src_v, tgt_v, p, own_front=own_front_v, marks_dd=marks_dd)
 

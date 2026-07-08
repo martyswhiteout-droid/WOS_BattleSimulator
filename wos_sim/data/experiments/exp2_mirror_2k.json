@@ -1,0 +1,23 @@
+{
+  "_type": "mirror_ENCAMPMENT",
+  "setup": "2,000 v 2,000 infantry, NO heroes, +176.2 vs +174.3, T10, ENCAMPMENT",
+  "outcome": "ATTACKER VICTORY",
+  "attacker": {
+    "troops": 2000,
+    "injured": 531,
+    "lightly": 985,
+    "survivors": 484,
+    "surv_frac": 0.242
+  },
+  "defender": {
+    "troops": 2000,
+    "injured": 700,
+    "lightly": 1300,
+    "survivors": 0
+  },
+  "engine": {
+    "winner": "attacker (correct)",
+    "surv": "~53% vs real 24% -> under-grind confirmed"
+  },
+  "_extraction": "CONFIRMED by Martin 2026-07-08"
+}

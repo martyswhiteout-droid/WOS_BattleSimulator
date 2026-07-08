@@ -1,0 +1,23 @@
+{
+  "_type": "mirror_ENCAMPMENT",
+  "setup": "20,000 v 20,000 infantry, NO heroes, ~symmetric stats, T10, OPEN-FIELD ENCAMPMENT (no alliance=no garrison research bonus), ran x3",
+  "outcome": "ATTACKER VICTORY x3, IDENTICAL (deterministic, no procs)",
+  "attacker": {
+    "troops": 20000,
+    "injured": 5308,
+    "lightly": 9855,
+    "survivors": 4837,
+    "surv_frac": 0.2419
+  },
+  "defender": {
+    "troops": 20000,
+    "injured": 7000,
+    "lightly": 13000,
+    "survivors": 0
+  },
+  "engine": {
+    "winner": "attacker (correct)",
+    "surv": "53.4% (deterministic) vs real 24.2% -> engine under-grinds ~2.2x"
+  },
+  "_extraction": "CONFIRMED by Martin 2026-07-08"
+}

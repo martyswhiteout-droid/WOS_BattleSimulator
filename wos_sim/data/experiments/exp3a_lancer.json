@@ -1,0 +1,18 @@
+{
+  "_type": "lancer_vs_marksman",
+  "setup": "attacker 5k inf+15k LANCER (+238.7% stronger) vs defender 5k inf+15k MARKSMAN (+231.5%), T10, HEROES (no skills) both sides, ENCAMPMENT",
+  "outcome": "DEFEAT - MARKSMAN DEFENDER WON despite lower stats",
+  "attacker": {
+    "troops": 20000,
+    "survivors": 0
+  },
+  "defender": {
+    "troops": 20000,
+    "survivors": 8302,
+    "surv_frac": 0.415
+  },
+  "engine": {
+    "winner": "ATTACKER (lancer) 84% - WRONG. Engine over-credits lancer vs marksman"
+  },
+  "_extraction": "CONFIRMED by Martin 2026-07-08"
+}
