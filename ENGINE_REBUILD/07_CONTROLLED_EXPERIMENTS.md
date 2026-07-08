@@ -114,12 +114,34 @@ Joint `(def_k, fire_blend, cm)` search: configs that fit the composition spread
 rescue them. So step 1 is a genuine multi-mechanism build, coupled with the
 grind and the winner lock.
 
+### Step 1 landed (2026-07-09): `km` 1.206 -> 2.41 (turn engine only)
+
+The counter gap was NOT `cm` — it was the marksman DAMAGE coefficient `km`. It
+under-weighted marksman offense ~2x, so the engine killed the fragile marksman
+before they dealt their high damage. Doubling it (calibrated to the clean
+lancer>marksman anchor):
+
+| matchup | real | before (km=1.21) | after (km=2.41) |
+|---|---|---|---|
+| lancer > marksman | 42.0 | 71.2 | **42.5** (exact) |
+| inf < marksman | 4.9 | 66.7 | **33.4** (halved) |
+| inf > lancer | 45.4 | 48.4 | 48.4 (unchanged) |
+| mirror | 24.0 | 57.2 | 57.2 (no marksman) |
+
+Back-test PASS: 7/7 locked golden winners hold, no new silent miss, regression
++ pytest green. Scoped to `TURN_PARAMS` so the PvE/farm kernel `BEST_PARAMS` is
+untouched (no PvE data to justify changing it). The residual inf<marksman gap
+(33% vs 4.9%) is the coupled UNDER-GRIND (mirror still 57% vs 24%) — do NOT
+chase it with more `km` (km x4 over-kills lancer>marksman to 0%). That is the
+grind step below.
+
 ### Roadmap (each step MUST pass `py -m wos_sim.backtest`)
-1. **Composition/counter physics** (this step): fix marksman offense-vs-fragility
-   weighting + counter model so inf<marksman ~ 4.9%, inf>lancer ~ 45%,
-   lancer>marksman ~ 42%, mirror ~ 24% — WITHOUT breaking the 7 locked winners.
+1. **Composition/counter physics** — ✅ PARTIAL (km fix above): lancer>marksman
+   exact, inf<marksman halved, winners held. Remaining counter residual is
+   grind-coupled (below), not a km problem.
 2. **T12 troop-skill damage**: marksman Volley/Gunpowder etc. (the mechanic that
    flipped Exp 3 lancer-vs-marksman between Lv6 and T10).
 3. **Grind**: set `fire_blend`/`def_k` against the mirror once 1+2 let the correct
-   attackers win at higher def_k.
+   attackers win at higher def_k. This is what closes inf<marksman 33% -> ~5%
+   and mirror 57% -> ~24% together.
 4. **Full re-audit**: back-test all reports; magnitudes should now fall in range.

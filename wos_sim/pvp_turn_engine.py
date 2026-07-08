@@ -100,6 +100,20 @@ TURN_PARAMS = {
     # Mild compression of the defense-side stat denominator (beast-fitted
     # H^1.45 over-rewards health-stacked panels; anchor A4).
     "q_def": 0.7,
+    # Marksman damage coefficient (turn-engine only; overrides BEST_PARAMS km
+    # 1.206 for PvP, leaves the PvE/farm kernel untouched). STEP 1 of the
+    # counter-physics build (2026-07-09): the base km under-weighted marksman
+    # offense ~2x - the engine killed the fragile marksman before they dealt
+    # their high damage, so lancer-vs-marksman read 71% (real 42%) and
+    # inf-vs-marksman read 67% (real 4.9%). Calibrated to the clean
+    # lancer>marksman controlled anchor (Lv6, no skills): km=2.41 lands it at
+    # 42% EXACTLY and halves the inf<marksman error to 33%. Passes the
+    # mandatory back-test (py -m wos_sim.backtest): all 7 locked golden winners
+    # hold, no new silent miss. The residual inf<marksman gap (33% vs 4.9%) is
+    # the coupled under-grind (mirror still 57% vs real 24%) - deferred to the
+    # grind step, NOT chased with more km (km x4 over-kills lancer>marksman to
+    # 0%). See ENGINE_REBUILD/07_CONTROLLED_EXPERIMENTS.md.
+    "km": 2.41,
     "ambush_proc": 0.20,
     "ambush_frac": 1.0,
     "cara_burst": 1.0,

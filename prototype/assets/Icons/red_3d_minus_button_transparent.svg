@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Red round button icon with white horizontal line">
+  <defs>
+    <!-- Red-only depth gradients on a transparent background -->
+    <radialGradient id="buttonFace" cx="36%" cy="28%" r="66%">
+      <stop offset="0%" stop-color="#ff8a78"/>
+      <stop offset="34%" stop-color="#ff2a1f"/>
+      <stop offset="72%" stop-color="#d40000"/>
+      <stop offset="100%" stop-color="#990000"/>
+    </radialGradient>
+
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffb3aa"/>
+      <stop offset="38%" stop-color="#ff2a1f"/>
+      <stop offset="78%" stop-color="#b00000"/>
+      <stop offset="100%" stop-color="#7a0000"/>
+    </linearGradient>
+
+    <radialGradient id="innerGlow" cx="34%" cy="24%" r="68%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.46"/>
+      <stop offset="30%" stop-color="#ffb3aa" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="whiteLine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="52%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ffd6d2"/>
+    </linearGradient>
+
+    <filter id="softRedDepth" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#990000" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+
+  <!-- No background rectangle: fully transparent outside the button -->
+
+  <circle cx="256" cy="256" r="204" fill="url(#rim)" filter="url(#softRedDepth)"/>
+  <circle cx="256" cy="256" r="176" fill="url(#buttonFace)"/>
+
+  <!-- Red inner lower bevel -->
+  <path d="M101 274C114 363 181 427 256 427C340 427 410 352 413 265C389 340 326 389 256 389C188 389 130 344 101 274Z"
+        fill="#8f0000" opacity="0.34"/>
+
+  <!-- White/red top shine only -->
+  <path d="M145 151C182 111 235 93 290 103C244 111 202 132 170 165C149 187 133 214 123 244C119 208 126 175 145 151Z"
+        fill="url(#innerGlow)"/>
+
+  <!-- White horizontal line -->
+  <rect x="154" y="229" width="204" height="54" rx="27" ry="27" fill="url(#whiteLine)"/>
+
+  <!-- Tiny red-only bevel under line for 3D seating -->
+  <path d="M179 284H333C347 284 358 273 358 259V271C358 286 346 298 331 298H181C166 298 154 286 154 271V259C154 273 165 284 179 284Z"
+        fill="#a60000" opacity="0.22"/>
+</svg>
