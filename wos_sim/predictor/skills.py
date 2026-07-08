@@ -53,9 +53,13 @@ def _side_effects(side, book, context):
             if e.source != SkillSource.WIDGET or not _widgets_in_panel(side)
         ]
         effects.extend((e, "captain") for e in _dedupe_damage_category_splits(rows))
+    seen = set()
     for flag in side.joiners[:4]:
-        if not flag:
+        if not flag or flag in seen:
+            # duplicate-joiner dedup: the same hero's Skill-1 applies once
+            # (anchored on pvp_t12_report_005, the real 4x-Nora defeat).
             continue
+        seen.add(flag)
         rows = [e for e in book.for_hero(flag) if e.source == SkillSource.SKILL_1]
         effects.extend((e, "joiner") for e in _dedupe_damage_category_splits(rows))
     return effects

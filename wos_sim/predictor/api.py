@@ -50,15 +50,56 @@ def battle_timeline(own: SideProfile, enemy: SideProfile, *, seed: int = 0,
     if params:
         eng_params.update(params)
     res = pvp_turn_engine.run_construct(con, _run_rng(seed, index), eng_params)
-    tl = pvp_turn_engine._compact_timeline(res.turn_log)[:cap]
+    log = res.turn_log[:cap]
+    tl = pvp_turn_engine._compact_timeline(log)
     a_surv = [r[0][0] + r[0][1] + r[0][2] for r in tl]
     d_surv = [r[1][0] + r[1][1] + r[1][2] for r in tl]
     a_kill = [r[2] for r in tl]
     d_kill = [r[3] for r in tl]
+    a_lost_cls = [[(r[4] if len(r) > 4 else (0.0, 0.0, 0.0))[i] for r in tl] for i in range(3)]
+    d_lost_cls = [[(r[5] if len(r) > 5 else (0.0, 0.0, 0.0))[i] for r in tl] for i in range(3)]
+    a_dealt_cls = [[(r[6] if len(r) > 6 else (0.0, 0.0, 0.0))[i] for r in tl] for i in range(3)]
+    d_dealt_cls = [[(r[7] if len(r) > 7 else (0.0, 0.0, 0.0))[i] for r in tl] for i in range(3)]
     if con.own_is_attacker:
         os_, es, ok, ek = a_surv, d_surv, a_kill, d_kill
+        own_cls, enemy_cls = a_lost_cls, d_lost_cls
+        own_dealt_cls, enemy_dealt_cls = a_dealt_cls, d_dealt_cls
+        own_surv_cls = [[r[0][i] for r in tl] for i in range(3)]
+        enemy_surv_cls = [[r[1][i] for r in tl] for i in range(3)]
     else:
         os_, es, ok, ek = d_surv, a_surv, d_kill, a_kill
+        own_cls, enemy_cls = d_lost_cls, a_lost_cls
+        own_dealt_cls, enemy_dealt_cls = d_dealt_cls, a_dealt_cls
+        own_surv_cls = [[r[1][i] for r in tl] for i in range(3)]
+        enemy_surv_cls = [[r[0][i] for r in tl] for i in range(3)]
+    names = ("Infantry", "Lancer", "Marksman")
+    by_class = {
+        name: {
+            "own": own_surv_cls[i], "enemy": enemy_surv_cls[i],
+            "own_killed": own_cls[i], "enemy_killed": enemy_cls[i],
+            "own_dealt": own_dealt_cls[i], "enemy_dealt": enemy_dealt_cls[i],
+        }
+        for i, name in enumerate(names)
+    }
+    procs = [_turn_procs(tr, con.own_is_attacker) for tr in log]   # per-turn proc icons
     return {"index": index, "turns": list(range(1, len(tl) + 1)),
             "own_survivors": os_, "enemy_survivors": es,
-            "own_killed": ok, "enemy_killed": ek}
+            "own_killed": ok, "enemy_killed": ek,
+            "by_class": by_class, "procs": procs}
+
+
+def _turn_procs(turn_record, own_is_attacker: bool) -> list:
+    """Enrich a turn's fired procs with display name + icon (via skill_display) and
+    map A/D -> own/enemy for the front-end."""
+    from . import skill_display
+    out = []
+    for p in getattr(turn_record, "procs", None) or []:
+        if p.get("role") in ("troop_skill", "t12"):
+            meta = skill_display.troop_skill(p.get("name"))
+        else:
+            meta = skill_display.hero_skill(p.get("name"), p.get("slot"))
+        side = "own" if ((p.get("side") == "attacker") == own_is_attacker) else "enemy"
+        out.append({"name": meta.get("name") or p.get("name"),
+                    "icon": meta.get("icon"), "side": side,
+                    "kills": p.get("kills", 0)})
+    return out

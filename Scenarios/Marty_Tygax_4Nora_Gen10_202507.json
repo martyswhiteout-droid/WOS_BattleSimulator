@@ -9,13 +9,13 @@
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5241,
-      "Lancer": 0.47590000000000005,
-      "Marksman": 0
+      "Lancer": 0,
+      "Marksman": 0.47590000000000005
     },
     "formation_counts": {
-      "Infantry": 744783,
-      "Lancer": 676401,
-      "Marksman": 0
+      "Infantry": 744843,
+      "Lancer": 0,
+      "Marksman": 676341
     },
     "quality": {
       "Infantry": {
@@ -111,12 +111,12 @@
     "formation": {
       "Infantry": 0.4738,
       "Lancer": 0.33770000000000006,
-      "Marksman": 0.1886
+      "Marksman": 0.1885
     },
     "formation_counts": {
-      "Infantry": 673593,
-      "Lancer": 480107,
-      "Marksman": 268119
+      "Infantry": 673658,
+      "Lancer": 480148,
+      "Marksman": 268013
     },
     "quality": {
       "Infantry": {

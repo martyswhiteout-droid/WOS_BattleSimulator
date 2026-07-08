@@ -71,21 +71,18 @@ TURN_PARAMS = {
     # real 3.45%/6.54%) - the near-even flag + coin_flip labeling carries the
     # honesty. The A2-vs-A4 tension (marks-heavy sides) is the open mechanic:
     # see ENGINE_REBUILD/QA_REPORT.md 2026-07-08 second pass.
-    # (third pass 2026-07-08, after anchor 5 - Marty vs FxCat, the first
-    # attacker-DEFEAT anchor: near-mirror rally where the defender won.)
+    # NOTE 2026-07-08 (fourth pass): the third-pass SIZE-DEPENDENT defender
+    # scale (def_k=0.0183/def_ed=1.28) was REVERTED. It was motivated by anchor
+    # 5's "defender needs x1.35-1.45" cliff, which was itself computed from a
+    # MISTRANSLATED comp (Martin's 676k were MARKSMAN, not lancers). With the
+    # corrected comp that cliff dissolves, and the flat lock below ranks all
+    # four decisive anchors with equal/better gates. Kept flat.
     "rate": 168.0,
-    # SIZE-DEPENDENT defender scale: def_out = rate * def_k * N_def^(def_ed-1).
-    # The five anchors split into two regimes - rally-vs-garrison at 1.4-1.9M
-    # (A1/A2/A5: defender fights at ~parity, can WIN) vs small solo attacks at
-    # 200-270k (A3/A4: defender ~0.5x). dk=0.0183/ed=1.28 gives ~0.97 parity at
-    # 1.42M and ~0.56 at 210k, ranking A1-A4 correctly with the most realistic
-    # near-even depths (A1 46%/A2 30% survivors vs the flat lock's 74%/67%).
-    # A5's defender WIN remains beyond the model class (near-mirror coin flip;
-    # labeled coin_flip) - the declared, tracked miss. Confounded candidate
-    # discriminators (scale / rally-vs-solo / garrison player count) cannot be
-    # separated with current anchors.
-    "def_k": 0.0183,
-    "def_ed": 1.28,
+    # Defender fires at ~0.45x the attacker's per-capita scale (flat). The
+    # anchor-4 lock; ranks A1-A4 winners correctly. A5 (near-mirror rally that
+    # the defender WON) is a coin-flip the engine cannot call - declared miss.
+    "def_k": 0.45,
+    "def_ed": 1.0,
     # Wounded-keep-fighting: stacks fire at STARTING strength until broken
     # (the anchors show constant-in-time absolute casualty rates, not
     # Lanchester taper).
@@ -159,6 +156,7 @@ class DamagePacket:
     magnitude: float
     target_mode: str = "front"      # "front" | "backline"
     target_types: tuple[TroopType, ...] = ()
+    source_troop: TroopType | None = None
 
 
 @dataclass
@@ -168,6 +166,8 @@ class TurnRecord:
     casualties: dict
     kills_by_source: dict
     attack_events: dict = field(default_factory=dict)
+    procs: list = field(default_factory=list)   # chance/turn-based skills that fired this turn
+    kills_by_troop: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -706,9 +706,19 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
                                                  troop, hero_ordinal,
                                                  getattr(profile, "panel_is_final", False)))
             ordinal += 1
+        seen_joiners: set[str] = set()
         for hero in (profile.joiners or [])[:4]:
             if not hero:
                 continue
+            # DUPLICATE-JOINER DEDUP: the same hero's joiner Skill-1 applies
+            # ONCE, not per copy. Anchored on pvp_t12_report_005 (real 4x-Nora
+            # rally, near-mirror totals, LOST): full additive stacking predicts
+            # a guaranteed 60%-survivor win; dedup lands the forecast at the
+            # coin-flip edge, consistent with the real defeat. One-battle
+            # evidence - flagged as an assumption in QA_REPORT.
+            if hero in seen_joiners:
+                continue
+            seen_joiners.add(hero)
             rows = _hero_rows(book, hero, SkillSource.SKILL_1, battle)
             if rows:
                 # JOINER stat rows are NEVER panel-suppressed: a joiner is
@@ -1195,7 +1205,7 @@ def _base_packets(side: str, own, enemy, mods: _Mods, p: dict,
         if front.troop == TroopType.INFANTRY:
             dmg *= target_inf_dt
         dmg *= target_enemy_out
-        out.append(DamagePacket("auto", side, dmg * scale))
+        out.append(DamagePacket("auto", side, dmg * scale, source_troop=src.troop))
     return out
 
 
@@ -1232,7 +1242,7 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
             amount = float(ts.proc_amount)
         packets.append(DamagePacket(
             skill, skill.side, base * amount * scale,
-            "backline" if targets else "front", targets))
+            "backline" if targets else "front", targets, ts.troop_type))
         return packets
 
     skill_rows = tuple(skill.rows)
@@ -1268,7 +1278,7 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
                     amount *= float(p.get("cara_burst", 1.0))
                 packets.append(DamagePacket(
                     skill, skill.side, base * amount * scale,
-                    "backline" if targets else "front", targets))
+                    "backline" if targets else "front", targets, src.troop))
         for row in dt_damage_rows:
             target_troops = _receivers_for(row, _front(enemy).troop if _front(enemy) else None)
             for src in src_candidates:
@@ -1286,14 +1296,15 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
                     amount = _row_amount(row) * float(p.get("K_skill", 1.0))
                     packets.append(DamagePacket(
                         skill, skill.side, base * amount * scale,
-                        "backline", (target_troop,)))
+                        "backline", (target_troop,), src.troop))
     return packets
 
 
-def apply_packets(packets: list[DamagePacket],
-                  stacks: dict[TroopType, TypeStack]) -> tuple[dict, dict]:
+def _apply_packets_full(packets: list[DamagePacket],
+                        stacks: dict[TroopType, TypeStack]) -> tuple[dict, dict, dict]:
     casualties = {t: 0.0 for t in stacks}
     kills_by_source: dict[str, float] = defaultdict(float)
+    kills_by_troop: dict[TroopType, float] = defaultdict(float)
     for pkt in packets:
         order = list(pkt.target_types) if pkt.target_mode == "backline" else list(ORDER)
         remaining = max(0.0, pkt.magnitude)
@@ -1309,10 +1320,21 @@ def apply_packets(packets: list[DamagePacket],
             casualties[troop] = casualties.get(troop, 0.0) + killed
             src_id = pkt.source.source_id if isinstance(pkt.source, SkillDef) else str(pkt.source)
             kills_by_source[src_id] += killed
+            src_troop = pkt.source_troop
+            if src_troop is None and isinstance(pkt.source, SkillDef):
+                src_troop = pkt.source.troop
+            if src_troop is not None:
+                kills_by_troop[src_troop] += killed
             if isinstance(pkt.source, SkillDef):
                 pkt.source.kills += killed
             remaining -= killed
-    return casualties, dict(kills_by_source)
+    return casualties, dict(kills_by_source), dict(kills_by_troop)
+
+
+def apply_packets(packets: list[DamagePacket],
+                  stacks: dict[TroopType, TypeStack]) -> tuple[dict, dict]:
+    casualties, kills_by_source, _kills_by_troop = _apply_packets_full(packets, stacks)
+    return casualties, kills_by_source
 
 
 def _assert_conservation(casualties: dict, kills_by_source: dict):
@@ -1451,8 +1473,8 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
         offsets = _damage_offsets(active_effects, t)
         a_packets = _apply_offsets(a_packets, offsets.get("defender", 0.0))
         d_packets = _apply_offsets(d_packets, offsets.get("attacker", 0.0))
-        cas_d, kills_a = apply_packets(a_packets, d)
-        cas_a, kills_d = apply_packets(d_packets, a)
+        cas_d, kills_a, kills_a_troop = _apply_packets_full(a_packets, d)
+        cas_a, kills_d, kills_d_troop = _apply_packets_full(d_packets, a)
         _assert_conservation(cas_d, kills_a)
         _assert_conservation(cas_a, kills_d)
         turn_attack_events = {"attacker": {}, "defender": {}}
@@ -1466,10 +1488,23 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
                     st.attacks_made += events
                     side_attack_events[side] += events
                     turn_attack_events[side][st.troop] = events
+        turn_procs, seen_proc = [], set()
+        for sk, _ in fired:
+            if not _is_proc_display(sk):
+                continue
+            key = (sk.side, sk.owner, sk.slot)
+            if key in seen_proc:
+                continue
+            seen_proc.add(key)
+            kill_map = kills_a if sk.side == "attacker" else kills_d
+            turn_procs.append({"name": sk.owner, "troop": _troop_name(sk.troop),
+                               "slot": sk.slot, "role": sk.role, "side": sk.side,
+                               "kills": kill_map.get(sk.source_id, 0.0)})
         turn_log.append(TurnRecord(
             t, start, {"attacker": cas_a, "defender": cas_d},
             {"attacker": kills_a, "defender": kills_d},
-            turn_attack_events))
+            turn_attack_events, turn_procs,
+            {"attacker": kills_a_troop, "defender": kills_d_troop}))
         aa, da = _total(a) > EPS, _total(d) > EPS
         if not aa or not da:
             winner = "mutual" if not aa and not da else "D" if not aa else "A"
@@ -1498,6 +1533,21 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
 
 def _troop_name(troop: TroopType | None):
     return troop.value if troop is not None else None
+
+
+def _is_proc_display(skill: SkillDef) -> bool:
+    """A skill worth showing as a per-turn proc icon: chance-based OR periodic
+    (turn-based cadence). Excludes passives/statics and one-time turn-1 effects
+    (T12 wall/phalanx) that 'always proc at the beginning'. Starfire (every-5) is
+    the one T12 that counts."""
+    if skill.is_passive:
+        return False
+    if skill.role == "t12":
+        return skill.owner == "starfire"
+    if _skill_probability(skill) < 1.0:                 # chance-based (Ambusher, Crystal Lance, hero procs)
+        return True
+    freq = _skill_frequency(skill)
+    return bool(freq and freq > 1)                      # fires every N>1 events -> turn-based cadence
 
 
 def skill_telemetry(skills: list[SkillDef]) -> dict:
@@ -1561,18 +1611,30 @@ _TL_CLASSES = (TroopType.INFANTRY, TroopType.LANCER, TroopType.MARKSMAN)
 
 
 def _compact_timeline(turn_log) -> list:
-    """Per turn: (attacker_alive_by_class, defender_alive_by_class, attacker_killed_total,
-    defender_killed_total). *_alive_by_class is a 3-tuple (Infantry, Lancer, Marksman)
-    of survivors after that turn. Feeds the app's averaged battle timeline."""
+    """Per turn compact timeline for the app.
+
+    Tuple fields:
+      0-1: attacker/defender alive by class after the turn
+      2-3: attacker/defender casualties suffered, total
+      4-5: attacker/defender casualties suffered by class
+      6-7: attacker/defender kills dealt by source class
+    """
     out = []
     for tr in turn_log:
         sa = tr.start_counts.get("attacker") or {}
         sd = tr.start_counts.get("defender") or {}
         ca = tr.casualties.get("attacker") or {}
         cd = tr.casualties.get("defender") or {}
+        ka = tr.kills_by_troop.get("attacker") or {}
+        kd = tr.kills_by_troop.get("defender") or {}
         a_alive = tuple(sa.get(t, 0.0) - ca.get(t, 0.0) for t in _TL_CLASSES)
         d_alive = tuple(sd.get(t, 0.0) - cd.get(t, 0.0) for t in _TL_CLASSES)
-        out.append((a_alive, d_alive, sum(ca.values()), sum(cd.values())))
+        a_lost = tuple(ca.get(t, 0.0) for t in _TL_CLASSES)
+        d_lost = tuple(cd.get(t, 0.0) for t in _TL_CLASSES)
+        a_dealt = tuple(ka.get(t, 0.0) for t in _TL_CLASSES)
+        d_dealt = tuple(kd.get(t, 0.0) for t in _TL_CLASSES)
+        out.append((a_alive, d_alive, sum(ca.values()), sum(cd.values()),
+                    a_lost, d_lost, a_dealt, d_dealt))
     return out
 
 

@@ -1,43 +1,129 @@
 {
-  "description": "FIFTH PvP anchor (2025-07-19 22:47:59, #214 X:597 Y:597). [RFJ]Marty rally DEFEAT vs [PBT]FxCat garrison (+12 garrison supporters). THE TWO STANDING DATA ASKS IN ONE: (a) first ATTACKER-LOSES anchor (the far side of the near-even knife-edge), (b) first real battle with DUPLICATE JOINERS (4x Nora). Near-perfect mirror totals: 1,421,184 vs 1,421,819. Attacker WIPED (0 survivors); defender kept 261,433 (18.4%). Also notable: attacker ran NO MARKSMAN (inf 744,783 T11fc9 + lancer 676,401 T10.5fc9 only) with a weak lancer panel (+1719% atk vs +2647% inf); defender balanced T10.5 fc8-9. Input: Scenarios/Marty_Tygax_4Nora_Gen10_202507.json (1000 runs seed 4471).",
+  "description": "FIFTH PvP anchor (2025-07-19 22:47:59, #214 X:597 Y:597). [RFJ]Marty rally DEFEAT vs [PBT]FxCat garrison (+12 supporters). First ATTACKER-LOSES anchor and first real battle with DUPLICATE JOINERS (4x Nora). Near-mirror totals: 1,421,184 vs 1,421,819; attacker WIPED, defender kept 261,433 (18.4%). COMP CORRECTED 2026-07-08 (Martin fixed a class mistranslation; first ingest wrongly had 676k LANCERS): attacker = inf 744,843 T11fc9 + MARKSMAN 676,341 T11fc10, NO lancers - both classes on strong ~+2647% attack panels. ROLE NOTE: the revised scenario JSON had roles flipped (own=garrison); report evidence (Attacker panel all [RFJ]; Rally widgets on Marty's side) fixes Marty as the rally ATTACKER. Input: Scenarios/Marty_Tygax_4Nora_Gen10_202507.json (1000 runs seed 4471).",
   "outcome": "defender_victory",
   "attacker": {
-    "player": "[RFJ]Marty (rally + 8 joiners)", "role": "rally", "power_loss": 71465623,
-    "troops": 1421184, "losses": 0, "injured": 497421, "lightly_injured": 923763,
-    "survivors": 0, "incap": 1421184, "survivor_frac": 0.0,
-    "lead_heroes": {"Infantry": "Gregory", "Lancer": "Mia", "Marksman": "Blanchette"},
-    "joiners": ["Nora", "Nora", "Nora", "Nora"],
+    "player": "[RFJ]Marty (rally + 8 joiners)",
+    "role": "rally",
+    "power_loss": 71465623,
+    "troops": 1421184,
+    "losses": 0,
+    "injured": 497421,
+    "lightly_injured": 923763,
+    "survivors": 0,
+    "incap": 1421184,
+    "survivor_frac": 0.0,
+    "lead_heroes": {
+      "Infantry": "Gregory",
+      "Lancer": "Mia",
+      "Marksman": "Blanchette"
+    },
+    "joiners": [
+      "Nora",
+      "Nora",
+      "Nora",
+      "Nora"
+    ],
     "composition": {
-      "Infantry": {"count": 744783, "tier": 11, "fc": 9},
-      "Lancer":   {"count": 676401, "tier": 10.5, "fc": 9},
-      "Marksman": {"count": 0, "tier": 11, "fc": 10}
+      "Infantry": {
+        "count": 744843,
+        "tier": 11,
+        "fc": 9
+      },
+      "Lancer": {
+        "count": 0,
+        "tier": 10.5,
+        "fc": 9
+      },
+      "Marksman": {
+        "count": 676341,
+        "tier": 11,
+        "fc": 10
+      }
     },
     "panel_pct": {
-      "Infantry": {"Attack": 2647.1, "Defense": 2374.4, "Lethality": 2650.6, "Health": 2340.0},
-      "Lancer":   {"Attack": 1719.4, "Defense": 1551.7, "Lethality": 2374.7, "Health": 2088.8},
-      "Marksman": {"Attack": 2647.1, "Defense": 2373.4, "Lethality": 2645.2, "Health": 2338.6}
+      "Infantry": {
+        "Attack": 2647.1,
+        "Defense": 2374.4,
+        "Lethality": 2650.6,
+        "Health": 2340.0
+      },
+      "Lancer": {
+        "Attack": 1719.4,
+        "Defense": 1551.7,
+        "Lethality": 2374.7,
+        "Health": 2088.8
+      },
+      "Marksman": {
+        "Attack": 2647.1,
+        "Defense": 2373.4,
+        "Lethality": 2645.2,
+        "Health": 2338.6
+      }
     }
   },
   "defender": {
-    "player": "[PBT]FxCat garrison + 12 supporters (Milkyo, D Luffy, GaDzIK, HandsomeBoy, Duhmanda, AnRChIp, SelRuhlg, FxQat, Imags, Natty, fuqn chrust, JTT)", "role": "garrison", "power_loss": 53056917,
-    "troops": 1421819, "losses": 0, "injured": 406151, "lightly_injured": 754235,
-    "survivors": 261433, "incap": 1160386, "survivor_frac": 0.1839,
-    "lead_heroes": {"Infantry": "Magnus", "Lancer": "Freya", "Marksman": "Blanchette"},
-    "joiners": ["Gregory", "Seo-yoon", "Jessie", "Jessie"],
+    "player": "[PBT]FxCat garrison + 12 supporters (Milkyo, D Luffy, GaDzIK, HandsomeBoy, Duhmanda, AnRChIp, SelRuhlg, FxQat, Imags, Natty, fuqn chrust, JTT)",
+    "role": "garrison",
+    "power_loss": 53056917,
+    "troops": 1421819,
+    "losses": 0,
+    "injured": 406151,
+    "lightly_injured": 754235,
+    "survivors": 261433,
+    "incap": 1160386,
+    "survivor_frac": 0.1839,
+    "lead_heroes": {
+      "Infantry": "Magnus",
+      "Lancer": "Freya",
+      "Marksman": "Blanchette"
+    },
+    "joiners": [
+      "Gregory",
+      "Seo-yoon",
+      "Jessie",
+      "Jessie"
+    ],
     "composition": {
-      "Infantry": {"count": 673593, "tier": 10.5, "fc": 8},
-      "Lancer":   {"count": 480107, "tier": 10.5, "fc": 8},
-      "Marksman": {"count": 268119, "tier": 10.5, "fc": 9}
+      "Infantry": {
+        "count": 673658,
+        "tier": 10.5,
+        "fc": 8
+      },
+      "Lancer": {
+        "count": 480148,
+        "tier": 10.5,
+        "fc": 8
+      },
+      "Marksman": {
+        "count": 268013,
+        "tier": 10.5,
+        "fc": 9
+      }
     },
     "panel_pct": {
-      "Infantry": {"Attack": 2119.7, "Defense": 2451.2, "Lethality": 2438.8, "Health": 2756.0},
-      "Lancer":   {"Attack": 2289.9, "Defense": 2642.6, "Lethality": 2474.9, "Health": 2791.9},
-      "Marksman": {"Attack": 2289.9, "Defense": 2642.6, "Lethality": 2480.1, "Health": 2796.9}
+      "Infantry": {
+        "Attack": 2119.7,
+        "Defense": 2451.2,
+        "Lethality": 2438.8,
+        "Health": 2756.0
+      },
+      "Lancer": {
+        "Attack": 2289.9,
+        "Defense": 2642.6,
+        "Lethality": 2474.9,
+        "Health": 2791.9
+      },
+      "Marksman": {
+        "Attack": 2289.9,
+        "Defense": 2642.6,
+        "Lethality": 2480.1,
+        "Health": 2796.9
+      }
     }
   },
   "specials_note": "Both sides: +20% troops A/D/L/H items, -20% enemy A/D items. NO pet buffs (older battle, 2025-07). Attacker widgets: Rally Attack +15%, Rally Lethality +15%. Defender widgets: Defender Defense +15%, Defender Health +15%. All in panel_pct.",
   "skill_kill_oracle": "Per-skill kills: att Gregory 17 triggers 64,253 kills (+rows 1/1/42); att Mia 27 / 23 triggers 32,814 kills / 17; att Blanchette 1 / 8x29,491 / 12x95,815 / 3 / 3x11,967. Def Magnus 1/7/1/37 (0 kills); def Freya 1 / 15 triggers 96,582 kills / 1 / 7 / 6x24,293 / 3; def Blanchette 9x22,553 / 13x41,484 / 3 / 12x47,434. Total skill-attributed: att ~234k of 1.16M dealt (~20%), def ~232k of 1.42M dealt (~16%) - HIGHER share than A4's ~7% (older-gen heroes, longer battle).",
-  "structural_ground_truth": "(1) FIRST ATTACKER DEFEAT: near-mirror totals, defender won keeping 18.4% - pins the far side of the knife-edge and proves near-even rally-vs-garrison defenders fight at >= parity (the A1/A2 inference, now with a defender-win witness). (2) DUPLICATE JOINERS REAL DATA: 4x Nora attacker still LOST - and engine isolation shows joiners are NOT the inversion cause (0-joiner run also predicted 65% survivor win), so this anchor bounds duplicate-stacking only weakly; the base-matchup inversion dominates. (3) NO-MARKSMAN COMP: attacker inf+lancer only; defender's 268k marksman counter his 744k infantry with nothing symmetric back. (4) Attacker's lancer half (676k) had a MUCH weaker panel (+1719/+1551 atk/def) - the real army was weaker than its headline inf panel suggests.",
-  "prediction_failure_2026_07_08": "Engine (post anchor-4 lock, def_k=0.45) predicts p_win=1.00 with 65-83% survivors for the attacker at ANY joiner count; reality = attacker wiped, defender 18.4%. Cliff back-calculation: the defender needs x1.35-1.45 effective strength under def_k=0.45 to reproduce the real defeat - i.e. near-even rally-scale defenders need ~parity output (def_k~1.0), exactly what anchors 1/2 taught. A5 disambiguates the A1/A2-vs-A3/A4 def_k tension: rally-vs-garrison at 1.4-1.9M scale => defender ~parity (A1/A2/A5); small solo attacks at 200-270k => defender ~0.5 (A3/A4). Confounded candidates (scale, rally-vs-solo, garrison population 10-13 players vs 1-2) all separate the five anchors identically; the size-dependent form def_k*N_def^(def_ed-1) with def_ed~1.34 encodes it with existing knobs.",
+  "structural_ground_truth": "(1) FIRST ATTACKER DEFEAT: near-mirror totals, defender won keeping 18.4% - pins the far side of the knife-edge and proves near-even rally-vs-garrison defenders fight at >= parity (the A1/A2 inference, now with a defender-win witness). (2) DUPLICATE JOINERS REAL DATA: with the CORRECTED comp this battle genuinely constrains duplicate stacking (see item 4); the earlier 'joiners are not the cause' finding applied to the mistranslated comp only. (3) CORRECTED COMP: attacker = inf 744,843 + marksman 676,341, NO lancers (both classes on strong ~+2647% panels). (4) FINAL STATE (flat lock def_k=0.45; the third-pass size-dependent scale was REVERTED as error-induced). The engine ranks the ATTACKER ahead regardless of joiners (0-joiner p_win 1.00, ~65% survivors; 4x-Nora-dedup ~68%) vs the real DEFEAT. The marksman correction made the attacker look STRONGER than the mistranslated lancers would (marksman +2647% panel vs lancer +1719%), so it WIDENED the sim/reality gap. The miss is therefore the BASE matchup, not Nora: a near-mirror battle (counts within 0.04%, panels within ~15-25%) the engine can't call - flagged coin_flip by the +-20% band. Duplicate-joiner DEDUP is implemented (same-hero joiner SK1 applies once; enemy Jessie x2 dedups symmetrically) as the more-correct mechanic, but it is NOT the driver of this defeat. ERROR-INDEPENDENT FINDING worth a clean future re-calibration: anchors 1/2/5 (all real rallies) suggest large multi-player garrison defenders are STRONGER than flat def_k=0.45 implies (A1/A2 deep 3-6% grinds, A5 defender win) - exactly what the reverted size-dependent scale was targeting; it should be re-derived on corrected data if pursued, NOT resurrected from the mistranslated cliff.",
+  "prediction_failure_2026_07_08": "FINAL after Martin's class correction + engine revert. On the flat lock the engine predicts a confident attacker WIN (p_win 1.00, ~65% survivors) vs the real DEFEAT - a near-mirror coin-flip the engine ranks the wrong way; flagged coin_flip (not gated in regression #12). The third-pass 'defender needs x1.35-1.45 / size-dependent def_k' analysis was computed from the MISTRANSLATED comp (676k treated as lancers) and is WITHDRAWN; the size-dependent scale it produced was REVERTED to the flat anchor-4 lock. Duplicate-joiner DEDUP was kept (correct mechanic, one-battle evidence) but does not explain this defeat. Real error-independent signal (see structural_ground_truth item 4): large multi-player garrison defenders appear under-credited by flat def_k=0.45.",
   "scenario_input": "Scenarios/Marty_Tygax_4Nora_Gen10_202507.json"
 }

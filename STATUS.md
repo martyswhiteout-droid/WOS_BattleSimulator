@@ -635,3 +635,22 @@ much more realistic (A1 46%/A2 30% survivors). (4) A5's defender win is a
 DECLARED tracked miss — the near-mirror coin-flip zone (5 real battles: wins
 by either side); the coin_flip label now says the displayed win% is not a
 calibrated probability. Regression #12 gates A1-A4, reports A5.
+
+## 22. Anchor 5 CORRECTED (marksman, not lancers); size-dep scale REVERTED (2026-07-08)
+
+Martin caught a class mistranslation in anchor 5: his 676,341 were MARKSMAN
+(zero lancers), not lancers. His revised JSON also flipped roles — report
+evidence (all-[RFJ] Attacker panel, Rally widgets) keeps him the rally
+attacker. Consequences: (1) the third-pass "defender needs ×1.35-1.45 /
+size-dependent def_k=0.0183/def_ed=1.28" analysis was built on the wrong comp
+and is WITHDRAWN; TURN_PARAMS reverted to the flat anchor-4 lock (def_k=0.45,
+def_ed=1.0). A1-A4 winners hold, 21/40 gates, 87 tests + regression green.
+(2) KEPT: duplicate-joiner dedup (same-hero joiner SK1 applies once; guard
+test added) and the ±20% near-even band. (3) On the flat lock the engine
+confidently ranks the attacker ahead (~65% survivors) vs the real defeat —
+the marksman fix made the attacker look STRONGER, widening the gap; the miss
+is the base near-mirror matchup, not Nora (coin-flip, labeled). (4) REAL
+error-independent finding, NOT acted on: anchors 1/2/5 (all real rallies)
+suggest large multi-player garrison defenders are under-credited by flat
+def_k=0.45 — the reverted size-dep scale targeted this; must be re-derived on
+corrected data if pursued, not resurrected from the withdrawn cliff.

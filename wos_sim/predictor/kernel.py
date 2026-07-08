@@ -192,7 +192,11 @@ def _kernel_box(attacker_units, defender_units, params):
 
 
 def _near_even_probe(attacker_units, defender_units, params, swing: float = 0.05,
-                     band: float = 0.10) -> bool:
+                     band: float = 0.20) -> bool:
+    # band=0.20: all five real anchors sit within +-20% aggregate strength and
+    # their outcomes span defender-wipe to 58%-survivor wins - matchups inside
+    # this band are empirically coin flips (anchor 5: a ~15-20% panel edge
+    # still LOST). Beyond +-20% the engine has always ranked correctly.
     """Coin-flip detector for the turn path. Two signals, OR-ed:
 
     1. STATIC strength symmetry: aggregate per-side strength index

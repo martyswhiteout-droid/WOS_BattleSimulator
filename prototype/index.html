@@ -366,6 +366,7 @@
   .tl-key .tk-you{background:var(--ice)} .tl-key .tk-enemy{background:var(--ember)}
   .tl-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
   .tl-controls .seg-toggle button:disabled{opacity:.4;cursor:not-allowed}
+  .tl-class-toggle{margin-right:auto}
   .tl-slider{flex:1;min-width:130px;max-width:320px;accent-color:var(--ice);cursor:pointer}
   .tl-slider:disabled{opacity:.35;cursor:not-allowed}
   .tl-end{font-family:var(--mono);font-size:9.5px;color:var(--mute-2);white-space:nowrap}
@@ -376,12 +377,23 @@
   .tl-bars{display:flex;gap:3px;height:96px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:8px;overflow:hidden}
   .tl-line{position:relative;height:96px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:8px}
   .tl-line .lc-wrap{height:100%}
-  .tl-col{flex:1;display:flex;gap:1px;align-items:flex-end;min-width:2px;height:100%}
+  /* per-turn proc icons under "troops killed each turn" (Per Battle only), aligned to the bar columns */
+  .tl-procs{display:flex;gap:3px;padding:5px 8px 0;flex-wrap:nowrap}
+  .tl-proc-cell{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1px;min-width:0;position:relative}
+  .tl-proc-cell:not(:first-child)::before,.tl-col:not(:first-child)::before,.tl-x-turn:not(:first-child)::before{
+    content:"";position:absolute;top:0;bottom:0;left:-2px;width:1px;background:rgba(176,195,207,.18)
+  }
+  .tl-proc-lane{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+  .tl-proc-icon{width:20px;height:20px;border-radius:4px;object-fit:cover;border:1.5px solid var(--line);flex:none}
+  .tl-proc-icon.own{border-color:var(--ice)} .tl-proc-icon.enemy{border-color:var(--ember)}
+  .tl-proc-icon.miss{display:grid;place-items:center;font-family:var(--mono);font-size:8px;color:var(--mute-2);background:var(--panel-2)}
+  .tl-col{flex:1;display:flex;gap:1px;align-items:flex-end;min-width:2px;height:100%;position:relative}
   .tl-col .b{flex:1;border-radius:3px 3px 0 0;transition:height .5s;align-self:flex-end}
   .tl-col .b.you{background:linear-gradient(180deg,var(--ice-bright),var(--ice-deep))}
   .tl-col .b.enemy{background:linear-gradient(180deg,var(--ember-bright),var(--ember-deep))}
   .tl-col:hover .b{filter:brightness(1.22)}
-  .tl-x{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mute-2);margin-top:6px}
+  .tl-x{display:flex;gap:3px;font-family:var(--mono);font-size:9.5px;color:var(--mute-2);margin-top:6px;padding:0 8px}
+  .tl-x-turn{flex:1;min-width:0;text-align:center;position:relative}
   .tl-xcap{text-align:center;font-family:var(--mono);font-size:9px;color:var(--mute);margin-top:2px}
 
   /* skill telemetry */
@@ -403,6 +415,7 @@
   .skill-lines{display:grid;gap:7px}
   .skill-line{display:grid;grid-template-columns:30px minmax(0,1.15fr) minmax(78px,.75fr) minmax(78px,.75fr);gap:8px;align-items:center;
     background:var(--void);border:1px solid var(--line-soft);border-radius:8px;padding:7px;min-width:0}
+  .skill-line.compact{grid-template-columns:30px minmax(0,1fr) auto auto;padding:5px 7px;gap:8px}
   .skill-icon{width:28px;height:28px;border-radius:7px;object-fit:cover;background:var(--panel);border:1px solid color-mix(in srgb,var(--white) 25%,transparent)}
   .skill-icon.missing{display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--mute-2)}
   .skill-copy{min-width:0}
@@ -411,6 +424,9 @@
   .skill-stat{min-width:0}
   .skill-stat span{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute-2);margin-bottom:3px}
   .skill-stat b{display:block;font-family:var(--disp);font-size:13px;line-height:1.05;color:var(--white);margin-bottom:3px}
+  .skill-stat.compact{display:flex;align-items:baseline;gap:5px;white-space:nowrap}
+  .skill-stat.compact span{font-size:8px;margin:0}
+  .skill-stat.compact b{font-size:12px;margin:0}
   .skill-spark-box{min-width:0}
   .skill-spark-label{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute-2);margin-bottom:4px}
   .skill-spark{height:26px;display:flex;align-items:flex-end;gap:2px;padding:3px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:6px}
@@ -811,6 +827,12 @@
             <button type="button" data-tlmode="avg" aria-pressed="true">Average</button>
             <button type="button" data-tlmode="battle" aria-pressed="false">Per Battle</button>
           </span>
+          <span class="seg-toggle tl-class-toggle" id="tlClassToggle" aria-label="Timeline troop class">
+            <button type="button" data-tlclass="Total" aria-pressed="true">Total</button>
+            <button type="button" data-tlclass="Infantry" aria-pressed="false">Infantry</button>
+            <button type="button" data-tlclass="Lancer" aria-pressed="false">Lancer</button>
+            <button type="button" data-tlclass="Marksman" aria-pressed="false">Marksman</button>
+          </span>
           <span class="tl-end">Battle 1</span>
           <input type="range" class="tl-slider" id="tlSlider" min="1" max="1" value="1" step="1" disabled aria-label="Battle number">
           <span class="tl-end" id="tlSmax">Battle 1</span>
@@ -818,7 +840,8 @@
           <span class="tl-key"><i class="tk-you"></i>you<i class="tk-enemy"></i>enemy</span>
         </div>
         <div class="tl-block"><div class="tl-cap">Survivors remaining</div><div class="tl-line" id="tlSurv"></div></div>
-        <div class="tl-block"><div class="tl-cap">Troops lost this turn</div><div class="tl-bars" id="tlKill"></div></div>
+        <div class="tl-block"><div class="tl-cap">Troops lost each turn</div><div class="tl-bars" id="tlKill"></div></div>
+        <div class="tl-block"><div class="tl-cap">Troops killed each turn</div><div class="tl-bars" id="tlKilled"></div><div class="tl-procs" id="tlProcs"></div></div>
         <div class="tl-x" id="tlX"></div>
         <div class="tl-xcap" id="tlXcap">turn →</div>
       </div>
@@ -1210,22 +1233,92 @@ function lineChart(turns, own, enemy, opts){
   wrap.appendChild(hov); return wrap;
 }
 let TL={avg:null,n:0,req:null,cache:{},token:0}, tlSlideTimer=null;
+function tlSelectedClass(){
+  const b=$('#tlClassToggle [aria-pressed="true"]');
+  return b?b.dataset.tlclass:'Total';
+}
+function tlNormClass(v){
+  const s=String(v||'').toLowerCase().replace(/[^a-z]/g,'');
+  if(s.startsWith('inf')) return 'Infantry';
+  if(s.startsWith('lan')) return 'Lancer';
+  if(s.startsWith('mark')||s.startsWith('mar')) return 'Marksman';
+  return '';
+}
+function tlClassNoun(){
+  const cls=tlSelectedClass();
+  return cls==='Total'?'troops':cls.toLowerCase();
+}
+function tlClassView(data){
+  const cls=tlSelectedClass();
+  const turns=(data&&data.turns)||[];
+  if(cls==='Total') return Object.assign({},data,{
+    own_dealt:data.enemy_killed||[],
+    enemy_dealt:data.own_killed||[]
+  });
+  const bc=data&&data.by_class&&data.by_class[cls];
+  if(!bc) return Object.assign({},data,{
+    own_dealt:data.enemy_killed||[],
+    enemy_dealt:data.own_killed||[]
+  });
+  return {
+    turns:turns,
+    own_survivors:bc.own||[],
+    enemy_survivors:bc.enemy||[],
+    own_killed:bc.own_killed||[],
+    enemy_killed:bc.enemy_killed||[],
+    own_dealt:bc.own_dealt||[],
+    enemy_dealt:bc.enemy_dealt||[],
+    procs:data.procs||null,
+    truncated:data.truncated
+  };
+}
+function tlBars(mount, turns, youArr, enemyArr, verb, animate){
+  if(!mount) return; mount.innerHTML='';
+  const noun=tlClassNoun();
+  const max=Math.max(1,...youArr,...enemyArr);
+  turns.forEach((t,i)=>{ const col=el('div','tl-col');
+    if(verb==='lost'){
+      col.title='Turn '+t+'  •  You lost '+fmtMetric(youArr[i])+' '+noun+'  •  Enemy lost '+fmtMetric(enemyArr[i])+' '+noun;
+    }else{
+      const yourLabel=noun==='troops'?'You':'Your '+noun;
+      const enemyLabel=noun==='troops'?'Enemy':'Enemy '+noun;
+      col.title='Turn '+t+'  •  '+yourLabel+' killed '+fmtMetric(youArr[i])+' troops  •  '+enemyLabel+' killed '+fmtMetric(enemyArr[i])+' troops';
+    }
+    const by=el('div','b you'), be=el('div','b enemy');
+    const hy=Math.max(0,youArr[i]/max*100), he=Math.max(0,enemyArr[i]/max*100);
+    if(animate){ by.style.height='0%'; be.style.height='0%'; requestAnimationFrame(()=>requestAnimationFrame(()=>{ by.style.height=hy+'%'; be.style.height=he+'%'; })); }
+    else { by.style.height=hy+'%'; be.style.height=he+'%'; }
+    col.append(by,be); mount.appendChild(col); });
+}
+// per-turn proc icons under "troops killed each turn" (Per Battle only; side lane = whose proc)
+function tlProcs(mount, turns, procs){
+  if(!mount) return; mount.innerHTML='';
+  if(!procs){ mount.style.display='none'; return; }
+  const cls=tlSelectedClass();
+  mount.style.display='flex';
+  turns.forEach((t,i)=>{ const cell=el('div','tl-proc-cell');
+    const ownLane=el('div','tl-proc-lane own'), enemyLane=el('div','tl-proc-lane enemy');
+    (procs[i]||[]).filter(p=>cls==='Total'||tlNormClass(p.troop)===cls).forEach(p=>{ let ic;
+      if(p.icon){ ic=el('img','tl-proc-icon '+p.side); ic.src=p.icon; ic.alt=p.name||''; ic.loading='lazy'; }
+      else { ic=el('div','tl-proc-icon miss '+p.side); ic.textContent=(p.name||'?').slice(0,1); }
+      const sideLabel=p.side==='own'?'You':'Enemy';
+      const kills=+(p.kills||0);
+      ic.title=sideLabel+': '+(p.name||'Unknown skill')+' (turn '+t+')'+(kills>0?' killed '+fmtMetric(kills)+' troops':'');
+      (p.side==='enemy'?enemyLane:ownLane).appendChild(ic); });
+    cell.append(ownLane,enemyLane);
+    mount.appendChild(cell); });
+}
 function tlRenderCharts(data, animate){
+  data=tlClassView(data);
   const turns=data.turns;
   const surv=$('#tlSurv'); if(surv){ surv.innerHTML=''; surv.appendChild(lineChart(turns, data.own_survivors, data.enemy_survivors, {vh:80})); }
-  const kill=$('#tlKill'); if(kill){ kill.innerHTML='';
-    const max=Math.max(1,...data.own_killed,...data.enemy_killed);
-    turns.forEach((t,i)=>{ const col=el('div','tl-col');
-      col.title='Turn '+t+'  •  you lost '+fmtMetric(data.own_killed[i])+'  •  enemy lost '+fmtMetric(data.enemy_killed[i]);
-      const by=el('div','b you'), be=el('div','b enemy');
-      const hy=Math.max(0,data.own_killed[i]/max*100), he=Math.max(0,data.enemy_killed[i]/max*100);
-      if(animate){ by.style.height='0%'; be.style.height='0%'; requestAnimationFrame(()=>requestAnimationFrame(()=>{ by.style.height=hy+'%'; be.style.height=he+'%'; })); }
-      else { by.style.height=hy+'%'; be.style.height=he+'%'; }
-      col.append(by,be); kill.appendChild(col); }); }
-  const ax=$('#tlX'); if(ax){ const marks=[], step=Math.max(1,Math.round((turns.length-1)/5));
-    for(let i=0;i<turns.length;i+=step) marks.push(turns[i]);
-    if(marks.length&&marks[marks.length-1]!==turns[turns.length-1]) marks.push(turns[turns.length-1]);
-    ax.innerHTML=marks.map(t=>'<span>'+t+'</span>').join(''); }
+  // troops LOST = casualties suffered (you lost / enemy lost)
+  tlBars($('#tlKill'), turns, data.own_killed, data.enemy_killed, 'lost', animate);
+  // troops KILLED = casualties inflicted by the selected class (Total reverses losses)
+  tlBars($('#tlKilled'), turns, data.own_dealt, data.enemy_dealt, 'killed', animate);
+  tlProcs($('#tlProcs'), turns, data.procs);   // procs only present in Per Battle data
+  const ax=$('#tlX'); if(ax){ ax.innerHTML='';
+    turns.forEach(t=>{ const s=el('span','tl-x-turn'); s.textContent=t; ax.appendChild(s); }); }
 }
 // fetch one battle's timeline on demand — deterministic via (seed, index), so it
 // matches the averaged run exactly (no new sim). Cached per index.
@@ -1277,6 +1370,13 @@ function fmtDist(d){
   return hi>lo ? fmtMetric(lo)+'-'+fmtMetric(hi) : fmtMetric(med);
 }
 function hasSignal(d){ return !!d && ((d.p95||0)>0 || (d.median||0)>0 || (d.mean||0)>0); }
+function distValue(d){ return d ? (d.median ?? d.mean ?? d.p50 ?? 0) : 0; }
+function isOneProcNoKill(skill){
+  const p=distValue(skill&&skill.triggers), k=distValue(skill&&skill.kills);
+  const p5=skill&&skill.triggers&&skill.triggers.p5, p95=skill&&skill.triggers&&skill.triggers.p95;
+  const fixedOne=(p===1 || (p5===1&&p95===1));
+  return fixedOne && !hasSignal(skill&&skill.kills);
+}
 function spark(d, cls, animate){
   const box=el('div','skill-spark '+cls), counts=(d&&d.counts)||[], m=Math.max(...counts,1);
   (counts.length?counts:[0]).forEach(v=>{ const b=el('i'); const h=Math.max(2,v/m*100);
@@ -1322,21 +1422,23 @@ function showTip(text,anchor){
 document.addEventListener('click',()=>{ const tip=$('#touchTip'); if(tip) tip.remove(); });
 addEventListener('scroll',()=>{ const tip=$('#touchTip'); if(tip) tip.remove(); },{passive:true});   // a fixed tip must not float over unrelated content
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ const tip=$('#touchTip'); if(tip) tip.remove(); } });
-function skillMetric(label, dist, cls, animate){
-  const wrap=el('div','skill-stat'), lab=el('span'); lab.textContent=label;
+function skillMetric(label, dist, cls, animate, compact){
+  const wrap=el('div','skill-stat'+(compact?' compact':'')), lab=el('span'); lab.textContent=label;
   const val=el('b'); val.textContent=label==='Kills'&&!hasSignal(dist)?'—':fmtDist(dist);
-  wrap.append(lab,val,spark(dist,cls,animate));
+  wrap.append(lab,val);
+  if(!compact) wrap.appendChild(spark(dist,cls,animate));
   return wrap;
 }
 function skillLine(skill, animate){
-  const line=el('div','skill-line');
+  const compact=isOneProcNoKill(skill);
+  const line=el('div','skill-line'+(compact?' compact':''));
   line.appendChild(skillIcon(skill));
   const copy=el('div','skill-copy'), nm=el('b'), sub=el('small');
   nm.textContent=skill.name||skill.slot||'Skill';
   sub.textContent=(skill.source==='troop'?'troop · ':'')+(skill.troop||skill.slot||'');
   if(skill.effect){ nm.title=skill.effect; sub.title=skill.effect; }
   copy.append(nm,sub);
-  line.append(copy,skillMetric('Procs',skill.triggers,'procs',animate),skillMetric('Kills',skill.kills,'kills',animate));
+  line.append(copy,skillMetric('Procs',skill.triggers,'procs',animate,compact),skillMetric('Kills',skill.kills,'kills',animate,compact));
   return line;
 }
 function skillCard(row, side, animate){
@@ -1531,6 +1633,8 @@ function initInteractions(){
     setFormationMode(b.dataset.fmode); });
   // battle timeline: Average <-> Per Battle toggle + battle slider
   const tlm=$('#tlModeToggle'); if(tlm) tlm.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.disabled)return;
+    [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); tlUpdate(false); });
+  const tlc=$('#tlClassToggle'); if(tlc) tlc.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); tlUpdate(false); });
   const tls=$('#tlSlider'); if(tls) tls.addEventListener('input',()=>{
     const sl=$('#tlSlabel'); if(sl) sl.textContent='Battle '+(+tls.value).toLocaleString();   // label instantly

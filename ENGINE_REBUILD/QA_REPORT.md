@@ -1,6 +1,6 @@
 # QA Report
 
-Date: 2026-07-08, third pass (supersedes the earlier reports below)
+Date: 2026-07-08, fourth pass (supersedes the earlier reports below)
 
 Verdict: **CONDITIONAL** - certified for WINNER/ranking on anchors A1-A4;
 A5 (near-mirror rally, real DEFENDER win) is a declared, tracked miss in the
@@ -8,7 +8,46 @@ coin-flip zone. NOT certified for near-even survivor depth or anchor-2
 survivor type; near-even forecasts carry the coin_flip label stating the
 win% is not a calibrated probability.
 
+## 2026-07-08 FOURTH Pass - anchor 5 DATA CORRECTION + revert of the size-dep scale
+
+Martin corrected a CLASS MISTRANSLATION in anchor 5: his 676,341 troops were
+MARKSMAN (T11 fc10), not lancers - he ran inf + marksman with ZERO lancers,
+both on strong ~+2647% panels. (His revised scenario also flipped the roles;
+report evidence - all-[RFJ] Attacker panel + Rally widgets on his side - keeps
+him as the rally attacker, and the scenario file was fixed.)
+
+**Reverted:** the THIRD-pass SIZE-DEPENDENT defender scale
+(def_k=0.0183/def_ed=1.28) was built to fit A5's "defender needs x1.35-1.45"
+cliff, which was computed from the wrong comp. With the correct comp that
+cliff dissolves, so the change is withdrawn and TURN_PARAMS is back to the
+flat anchor-4 lock (def_k=0.45, def_ed=1.0, rate=168). A1-A4 winners hold
+(21/40 gates); 87 tests + regression green.
+
+**Kept:** (a) duplicate-joiner DEDUP - same-hero joiner Skill-1 applies once
+(both skill paths; enemy Jessie x2 dedups too; guard test
+`test_duplicate_joiners_apply_once`). Correct mechanic, but NOT the driver of
+A5's miss. (b) near-even band +-20% - all five anchors sit within +-20%
+aggregate strength yet real outcomes span defender-wipe to 58%-survivor wins,
+so all carry the coin_flip label.
+
+**Honest read of A5 on the flat lock:** the engine ranks the ATTACKER ahead
+regardless of joiners (p_win 1.00, ~65% survivors) vs the real DEFEAT. The
+marksman correction made the attacker look STRONGER (marksman +2647% vs the
+mistranslated lancer +1719%), so it WIDENED the gap. The miss is the BASE
+matchup, not Nora - a near-mirror coin flip the deterministic engine cannot
+call, carried by the label.
+
+**Error-independent finding (NOT acted on; flagged for a clean future pass):**
+anchors 1/2/5 - all real rallies, none touched by the mistranslation - suggest
+large multi-player garrison defenders are STRONGER than flat def_k=0.45 implies
+(A1/A2 deep 3-6% grinds; A5 a defender win). The reverted size-dependent scale
+was targeting exactly this. If pursued it must be RE-DERIVED on corrected data,
+not resurrected from the withdrawn cliff.
+
+---
+
 ## 2026-07-08 THIRD Pass - anchor 5 (Marty vs FxCat): the attacker-DEFEAT anchor
+### (SUPERSEDED - the cliff below used the mistranslated comp; scale reverted)
 
 Martin supplied the two standing data asks in one report: a real 4x-Nora rally
 (duplicate joiners) that he LOST (near-mirror 1.42M totals; attacker wiped,

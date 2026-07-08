@@ -4,13 +4,18 @@
   "runs": 100,
   "seed": 4471,
   "own": {
-    "role": "rally",
+    "role": "garrison",
     "troops_total": 1500000,
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5,
       "Lancer": 0.2,
       "Marksman": 0.3
+    },
+    "formation_counts": {
+      "Infantry": 750000,
+      "Lancer": 300000,
+      "Marksman": 450000
     },
     "quality": {
       "Infantry": {
@@ -30,18 +35,18 @@
       }
     },
     "panel": {
-      "Infantry|Attack": 37.58356666666667,
+      "Infantry|Attack": 42.035516666666666,
       "Infantry|Defense": 34.6156,
-      "Infantry|Lethality": 36.94285714285714,
-      "Infantry|Health": 29.828571428571426,
-      "Lancer|Attack": 35.74049166666668,
-      "Lancer|Defense": 32.914300000000004,
-      "Lancer|Lethality": 36.2952380952381,
-      "Lancer|Health": 29.302380952380954,
-      "Marksman|Attack": 37.58356666666667,
-      "Marksman|Defense": 34.6156,
-      "Marksman|Lethality": 36.94285714285714,
-      "Marksman|Health": 29.828571428571426
+      "Infantry|Lethality": 33.38571428571428,
+      "Infantry|Health": 33.38571428571428,
+      "Lancer|Attack": 42.035516666666666,
+      "Lancer|Defense": 34.6156,
+      "Lancer|Lethality": 33.38571428571428,
+      "Lancer|Health": 33.38571428571428,
+      "Marksman|Attack": 39.979779166666674,
+      "Marksman|Defense": 32.914300000000004,
+      "Marksman|Lethality": 32.798809523809524,
+      "Marksman|Health": 32.798809523809524
     },
     "panel_is_final": true,
     "widgets_in_panel": true,
@@ -49,14 +54,14 @@
     "debuffs_on_enemy": {},
     "lead_heroes": {
       "Infantry": "Hank",
-      "Lancer": "Dominic",
-      "Marksman": "Viveca"
+      "Lancer": "Estrella",
+      "Marksman": "Cara"
     },
     "joiners": [
-      "Nora",
-      "Nora",
-      "Nora",
-      "Nora"
+      "Renee",
+      "Gordon",
+      "Ahmose",
+      "Wu Ming"
     ],
     "_ui_buffs": {
       "item": [
@@ -100,13 +105,18 @@
     "_ui_stats_type": "base"
   },
   "enemy": {
-    "role": "garrison",
+    "role": "rally",
     "troops_total": 1500000,
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5,
       "Lancer": 0.2,
       "Marksman": 0.3
+    },
+    "formation_counts": {
+      "Infantry": 750000,
+      "Lancer": 300000,
+      "Marksman": 450000
     },
     "quality": {
       "Infantry": {
@@ -126,18 +136,18 @@
       }
     },
     "panel": {
-      "Infantry|Attack": 42.035516666666666,
+      "Infantry|Attack": 37.58356666666667,
       "Infantry|Defense": 34.6156,
-      "Infantry|Lethality": 33.38571428571428,
-      "Infantry|Health": 33.38571428571428,
-      "Lancer|Attack": 42.035516666666666,
-      "Lancer|Defense": 34.6156,
-      "Lancer|Lethality": 33.38571428571428,
-      "Lancer|Health": 33.38571428571428,
-      "Marksman|Attack": 39.979779166666674,
-      "Marksman|Defense": 32.914300000000004,
-      "Marksman|Lethality": 32.798809523809524,
-      "Marksman|Health": 32.798809523809524
+      "Infantry|Lethality": 36.94285714285714,
+      "Infantry|Health": 29.828571428571426,
+      "Lancer|Attack": 35.74049166666668,
+      "Lancer|Defense": 32.914300000000004,
+      "Lancer|Lethality": 36.2952380952381,
+      "Lancer|Health": 29.302380952380954,
+      "Marksman|Attack": 37.58356666666667,
+      "Marksman|Defense": 34.6156,
+      "Marksman|Lethality": 36.94285714285714,
+      "Marksman|Health": 29.828571428571426
     },
     "panel_is_final": true,
     "widgets_in_panel": true,
@@ -145,14 +155,14 @@
     "debuffs_on_enemy": {},
     "lead_heroes": {
       "Infantry": "Hank",
-      "Lancer": "Estrella",
-      "Marksman": "Cara"
+      "Lancer": "Dominic",
+      "Marksman": "Viveca"
     },
     "joiners": [
-      "Wu Ming",
-      "Patrick",
-      "Ahmose",
-      "Gatot"
+      "Mia",
+      "Jessie",
+      "Blanchette",
+      "Wayne"
     ],
     "_ui_buffs": {
       "item": [

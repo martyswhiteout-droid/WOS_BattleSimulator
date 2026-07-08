@@ -291,10 +291,9 @@ _TL_CLS = ("Infantry", "Lancer", "Marksman")
 
 def _battle_timeline(records, own_is_attacker: bool, cap: int = 80):
     """Average per-turn survivors-remaining (total AND per class) and troops-lost
-    across ALL sims. Each run's timeline is (a_alive_by_class, d_alive_by_class,
-    a_killed, d_killed) per turn. Runs that ended early carry their FINAL survivor
-    counts forward (0 further kills) so the average is over all n sims at every
-    turn. Trailing turns where ~no one dies are trimmed. None if no run has one."""
+    across ALL sims. Runs that ended early carry their FINAL survivor counts
+    forward (0 further kills) so the average is over all n sims at every turn.
+    Trailing turns where ~no one dies are trimmed. None if no run has one."""
     tls = [r.timeline for r in records if getattr(r, "timeline", None)]
     if not tls:
         return None
@@ -304,30 +303,50 @@ def _battle_timeline(records, own_is_attacker: bool, cap: int = 80):
     if m <= 0 or n == 0:
         return None
     a_cls = [[0.0] * m for _ in range(3)]; d_cls = [[0.0] * m for _ in range(3)]
+    a_lost_cls = [[0.0] * m for _ in range(3)]; d_lost_cls = [[0.0] * m for _ in range(3)]
+    a_dealt_cls = [[0.0] * m for _ in range(3)]; d_dealt_cls = [[0.0] * m for _ in range(3)]
     a_kill = [0.0] * m; d_kill = [0.0] * m
-    zero = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 0.0, 0.0)
+    z3 = (0.0, 0.0, 0.0)
+    zero = (z3, z3, 0.0, 0.0, z3, z3, z3, z3)
     for tl in tls:
         last = tl[-1] if tl else zero
         for t in range(m):
             if t < len(tl):
-                aa, dd, ak, dk = tl[t]
+                rec = tl[t]
             else:                                   # ended earlier: survivors flat, no new kills
-                aa, dd, ak, dk = last[0], last[1], 0.0, 0.0
+                rec = (last[0], last[1], 0.0, 0.0, z3, z3, z3, z3)
+            aa, dd, ak, dk = rec[:4]
+            al = rec[4] if len(rec) > 4 else z3
+            dl = rec[5] if len(rec) > 5 else z3
+            ad = rec[6] if len(rec) > 6 else z3
+            ddlt = rec[7] if len(rec) > 7 else z3
             for c in range(3):
                 a_cls[c][t] += aa[c]; d_cls[c][t] += dd[c]
+                a_lost_cls[c][t] += al[c]; d_lost_cls[c][t] += dl[c]
+                a_dealt_cls[c][t] += ad[c]; d_dealt_cls[c][t] += ddlt[c]
             a_kill[t] += ak; d_kill[t] += dk
     a_cls = [[x / n for x in s] for s in a_cls]; d_cls = [[x / n for x in s] for s in d_cls]
+    a_lost_cls = [[x / n for x in s] for s in a_lost_cls]; d_lost_cls = [[x / n for x in s] for s in d_lost_cls]
+    a_dealt_cls = [[x / n for x in s] for s in a_dealt_cls]; d_dealt_cls = [[x / n for x in s] for s in d_dealt_cls]
     a_kill = [x / n for x in a_kill]; d_kill = [x / n for x in d_kill]
     a_surv = [a_cls[0][t] + a_cls[1][t] + a_cls[2][t] for t in range(m)]
     d_surv = [d_cls[0][t] + d_cls[1][t] + d_cls[2][t] for t in range(m)]
     if own_is_attacker:
         own_s, en_s, own_k, en_k, own_cls, en_cls = a_surv, d_surv, a_kill, d_kill, a_cls, d_cls
+        own_lost_cls, en_lost_cls = a_lost_cls, d_lost_cls
+        own_dealt_cls, en_dealt_cls = a_dealt_cls, d_dealt_cls
     else:
         own_s, en_s, own_k, en_k, own_cls, en_cls = d_surv, a_surv, d_kill, a_kill, d_cls, a_cls
+        own_lost_cls, en_lost_cls = d_lost_cls, a_lost_cls
+        own_dealt_cls, en_dealt_cls = d_dealt_cls, a_dealt_cls
     end = m                                          # trim trailing near-zero-casualty turns
     while end > 1 and (own_k[end - 1] + en_k[end - 1]) < 1.0:
         end -= 1
-    by_class = {name: {"own": own_cls[i][:end], "enemy": en_cls[i][:end]}
+    by_class = {name: {"own": own_cls[i][:end], "enemy": en_cls[i][:end],
+                       "own_killed": own_lost_cls[i][:end],
+                       "enemy_killed": en_lost_cls[i][:end],
+                       "own_dealt": own_dealt_cls[i][:end],
+                       "enemy_dealt": en_dealt_cls[i][:end]}
                 for i, name in enumerate(_TL_CLS)}
     return {
         "turns": list(range(1, end + 1)),

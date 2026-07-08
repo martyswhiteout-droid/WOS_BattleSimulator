@@ -589,6 +589,31 @@ class TestCatalogCoverage(unittest.TestCase):
             mods.stat.get(("attacker", TroopType.INFANTRY, StatType.DEFENSE), 0.0),
             0.0)
 
+    def test_duplicate_joiners_apply_once(self):
+        # DUPLICATE-JOINER DEDUP (anchor 5, the real 4x-Nora defeat): the same
+        # hero's joiner Skill-1 applies ONCE, not per copy.
+        for joiners, expected in ((["Nora"], 1), (["Nora"] * 4, 1),
+                                  (["Nora", "Gatot", "Nora"], 2)):
+            own = _side(
+                "rally",
+                leads={"Infantry": "Gisela", "Lancer": "", "Marksman": ""},
+                joiners=joiners,
+                widgets_in_panel=True,
+            )
+            enemy = _side(
+                "garrison",
+                leads={"Infantry": "", "Lancer": "Karol", "Marksman": "Vulcanus"},
+                joiners=[""],
+                widgets_in_panel=True,
+            )
+            own.panel_is_final = True
+            enemy.panel_is_final = True
+            con = construct.build(Matchup(own, enemy), apply_legacy_skills=False)
+            skills = skill_defs_from_matchup(con, {"engine": "turn"})
+            names = [s.owner for s in skills if s.role == "joiner"]
+            self.assertEqual(len(names), expected, joiners)
+            self.assertEqual(len(names), len(set(names)), joiners)
+
     def test_qa_named_static_stat_skills_emit_turn_engine_mods(self):
         book = load_skill_book()
         stacks = {

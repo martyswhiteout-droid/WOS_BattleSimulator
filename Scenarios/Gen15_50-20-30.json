@@ -1,16 +1,21 @@
 {
   "wos_config": 1,
   "name": "Gen15_50-20-30",
-  "runs": 500,
+  "runs": 1000,
   "seed": 4471,
   "own": {
     "role": "garrison",
-    "troops_total": 1500000,
+    "troops_total": 1000000,
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5,
       "Lancer": 0.2,
       "Marksman": 0.3
+    },
+    "formation_counts": {
+      "Infantry": 500000,
+      "Lancer": 200000,
+      "Marksman": 300000
     },
     "quality": {
       "Infantry": {
@@ -30,41 +35,33 @@
       }
     },
     "panel": {
-      "Infantry|Attack": 40,
-      "Infantry|Defense": 40,
-      "Infantry|Lethality": 40,
-      "Infantry|Health": 40,
-      "Lancer|Attack": 40,
-      "Lancer|Defense": 40,
-      "Lancer|Lethality": 40,
-      "Lancer|Health": 40,
-      "Marksman|Attack": 40,
-      "Marksman|Defense": 40,
-      "Marksman|Lethality": 40,
-      "Marksman|Health": 40
+      "Infantry|Attack": 74.66051666666665,
+      "Infantry|Defense": 61.61559999999999,
+      "Infantry|Lethality": 70.67142857142856,
+      "Infantry|Health": 70.67142857142856,
+      "Lancer|Attack": 74.66051666666665,
+      "Lancer|Defense": 61.61559999999999,
+      "Lancer|Lethality": 70.67142857142856,
+      "Lancer|Health": 70.67142857142856,
+      "Marksman|Attack": 72.60477916666667,
+      "Marksman|Defense": 59.914300000000004,
+      "Marksman|Lethality": 70.0845238095238,
+      "Marksman|Health": 70.0845238095238
     },
-    "own_buffs": {
-      "Attack": 0.3,
-      "Defense": 0.3,
-      "Lethality": 0.3,
-      "Health": 0.3
-    },
-    "debuffs_on_enemy": {
-      "Attack": 0.2,
-      "Defense": 0.3,
-      "Health": 0.05,
-      "Lethality": 0.05
-    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
     "lead_heroes": {
       "Infantry": "Hank",
       "Lancer": "Estrella",
       "Marksman": "Cara"
     },
     "joiners": [
+      "Hendrik",
       "Ahmose",
-      "Gatot",
-      "Wu Ming",
-      "Patrick"
+      "Renee",
+      "Gordon"
     ],
     "_ui_buffs": {
       "item": [
@@ -84,16 +81,42 @@
         5,
         10
       ]
-    }
+    },
+    "_ui_max_buff": false,
+    "_ui_input_panel": {
+      "Infantry|Attack": 40,
+      "Infantry|Defense": 40,
+      "Infantry|Lethality": 40,
+      "Infantry|Health": 40,
+      "Lancer|Attack": 40,
+      "Lancer|Defense": 40,
+      "Lancer|Lethality": 40,
+      "Lancer|Health": 40,
+      "Marksman|Attack": 40,
+      "Marksman|Defense": 40,
+      "Marksman|Lethality": 40,
+      "Marksman|Health": 40
+    },
+    "_ui_max_gears": {
+      "Infantry": true,
+      "Lancer": true,
+      "Marksman": true
+    },
+    "_ui_stats_type": "base"
   },
   "enemy": {
     "role": "rally",
-    "troops_total": 1500000,
+    "troops_total": 1000000,
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5,
       "Lancer": 0.2,
       "Marksman": 0.3
+    },
+    "formation_counts": {
+      "Infantry": 500000,
+      "Lancer": 200000,
+      "Marksman": 300000
     },
     "quality": {
       "Infantry": {
@@ -113,31 +136,23 @@
       }
     },
     "panel": {
-      "Infantry|Attack": 40,
-      "Infantry|Defense": 40,
-      "Infantry|Lethality": 40,
-      "Infantry|Health": 40,
-      "Lancer|Attack": 40,
-      "Lancer|Defense": 40,
-      "Lancer|Lethality": 40,
-      "Lancer|Health": 40,
-      "Marksman|Attack": 40,
-      "Marksman|Defense": 40,
-      "Marksman|Lethality": 40,
-      "Marksman|Health": 40
+      "Infantry|Attack": 66.83356666666667,
+      "Infantry|Defense": 61.61559999999999,
+      "Infantry|Lethality": 78.08571428571429,
+      "Infantry|Health": 63.25714285714285,
+      "Lancer|Attack": 64.99049166666667,
+      "Lancer|Defense": 59.914300000000004,
+      "Lancer|Lethality": 77.43809523809524,
+      "Lancer|Health": 62.73095238095239,
+      "Marksman|Attack": 66.83356666666667,
+      "Marksman|Defense": 61.61559999999999,
+      "Marksman|Lethality": 78.08571428571429,
+      "Marksman|Health": 63.25714285714285
     },
-    "own_buffs": {
-      "Attack": 0.3,
-      "Defense": 0.3,
-      "Lethality": 0.3,
-      "Health": 0.3
-    },
-    "debuffs_on_enemy": {
-      "Attack": 0.2,
-      "Defense": 0.3,
-      "Health": 0.05,
-      "Lethality": 0.05
-    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
     "lead_heroes": {
       "Infantry": "Hank",
       "Lancer": "Dominic",
@@ -145,9 +160,9 @@
     },
     "joiners": [
       "Mia",
-      "Blanchette",
-      "Jessie",
-      "Hendrik"
+      "Hendrik",
+      "Nora",
+      "Jessie"
     ],
     "_ui_buffs": {
       "item": [
@@ -167,6 +182,27 @@
         5,
         10
       ]
-    }
+    },
+    "_ui_max_buff": false,
+    "_ui_input_panel": {
+      "Infantry|Attack": 40,
+      "Infantry|Defense": 40,
+      "Infantry|Lethality": 40,
+      "Infantry|Health": 40,
+      "Lancer|Attack": 40,
+      "Lancer|Defense": 40,
+      "Lancer|Lethality": 40,
+      "Lancer|Health": 40,
+      "Marksman|Attack": 40,
+      "Marksman|Defense": 40,
+      "Marksman|Lethality": 40,
+      "Marksman|Health": 40
+    },
+    "_ui_max_gears": {
+      "Infantry": true,
+      "Lancer": true,
+      "Marksman": true
+    },
+    "_ui_stats_type": "base"
   }
 }
