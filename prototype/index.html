@@ -1059,9 +1059,10 @@
   .lead-labels{gap:0;min-height:0;justify-content:flex-start}
   .lead-labels span{display:flex;align-items:center;justify-content:center;text-align:center}
 
-  /* #3 · scenario rail tool icons: clearer + a touch of contrast */
-  .tab-tool{min-width:26px;min-height:26px}
+  /* #3 · scenario rail tool icons: white glyphs on the blue tab (pen = PNG, save/load = inline SVG) */
+  .tab-tool{min-width:26px;min-height:26px;color:#fff}
   .tab-tool img{width:16px;height:16px;filter:brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0,0,0,.4));opacity:.95}
+  .tab-tool svg{width:16px;height:16px;display:block;color:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
 
   /* #4 · responsive for the new tabbed/carded layout (iOS Safari) */
   @media (max-width:960px){
@@ -1080,6 +1081,19 @@
     .input-tabs .tabpanels,.forecast-tabs .tabpanels{padding:12px 10px}
     .buff-sec-head{padding:7px 10px}
   }
+
+  /* ============================================================
+     Feedback round 3b — probability bar cleanup, joiner containment
+     ============================================================ */
+
+  /* drop the uncertainty overlay on the probability bar: the vertical caliper tick
+     (read as a stray "I") and the floating ±% / band labels sitting above the bar */
+  .obar-wrap{padding-top:10px;padding-bottom:12px}
+  .obar-wrap .boundary{display:none!important}
+
+  /* joiner hero boxes: give the red opener clear breathing room so it never touches the edge */
+  #joinMe .hpick-btn,#joinFoe .hpick-btn{padding-right:13px;gap:7px}
+  #joinMe .hpick-btn .hpick-open,#joinFoe .hpick-btn .hpick-open{width:13px;height:13px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -1105,7 +1119,7 @@
   <aside class="config-rail">
     <div class="rail-head">Scenarios</div>
     <div class="rail-tabs" id="tabs" role="tablist" aria-label="Forecast scenarios">
-      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Scenario 1</span><button class="tab-tool rename-tab" type="button" title="Rename" aria-label="Rename"><img src="assets/ui/rename-pen.png" alt=""></button><button class="tab-tool save-tab" type="button" title="Save scenario" aria-label="Save scenario"><img src="assets/Icons/download.png" alt=""></button><button class="tab-tool load-tab" type="button" title="Load scenario" aria-label="Load scenario"><img src="assets/Icons/upload.png" alt=""></button><button class="x" type="button" aria-label="Close scenario">x</button></div>
+      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Scenario 1</span><button class="tab-tool rename-tab" type="button" title="Rename" aria-label="Rename"><img src="assets/ui/rename-pen.png" alt=""></button><button class="tab-tool save-tab" type="button" title="Save scenario" aria-label="Save scenario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></button><button class="tab-tool load-tab" type="button" title="Load scenario" aria-label="Load scenario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V10"/><path d="m7 14 5-5 5 5"/><path d="M5 4h14"/></svg></button><button class="x" type="button" aria-label="Close scenario">x</button></div>
     </div>
     <button class="rail-add" id="tabAdd" title="New scenario (max 5)">+ New scenario</button>
   </aside>
@@ -1372,6 +1386,11 @@ const enc=s=>encodeURIComponent(s); const avatar=f=>"avatars/"+enc(f);
 const fmtPct=v=>Number.isFinite(+v)?(+v).toFixed(1):'0.0';
 const CLASS_ICONS={Infantry:'assets/Icons/Infantry.png',Lancer:'assets/Icons/Lancer.png',Marksman:'assets/Icons/marksman.png'};
 const RED_ICON='assets/Icons/red_Icon.svg.svg';   // dropdown-open affordance + "no joiner" marker
+// scenario tool icons drawn inline (transparent, white) — dependable on the blue rail, unlike opaque PNGs
+const TAB_TOOL_SVG={
+  'save-tab':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>',
+  'load-tab':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V10"/><path d="m7 14 5-5 5 5"/><path d="M5 4h14"/></svg>'
+};
 const CLASS_ICON_BY_CODE={I:CLASS_ICONS.Infantry,L:CLASS_ICONS.Lancer,M:CLASS_ICONS.Marksman};
 function troopIcon(cls, clsName='class-icon-img'){
   const img=el('img',clsName); img.src=CLASS_ICONS[cls]||CLASS_ICON_BY_CODE[cls]||''; img.alt=''; img.loading='lazy'; return img;
@@ -2198,7 +2217,7 @@ function initInteractions(){
 let FORECAST=null, LAST_RUN=null;   // LAST_RUN: exact {own,enemy,seed} of the current forecast, for on-demand battle fetches
 const tabState=new Map();
 let applyingConfig=false, activeRun=null, autosaveTimer=null, lastRunFailed=false;
-const AUTOSAVE_KEY='wos:lastConfig:v1', DEFAULT_SEED=4471;
+const AUTOSAVE_KEY='wos:lastConfig:v2', DEFAULT_SEED=4471;   // v2: reset stale sessions to the 50/20/30 default
 let activeSeed=DEFAULT_SEED;
 const setText=(sel,txt)=>{const e=$(sel); if(e)e.textContent=txt;};
 const pctN=x=>x*100;
@@ -2454,10 +2473,11 @@ function closeTab(tab){
 function makeTab(name, cfg, forecast){
   const t=el('div','tab'); t.setAttribute('role','tab'); t.tabIndex=-1; t.setAttribute('aria-selected','false');
   const nm=el('span','tname'); nm.textContent=name;
-  const mkTool=(cls,title,src)=>{ const b=el('button','tab-tool '+cls); b.type='button'; b.title=title; b.setAttribute('aria-label',title); const img=el('img'); img.src=src; img.alt=''; b.appendChild(img); return b; };
+  const mkTool=(cls,title,src)=>{ const b=el('button','tab-tool '+cls); b.type='button'; b.title=title; b.setAttribute('aria-label',title);
+    if(src){ const img=el('img'); img.src=src; img.alt=''; b.appendChild(img); } else { b.innerHTML=TAB_TOOL_SVG[cls]||''; } return b; };
   const rn=mkTool('rename-tab','Rename','assets/ui/rename-pen.png');
-  const sv=mkTool('save-tab','Save scenario','assets/ui/save-down.png');
-  const ld=mkTool('load-tab','Load scenario','assets/ui/load-up.png');
+  const sv=mkTool('save-tab','Save scenario',null);   // inline SVG (the PNG export had no alpha -> showed as a white square)
+  const ld=mkTool('load-tab','Load scenario',null);
   const x=el('button','x'); x.type='button'; x.setAttribute('aria-label','Close scenario'); x.textContent='x';
   t.append(nm,rn,sv,ld,x); $('#tabs').appendChild(t);
   tabState.set(t,{config:cfg||formToConfig(), forecast:forecast||null});
