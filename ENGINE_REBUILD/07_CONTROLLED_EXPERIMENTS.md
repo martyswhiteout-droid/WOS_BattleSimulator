@@ -86,3 +86,40 @@ preserved, no regression). Shipping the grind fix would have broken 3 currently
 attacker wins even at `def_k~0.9`; THEN the grind can be set right and the
 survivor magnitudes fall into range too. That is a multi-step build, not a tune,
 and every step must hold G12.
+
+## Counter-triangle data + step-1 status (2026-07-09)
+
+Two more deterministic Lv6 (no-skill) battles, SAME 10k infantry attacker, only
+the defender type changes:
+- Infantry vs Lancer  -> infantry WON, **45.4%** survivors (favorable counter)
+- Infantry vs Marksman -> infantry WON, **4.9%** survivors (unfavorable counter)
+
+A **9x** survivor swing from the counter alone. Engine (cm=1.1) vs reality:
+
+| matchup | real surv% | engine surv% |
+|---|---|---|
+| inf > lancer | 45 | 48 (ok) |
+| inf < marksman | 4.9 | **67** (backwards) |
+| lancer > marksman | 42 | 71 |
+| mirror | 24 | 57 |
+
+The engine has infantry doing BETTER vs marksman than vs lancer — reality is the
+reverse. Root: the engine kills the fragile marksman (low def/health) before
+they deal their (very high) damage, so it under-credits marksman offense. This
+is a **damage-formula weighting** problem (marksman offense vs fragility, i.e.
+`km`/`q_off`/`qd`/`qh` and the counter model), NOT a single `cm` boost.
+
+Joint `(def_k, fire_blend, cm)` search: configs that fit the composition spread
+(def_k>=0.8) still break RAW_06/RAW_08/T12_04; a flat `cm` up to 4.0 does not
+rescue them. So step 1 is a genuine multi-mechanism build, coupled with the
+grind and the winner lock.
+
+### Roadmap (each step MUST pass `py -m wos_sim.backtest`)
+1. **Composition/counter physics** (this step): fix marksman offense-vs-fragility
+   weighting + counter model so inf<marksman ~ 4.9%, inf>lancer ~ 45%,
+   lancer>marksman ~ 42%, mirror ~ 24% — WITHOUT breaking the 7 locked winners.
+2. **T12 troop-skill damage**: marksman Volley/Gunpowder etc. (the mechanic that
+   flipped Exp 3 lancer-vs-marksman between Lv6 and T10).
+3. **Grind**: set `fire_blend`/`def_k` against the mirror once 1+2 let the correct
+   attackers win at higher def_k.
+4. **Full re-audit**: back-test all reports; magnitudes should now fall in range.

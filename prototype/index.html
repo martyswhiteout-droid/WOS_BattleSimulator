@@ -213,7 +213,7 @@
   .gear-check{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;color:var(--mute);white-space:nowrap;min-height:28px;padding:4px}
   .gear-check input{width:14px;height:14px;margin:0;accent-color:var(--ice)}
   .foe .gear-check input{accent-color:var(--ember)}
-  .widget-impact{min-width:86px;font-family:var(--mono);font-size:10.5px;color:#61e6a6;white-space:nowrap}
+  .widget-impact{min-width:86px;font-family:var(--mono);font-size:10.5px;color:#6FB858;white-space:nowrap}
   .lead-row.me-row .widget-impact{text-align:right}
   .lead-row.foe-row .widget-impact{text-align:left}
   .lead-labels{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;min-height:96px}
@@ -871,6 +871,98 @@
     box-shadow:inset 0 1px rgba(255,255,255,.6);border-bottom:1px solid rgba(106,86,71,.2)}
   .input .iblock.output-block>.title::after{content:none!important}   /* kill any accordion arrow */
   .input .iblock.output-block .final-stats{background:rgba(250,239,224,.95);padding:12px 14px;border-radius:0 0 14px 14px}
+
+  /* ============================================================
+     Feedback round 2 — buttons, checkboxes, formation, buffs,
+     inputs, hero headers, backdrop
+     ============================================================ */
+
+  /* #11 · cinematic page backdrop (Backdrop1) behind everything */
+  html,body{background:#0a1420}
+  body{background:transparent}
+  body::before{content:"";position:fixed;inset:0;z-index:-2;
+    background:url("assets/Backdrop/Backdrop1.png") center center / cover no-repeat}
+  body::after{content:"";position:fixed;inset:0;z-index:-1;
+    background:linear-gradient(180deg,rgba(8,18,32,.42) 0%,rgba(8,18,32,.70) 58%,rgba(8,18,32,.86) 100%)}
+  .sec-head h2{color:#f7fbff;text-shadow:0 2px 10px rgba(0,0,0,.55)}
+  .sec-head .rule{background:linear-gradient(90deg,rgba(255,255,255,.42),transparent)}
+
+  /* #1 · Run / Refresh — glossy blue 3D pill (View-match reference) */
+  .run,.refresh,.forecast .refresh,.input-toolbar .run{
+    font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:none;
+    color:#fff;border:0;cursor:pointer;border-radius:16px;padding:11px 22px;
+    background:linear-gradient(180deg,#8ED0FF 0%,#5AAEF3 46%,#3E97E8 100%);
+    text-shadow:0 1px 2px rgba(10,52,96,.55);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.75),inset 0 -3px 2px rgba(20,96,170,.5),0 4px 0 #2C79C0,0 9px 16px -6px rgba(24,90,160,.65);
+    transition:transform .08s,filter .15s,box-shadow .12s}
+  .run:hover,.refresh:hover,.forecast .refresh:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  .run:active,.refresh:active,.forecast .refresh:active{transform:translateY(3px);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.6),inset 0 -1px 2px rgba(20,96,170,.5),0 1px 0 #2C79C0,0 3px 8px -4px rgba(24,90,160,.6)}
+  .run:disabled,.refresh:disabled{opacity:.6;filter:saturate(.6);transform:none}
+  .run .dot{background:rgba(255,255,255,.92)}
+  .refresh .ricon{color:#fff}
+
+  /* #2/#4/#5 · green-check checkboxes (Save-by-ratio reference) */
+  .gchk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--body);
+    font-size:12px;line-height:1.2;white-space:nowrap;user-select:none}
+  .gchk input{appearance:none;-webkit-appearance:none;width:20px;height:20px;flex:none;margin:0;
+    border-radius:6px;background:#e9eef0;border:1px solid #b7c3c9;box-shadow:inset 0 1px 2px rgba(0,0,0,.12);
+    position:relative;cursor:pointer;transition:background .12s,border-color .12s}
+  .gchk input:checked{background:#fbfffb;border-color:#7cb85f}
+  .gchk input:checked::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;
+    border:solid #57b14a;border-width:0 3px 3px 0;transform:rotate(42deg)}
+  .gchk input:focus-visible{outline:2px solid #5AAEF3;outline-offset:2px}
+  .mode-checks{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+  .lab .mode-checks{flex-direction:column;align-items:flex-start;gap:7px;margin-top:9px}
+  .input .lab .mode-checks .gchk,.input .tab-ctlrow .mode-checks .gchk{color:#31506b}
+
+  /* #4 · stats-type checks sit in the tab control row */
+  .input-tabs .tab-ctlrow{gap:10px 22px}
+
+  /* #3 · formation cards (attachment 3): bigger icon, Title-case name, clean % box */
+  .input .form-ctl{gap:12px;padding:10px 12px;border-radius:14px;background:#cfe6f9}
+  .input .fic{width:46px;height:46px;border-radius:12px;overflow:hidden;padding:0;background:#8fc2ec}
+  .fic img{width:100%;height:100%;object-fit:cover}
+  .input .fname{text-transform:none;font-size:12px;font-weight:600;letter-spacing:.01em;color:#31506b;margin-bottom:6px}
+  .input .fval{font-family:var(--mono);font-size:12.5px;min-width:52px;border-radius:8px;color:#31506b}
+
+  /* #5 · buff sub-sections + per-section Assume-max header bars */
+  .buff-sec{margin-top:14px}
+  .buff-sec:first-of-type{margin-top:4px}
+  .buff-sec-head{display:grid;grid-template-columns:1fr 168px 1fr;gap:6px 16px;align-items:center;
+    padding:8px 12px;margin-bottom:12px;border-radius:10px;color:#fff;
+    background:linear-gradient(180deg,#78B5EA,#5E9DDA);
+    box-shadow:inset 0 1px rgba(255,255,255,.45),inset 0 -2px rgba(33,99,154,.3)}
+  .buff-sec-head .ctr{justify-self:center;font-family:var(--disp);font-weight:700;font-size:12.5px;
+    letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 1px 1px rgba(22,62,99,.6)}
+  .buff-sec-head .gchk.left{justify-self:end}
+  .buff-sec-head .gchk.right{justify-self:start}
+  .buff-sec-head .gchk{color:#fff;font-size:11.5px;text-shadow:0 1px 1px rgba(22,62,99,.55)}
+
+  /* #5 · pet-buff sliders styled like the T12-stack slider (plain value, no boxed output) */
+  .input #petBuffs .slider-wrap output{background:transparent;border:0;box-shadow:none;padding:0;
+    min-width:44px;font-family:var(--mono);font-size:12px;color:#31506b}
+  .input #petBuffs .slider-wrap{max-width:200px;gap:10px}
+
+  /* #7 · dropdowns + text inputs — clean light control (Troop-Power reference) */
+  .input input[type=text],.input input[type=number],.input select,.input .fval,
+  .input .slider-wrap output,.input .hpick-btn{
+    background:#f4faff;color:#31506b;border:1px solid #b3d0ea;border-radius:9px;
+    box-shadow:inset 0 1px rgba(255,255,255,.85)}
+  .input select{appearance:none;-webkit-appearance:none;padding-right:28px;
+    background-image:linear-gradient(45deg,transparent 50%,#6f9dc4 50%),linear-gradient(135deg,#6f9dc4 50%,transparent 50%);
+    background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .input select:hover,.input input[type=text]:hover,.input input[type=number]:hover{border-color:#8fbde4}
+  .input select:focus-visible,.input input:focus-visible{outline:2px solid #5AAEF3;outline-offset:1px;border-color:#5AAEF3}
+
+  /* #9/#10 · Captain + Joiner headers — periwinkle 3D bar (attachment 5) */
+  .input .iblock.hero-block>.title.hero-title{
+    justify-content:center;text-align:center;display:flex;align-items:center;min-height:34px;
+    padding:9px 16px;margin-bottom:16px;border-radius:12px;
+    font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:none;
+    color:#fff;text-shadow:0 1px 2px rgba(38,44,74,.6);
+    background:linear-gradient(180deg,#93A0C8,#6E7CA8);
+    box-shadow:inset 0 1px rgba(255,255,255,.5),inset 0 -3px rgba(52,60,96,.42),0 3px 0 rgba(74,82,124,.6),0 8px 16px -8px rgba(28,34,62,.6)}
 </style>
 </head>
 <body>
@@ -931,10 +1023,10 @@
       <div class="duo" style="margin-top:14px;align-items:start">
         <div class="me"><div class="form-stack" id="formMe"></div></div>
         <div class="lab">Formation
-          <span class="seg-toggle formation-mode" id="formModeToggle">
-            <button type="button" data-fmode="pct" aria-pressed="true">%</button>
-            <button type="button" data-fmode="count" aria-pressed="false">Count</button>
-          </span>
+          <div class="mode-checks" id="formModeChecks">
+            <label class="gchk"><input type="checkbox" id="formRatio" checked> Input By Troop Ratio</label>
+            <label class="gchk"><input type="checkbox" id="formQty"> Input By Troop Quantity</label>
+          </div>
           </div>
         <div class="foe"><div class="form-stack" id="formFoe"></div></div>
       </div>
@@ -943,26 +1035,33 @@
     <!-- stats -->
     <div class="iblock">
       <div class="title">Input Stats Assumptions
-        <label class="stats-type">Stats Type
-          <span class="seg-toggle" id="statsTypeToggle">
-            <button type="button" data-mode="base" aria-pressed="true" title="Base Stats without any heroes or buffs">Base</button>
-            <button type="button" data-mode="scouted" aria-pressed="false" title="Stats directly inputted into scouted forts">Scouted</button>
-          </span>
-        </label>
+        <div class="mode-checks" id="statsTypeChecks">
+          <label class="gchk"><input type="checkbox" id="statsBase" checked> Input Base Stats</label>
+          <label class="gchk"><input type="checkbox" id="statsScouted"> Input Scouted Stats</label>
+        </div>
       </div>
       <div class="stat-panel" id="statPanel"></div>
     </div>
 
     <!-- buffs -->
     <div class="iblock">
-      <div class="title buffs-title">
-        <label class="chk left"><input type="checkbox" id="maxMe" checked> Max Buff - Mine</label>
-        <span class="ctr">Buffs</span>
-        <label class="chk right"><input type="checkbox" id="maxFoe" checked> Max Buff - Enemy</label>
+      <div class="title">Buffs</div>
+      <div class="buff-sec">
+        <div class="buff-sec-head">
+          <label class="gchk left"><input type="checkbox" id="itemMaxMe" checked> Assume max</label>
+          <span class="ctr">Item Buffs</span>
+          <label class="gchk right"><input type="checkbox" id="itemMaxFoe" checked> Assume max</label>
+        </div>
+        <div id="itemBuffs"></div>
       </div>
-      <div id="itemBuffs"></div>
-      <div class="mtitle" style="text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin:14px 0 8px">Pet buffs</div>
-      <div id="petBuffs"></div>
+      <div class="buff-sec">
+        <div class="buff-sec-head">
+          <label class="gchk left"><input type="checkbox" id="petMaxMe" checked> Assume max</label>
+          <span class="ctr">Pet Buffs</span>
+          <label class="gchk right"><input type="checkbox" id="petMaxFoe" checked> Assume max</label>
+        </div>
+        <div id="petBuffs"></div>
+      </div>
     </div>
 
     <!-- troop quality -->
@@ -972,8 +1071,8 @@
     </div>
 
     <!-- captain -->
-    <div class="iblock">
-      <div class="title">Lead Heroes</div>
+    <div class="iblock hero-block">
+      <div class="title hero-title">Captain</div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="capMe"></div></div>
         <div class="lab lead-labels"><span>Infantry</span><span>Lancers</span><span>Marksmen</span></div>
@@ -982,8 +1081,8 @@
     </div>
 
     <!-- joiners -->
-    <div class="iblock">
-      <div class="title">Joiner heroes</div>
+    <div class="iblock hero-block">
+      <div class="title hero-title">Joiner Heroes</div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="joinMe"></div></div>
         <div class="lab">Joiner heroes</div>
@@ -1152,7 +1251,7 @@ const DEFAULT_JOINERS_FOE=['Gatot','Patrick','Ling Xue','Wu Ming'];
 const $=(s,r=document)=>r.querySelector(s); const el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const enc=s=>encodeURIComponent(s); const avatar=f=>"avatars/"+enc(f);
 const fmtPct=v=>Number.isFinite(+v)?(+v).toFixed(1):'0.0';
-const CLASS_ICONS={Infantry:'assets/ui/class-infantry.png',Lancer:'assets/ui/class-lancer.png',Marksman:'assets/ui/class-marksman.png'};
+const CLASS_ICONS={Infantry:'assets/Icons/Infantry.png',Lancer:'assets/Icons/Lancer.png',Marksman:'assets/Icons/marksman.png'};
 const CLASS_ICON_BY_CODE={I:CLASS_ICONS.Infantry,L:CLASS_ICONS.Lancer,M:CLASS_ICONS.Marksman};
 function troopIcon(cls, clsName='class-icon-img'){
   const img=el('img',clsName); img.src=CLASS_ICONS[cls]||CLASS_ICON_BY_CODE[cls]||''; img.alt=''; img.loading='lazy'; return img;
@@ -1262,7 +1361,7 @@ function buildItemBuffs(){ const c=$('#itemBuffs'); c.innerHTML='';
   const rows=[["My Attack",[0,10,20]],["My Defense",[0,10,20]],["My Lethality",[0,10,20]],["My Health",[0,10,20]],
     ["Enemy Attack",[0,-10,-20]],["Enemy Defense",[0,-10,-20]]];
   rows.forEach(([label,opts])=>{ const row=el('div','duo buff-row');
-    row.append(sideSelect('me',opts,opts[opts.length-1]), labCell(label,'item'), sideSelect('foe',opts,opts[opts.length-1]));
+    row.append(sideSelect('me',opts,opts[opts.length-1]), labCell(label), sideSelect('foe',opts,opts[opts.length-1]));
     c.appendChild(row); }); }
 function sideSelect(side,opts,val){ const d=el('div',side); const s=el('select');
   opts.forEach(o=>{const op=el('option');op.value=o;op.textContent=(o>0?'+':'')+o+'%';if(o===val)op.selected=true;s.appendChild(op);});
@@ -1272,7 +1371,7 @@ function buildPetBuffs(){ const c=$('#petBuffs'); c.innerHTML='';
   const rows=[["My Attack",10],["My Defense",10],["My Lethality",10],["My Health",10],
     ["Reduce Enemy Health",-5],["Reduce Enemy Lethality",-5],["Reduce Enemy Defense",-10]];
   rows.forEach(([label,max])=>{ const row=el('div','duo buff-row');
-    row.append(sideSlider('me',max), labCell(label,'pet'), sideSlider('foe',max)); c.appendChild(row); }); }
+    row.append(sideSlider('me',max), labCell(label), sideSlider('foe',max)); c.appendChild(row); }); }
 function sideSlider(side,max){ const d=el('div',side); const w=el('div','slider-wrap');
   const mag=Math.abs(max), neg=max<0;   // 0 on the left, max magnitude on the right
   const r=el('input'); r.type='range'; r.min=0; r.max=mag; r.step=0.01; r.value=mag; r.classList.add('maxlock-'+side);
@@ -1305,7 +1404,7 @@ function buildFormation(){
     const totalMarker=el('div','formation-total'); totalMarker.textContent='100%'; stack.appendChild(totalMarker);
     const totalOf=()=>{ const t=numParse($(side==='me'?'#myTroops':'#foeTroops').value); return Number.isNaN(t)?0:t; };
     const paint=()=>['Infantry','Lancer','Marksman'].forEach(cl=>{
-      C[cl].val.textContent=fmtPct(C[cl].r.value)+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
+      C[cl].val.textContent=Math.round(+C[cl].r.value)+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
     const syncCountsFromFractions=()=>{ const total=totalOf();
       ['Infantry','Lancer','Marksman'].forEach(cl=>{ C[cl].cnt.value=numFmt(Math.round(+C[cl].r.value/100*total)); }); };
     // %-mode: sliders are canonical (Marksman = 100 - Inf - Lan)
@@ -1360,7 +1459,7 @@ function setFormationMode(mode){
   ['#formMe','#formFoe'].forEach(sel=>{ const st=$(sel); if(!st)return;
     st.classList.toggle('count-mode',count);
     if(count && st._form) st._form.syncCountsFromFractions(); });
-  document.querySelectorAll('#formModeToggle button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.fmode===mode)));
+  const fr=$('#formRatio'), fq=$('#formQty'); if(fr) fr.checked=!count; if(fq) fq.checked=count;
 }
 function buildQuality(){ const c=$('#quality'); c.innerHTML='';
   ['Infantry','Lancer','Marksman'].forEach(cl=>{      // one grid row per class: [me card | class | foe card]
@@ -1796,7 +1895,7 @@ function accordionSummary(block){
       return n+' · '+Math.round((f.Infantry||0)*100)+'/'+Math.round((f.Lancer||0)*100)+'/'+Math.round((f.Marksman||0)*100);
     }
     if(t.includes('input stats')){
-      const mode=(document.querySelector('#statsTypeToggle [aria-pressed="true"]')||{dataset:{}}).dataset.mode||'base';
+      const mode=selectedStatsType();
       const vals=Object.values(readPanel('me'));
       const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length*100:0;
       return mode.charAt(0).toUpperCase()+mode.slice(1)+' · avg '+Math.round(avg)+'%';
@@ -1821,6 +1920,7 @@ function initAccordions(){
   document.querySelectorAll('.input .iblock').forEach((block,i)=>{
     if(block.dataset.accordionReady)return;
     if(block.classList.contains('output-block'))return;   // Final Stats: game-panel header, no collapse
+    if(block.classList.contains('hero-block'))return;      // Captain / Joiner: static 3D header bar, no collapse
     const title=block.querySelector(':scope > .title');
     if(!title)return;
     const body=el('div','accordion-body');
@@ -1888,15 +1988,18 @@ function initInteractions(){
   const fmtTotal=inp=>{ const v=numParse(inp.value); inp.value=Number.isNaN(v)?'':numFmt(v); };
   my.addEventListener('blur',()=>{ fmtTotal(my); if(eq.checked)foe.value=my.value; });
   foe.addEventListener('blur',()=>fmtTotal(foe));
-  // stats type + live computed final stats
-  $('#statsTypeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
-    [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed','false'));
-    b.setAttribute('aria-pressed','true'); updateFinalStats();
-    updateAccordionSummaries();   // the toggle sits in the title, clickable while collapsed - keep the chip honest
-  });
-  // formation % <-> count entry mode
-  $('#formModeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
-    setFormationMode(b.dataset.fmode); });
+  // stats type: two mutually-exclusive checkboxes (Base default). Exactly one is always checked.
+  const stBase=$('#statsBase'), stScouted=$('#statsScouted');
+  if(stBase&&stScouted){
+    stBase.addEventListener('change',()=>{ if(stBase.checked) stScouted.checked=false; else stBase.checked=true; updateFinalStats(); updateAccordionSummaries(); });
+    stScouted.addEventListener('change',()=>{ if(stScouted.checked) stBase.checked=false; else stScouted.checked=true; updateFinalStats(); updateAccordionSummaries(); });
+  }
+  // formation ratio(%) <-> quantity(count): two mutually-exclusive checkboxes (Ratio default).
+  const formRatio=$('#formRatio'), formQty=$('#formQty');
+  if(formRatio&&formQty){
+    formRatio.addEventListener('change',()=>{ if(formRatio.checked){ formQty.checked=false; setFormationMode('pct'); } else formRatio.checked=true; });
+    formQty.addEventListener('change',()=>{ if(formQty.checked){ formRatio.checked=false; setFormationMode('count'); } else formQty.checked=true; });
+  }
   // battle timeline: Average <-> Per Battle toggle + battle slider
   const tlm=$('#tlModeToggle'); if(tlm) tlm.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.disabled)return;
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); tlUpdate(false); });
@@ -1911,9 +2014,11 @@ function initInteractions(){
   inputZone.addEventListener('input',onInputChanged);
   inputZone.addEventListener('change',onInputChanged);
   inputZone.addEventListener('herochange',onInputChanged);
-  // max buff toggles: checked = max item/pet assumptions, unchecked = zero buffs.
-  $('#maxMe').addEventListener('change',e=>setMaxBuffControls('me',e.target.checked)); setMaxBuffControls('me',true);
-  $('#maxFoe').addEventListener('change',e=>setMaxBuffControls('foe',e.target.checked)); setMaxBuffControls('foe',true);
+  // per-section Assume-max checkboxes: checked = max that section's buffs, unchecked = editable/zero.
+  [['#itemMaxMe','me','item'],['#itemMaxFoe','foe','item'],['#petMaxMe','me','pet'],['#petMaxFoe','foe','pet']]
+    .forEach(([sel,side,scope])=>{ const cb=$(sel); if(!cb)return;
+      cb.addEventListener('change',e=>setMaxBuffControls(side,e.target.checked,scope));
+      setMaxBuffControls(side,cb.checked,scope); });
   // tabs + rename
   function startRename(tab){
       const name=tab.querySelector('.tname'); if(!name)return;
@@ -2000,8 +2105,7 @@ function readQuality(which){ const cards=[...document.querySelectorAll('#quality
   ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const s=cards[i].querySelectorAll('select');
     q[c]={fc:+s[0].value, tier:+s[1].value, t12_stack:+cards[i].querySelector('input[type=range]').value}; }); return q; }
 function selectedStatsType(){
-  const b=document.querySelector('#statsTypeToggle button[aria-pressed="true"]');
-  return b?b.dataset.mode:'base';
+  return ($('#statsScouted')&&$('#statsScouted').checked)?'scouted':'base';
 }
 function sideRole(which){
   const myRole=document.querySelector('#roleToggle [aria-pressed="true"]').dataset.role;
@@ -2116,17 +2220,22 @@ function applyBuffControls(which,b){ if(!b)return;
   var rng=[].slice.call(document.querySelectorAll('#petBuffs .'+which+' input[type=range]'));
   (b.pet||[]).forEach(function(v,i){ if(rng[i]!=null){ rng[i].value=v; rng[i].dispatchEvent(new Event('input')); } });
 }
-function setMaxBuffControls(side,on){
-  document.querySelectorAll('#itemBuffs .'+side+' select').forEach(s=>{
-    const vals=[...s.options].map(o=>+o.value);
-    s.value=String(on?vals.reduce((a,b)=>Math.abs(b)>Math.abs(a)?b:a,0):0);
-    s.disabled=on;
-  });
-  document.querySelectorAll('#petBuffs .'+side+' input[type=range]').forEach(r=>{
-    r.value=on?r.max:0;
-    r.disabled=on;
-    r.dispatchEvent(new Event('input'));
-  });
+// scope: 'item' | 'pet' | undefined (both). Each buff section has its own Assume-max checkbox now.
+function setMaxBuffControls(side,on,scope){
+  if(scope==='item'||!scope){
+    document.querySelectorAll('#itemBuffs .'+side+' select').forEach(s=>{
+      const vals=[...s.options].map(o=>+o.value);
+      s.value=String(on?vals.reduce((a,b)=>Math.abs(b)>Math.abs(a)?b:a,0):0);
+      s.disabled=on;
+    });
+  }
+  if(scope==='pet'||!scope){
+    document.querySelectorAll('#petBuffs .'+side+' input[type=range]').forEach(r=>{
+      r.value=on?r.max:0;
+      r.disabled=on;
+      r.dispatchEvent(new Event('input'));
+    });
+  }
   updateFinalStats();
 }
 function readGearControls(which){
@@ -2259,7 +2368,8 @@ function restoreAutosave(){
 }
 function formToConfig(){ var own=buildProfile('me'), enemy=buildProfile('foe');
   own._ui_buffs=readBuffControls('me'); enemy._ui_buffs=readBuffControls('foe');   // exact save/load of the item/pet split
-  own._ui_max_buff=$('#maxMe').checked; enemy._ui_max_buff=$('#maxFoe').checked;
+  own._ui_max_item=$('#itemMaxMe').checked; own._ui_max_pet=$('#petMaxMe').checked;
+  enemy._ui_max_item=$('#itemMaxFoe').checked; enemy._ui_max_pet=$('#petMaxFoe').checked;
   own._ui_input_panel=readInputPanel('me'); enemy._ui_input_panel=readInputPanel('foe');
   own._ui_max_gears=readGearControls('me'); enemy._ui_max_gears=readGearControls('foe');
   own._ui_stats_type=selectedStatsType(); enemy._ui_stats_type=selectedStatsType();
@@ -2331,17 +2441,19 @@ function configToForm(cfg){
   applyHeroes('#capMe', ['Infantry','Lancer','Marksman'].map(c=>(own.lead_heroes||{})[c]));
   applyHeroes('#capFoe', ['Infantry','Lancer','Marksman'].map(c=>(enemy.lead_heroes||{})[c]));
   applyHeroes('#joinMe', own.joiners||[]); applyHeroes('#joinFoe', enemy.joiners||[]);
-  if(own._ui_max_buff!=null){
-    $('#maxMe').checked=!!own._ui_max_buff; setMaxBuffControls('me',$('#maxMe').checked);
-    if(!$('#maxMe').checked) applyBuffControls('me', own._ui_buffs);
-  } else applyBuffControls('me', own._ui_buffs);
-  if(enemy._ui_max_buff!=null){
-    $('#maxFoe').checked=!!enemy._ui_max_buff; setMaxBuffControls('foe',$('#maxFoe').checked);
-    if(!$('#maxFoe').checked) applyBuffControls('foe', enemy._ui_buffs);
-  } else applyBuffControls('foe', enemy._ui_buffs);
+  // restore per-section Assume-max flags; fall back to the legacy single _ui_max_buff for old saves.
+  const pick=(v,legacy)=>v!=null?v:legacy;
+  const setScope=(cbSel,side,scope,flag)=>{ const cb=$(cbSel); if(!cb) return true; if(flag!=null) cb.checked=!!flag; setMaxBuffControls(side,cb.checked,scope); return cb.checked; };
+  const oi=setScope('#itemMaxMe','me','item',pick(own._ui_max_item,own._ui_max_buff));
+  const op=setScope('#petMaxMe','me','pet',pick(own._ui_max_pet,own._ui_max_buff));
+  const ei=setScope('#itemMaxFoe','foe','item',pick(enemy._ui_max_item,enemy._ui_max_buff));
+  const ep=setScope('#petMaxFoe','foe','pet',pick(enemy._ui_max_pet,enemy._ui_max_buff));
+  if(own._ui_buffs){ if(!oi) applyBuffControls('me',{item:own._ui_buffs.item}); if(!op) applyBuffControls('me',{pet:own._ui_buffs.pet}); }
+  if(enemy._ui_buffs){ if(!ei) applyBuffControls('foe',{item:enemy._ui_buffs.item}); if(!ep) applyBuffControls('foe',{pet:enemy._ui_buffs.pet}); }
   applyGearControls('me', own._ui_max_gears); applyGearControls('foe', enemy._ui_max_gears);
   const mode=own._ui_stats_type||enemy._ui_stats_type||'base';
-  document.querySelectorAll('#statsTypeToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.mode===mode?'true':'false'));
+  if($('#statsBase')) $('#statsBase').checked=(mode!=='scouted');
+  if($('#statsScouted')) $('#statsScouted').checked=(mode==='scouted');
   updateFinalStats();
 }
 function applyFormation(id,f){ const r=[...document.querySelectorAll(id+' .form-ctl input[type=range]')]; if(r.length<2)return;

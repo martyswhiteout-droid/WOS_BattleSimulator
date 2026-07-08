@@ -1,0 +1,18 @@
+{
+  "_type": "counter",
+  "setup": "10k INFANTRY attacker vs 10k LANCER defender, Lv6 (no skills), heroes-no-skill, encampment, +199.2 vs +189.1",
+  "counter": "Infantry > Lancer (favorable for attacker)",
+  "outcome": "INFANTRY WON",
+  "attacker": {
+    "troops": 10000,
+    "injured": 1913,
+    "lightly": 3551,
+    "survivors": 4536,
+    "surv_frac": 0.4536
+  },
+  "defender": {
+    "troops": 10000,
+    "survivors": 0
+  },
+  "_extraction": "CONFIRMED by Martin 2026-07-09 (deterministic, repeated identical)"
+}

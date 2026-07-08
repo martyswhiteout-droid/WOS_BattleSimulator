@@ -1,0 +1,18 @@
+{
+  "_type": "counter",
+  "setup": "10k INFANTRY attacker vs 10k MARKSMAN defender, Lv6 (no skills), same as exp4 but defender=marksman",
+  "counter": "Marksman > Infantry (UNfavorable for attacker) - attacker won only as attacker-advantage",
+  "outcome": "INFANTRY WON but barely",
+  "attacker": {
+    "troops": 10000,
+    "injured": 3330,
+    "lightly": 6182,
+    "survivors": 488,
+    "surv_frac": 0.0488
+  },
+  "defender": {
+    "troops": 10000,
+    "survivors": 0
+  },
+  "_extraction": "CONFIRMED by Martin 2026-07-09 (deterministic, repeated identical)"
+}
