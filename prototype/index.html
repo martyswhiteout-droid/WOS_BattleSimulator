@@ -1024,15 +1024,15 @@
      Feedback round 2c — hero red-icon affordance, verdict/timeline
      ============================================================ */
 
-  /* hero picker: red round-button top-right (opens dropdown) + red "no hero" marker; caret removed */
-  .hpick-btn{position:relative;padding-right:26px}
-  .hpick-btn .hpick-open{position:absolute;top:4px;right:5px;width:15px;height:15px;border-radius:0;
-    background:transparent;object-fit:contain;flex:none;pointer-events:none}
-  .hpick-btn .none-red{width:30px;height:30px;border-radius:0;background:transparent;object-fit:contain;flex:none}
+  /* hero picker: red round-button opener sits inline at the right, fully inside the box
+     (an absolute corner badge poked out past the rounded corner — "boxes come out") */
+  .hpick-btn{overflow:hidden}
+  .hpick-btn .hpick-open{width:16px;height:16px;border-radius:0;background:transparent;object-fit:contain;
+    flex:none;margin-left:auto;pointer-events:none}
+  .hpick-btn .none-red{width:28px;height:28px;border-radius:0;background:transparent;object-fit:contain;flex:none}
   .hpick-it .none-red{width:26px;height:26px;border-radius:0;background:transparent;object-fit:contain;flex:none}
-  #joinMe .hpick-btn,#joinFoe .hpick-btn{padding-right:22px}
-  #joinMe .hpick-btn .none-red,#joinFoe .hpick-btn .none-red{width:26px;height:26px}
-  #joinMe .hpick-btn .hpick-open,#joinFoe .hpick-btn .hpick-open{width:13px;height:13px;top:3px;right:4px}
+  #joinMe .hpick-btn .none-red,#joinFoe .hpick-btn .none-red{width:24px;height:24px}
+  #joinMe .hpick-btn .hpick-open,#joinFoe .hpick-btn .hpick-open{width:14px;height:14px}
 
   /* verdict: shorten the sampling-error tick so it stops crossing the Win/Loss text */
   .forecast .caliper{top:-6px;bottom:auto;height:16px;box-shadow:none}
@@ -1043,9 +1043,50 @@
 
   /* timeline x-axis title: bigger, plain "Turns" */
   .tl-xcap{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.04em;color:#6a5647;margin-top:6px}
+
+  /* ============================================================
+     Feedback round 3 — video backdrop, hero section, mobile
+     ============================================================ */
+
+  /* #6 · looping video backdrop; static image is the deepest fallback; still image on reduced-motion */
+  body::before{z-index:-3}
+  .bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none;border:0}
+  @media (prefers-reduced-motion:reduce){.bg-video{display:none}}
+
+  /* #5 · subtle dividers between the three captain hero rows (both sides + center labels aligned) */
+  #capMe .lead-row,#capFoe .lead-row,.lead-labels span{min-height:54px}
+  #capMe .lead-row + .lead-row,#capFoe .lead-row + .lead-row,.lead-labels span + span{border-top:1px solid var(--line-soft)}
+  .lead-labels{gap:0;min-height:0;justify-content:flex-start}
+  .lead-labels span{display:flex;align-items:center;justify-content:center;text-align:center}
+
+  /* #3 · scenario rail tool icons: clearer + a touch of contrast */
+  .tab-tool{min-width:26px;min-height:26px}
+  .tab-tool img{width:16px;height:16px;filter:brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0,0,0,.4));opacity:.95}
+
+  /* #4 · responsive for the new tabbed/carded layout (iOS Safari) */
+  @media (max-width:960px){
+    .buff-sec-head{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
+    .buff-sec-head .ctr{order:-1;grid-column:1/-1;text-align:center}
+    .buff-sec-head .gchk.left,.buff-sec-head .gchk.right{justify-self:start}
+    .input-tabs .tab-btn,.forecast-tabs .tab-btn{font-size:11px;padding:9px 4px}
+    /* captain columns collapse: keep the 3 labels as a compact row, drop the vertical dividers */
+    #capMe .lead-row,#capFoe .lead-row,.lead-labels span{min-height:0}
+    #capMe .lead-row + .lead-row,#capFoe .lead-row + .lead-row{margin-top:8px;padding-top:8px}
+    .lead-labels span + span{border-top:0}
+  }
+  @media (max-width:520px){
+    .input-tabs .tab-btn,.forecast-tabs .tab-btn{font-size:10px;letter-spacing:0;padding:8px 3px;line-height:1.1}
+    .forecast .fc-part{padding:12px 12px}
+    .input-tabs .tabpanels,.forecast-tabs .tabpanels{padding:12px 10px}
+    .buff-sec-head{padding:7px 10px}
+  }
 </style>
 </head>
 <body>
+
+<video class="bg-video" autoplay muted loop playsinline preload="auto" poster="assets/Backdrop/Backdrop1.png" aria-hidden="true">
+  <source src="assets/Backdrop/Backdrop6_loop.mp4" type="video/mp4">
+</video>
 
 <header class="bar">
   <div class="flake">❄</div>
@@ -1152,17 +1193,15 @@
 
     <!-- captain -->
     <div class="iblock hero-block">
-      <div class="title hero-title">Captain</div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="capMe"></div></div>
-        <div class="lab lead-labels"><span>Infantry</span><span>Lancers</span><span>Marksmen</span></div>
+        <div class="lab lead-labels"><span>Infantry Hero</span><span>Lancer Hero</span><span>Marksman Hero</span></div>
         <div class="foe"><div class="hero-lane" id="capFoe"></div></div>
       </div>
     </div>
 
     <!-- joiners -->
     <div class="iblock hero-block">
-      <div class="title hero-title">Joiner Heroes</div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="joinMe"></div></div>
         <div class="lab">Joiner heroes</div>
@@ -1778,7 +1817,7 @@ function tlUpdate(animate){
   const slider=$('#tlSlider'), slabel=$('#tlSlabel'), cap=$('#tlXcap');
   if(mode!=='battle'){
     if(slider) slider.disabled=true;
-    if(slabel) slabel.textContent='avg · '+(TL.n||0).toLocaleString()+' sims';
+    if(slabel) slabel.textContent='';
     if(slabel) slabel.style.setProperty('--pos','0%');
     if(cap) cap.textContent='Turns'+(TL.avg.truncated?'  · first '+TL.avg.turns.length+' turns':'');
     tlRenderCharts(TL.avg, animate); return;
