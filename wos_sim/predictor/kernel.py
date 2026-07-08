@@ -188,11 +188,25 @@ def _kernel_box(attacker_units, defender_units, params):
     return (na, nd) if wins else None
 
 
-def _near_even_probe(attacker_units, defender_units, params, swing: float = 0.02) -> bool:
-    """True when a +-`swing` defender-strength shift flips the winner — the
-    honest coin-flip detector for the turn path (three cheap deterministic
-    hero-skill-free sims). Both near-even T12 anchors flip at +-2%; the
-    decisive solo anchor does not."""
+def _near_even_probe(attacker_units, defender_units, params, swing: float = 0.05,
+                     band: float = 0.10) -> bool:
+    """Coin-flip detector for the turn path. Two signals, OR-ed:
+
+    1. STATIC strength symmetry: aggregate per-side strength index
+       (sum of n x sqrt(offense x toughness) over stacks) within +-`band`.
+       The near-even rally anchors are near-mirror inputs (within ~10%);
+       both decisive solo anchors differ by >25%. Robust to the calibrated
+       def_k regime (which deliberately un-balances the dynamic exchange).
+    2. DYNAMIC perturbation: a +-`swing` defender-strength shift flips the
+       simulated winner (three cheap deterministic hero-skill-free sims).
+    """
+    a_idx = _strength_index(attacker_units)
+    d_idx = _strength_index(defender_units)
+    if a_idx > 0 and d_idx > 0:
+        import math
+        if abs(math.log(a_idx / d_idx)) < math.log(1.0 + band):
+            return True
+
     from wos_sim.pvp_turn_engine import simulate_turns
 
     winners = set()
@@ -206,6 +220,19 @@ def _near_even_probe(attacker_units, defender_units, params, swing: float = 0.02
                              d_units, [], params=params, rng=random.Random(0))
         winners.add(res.winner)
     return len(winners) > 1
+
+
+def _strength_index(units) -> float:
+    """Aggregate side strength: n x sqrt(offense x toughness) per stack.
+    Offense = Attack x Lethality, toughness = Defense x Health — the sqrt
+    keeps the index linear in overall stat scale."""
+    total = 0.0
+    for u in units:
+        off = u.astat[StatType.ATTACK] * u.astat[StatType.LETHALITY]
+        tough = u.astat[StatType.DEFENSE] * u.astat[StatType.HEALTH]
+        if off > 0 and tough > 0:
+            total += u.n * (off * tough) ** 0.25
+    return total
 
 
 def engine_meta(attacker_units, defender_units, params=None) -> dict:
@@ -233,17 +260,18 @@ def engine_meta(attacker_units, defender_units, params=None) -> dict:
             return {"path": "pvp_turn_engine", "calibrated": False,
                     "model_error": 0.5, "stochastic": True,
                     "near_even": True, "confidence": "coin_flip",
-                    "note": "Near-even matchup: a ~2% strength shift flips the "
-                            "winner (verified against two real T12 battles that "
-                            "did exactly that). Trust the win PROBABILITY and "
-                            "the loss ranges, never a point survivor count."}
+                    "note": "Near-even armies: real battles this close have "
+                            "ended anywhere from 3% to 58% survivors on the "
+                            "winning side (verified anchors). Trust the win "
+                            "probability and the winner, never a point "
+                            "survivor count."}
         return {"path": "pvp_turn_engine", "calibrated": False,
                 "model_error": 0.35, "stochastic": True,
                 "near_even": False, "confidence": "directional",
                 "note": "Turn-by-turn skill engine, conditionally calibrated on "
-                        "three real T12 anchors (winner correct on all three; "
-                        "survivor magnitudes within band). Read as directional, "
-                        "not a tight interval."}
+                        "four real anchors (winner correct on all four). Read "
+                        "survivor magnitudes as directional, not a tight "
+                        "interval."}
     if _kernel_box(attacker_units, defender_units, params) is not None:
         return {"path": "pvp_kernel", "calibrated": True,
                 "model_error": pvp_kernel.MODEL_ERROR, "stochastic": False,

@@ -97,6 +97,17 @@ REALITY = {
                                 marks_loss_band=(0.45, 0.85),
                                 inf_surv_frac_band=(0.0, 0.15)),
                triggers={}),
+    # Amanda vs RampageR+Dolan (solo, decisive, all-T11, marksman-heavy garrison
+    # with leth/health-stacked panels). Report also gives per-skill kill counts
+    # -> skill_kill_share gate (real: ~7% of casualties are skill-attributed).
+    "A4": dict(winner="A", turns=(14, 18), surv_type=None,
+               att_surv_frac_band=(0.45, 0.70), att_surv_real=152_854,
+               def_wiped=True,
+               class_gates=dict(lancer_loss_max=0.05,
+                                marks_loss_band=(0.05, 0.30),
+                                inf_surv_frac_band=(0.25, 0.55)),
+               skill_kill_share_max=0.20,
+               triggers={}),
 }
 
 
@@ -105,6 +116,7 @@ def anchors() -> list[tuple[str, Matchup]]:
         ("A1", _load_report_anchor(DATA / "pvp_t12_report_001.json")),
         ("A2", _load_report_anchor(DATA / "pvp_t12_report_002.json")),
         ("A3", _load_scenario_anchor(ROOT / "Scenarios" / "Calibration_Amanda_Omar.json")),
+        ("A4", _load_scenario_anchor(ROOT / "Scenarios" / "Calibration_Amanda_Ramp.json")),
     ]
 
 
@@ -187,6 +199,20 @@ def scorecard(name: str, con, res, is_turn: bool) -> dict:
         got = _telemetry_lookup(tel, side, hero, slot) if tel else None
         ok = got is not None and abs(got - want) <= 1
         checks[f"trig {side[:3]} {hero} {slot[-1]}"] = (got, f"{want}+-1", ok)
+    if real.get("skill_kill_share_max") is not None and is_turn and tel:
+        # share of casualties attributed to SKILL packets (vs base attacks).
+        # Reality (A4 report, per-skill kill columns both sides): ~7%.
+        cap = real["skill_kill_share_max"]
+        for side_key, incap in (("attacker", res.d_incap), ("defender", res.a_incap)):
+            dealt = sum(incap.values())
+            skill_kills = 0.0
+            for row in tel.get(side_key, {}).get("heroes", []):
+                skill_kills += sum(float(s.get("kills") or 0) for s in row.get("skills", []))
+            for row in tel.get(side_key, {}).get("troop_skills", []):
+                skill_kills += float(row.get("kills") or 0)
+            share = skill_kills / dealt if dealt > 0 else 0.0
+            checks[f"skill_kill_share {side_key[:3]}"] = (
+                f"{share:.1%}", f"<{cap:.0%} (real ~7%)", share < cap)
     return checks
 
 

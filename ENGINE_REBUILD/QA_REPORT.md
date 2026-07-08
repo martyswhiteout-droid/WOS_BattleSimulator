@@ -1,11 +1,85 @@
 # QA Report
 
-Date: 2026-07-08 (calibration pass; supersedes the 2026-07-07 FAIL report below)
+Date: 2026-07-08, second pass (supersedes both earlier reports below)
 
-Verdict: **CONDITIONAL** - certified for winner/ranking + magnitude bands on
-the three real T12 anchors; NOT certified for survivor-type on anchor 2 or for
-point survivor counts anywhere near even (which the engine now explicitly
-labels coin_flip).
+Verdict: **CONDITIONAL** - certified for WINNER/ranking on all FOUR real
+anchors (the product-critical property); NOT certified for near-even survivor
+depth (declared trade-off, labeled coin_flip in engine_meta) or for anchor-2
+survivor type.
+
+## 2026-07-08 SECOND Calibration Pass - anchor 4 (Amanda vs RampageR)
+
+Martin's retest surfaced a fourth real battle the engine inverted: solo attack
+vs a 69%-marksman garrison+support (real: attacker wins 58.3% survivors,
+defenders wiped, ~16 turns; engine before this pass: attacker wiped,
+p_win=0.000). Ingested as `wos_sim/data/pvp_t12_report_004.json` + anchor A4
+in `wos_sim.anchor_eval` (input: `Scenarios/Calibration_Amanda_Ramp.json`).
+
+**New ground truth exploited:** the report's per-skill KILL columns (both
+sides) are the first direct skill-packet magnitude oracle. Real
+skill-attributed kills are ~7% of casualties; the engine at K_skill=1.0
+produced 38-50% (defender Ligeia: 99k engine kills vs 8,573 real, ~12x).
+`K_skill=0.15` is now locked and A4 carries a `skill_kill_share < 20%` gate.
+
+**Structural additions:** optional normalized compressions `q_off`/`q_def` on
+the offense/defense stat products in `base_strike_damage` (defaults 1.0 =
+legacy; general path unaffected). `q_def=0.7` locked - the beast-fitted
+H^1.45 over-rewards health-stacked panels: A4's defender stacked +15%
+Def/Leth/Health widgets (+36% leth/health vs the attacker) and still lost
+decisively.
+
+**Root-cause decomposition of the A4 inversion** (turn-1 per-stack factors):
+their marksman out-punched her infantry ~5x per-capita via (a) class base
+stats (marks base atk 30 vs inf 19, entering linearly), (b) the `pc` soft-cap
+term (1.74x their favor, also base_atk-driven), (c) H^1.45 on health-stacked
+panels. Note the beast-fitted ki/km ratio (2.23) almost exactly cancels the
+marks/inf base-offense ratio (2.37) - the class weights are sound; `pc` and
+`qh` were the distorting shapes.
+
+**The declared trade-off (why near-even survivors got shallower):** no swept
+parameter set satisfies near-even DEPTH (A1/A2 real: 3.45%/6.54% survivors)
+and the decisive solo WINNERS (A3/A4) simultaneously. `def_k=1.0` (parity)
+reproduces the deep grinds but inverts BOTH solo anchors; `def_k=0.5` ranks
+all four correctly with shallow near-even depth (~65-73% predicted survivors
+on A1/A2). Winner correctness wins: a wrong winner destroys user trust, an
+uncertain magnitude can be labeled. Swept alternatives that FAILED to thread
+all four: pc=0 (+rate rescale), km reduction (breaks A2, whose attacker is
+marks-reliant), size-dependent def_ed>1 (breaks on A3-vs-A4: same scale,
+opposite needs).
+
+**Open mechanic (the A2-vs-A4 tension):** marks-heavy DEFENDERS underperform
+their stats (A4) while a marks-reliant ATTACKER still ground out a deep
+near-even win (A2). No shared scalar separates them; the missing physics is
+most likely the discrete bypass-redistribution family already flagged (A2's
+real dynamics were marks-annihilation-by-procs), plus possibly a
+wall-integrity effect. Disambiguating data wanted: any battle where a
+marksman-heavy side WINS, any attacker-LOSES report, or per-turn casualties.
+
+**Honesty detector re-based:** the +-2% winner-flip probe dies in the
+def_k=0.5 regime (nothing flips at +-5%). `_near_even_probe` now OR-s a
+STATIC strength-symmetry test (aggregate n x (offense x toughness)^0.25
+within +-10%) with the dynamic probe. A1/A2/A4 flag near_even/coin_flip (A4
+was genuinely stat-close - she won on comp geometry); A3 reads directional.
+The near-even note states the observed real range: battles this close ended
+anywhere from 3% to 58% survivors on the winning side.
+
+**Locked TURN_PARAMS (2026-07-08 second pass):** rate=155, def_k=0.5,
+def_ed=1.0, fire_mode="start", mod_gamma=0.38, stat_floor=0.4, K_skill=0.15,
+q_def=0.7 (q_off=1.0, pc/pin/km legacy).
+
+**Scorecard (seed 0):** A1 A/15t (turns PASS, survivors FAIL high), A2 A/20t
+(survivors FAIL high), A3 A/18t (turns PASS, survivors FAIL high at 75%),
+A4 A/24t (survivors PASS 46% vs real 58%, turns FAIL +6). 20/36 gates; ALL
+FOUR WINNERS PASS end-to-end via api.predict (p_win 1.00/1.00/0.997/1.00);
+regression #12 guards all four winners.
+
+---
+
+# Superseded: first 2026-07-08 pass (three-anchor calibration)
+
+Verdict then: CONDITIONAL - certified for winner/ranking + magnitude bands on
+the three T12 anchors; NOT certified for survivor-type on anchor 2 or for
+point survivor counts near even.
 
 ## 2026-07-08 Calibration Pass (Claude)
 

@@ -81,8 +81,22 @@ def base_strike_damage(src, tgt_front, p, own_front=None, marks_dd=1.0):
     fields used below, which lets the turn engine pass local stack views.
     """
     qd, qh, so, pc, cm = p["qd"], p["qh"], p["so"], p["pc"], p["cm"]
-    dmg = (p[_KC[src.troop]] * src.n * (src.astat[A] * src.astat[L])
-           / (tgt_front.astat[D] ** qd * tgt_front.astat[H] ** qh)
+    q_off = p.get("q_off", 1.0)     # exponent on the A*L offense product
+    #   (default 1.0 = legacy/general path). The turn path fits it: anchor A4
+    #   shows a leth/health-stacked defender losing decisively, i.e. real PvP
+    #   damage is far less sensitive to stat edges than the beast-fitted
+    #   linear-A*L / H^1.45 weighting implies. Normalized at q_off_ref so the
+    #   global magnitude (and hence `rate`) keeps its meaning when q_off < 1.
+    offense = src.astat[A] * src.astat[L]
+    if q_off != 1.0 and offense > 0.0:
+        ref = p.get("q_off_ref", 300_000.0)
+        offense = (offense ** q_off) * (ref ** (1.0 - q_off))
+    defense = tgt_front.astat[D] ** qd * tgt_front.astat[H] ** qh
+    q_def = p.get("q_def", 1.0)     # symmetric compression on the defense side
+    if q_def != 1.0 and defense > 0.0:
+        ref_d = p.get("q_def_ref", 400_000.0)
+        defense = (defense ** q_def) * (ref_d ** (1.0 - q_def))
+    dmg = (p[_KC[src.troop]] * src.n * offense / defense
            / interpolated_tier_power(src.tier) ** so
            * max(0.0, 1.0 + src.dd) * max(0.0, 1.0 + tgt_front.dt))
     if src.troop == TroopType.MARKSMAN:

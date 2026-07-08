@@ -581,3 +581,25 @@ structure PASS (lancer 0% loss, inf barely survives) but marksman bypass bleed
 `wos_sim/anchor_eval.py` (scorecard/traces), `wos_sim/fit_turn_params.py`
 (replayable grid fit); regression #12 guards all three anchor winners.
 See ENGINE_REBUILD/QA_REPORT.md (CONDITIONAL, 2026-07-08).
+
+## 19. Anchor 4 (Amanda vs RampageR) — second recalibration pass (2026-07-08, Claude)
+
+Martin's retest surfaced a fourth inverted battle (solo vs 69%-marksman
+garrison+support; real: A wins 58.3% survivors ~16t, engine: A wiped,
+p_win=0.000). Ingested as `pvp_t12_report_004.json` / anchor A4. Its
+per-skill kill columns pinned the skill-packet scale: real skill kills ≈7% of
+casualties vs engine 38-50% (def Ligeia 99k vs 8.6k real) → K_skill locked
+0.15 + a skill_kill_share<20% gate. Added q_off/q_def normalized
+stat-compressions to base_strike_damage (q_def=0.7 locked; beast-fitted
+H^1.45 over-rewarded health-stacked panels). DECLARED TRADE-OFF: def_k=0.5
+ranks ALL FOUR anchors correctly (end-to-end p_win 1.00/1.00/0.997/1.00) but
+sacrifices near-even survivor depth (A1/A2 predict ~65-73% survivors vs real
+3-6%); def_k=1.0 did the reverse (deep grinds, both solo battles inverted).
+Winners chosen over depth; near-even magnitudes labeled coin_flip via a
+re-based detector (static strength-symmetry ±10% OR dynamic flip probe — the
+±2% probe alone dies in the def_k=0.5 regime). Locked set: rate=155,
+def_k=0.5, def_ed=1.0, fire_mode=start, mod_gamma=0.38, stat_floor=0.4,
+K_skill=0.15, q_def=0.7. Scorecard 20/36 gates, 4/4 winners; regression #12
+now guards all four. OPEN mechanic: A2-vs-A4 marks-heavy tension (bypass
+redistribution + possible wall-integrity effect). Wanted data: a marks-heavy
+side WINNING, any attacker-LOSES report, or per-turn casualties.

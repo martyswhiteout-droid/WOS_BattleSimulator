@@ -1,0 +1,53 @@
+{
+  "description": "FOURTH PvP anchor (2026-04-20 03:56:33, X:86 Y:197). [SUP]Amanda (attacker, solo) DECISIVE VICTORY over [CoC]RampageR garrison + [CoC]Dolan garrison support. All-T11 fight (no T12 troops). Attacker won with 152,854 survivors of 261,972 (58.3%), defenders FULLY WIPED. Key features: defender is 69% MARKSMAN behind a tiny 41k wall; defender panels are LETH/HEALTH-stacked (+15% widgets on Def/Leth/Health) yet LOST decisively - the sharpest exponent/stat-weighting anchor. Report also gives PER-SKILL KILL numbers on BOTH sides (the first clean skill-packet magnitude oracle). Input scenario = Scenarios/Calibration_Amanda_Ramp.json (1000 runs seed 4471).",
+  "outcome": "attacker_victory_decisive",
+  "attacker": {
+    "player": "[SUP]Amanda", "role": "solo_attack", "power_loss": 4844928,
+    "troops": 261972, "losses": 0, "injured": 32736, "lightly_injured": 76382,
+    "survivors": 152854, "incap": 109118, "survivor_frac": 0.5834,
+    "lead_heroes": {"Infantry": "Gisela", "Lancer": "Karol", "Marksman": "Ligeia"},
+    "joiners": [],
+    "composition": {
+      "Infantry": {"count": 157183, "tier": 11, "fc": 10},
+      "Lancer":   {"count": 26197,  "tier": 11, "fc": 10},
+      "Marksman": {"count": 78592,  "tier": 11, "fc": 10}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 3263.8, "Defense": 3057.3, "Lethality": 2527.7, "Health": 2507.8},
+      "Lancer":   {"Attack": 3079.5, "Defense": 2887.2, "Lethality": 2432.7, "Health": 2412.6},
+      "Marksman": {"Attack": 3079.5, "Defense": 2887.2, "Lethality": 2477.0, "Health": 2455.0}
+    },
+    "per_class_outcome": {
+      "Infantry": {"kills": 7049,  "injured": 29446, "lightly_injured": 68707, "survivors": 59030},
+      "Lancer":   {"kills": 18722, "injured": 0,     "lightly_injured": 0,     "survivors": 26197},
+      "Marksman": {"kills": 35134, "injured": 3290,  "lightly_injured": 7675,  "survivors": 67627}
+    }
+  },
+  "defender": {
+    "player": "[CoC]RampageR + [CoC]Dolan (garrison + support)", "role": "garrison", "power_loss": 9013940,
+    "troops": 203010, "losses": 0, "injured": 60905, "lightly_injured": 142105,
+    "survivors": 0, "incap": 203010, "survivor_frac": 0.0,
+    "lead_heroes": {"Infantry": "Hervor", "Lancer": "Flora", "Marksman": "Ligeia"},
+    "joiners": ["Gisela"],
+    "composition": {
+      "Infantry": {"count": 41352,  "tier": 11, "fc": 10},
+      "Lancer":   {"count": 20676,  "tier": 11, "fc": 10},
+      "Marksman": {"count": 140982, "tier": 11, "fc": 10}
+    },
+    "per_player_split": {
+      "RampageR": {"troops": 58278, "all_marksman": true, "kills": 10420, "injured": 17484, "lightly_injured": 40794},
+      "Dolan": {"troops": 144732, "Infantry": {"kills": 684, "injured": 12406, "lightly_injured": 28946}, "Lancer": {"kills": 6847, "injured": 6203, "lightly_injured": 14473}, "Marksman": {"kills": 14785, "injured": 24812, "lightly_injured": 57892}}
+    },
+    "panel_pct": {
+      "Infantry": {"Attack": 3291.6, "Defense": 3415.6, "Lethality": 3440.2, "Health": 3409.8},
+      "Lancer":   {"Attack": 3475.9, "Defense": 3605.4, "Lethality": 3498.8, "Health": 3468.5},
+      "Marksman": {"Attack": 3291.6, "Defense": 3415.6, "Lethality": 3440.2, "Health": 3409.8}
+    }
+  },
+  "specials_note": "Both sides: +20% troops A/D/L/H items, -20% enemy A/D items, pets +10% A/D/L/H, enemy pet penalties. Defender widgets: Defender Troops' Defense +15%, Lethality +15%, Health +15% (attacker none - solo). All baked into panel_pct.",
+  "skill_kill_oracle": "PER-SKILL KILLS from the report (both sides - the first clean skill-packet magnitude anchor): attacker Gisela 0 kills (buff rows only, triggers 1/9/8/23); Karol one row 6 triggers 3,267 kills; att Ligeia 8 triggers 6,965 kills (SK2-class) + 4 triggers 3,121 kills. Defender Hervor 0 kills (1/1/1/13); Flora 3 triggers 637 kills (rows x15/x1/x4/x4); def Ligeia 8 triggers 4,723 kills + 7 triggers 3,850 kills. TOTAL skill-attributed kills ~22.6k of 312k casualties = ~7%. ENGINE AT DIAGNOSIS TIME: def Ligeia SK2+SK3 = 99k kills (12x real) - skill packets over-scaled.",
+  "clock_note": "Both Ligeias' every-2 skill triggered 8x -> ~15-17 turns; Flora row x15; Hervor x13; att Gisela x23 (cadence unclear - OPEN, do not force). Turns gate set [14,18].",
+  "structural_ground_truth": "Same wall physics as anchor 3, now vs a marksman-heavy garrison: (1) attacker LANCERS again ZERO casualties (26,197 intact) - her wall held the whole battle (inf 157k->59k survivors). (2) Her MARKSMAN lost only 14% (bypass procs only - enemy lancers just 20k). (3) The defender's tiny 62k wall fell early, exposing 141k marksman which were then wiped - marksman-heavy comps collapse once the wall breaks. (4) DEFENDER PANELS LETH/HEALTH-STACKED (+36% leth, +36% health vs attacker) YET LOST DECISIVELY with a 1.29x count disadvantage - leth/health contribute far less than the engine's beast-fitted exponents (L linear, H^1.45) predict. This is the sharpest anchor for the damage-formula stat weighting.",
+  "prediction_failure_2026_07_08": "Turn engine (freshly recalibrated on anchors 1-3) INVERTS this battle: p_win=0.000, attacker wiped turn ~9-10, defender keeps ~66%. Reality: attacker wins 58.3% survivors, defender wiped, ~16 turns. Diagnosis: (a) defender out-damages attacker ~4:1 in-engine - their stacked LETH (x1.36, enters linearly) and HEALTH (x1.36 at ^1.45 exponent) dominate; reality shows those stats matter far less. (b) Skill packets over-scaled ~12x (def Ligeia 99k engine kills vs 8.6k real) - fixed by calibrating K_skill against this report's per-skill kill numbers. Anchor 4 gates: winner A, turns [14,18], att survivors [45%,70%], def wiped, att lancer loss <5%, att marks loss [5%,30%], att inf survivors [25%,55%], skill-kill share <20% both sides.",
+  "scenario_input": "Scenarios/Calibration_Amanda_Ramp.json"
+}

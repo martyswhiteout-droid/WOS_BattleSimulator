@@ -62,33 +62,39 @@ STAT_ATTRS = {
 }
 TROOP_BY_NAME = {t.value: t for t in TroopType}
 TURN_PARAMS = {
-    # Locked 2026-07-08 against the three T12 anchors (pvp_t12_report_001/002 +
-    # Scenarios/Calibration_Amanda_Omar.json) via wos_sim.fit_turn_params /
-    # wos_sim.anchor_eval. Result: all three winners correct; A1 survivors 79k
-    # (real 62k), A2 61k (real 118k), A3 51% (real 34%); durations 18/23/15
-    # (real 16/25/19-20); A1 trigger oracles within +-1. Known CONDITIONAL gap:
-    # A2 survivor TYPE (marksman vs real lancers) needs proc-redistributed
-    # bypass, not scalar knobs - see ENGINE_REBUILD/QA_REPORT.md.
-    "rate": 168.0,
-    # Per-capita parity: the garrison fires like the attacker (def_ed=1).
-    # The legacy def_k=1000/def_ed=0.483 pair made SMALL garrisons hyper-
-    # effective (1.74x at 218k) and rally-size ones feeble (0.57x at 1.87M),
-    # which inverted the decisive solo anchor.
-    "def_k": 1.0,
+    # Locked 2026-07-08 (second pass) against FOUR real anchors
+    # (pvp_t12_report_001/002 + Calibration_Amanda_Omar + Calibration_Amanda_Ramp)
+    # via wos_sim.anchor_eval / fit sweeps. Result: ALL FOUR winners correct;
+    # A3 survivors 75% (real 34%), A4 46% (real 58%, in band); durations
+    # 15/20/18/24 (real 16/25/19-20/~16). KNOWN, DECLARED trade-off: near-even
+    # rally survivor DEPTH is sacrificed (A1/A2 predict ~65-73% survivors vs
+    # real 3.45%/6.54%) - the near-even flag + coin_flip labeling carries the
+    # honesty. The A2-vs-A4 tension (marks-heavy sides) is the open mechanic:
+    # see ENGINE_REBUILD/QA_REPORT.md 2026-07-08 second pass.
+    "rate": 155.0,
+    # Defender fires at ~half the attacker's per-capita scale. dk=1.0 (parity)
+    # reproduces the deep near-even grinds but INVERTS both decisive solo
+    # anchors (A3/A4); dk=0.5 ranks all four correctly. Winner correctness is
+    # the product-critical property; depth is labeled uncertain instead.
+    "def_k": 0.5,
     "def_ed": 1.0,
-    # Wounded-keep-fighting: stacks fire at STARTING strength until broken.
-    # All three anchors show constant-in-time absolute casualty rates
-    # (A1 defender ~117k/turn at 1.87M live AND ~130k/turn at 348k live),
-    # not the live-count taper of Lanchester dynamics.
+    # Wounded-keep-fighting: stacks fire at STARTING strength until broken
+    # (the anchors show constant-in-time absolute casualty rates, not
+    # Lanchester taper).
     "fire_mode": "start",
     # Diminishing returns on stacked skill modifiers: raw multiplicative kits
     # predict a 3-4x exchange edge; the anchors show ~0.9-1.1x real.
-    "mod_gamma": 0.30,
-    # Floor on the composed per-stat modifier: stacked debuffs can never push
-    # an effective stat below floor x its panel value (additive stacking used
-    # to reach -97.8% defense and blow up damage through def^qd).
+    "mod_gamma": 0.38,
+    # Floor on the composed per-stat modifier (additive stacking used to reach
+    # -97.8% defense and blow up damage through def^qd).
     "stat_floor": 0.4,
-    "K_skill": 1.0,
+    # Skill packets scaled to the A4 report's per-skill kill columns: real
+    # skill-attributed kills are ~7% of casualties; K_skill=1.0 produced 38-50%
+    # (def Ligeia 99k engine kills vs 8.6k real).
+    "K_skill": 0.15,
+    # Mild compression of the defense-side stat denominator (beast-fitted
+    # H^1.45 over-rewards health-stacked panels; anchor A4).
+    "q_def": 0.7,
     "ambush_proc": 0.20,
     "ambush_frac": 1.0,
     "cara_burst": 1.0,
