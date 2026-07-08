@@ -71,12 +71,15 @@ TURN_PARAMS = {
     # real 3.45%/6.54%) - the near-even flag + coin_flip labeling carries the
     # honesty. The A2-vs-A4 tension (marks-heavy sides) is the open mechanic:
     # see ENGINE_REBUILD/QA_REPORT.md 2026-07-08 second pass.
-    "rate": 155.0,
+    # (re-touched after the joiner-suppression fix, which strengthened sides
+    # with stat-row joiners: rate 155->168, def_k 0.5->0.45 restores the
+    # 4/4-winner optimum, 21/36 gates.)
+    "rate": 168.0,
     # Defender fires at ~half the attacker's per-capita scale. dk=1.0 (parity)
     # reproduces the deep near-even grinds but INVERTS both decisive solo
-    # anchors (A3/A4); dk=0.5 ranks all four correctly. Winner correctness is
+    # anchors (A3/A4); dk~0.45 ranks all four correctly. Winner correctness is
     # the product-critical property; depth is labeled uncertain instead.
-    "def_k": 0.5,
+    "def_k": 0.45,
     "def_ed": 1.0,
     # Wounded-keep-fighting: stacks fire at STARTING strength until broken
     # (the anchors show constant-in-time absolute casualty rates, not
@@ -84,7 +87,7 @@ TURN_PARAMS = {
     "fire_mode": "start",
     # Diminishing returns on stacked skill modifiers: raw multiplicative kits
     # predict a 3-4x exchange edge; the anchors show ~0.9-1.1x real.
-    "mod_gamma": 0.38,
+    "mod_gamma": 0.30,
     # Floor on the composed per-stat modifier (additive stacking used to reach
     # -97.8% defense and blow up damage through def^qd).
     "stat_floor": 0.4,
@@ -703,9 +706,13 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
                 continue
             rows = _hero_rows(book, hero, SkillSource.SKILL_1, battle)
             if rows:
+                # JOINER stat rows are NEVER panel-suppressed: a joiner is
+                # another player's hero, so its stat skills cannot be inside
+                # this side's scouted/final panel (unlike the captains').
+                # Suppressing them silently zeroed stat-joiners (Patrick,
+                # Gatot) while DD/DT-joiners (Nora, Bahiti) passed in full.
                 defs.append(_make_hero_skill(hero, SkillSource.SKILL_1, rows, side,
-                                             "joiner", None, ordinal,
-                                             getattr(profile, "panel_is_final", False)))
+                                             "joiner", None, ordinal, False))
                 ordinal += 1
         quality = profile.quality or {}
         for u in units:
@@ -1545,6 +1552,25 @@ def _fresh_skill_defs(templates: list[SkillDef]) -> list[SkillDef]:
     return [replace(skill, triggers=0, kills=0.0) for skill in templates]
 
 
+_TL_CLASSES = (TroopType.INFANTRY, TroopType.LANCER, TroopType.MARKSMAN)
+
+
+def _compact_timeline(turn_log) -> list:
+    """Per turn: (attacker_alive_by_class, defender_alive_by_class, attacker_killed_total,
+    defender_killed_total). *_alive_by_class is a 3-tuple (Infantry, Lancer, Marksman)
+    of survivors after that turn. Feeds the app's averaged battle timeline."""
+    out = []
+    for tr in turn_log:
+        sa = tr.start_counts.get("attacker") or {}
+        sd = tr.start_counts.get("defender") or {}
+        ca = tr.casualties.get("attacker") or {}
+        cd = tr.casualties.get("defender") or {}
+        a_alive = tuple(sa.get(t, 0.0) - ca.get(t, 0.0) for t in _TL_CLASSES)
+        d_alive = tuple(sd.get(t, 0.0) - cd.get(t, 0.0) for t in _TL_CLASSES)
+        out.append((a_alive, d_alive, sum(ca.values()), sum(cd.values())))
+    return out
+
+
 def run_batch_construct(construct, *, n: int = 10_000, seed: int = 0,
                         params=None) -> list:
     from wos_sim.predictor.kernel import RunRecord, _fill, _run_rng, _starts
@@ -1567,5 +1593,5 @@ def run_batch_construct(construct, *, n: int = 10_000, seed: int = 0,
         records.append(RunRecord(
             res.winner, res.turns, a_start, d_start,
             _fill(res.a_incap, a_start), _fill(res.d_incap, d_start),
-            res.skill_telemetry))
+            res.skill_telemetry, _compact_timeline(res.turn_log)))
     return records

@@ -40,8 +40,11 @@ def _widgets_in_panel(side) -> bool:
 
 
 def _side_effects(side, book, context):
-    """Active SkillEffects for a side: lead trio kit, optional widgets, and each
-    joiner's Skill 1."""
+    """Active (effect, role) pairs for a side: lead trio kit, optional widgets,
+    and each joiner's Skill 1. The role tag matters: panel-suppression applies
+    only to CAPTAIN stat rows (a captain's stat skills show in the side's own
+    scouted/final panel; a joiner is another player's hero, so its stat skills
+    are never in this side's panel)."""
     effects = []
     lead = [h for h in side.lead_heroes.values() if h]
     if lead:
@@ -49,12 +52,12 @@ def _side_effects(side, book, context):
             e for e in captain_effects(book, lead, None, battle=context)
             if e.source != SkillSource.WIDGET or not _widgets_in_panel(side)
         ]
-        effects.extend(_dedupe_damage_category_splits(rows))
+        effects.extend((e, "captain") for e in _dedupe_damage_category_splits(rows))
     for flag in side.joiners[:4]:
         if not flag:
             continue
         rows = [e for e in book.for_hero(flag) if e.source == SkillSource.SKILL_1]
-        effects.extend(_dedupe_damage_category_splits(rows))
+        effects.extend((e, "joiner") for e in _dedupe_damage_category_splits(rows))
     return effects
 
 
@@ -78,8 +81,8 @@ def resolve(own_side, enemy_side, own_tag, foe_tag,
     (enemy-targeted effects land on ``foe_tag``). Returns the board."""
     book = book or skill_book()
     board = board or ModifierBoard()
-    for e in _side_effects(own_side, book, context):
-        if _final_panel_contains_own_stat_skill(own_side, e):
+    for e, role in _side_effects(own_side, book, context):
+        if role == "captain" and _final_panel_contains_own_stat_skill(own_side, e):
             continue
         _route_effect(board, e, own_tag, foe_tag)
     return board

@@ -56,6 +56,9 @@ class RunRecord:
     attacker_incap: dict   # troop -> incapacitated (raw total = severe + light;
     defender_incap: dict   #   the app applies the structure-type severe split)
     skill_telemetry: dict | None = None
+    # per-turn (a_alive_after, d_alive_after, a_killed, d_killed) totals for the
+    # averaged battle timeline. Populated by the turn engine only; None otherwise.
+    timeline: list | None = None
 
 
 def _starts(units) -> dict:

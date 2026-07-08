@@ -523,16 +523,20 @@ class TestCatalogCoverage(unittest.TestCase):
         )
 
     def test_final_panel_turn_engine_suppresses_own_static_stat_rows_only(self):
+        # joiners=[""] -> genuinely NO joiners: the helper's `joiners or [...]`
+        # default silently adds four, and the old (buggy) joiner suppression
+        # used to hide their stat rows, masking that this test wasn't
+        # captain-only.
         own = _side(
             "rally",
             leads={"Infantry": "Gisela", "Lancer": "", "Marksman": ""},
-            joiners=[],
+            joiners=[""],
             widgets_in_panel=True,
         )
         enemy = _side(
             "garrison",
             leads={"Infantry": "", "Lancer": "Karol", "Marksman": "Vulcanus"},
-            joiners=[],
+            joiners=[""],
             widgets_in_panel=True,
         )
         own.panel_is_final = True
@@ -551,6 +555,39 @@ class TestCatalogCoverage(unittest.TestCase):
             mods.stat[("attacker", TroopType.INFANTRY, StatType.ATTACK)],
             -0.20,
         )
+
+    def test_final_panel_does_not_suppress_joiner_stat_rows(self):
+        # A joiner is ANOTHER player's hero: its stat skills are never inside
+        # this side's scouted/final panel, so they must apply at battle time.
+        # Gatot SK1 = +30% own Infantry Defense (pure stat row).
+        own = _side(
+            "rally",
+            leads={"Infantry": "Gisela", "Lancer": "", "Marksman": ""},
+            joiners=["Gatot"],
+            widgets_in_panel=True,
+        )
+        enemy = _side(
+            "garrison",
+            leads={"Infantry": "", "Lancer": "Karol", "Marksman": "Vulcanus"},
+            joiners=[""],
+            widgets_in_panel=True,
+        )
+        own.panel_is_final = True
+        enemy.panel_is_final = True
+        con = construct.build(Matchup(own, enemy), apply_legacy_skills=False)
+        skills = skill_defs_from_matchup(con, {"engine": "turn"})
+        joiner_defs = [s for s in skills if s.role == "joiner"]
+        self.assertEqual([s.owner for s in joiner_defs], ["Gatot"])
+        self.assertFalse(joiner_defs[0].suppress_own_stat_passives)
+        stacks = {
+            troop: TypeStack(troop, 12, 100_000, 100_000,
+                             {A: 100.0, D: 100.0, L: 100.0, H: 100.0}, 100.0)
+            for troop in TroopType
+        }
+        mods = pvp_turn_engine._passive_mods(skills, stacks, stacks)
+        self.assertGreater(
+            mods.stat.get(("attacker", TroopType.INFANTRY, StatType.DEFENSE), 0.0),
+            0.0)
 
     def test_qa_named_static_stat_skills_emit_turn_engine_mods(self):
         book = load_skill_book()

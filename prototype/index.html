@@ -335,6 +335,17 @@
   .mbar .sep{position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--white);opacity:.45;z-index:2}
   .mbar .mr{position:absolute;top:0;bottom:0;left:50%;background:linear-gradient(90deg,var(--ember),var(--ember-deep));display:flex;align-items:center;padding-left:5px;font-family:var(--mono);font-size:9px;color:#2a0f06;transition:width .5s;overflow:hidden}
   .cbox .mtitle{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute-2);margin:12px 0 6px;text-align:center}
+  /* align the summary bar + per-class line chart with the distribution's plot (past its 24px axis + 6px gap) */
+  .median,.cbox .clc{margin-left:30px}
+  .cbox .clc{height:52px;margin-bottom:2px}
+  /* two-line chart (survivors over turns): ice = you, ember = enemy */
+  .lc-wrap{position:relative;height:100%}
+  .lc{width:100%;height:100%;display:block}
+  .lc path{fill:none;stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+  .lc-you{stroke:var(--ice)} .lc-enemy{stroke:var(--ember)}
+  .lc-hover{position:absolute;inset:0;display:flex}
+  .lc-hover>div{flex:1;min-width:0}
+  .lc-hover>div:hover{background:rgba(234,243,247,.05)}
 
   /* rounds */
   .rounds{background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:14px 14px 8px;display:flex;gap:12px}
@@ -348,6 +359,23 @@
   .rcol .dn{position:absolute;left:1px;right:1px;top:50%;background:linear-gradient(180deg,var(--ember-deep),var(--ember-bright));border-radius:0 0 3px 3px;transition:height .5s}
   .rx{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mute-2);margin-top:6px}
   .rx .cap{text-align:center;flex:1;color:var(--mute)}
+
+  /* battle timeline (averaged per-turn survivors + losses) */
+  .tl-key{display:inline-flex;gap:12px;align-items:center;margin-left:4px}
+  .tl-key i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:middle;margin-right:4px}
+  .tl-key .tk-you{background:var(--ice)} .tl-key .tk-enemy{background:var(--ember)}
+  .tl-block{margin-top:12px}
+  .tl-cap{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin-bottom:5px}
+  .tl-bars{display:flex;gap:3px;height:96px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:8px;overflow:hidden}
+  .tl-line{position:relative;height:96px;background:var(--void-2);border:1px solid var(--line-soft);border-radius:10px;padding:8px}
+  .tl-line .lc-wrap{height:100%}
+  .tl-col{flex:1;display:flex;gap:1px;align-items:flex-end;min-width:2px;height:100%}
+  .tl-col .b{flex:1;border-radius:3px 3px 0 0;transition:height .5s;align-self:flex-end}
+  .tl-col .b.you{background:linear-gradient(180deg,var(--ice-bright),var(--ice-deep))}
+  .tl-col .b.enemy{background:linear-gradient(180deg,var(--ember-bright),var(--ember-deep))}
+  .tl-col:hover .b{filter:brightness(1.22)}
+  .tl-x{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mute-2);margin-top:6px}
+  .tl-xcap{text-align:center;font-family:var(--mono);font-size:9px;color:var(--mute);margin-top:2px}
 
   /* skill telemetry */
   .fc-part.hidden{display:none}
@@ -634,10 +662,10 @@
       <div class="duo">
         <div class="me"><div class="troops-me">
           <label class="eqchk"><input type="checkbox" id="eqTroops" checked> equal</label>
-          <input type="number" id="myTroops" value="1000000" step="1000" inputmode="numeric">
+          <input type="text" id="myTroops" value="1,000,000" inputmode="numeric" autocomplete="off">
         </div></div>
         <div class="lab">Total troops</div>
-        <div class="foe"><input type="number" class="num-only" id="foeTroops" value="1000000" step="1000" inputmode="numeric" disabled></div>
+        <div class="foe"><input type="text" class="num-only" id="foeTroops" value="1,000,000" inputmode="numeric" autocomplete="off" disabled></div>
       </div>
       <div class="duo" style="margin-top:14px;align-items:start">
         <div class="me"><div class="form-stack" id="formMe"></div></div>
@@ -766,6 +794,16 @@
           <div class="catbars" id="catBars"></div>
           <div class="catx" id="catX"></div>
         </div>
+      </div>
+
+      <!-- battle timeline -->
+      <div class="fc-part hidden" id="timelinePart">
+        <div class="h">Battle timeline — average per turn</div>
+        <div class="sub">survivors remaining and troops lost each turn, averaged across the simulations · <span class="tl-key"><i class="tk-you"></i>you<i class="tk-enemy"></i>enemy</span></div>
+        <div class="tl-block"><div class="tl-cap">Survivors remaining</div><div class="tl-line" id="tlSurv"></div></div>
+        <div class="tl-block"><div class="tl-cap">Troops lost this turn</div><div class="tl-bars" id="tlKill"></div></div>
+        <div class="tl-x" id="tlX"></div>
+        <div class="tl-xcap" id="tlXcap">turn →</div>
       </div>
 
       <!-- army loss distribution -->
@@ -975,7 +1013,7 @@ function buildFormation(){
       ctr.append(minus,r,plus,val);
       // count-entry view (Infantry/Lancer editable; Marksman read-only leftover)
       const cwrap=el('div','fcount'); const cnt=el('input');
-      cnt.type='number'; cnt.min=0; cnt.step=1000; cnt.inputMode='numeric';
+      cnt.type='text'; cnt.inputMode='numeric'; cnt.autocomplete='off';
       cnt.setAttribute('aria-label',(side==='me'?'My ':'Enemy ')+cl+' troop count');
       if(auto){ cnt.readOnly=true; cnt.tabIndex=-1; }
       const cunit=el('div','fcunit'); cunit.textContent=auto?'auto':'troops';
@@ -983,11 +1021,11 @@ function buildFormation(){
       body.append(nm,ctr,cwrap); row.append(ic,body); stack.appendChild(row);
       C[cl]={r,val,minus,plus,cnt};
     });
-    const totalOf=()=>{ const t=parseInt(($(side==='me'?'#myTroops':'#foeTroops').value)||'0',10); return Number.isNaN(t)?0:t; };
+    const totalOf=()=>{ const t=numParse($(side==='me'?'#myTroops':'#foeTroops').value); return Number.isNaN(t)?0:t; };
     const paint=()=>['Infantry','Lancer','Marksman'].forEach(cl=>{
       C[cl].val.textContent=fmtPct(C[cl].r.value)+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
     const syncCountsFromFractions=()=>{ const total=totalOf();
-      ['Infantry','Lancer','Marksman'].forEach(cl=>{ C[cl].cnt.value=Math.round(+C[cl].r.value/100*total); }); };
+      ['Infantry','Lancer','Marksman'].forEach(cl=>{ C[cl].cnt.value=numFmt(Math.round(+C[cl].r.value/100*total)); }); };
     // %-mode: sliders are canonical (Marksman = 100 - Inf - Lan)
     const recalc=changed=>{
       let inf=+C.Infantry.r.value, lan=+C.Lancer.r.value;
@@ -997,7 +1035,7 @@ function buildFormation(){
       paint(); syncCountsFromFractions();
     };
     // count-mode: typed counts are canonical -> derive fractions into the sliders
-    const clampInt=v=>{ v=parseInt(v||'0',10); return (Number.isNaN(v)||v<0)?0:v; };
+    const clampInt=v=>{ v=numParse(v); return (Number.isNaN(v)||v<0)?0:v; };
     const recalcCount=changed=>{
       const total=totalOf();
       // no single class may exceed the total; the field just edited wins, the other gives way,
@@ -1012,7 +1050,10 @@ function buildFormation(){
       }
       inf=Math.max(0,inf); lan=Math.max(0,lan);
       const mar=Math.max(0,total-inf-lan);
-      C.Infantry.cnt.value=inf; C.Lancer.cnt.value=lan; C.Marksman.cnt.value=mar;
+      const fa=document.activeElement;   // don't reformat the field being typed (cursor jump); blur reformats it
+      if(C.Infantry.cnt!==fa) C.Infantry.cnt.value=numFmt(inf);
+      if(C.Lancer.cnt!==fa) C.Lancer.cnt.value=numFmt(lan);
+      C.Marksman.cnt.value=numFmt(mar);
       if(total>0){ C.Infantry.r.value=fmtPct(inf/total*100); C.Lancer.r.value=fmtPct(lan/total*100); C.Marksman.r.value=fmtPct(mar/total*100); }
       else { C.Infantry.r.value=0; C.Lancer.r.value=0; C.Marksman.r.value=0; }
       paint();
@@ -1022,6 +1063,7 @@ function buildFormation(){
       C[cl].minus.addEventListener('click',()=>{C[cl].r.value=Math.max(0,+C[cl].r.value-1);recalc(cl);});
       C[cl].plus.addEventListener('click',()=>{C[cl].r.value=Math.min(100,+C[cl].r.value+1);recalc(cl);});
       C[cl].cnt.addEventListener('input',()=>recalcCount(cl));
+      C[cl].cnt.addEventListener('blur',()=>recalcCount());   // reformat + clamp once the field loses focus
     });
     // Total changed: count-mode re-slices Marksman + fractions (Inf/Lan counts persist); %-mode just refreshes the count view
     $(side==='me'?'#myTroops':'#foeTroops').addEventListener('input',()=>{
@@ -1104,6 +1146,10 @@ function buildClasses(animate){ const g=$('#classGrid'); g.innerHTML='';
     med.innerHTML='<div class="mlab"><span class="lv">you '+(myAvg==null?'—':Math.round(myAvg)+'%')+'</span><span class="rv">'+(foeAvg==null?'—':Math.round(foeAvg)+'%')+' enemy</span></div>';
     const bar=el('div','mbar'); const ml=el('div','ml'), sep=el('div','sep'), mr=el('div','mr');
     med.appendChild(bar); bar.append(ml,sep,mr); box.appendChild(med);
+    // per-class survivors line chart (you ice / enemy ember), above the distribution
+    const tl=FORECAST.battle_timeline, bc=tl&&tl.by_class&&tl.by_class[cls];
+    if(bc){ const lcap=el('div','mtitle'); lcap.textContent='survivors remaining'; box.appendChild(lcap);
+      const clc=el('div','clc'); clc.appendChild(lineChart(tl.turns, bc.own, bc.enemy, {vh:52})); box.appendChild(clc); }
     const t=el('div','mtitle'); t.textContent='% troops lost — distribution'; box.appendChild(t);
     const cdist=el('div','cdist'); const ax=el('div','caxis'); ax.innerHTML='<span>0%</span><span>100%</span>';
     const vb=el('div','cvbody'); vb.style.height='150px'; vb.style.setProperty('--bins',10);
@@ -1129,6 +1175,46 @@ function buildRounds(animate){ const c=$('#roundsBars'); c.innerHTML='';
   const edges=(w&&w.edges)||(l&&l.edges)||[0,80];
   const lo=Math.round(edges[0]), hi=Math.round(edges[edges.length-1]);
   const xs=$('#roundsX'); if(xs){ xs.innerHTML=''; for(let k=0;k<=4;k++){const s=el('span');s.textContent=Math.round(lo+(hi-lo)*k/4);xs.appendChild(s);} }
+}
+// two-line chart (you=ice, enemy=ember) as an SVG stretched to fill its frame
+function lineChartSVG(turns, own, enemy, opts){
+  opts=opts||{}; const W=300, H=opts.vh||60, n=turns.length;
+  const max=Math.max(1,...own,...enemy);
+  const X=i=> n<=1?W/2:(i/(n-1))*W;
+  const Y=v=> (H-2)-(Math.max(0,v)/max)*(H-4);
+  const d=a=> a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  return '<svg class="lc" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-hidden="true">'
+    +'<path class="lc-enemy" d="'+d(enemy)+'"/><path class="lc-you" d="'+d(own)+'"/></svg>';
+}
+function lineChart(turns, own, enemy, opts){
+  const wrap=el('div','lc-wrap'); wrap.innerHTML=lineChartSVG(turns, own, enemy, opts);
+  const hov=el('div','lc-hover');
+  turns.forEach((t,i)=>{ const c=el('div'); c.title='Turn '+t+'  •  you '+fmtMetric(own[i])+'  •  enemy '+fmtMetric(enemy[i]); hov.appendChild(c); });
+  wrap.appendChild(hov); return wrap;
+}
+function buildTimeline(animate){
+  const part=$('#timelinePart'), tl=FORECAST.battle_timeline;
+  if(!part) return;
+  if(!tl||!tl.turns||!tl.turns.length){ part.classList.add('hidden'); return; }
+  part.classList.remove('hidden');
+  const turns=tl.turns;
+  // survivors remaining -> two line graphs (you ice, enemy ember)
+  const surv=$('#tlSurv'); if(surv){ surv.innerHTML=''; surv.appendChild(lineChart(turns, tl.own_survivors, tl.enemy_survivors, {vh:80})); }
+  // troops lost this turn -> grouped bars
+  const kill=$('#tlKill'); if(kill){ kill.innerHTML='';
+    const max=Math.max(1,...tl.own_killed,...tl.enemy_killed);
+    turns.forEach((t,i)=>{ const col=el('div','tl-col');
+      col.title='Turn '+t+'  •  you lost '+fmtMetric(tl.own_killed[i])+'  •  enemy lost '+fmtMetric(tl.enemy_killed[i]);
+      const by=el('div','b you'), be=el('div','b enemy');
+      const hy=Math.max(0,tl.own_killed[i]/max*100), he=Math.max(0,tl.enemy_killed[i]/max*100);
+      if(animate){ by.style.height='0%'; be.style.height='0%'; requestAnimationFrame(()=>requestAnimationFrame(()=>{ by.style.height=hy+'%'; be.style.height=he+'%'; })); }
+      else { by.style.height=hy+'%'; be.style.height=he+'%'; }
+      col.append(by,be); kill.appendChild(col); }); }
+  const ax=$('#tlX'); if(ax){ const marks=[], step=Math.max(1,Math.round((turns.length-1)/5));
+    for(let i=0;i<turns.length;i+=step) marks.push(turns[i]);
+    if(marks[marks.length-1]!==turns[turns.length-1]) marks.push(turns[turns.length-1]);
+    ax.innerHTML=marks.map(t=>'<span>'+t+'</span>').join(''); }
+  const cap=$('#tlXcap'); if(cap) cap.textContent='turn →'+(tl.truncated?'  · first '+turns.length+' turns (battle ran longer)':'');
 }
 function fmtMetric(x){ x=Math.round(x||0); return x>=1000?x.toLocaleString():String(x); }
 function fmtDist(d){
@@ -1287,7 +1373,7 @@ function accordionSummary(block){
   const t=((block.querySelector(':scope > .title')||{}).textContent||'').toLowerCase();
   try{
     if(t.includes('troops')){
-      const tr=+($('#myTroops').value)||0, f=readFormation('#formMe');
+      const tr=numParse($('#myTroops').value)||0, f=readFormation('#formMe');
       const n=tr>=1e6?(tr/1e6).toFixed(1).replace(/\.0$/,'')+'M':tr>=1e3?Math.round(tr/1e3)+'K':String(tr);
       return n+' · '+Math.round((f.Infantry||0)*100)+'/'+Math.round((f.Lancer||0)*100)+'/'+Math.round((f.Marksman||0)*100);
     }
@@ -1377,6 +1463,9 @@ function initInteractions(){
   const my=$('#myTroops'),foe=$('#foeTroops'),eq=$('#eqTroops');
   const sync=()=>{ if(eq.checked){foe.value=my.value; foe.disabled=true;} else foe.disabled=false; };
   eq.addEventListener('change',sync); my.addEventListener('input',()=>{if(eq.checked)foe.value=my.value;}); sync();
+  const fmtTotal=inp=>{ const v=numParse(inp.value); inp.value=Number.isNaN(v)?'':numFmt(v); };
+  my.addEventListener('blur',()=>{ fmtTotal(my); if(eq.checked)foe.value=my.value; });
+  foe.addEventListener('blur',()=>fmtTotal(foe));
   // stats type + live computed final stats
   $('#statsTypeToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed','false'));
@@ -1448,6 +1537,9 @@ const AUTOSAVE_KEY='wos:lastConfig:v1', DEFAULT_SEED=4471;
 let activeSeed=DEFAULT_SEED;
 const setText=(sel,txt)=>{const e=$(sel); if(e)e.textContent=txt;};
 const pctN=x=>x*100;
+// troop-count display: "1,000,000". numParse strips separators for reading back.
+const numFmt=n=>{ n=Math.round(+n); return Number.isFinite(n)?n.toLocaleString('en-US'):''; };
+const numParse=s=>{ const v=parseInt(String(s==null?'':s).replace(/[^0-9-]/g,''),10); return Number.isNaN(v)?NaN:v; };
 
 // read the Input form into a BRD S.9 profile dict
 function readHeroes(id){ return [...document.querySelectorAll(id+' .hpick')].map(p=>p.dataset.hero).filter(Boolean); }
@@ -1460,7 +1552,7 @@ function readCounts(id,total){
   const st=document.querySelector(id), cn=[...document.querySelectorAll(id+' .fcount input')];
   let inf,lan;
   if(st && st.classList.contains('count-mode') && cn.length>=2){
-    inf=parseInt(cn[0].value||'0',10)||0; lan=parseInt(cn[1].value||'0',10)||0;
+    inf=numParse(cn[0].value)||0; lan=numParse(cn[1].value)||0;
   } else { const f=readFormation(id); inf=Math.round(f.Infantry*total); lan=Math.round(f.Lancer*total); }
   inf=Math.max(0,Math.min(inf,total)); lan=Math.max(0,Math.min(lan,total));
   if(inf+lan>total) lan=total-inf;
@@ -1616,7 +1708,7 @@ function applyGearControls(which,g){ if(!g)return;
 function buildProfile(which){   // 'me' | 'foe'
   const role=sideRole(which).toLowerCase();
   const leadMap=leadHeroMap(which);
-  const _t=parseInt((which==='me'?$('#myTroops'):$('#foeTroops')).value,10);   // 0 stays 0 -> server rejects, not silently defaulted
+  const _t=numParse((which==='me'?$('#myTroops'):$('#foeTroops')).value);   // 0 stays 0 -> server rejects, not silently defaulted
   const troops=Number.isNaN(_t)?1000000:_t;
   const joiners=readHeroes(which==='me'?'#joinMe':'#joinFoe');
   return { role, troops_total:troops, stats_mode:'scouted',
@@ -1783,9 +1875,9 @@ function configToForm(cfg){
   const myR=own.role==='garrison'?'Garrison':'Rally';
   document.querySelectorAll('#roleToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.role===myR?'true':'false'));
   $('#foeRole').textContent = myR==='Rally'?'Garrison':'Rally';
-  const eq=$('#eqTroops'); $('#myTroops').value = own.troops_total!=null?own.troops_total:1000000;
+  const eq=$('#eqTroops'); $('#myTroops').value = numFmt(own.troops_total!=null?own.troops_total:1000000);
   const same=(own.troops_total!=null && own.troops_total===enemy.troops_total); eq.checked=same;
-  if(!same && enemy.troops_total!=null) $('#foeTroops').value=enemy.troops_total;
+  if(!same && enemy.troops_total!=null) $('#foeTroops').value=numFmt(enemy.troops_total);
   eq.dispatchEvent(new Event('change'));
   applyFormation('#formMe', own.formation||{}); applyFormation('#formFoe', enemy.formation||{});
   applyQuality('me', own.quality||{}); applyQuality('foe', enemy.quality||{});
@@ -1852,7 +1944,7 @@ function renderCharts(animate){
   setVerdict();
   document.querySelectorAll('#obar .oseg').forEach((s,i)=>{ const t=s.dataset.b;
     if(animate){s.style.flexBasis='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{s.style.transitionDelay=(i*80)+'ms';s.style.flexBasis=t;}));} else s.style.flexBasis=t; });
-  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildSkillTelemetry(animate); renderMeta();
+  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildSkillTelemetry(animate); renderMeta();
 }
 
 function setVerdict(){

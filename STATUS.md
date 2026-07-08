@@ -603,3 +603,19 @@ K_skill=0.15, q_def=0.7. Scorecard 20/36 gates, 4/4 winners; regression #12
 now guards all four. OPEN mechanic: A2-vs-A4 marks-heavy tension (bypass
 redistribution + possible wall-integrity effect). Wanted data: a marks-heavy
 side WINNING, any attacker-LOSES report, or per-turn casualties.
+
+## 20. Joiner stat-skill suppression bug (2026-07-08, Claude; found via Martin's 4x-Nora probe)
+
+Martin flagged a Gen15 mirror rally with 4x Nora joiners yielding 100% win.
+Investigation: Nora's SK1 itself is correct (+15% DD / −15% DT inf+marks per
+copy; audit-clean); the REAL bug was that `panel_is_final` suppression was
+applied to JOINER stat rows too — but a joiner is another player's hero, so
+its stat skills are never in this side's scouted panel. Effect: stat-row
+joiners (Patrick +25% HP, Gatot +30% def) were silently zeroed while DD/DT
+joiners (Nora, Bahiti) applied in full — an artificial joiner-kit asymmetry.
+Fixed in both paths (skills.resolve role-aware; skill_defs_from_matchup passes
+suppress=False for joiners) + a guard test. TURN_PARAMS re-touched after the
+fix (rate 155→168, def_k 0.5→0.45, γ back to 0.30): 21/36 gates, 4/4 winners.
+Remaining honest caveat: 4 identical joiners stack additively pre-compression;
+whether the real game stacks 4 copies of the same joiner passive is UNKNOWN
+(no anchor has duplicate joiners) — flagged for a future anchor.

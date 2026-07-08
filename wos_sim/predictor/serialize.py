@@ -101,4 +101,5 @@ def forecast_to_dict(fc: Forecast) -> dict:
                          for cls, sides in fc.class_losses.items()},
         "rounds": {k: _dist(v) for k, v in fc.rounds.items()},
         "skill_telemetry": _skill_telemetry(fc.skill_telemetry),
+        "battle_timeline": fc.timeline,
     }
