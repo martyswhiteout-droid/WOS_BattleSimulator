@@ -1,0 +1,125 @@
+{
+  "wos_config": 1,
+  "name": "RAW_01",
+  "runs": 200,
+  "seed": 4471,
+  "own": {
+    "role": "rally",
+    "troops_total": 1721972,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5998999983739574,
+      "Lancer": 0.009900277124134422,
+      "Marksman": 0.38999995354163713
+    },
+    "formation_counts": {
+      "Infantry": 1033011.0,
+      "Lancer": 17048.0,
+      "Marksman": 671569.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 39.873,
+      "Infantry|Defense": 29.775,
+      "Infantry|Lethality": 28.029,
+      "Infantry|Health": 27.765,
+      "Lancer|Attack": 39.873,
+      "Lancer|Defense": 29.775,
+      "Lancer|Lethality": 27.943,
+      "Lancer|Health": 27.792,
+      "Marksman|Attack": 37.604,
+      "Marksman|Defense": 28.073,
+      "Marksman|Lethality": 27.487,
+      "Marksman|Health": 27.237
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Hervor",
+      "Lancer": "Karol",
+      "Marksman": "Rufus"
+    },
+    "joiners": []
+  },
+  "enemy": {
+    "role": "garrison",
+    "troops_total": 1484339,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5264996742657843,
+      "Lancer": 0.40639975100027687,
+      "Marksman": 0.06700019335205772
+    },
+    "formation_counts": {
+      "Infantry": 781504.0,
+      "Lancer": 603235.0,
+      "Marksman": 99451.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 40.413,
+      "Infantry|Defense": 33.704,
+      "Infantry|Lethality": 30.342,
+      "Infantry|Health": 30.123,
+      "Lancer|Attack": 38.144,
+      "Lancer|Defense": 31.806,
+      "Lancer|Lethality": 29.815,
+      "Lancer|Health": 29.597,
+      "Marksman|Attack": 29.737,
+      "Marksman|Defense": 24.773,
+      "Marksman|Lethality": 27.841,
+      "Marksman|Health": 27.622
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Hervor",
+      "Lancer": "Lloyd",
+      "Marksman": "Bradley"
+    },
+    "joiners": []
+  },
+  "_expected_real_outcome": {
+    "real_winner": "enemy",
+    "own_surv_frac": 0.0,
+    "enemy_surv_frac": 0.4308274592259585,
+    "own_role": "attacker",
+    "note": ""
+  }
+}

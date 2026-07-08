@@ -46,8 +46,9 @@
     background:radial-gradient(circle at 50% 30%,rgba(95,210,224,.18),transparent 70%);color:var(--ice-bright);font-size:18px}
   .brand h1{font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
   .brand p{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mute-2);text-transform:uppercase;margin-top:3px}
-  .bar-note{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  .bar-note{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--ember-bright);border:1px solid color-mix(in srgb,var(--ember) 40%,transparent);background:var(--ember-ghost);border-radius:7px;padding:5px 11px}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
 
   main{max-width:1360px;margin:0 auto;padding:clamp(16px,2.4vw,30px) clamp(14px,3vw,30px) 90px}
   .sec-head{display:flex;align-items:baseline;gap:14px;margin:28px 0 16px}
@@ -101,16 +102,18 @@
 
   .sides-head{display:grid;grid-template-columns:1fr 168px 1fr;gap:0 16px;align-items:center;
     position:sticky;top:57px;z-index:20;background:linear-gradient(180deg,var(--panel) 70%,transparent);padding:14px 0 12px;margin-bottom:4px}
-  .side-title{display:flex;align-items:center;gap:10px}
+  .side-title{display:flex;align-items:center;gap:8px;flex-direction:column}
   .side-title.foe{justify-content:flex-end}
   .side-title .badge{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.06em}
   .side-title.me .badge{color:var(--ice-bright)}
   .side-title.foe .badge{color:var(--ember-bright)}
-  .role-toggle{display:flex;border:1px solid var(--ice-deep);border-radius:8px;overflow:hidden}
-  .role-toggle button{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mute);background:transparent;border:0;padding:6px 11px;cursor:pointer}
+  .role-toggle{display:flex;border:1px solid var(--ice-deep);border-radius:10px;overflow:hidden;background:var(--void-2)}
+  .role-toggle button{color:var(--mute);background:transparent;border:0;padding:7px 10px;cursor:pointer;min-width:44px;min-height:38px;display:grid;place-items:center}
   .role-toggle button[aria-pressed="true"]{background:var(--ice-ghost);color:var(--ice-bright)}
-  .role-static{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ember-bright);
-    border:1px solid var(--ember-deep);border-radius:8px;padding:6px 11px;background:var(--ember-ghost)}
+  .role-icon{width:22px;height:22px;object-fit:contain;filter:invert(80%) sepia(20%) saturate(620%) hue-rotate(145deg)}
+  .role-static{display:grid;place-items:center;color:var(--ember-bright);
+    border:1px solid var(--ember-deep);border-radius:10px;padding:7px 10px;background:var(--ember-ghost);min-width:44px;min-height:38px}
+  .role-static .role-icon{filter:invert(70%) sepia(55%) saturate(748%) hue-rotate(338deg)}
   .vs-pill{justify-self:center;font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.06em;color:var(--mute);
     width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,var(--panel-2),var(--void));border:1px solid var(--line)}
 
@@ -120,9 +123,9 @@
   .iblock>.title .chk{font-family:var(--body);font-size:11.5px;letter-spacing:0;text-transform:none;color:var(--mute);
     display:flex;align-items:center;gap:6px;cursor:pointer}
   .iblock>.title .chk input{accent-color:var(--ice)}
-  .accordion-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:28px;height:28px;display:grid;place-items:center;
-    border:1px solid var(--line);border-radius:7px;background:var(--void-2);color:var(--mute);cursor:pointer;font-family:var(--mono);font-size:14px;line-height:1}
-  .accordion-toggle:hover{border-color:var(--ice-deep);color:var(--ice-bright)}
+  .accordion-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:38px;height:34px;display:grid;place-items:center;
+    border:1px solid color-mix(in srgb,var(--ice) 45%,var(--line));border-radius:9px;background:color-mix(in srgb,var(--ice) 13%,var(--void-2));color:var(--ice-bright);cursor:pointer;font-family:var(--mono);font-size:20px;line-height:1;font-weight:700}
+  .accordion-toggle:hover{border-color:var(--ice-bright);color:#04191c;background:var(--ice)}
   .iblock.collapsed>.title{margin-bottom:0}
   .accordion-body[hidden]{display:none}
 
@@ -206,7 +209,7 @@
   .lead-row.foe-row{justify-content:flex-start}
   .lead-cls{width:26px;height:26px;flex:none;border-radius:7px;display:grid;place-items:center;font-size:14px;background:var(--void);border:1px solid var(--line)}
   .me .lead-cls{color:var(--ice)} .foe .lead-cls{color:var(--ember)}
-  .lead-row .hpick{flex:0 1 260px;min-width:0;max-width:260px}
+  .lead-row .hpick{flex:0 1 310px;min-width:0;max-width:310px}
   .gear-check{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;color:var(--mute);white-space:nowrap;min-height:28px;padding:4px}
   .gear-check input{width:14px;height:14px;margin:0;accent-color:var(--ice)}
   .foe .gear-check input{accent-color:var(--ember)}
@@ -218,9 +221,9 @@
   #joinMe,#joinFoe{flex-wrap:wrap;gap:7px;overflow:visible;align-items:flex-start}
   #joinMe .hpick,#joinFoe .hpick{flex:0 0 auto}        /* size to the hero name, not a squashed 1/4 width */
   .lead-row .hpick-btn{width:100%;max-width:none}
-  #joinMe .hpick-btn,#joinFoe .hpick-btn{max-width:none;gap:6px;padding:3px 9px 3px 3px}   /* content width -> full name visible */
-  #joinMe .hpick-btn img,#joinFoe .hpick-btn img{width:24px;height:24px}
-  #joinMe .hpick-btn span,#joinFoe .hpick-btn span{font-size:11.5px}
+  #joinMe .hpick-btn,#joinFoe .hpick-btn{max-width:none;gap:7px;padding:5px 10px 5px 5px}   /* content width -> full name visible */
+  #joinMe .hpick-btn img,#joinFoe .hpick-btn img{width:28px;height:28px}
+  #joinMe .hpick-btn span,#joinFoe .hpick-btn span{font-size:12.5px}
   #joinMe .hpick-btn i,#joinFoe .hpick-btn i{display:none}   /* drop the chevron on joiners to save width */
 
   /* hero pickers */
@@ -228,13 +231,13 @@
   .me .hero-lane{justify-content:flex-end}
   .foe .hero-lane{justify-content:flex-start}
   .hpick{position:relative}
-  .hpick-btn{display:flex;align-items:center;gap:8px;background:var(--void-2);border:1px solid var(--line);border-radius:999px;
-    padding:4px 12px 4px 4px;cursor:pointer;color:var(--white);max-width:150px;transition:border-color .15s}
+  .hpick-btn{display:flex;align-items:center;gap:10px;background:var(--void-2);border:1px solid var(--line);border-radius:999px;
+    padding:6px 14px 6px 6px;cursor:pointer;color:var(--white);max-width:180px;transition:border-color .15s;min-height:42px}
   .hpick-btn:hover{border-color:var(--ice-deep)}
   .foe .hpick-btn:hover{border-color:var(--ember-deep)}
-  .hpick-btn img{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel-2)}
-  .empty-avatar{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--void);border:1px dashed var(--line);color:var(--mute-2);font-family:var(--mono);font-size:13px}
-  .hpick-btn span{font-size:12.5px;font-weight:500;white-space:nowrap}   /* no ellipsis — show the whole name */
+  .hpick-btn img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel-2)}
+  .empty-avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--void);border:1px dashed var(--line);color:var(--mute-2);font-family:var(--mono);font-size:13px}
+  .hpick-btn span{font-size:13.5px;font-weight:600;white-space:nowrap}   /* no ellipsis - show the whole name */
   .hpick-btn i{margin-left:auto;font-style:normal;color:var(--mute-2);font-size:10px}
   .hpick-pop{position:fixed;z-index:120;top:0;left:0;width:min(230px,calc(100vw - 16px));max-height:min(280px,calc(100vh - 16px));overflow:auto;
     background:var(--panel-2);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:8px;display:none}
@@ -260,8 +263,8 @@
   .fc-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:13px 20px;border-bottom:1px solid var(--line-soft);
     font-family:var(--mono);font-size:11px;color:var(--mute-2);letter-spacing:.04em}
   .fc-meta .k{color:var(--mute)}
-  .fc-meta .conv{color:var(--ok);display:flex;align-items:center;gap:6px}
-  .fc-meta .prov{margin-left:auto;color:var(--ember-bright);border:1px solid color-mix(in srgb,var(--ember) 40%,transparent);
+  .fc-meta .conv{display:none}
+  .fc-meta .prov{display:none;margin-left:auto;color:var(--ember-bright);border:1px solid color-mix(in srgb,var(--ember) 40%,transparent);
     background:var(--ember-ghost);border-radius:7px;padding:4px 10px;letter-spacing:.1em;text-transform:uppercase;font-size:10px;cursor:help}
   .fc-meta .prov.validated{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:rgba(87,211,163,.10)}
   .fc-body{padding:22px clamp(14px,2vw,24px) 26px;position:relative}
@@ -278,9 +281,9 @@
   .verdict{display:grid;grid-template-columns:minmax(210px,290px) 1fr;gap:26px;align-items:center}
   .verdict .pct{font-family:var(--disp);font-weight:700;font-size:60px;line-height:.86;color:var(--ice-bright)}
   .verdict .plabel{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-top:6px}
-  .verdict .eff{font-family:var(--mono);font-size:11px;color:var(--mute-2);margin-top:8px}
+  .verdict .eff{display:none;font-family:var(--mono);font-size:11px;color:var(--mute-2);margin-top:8px}
   .verdict .eff b{color:var(--ice)}
-  .verdict .err{display:flex;gap:16px;margin-top:12px}
+  .verdict .err{display:none;gap:16px;margin-top:12px}
   .verdict .err div{font-family:var(--mono);font-size:11px;color:var(--mute)}
   .verdict .err b{display:block;font-size:15px;color:var(--white);margin-top:2px}
   .verdict .err .mc b{color:var(--ice)} .verdict .err .mdl b{color:var(--ember-bright)}
@@ -300,7 +303,7 @@
   .caliper::before,.caliper::after{content:"";position:absolute;left:-4px;width:9px;height:2px;background:var(--white)}
   .caliper::before{top:0}.caliper::after{bottom:0}
   .caliper .clabel{position:absolute;top:-20px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:9.5px;color:var(--white)}
-  .legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--mute)}
+  .legend{display:none;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--mute)}
   .legend div{display:flex;align-items:center;gap:8px}
   .legend .sw{width:22px;height:11px;border-radius:3px;flex:none}
   .legend .sw-mc{background:var(--white)}
@@ -314,8 +317,9 @@
   .vhead .l{color:var(--ice-bright)}
   .vhead .r{color:var(--ember-bright);text-align:right}
   .vrow{display:grid;grid-template-columns:1fr 1fr;gap:2px;height:calc((100% - 30px)/var(--bins));align-items:center}
-  .vrow .bl{justify-self:end;height:70%;border-radius:3px 0 0 3px;background:linear-gradient(90deg,var(--ice-deep),var(--ice));transition:width .5s}
-  .vrow .br{justify-self:start;height:70%;border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--ember),var(--ember-deep));transition:width .5s}
+  .vrow .bl,.vrow .br{position:relative;display:flex;align-items:center;font-family:var(--mono);font-size:9.5px;font-weight:700;white-space:nowrap}
+  .vrow .bl{justify-self:end;justify-content:flex-start;height:70%;border-radius:3px 0 0 3px;background:linear-gradient(90deg,var(--ice-deep),var(--ice));transition:width .5s;color:#04191c;padding-left:5px}
+  .vrow .br{justify-self:start;justify-content:flex-end;height:70%;border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--ember),var(--ember-deep));transition:width .5s;color:#2a0f06;padding-right:5px}
   .vmid{position:absolute;top:28px;bottom:10px;left:50%;width:1px;background:var(--line)}
   .vfoot{display:grid;grid-template-columns:1fr 1fr;font-family:var(--mono);font-size:10px;color:var(--mute);margin-top:8px}
   .vfoot .r{text-align:right}
@@ -357,6 +361,7 @@
   .rcol{flex:1;position:relative;height:100%}
   .rcol .up{position:absolute;left:1px;right:1px;bottom:50%;background:linear-gradient(180deg,var(--ice-bright),var(--ice-deep));border-radius:3px 3px 0 0;transition:height .5s}
   .rcol .dn{position:absolute;left:1px;right:1px;top:50%;background:linear-gradient(180deg,var(--ember-deep),var(--ember-bright));border-radius:0 0 3px 3px;transition:height .5s}
+  .bar-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:9.5px;font-weight:700;color:var(--white);text-shadow:0 1px 2px rgba(0,0,0,.9);white-space:nowrap;pointer-events:none}
   .rx{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mute-2);margin-top:6px}
   .rx .cap{text-align:center;flex:1;color:var(--mute)}
 
@@ -364,13 +369,14 @@
   .tl-key{display:inline-flex;gap:12px;align-items:center;margin-left:4px}
   .tl-key i{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:middle;margin-right:4px}
   .tl-key .tk-you{background:var(--ice)} .tl-key .tk-enemy{background:var(--ember)}
-  .tl-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0 12px}
+  .tl-controls{display:grid;grid-template-columns:auto auto 1fr auto;align-items:start;gap:8px 12px;margin:8px 0 12px}
   .tl-controls .seg-toggle button:disabled{opacity:.4;cursor:not-allowed}
   .tl-class-toggle{margin-right:auto}
-  .tl-slider{flex:1;min-width:130px;max-width:320px;accent-color:var(--ice);cursor:pointer}
+  .tl-slider-wrap{grid-column:1 / span 2;position:relative;width:min(410px,100%);padding-bottom:20px}
+  .tl-slider{width:100%;accent-color:var(--ice);cursor:pointer}
   .tl-slider:disabled{opacity:.35;cursor:not-allowed}
   .tl-end{font-family:var(--mono);font-size:9.5px;color:var(--mute-2);white-space:nowrap}
-  .tl-slabel{font-family:var(--mono);font-size:10px;color:var(--ice-bright);white-space:nowrap;min-width:64px}
+  .tl-slabel{position:absolute;top:23px;left:var(--pos,0%);transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--ice-bright);white-space:nowrap;min-width:0;background:var(--void);border:1px solid var(--line);border-radius:6px;padding:1px 5px;pointer-events:none}
   .tl-controls .tl-key{margin-left:auto}
   .tl-block{margin-top:12px}
   .tl-cap{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin-bottom:5px}
@@ -491,7 +497,7 @@
   .fic{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:16px;background:var(--panel-2);color:var(--fc)}
   .fbody{flex:1;min-width:0}
   .fname{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
-  .fctrls{display:flex;align-items:center;gap:8px}
+  .fctrls{display:grid;grid-template-columns:30px minmax(92px,1fr) 30px 54px;align-items:center;gap:8px}
   .fbtn{width:30px;height:30px;flex:none;border-radius:8px;border:1px solid var(--fc);background:var(--void);color:var(--fc);font-size:15px;font-weight:700;cursor:pointer;line-height:1;display:grid;place-items:center}
   .fbtn:hover:not(:disabled){background:color-mix(in srgb,var(--fc) 16%,var(--void))}
   .fbtn:disabled{opacity:.3;cursor:default}
@@ -501,7 +507,9 @@
   .form-ctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.5)}
   .form-ctl input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);cursor:pointer}
   .form-ctl input[type=range]:disabled{opacity:.7}
-  .fval{font-family:var(--mono);font-size:12px;color:var(--white);background:var(--void);border:1px solid var(--line);border-radius:7px;padding:4px 7px;min-width:46px;text-align:center;flex:none}
+  .fval{font-family:var(--mono);font-size:12px;color:var(--white);background:var(--void);border:1px solid var(--line);border-radius:7px;padding:4px 7px;min-width:54px;text-align:center;flex:none}
+  .formation-total{margin-top:9px;font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:.08em;text-align:right;color:var(--ice-bright)}
+  .foe .formation-total{color:var(--ember-bright);text-align:left}
   /* count-entry mode: number of troops per type (Marksman = Total - Inf - Lan) */
   .fcount{display:none;align-items:center;gap:8px;margin-top:2px;width:100%}
   .form-stack.count-mode .fctrls{display:none}
@@ -519,13 +527,15 @@
     background:linear-gradient(180deg,var(--panel),var(--void-2));border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
   .rail-head{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
   .rail-tabs{display:flex;flex-direction:column;gap:6px}
-  .rail-tabs .tab{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
+  .rail-tabs .tab{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto auto;align-items:center;gap:4px;width:100%;text-align:left;
     border-radius:9px;border:1px solid var(--line);background:var(--void-2);
     padding:11px 12px;font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.02em;color:var(--mute);cursor:pointer;transition:color .15s,background .15s,border-color .15s}
   .rail-tabs .tab:hover{color:var(--white)}
   .rail-tabs .tab[aria-selected="true"]{color:var(--ice-bright);background:var(--panel-2);border-color:var(--ice-deep)}
-  .rail-tabs .tab .x{font-family:var(--mono);font-size:11px;color:var(--faint);background:transparent;border:0;border-radius:6px;min-width:24px;min-height:24px;padding:0;display:grid;place-items:center;cursor:pointer}
+  .rail-tabs .tab .x,.tab-tool{font-family:var(--mono);font-size:11px;color:var(--faint);background:transparent;border:0;border-radius:6px;min-width:24px;min-height:24px;padding:0;display:grid;place-items:center;cursor:pointer}
   .rail-tabs .tab .x:hover{color:var(--loss)}
+  .tab-tool:hover{background:var(--ice-ghost);color:var(--ice-bright)}
+  .tab-tool img{width:15px;height:15px;object-fit:contain;filter:invert(78%) sepia(14%) saturate(457%) hue-rotate(154deg)}
   .rail-add{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--mute);background:transparent;border:1px dashed var(--line);border-radius:9px;padding:10px;cursor:pointer;transition:border-color .15s,color .15s}
   .rail-add:hover{border-color:var(--ice-deep);color:var(--ice-bright)}
   .rail-add:disabled{opacity:.45;cursor:not-allowed}
@@ -638,44 +648,42 @@
 <header class="bar">
   <div class="flake">❄</div>
   <div class="brand"><h1>Whiteout Tactics</h1><p>Battle Predictor</p></div>
-  <div class="bar-note">Live engine · local</div>
+  <div class="top-actions">
+    <div class="mini-field"><label>Runs</label>
+      <select class="val" id="runsSel" title="Monte-Carlo runs per forecast"><option selected>100</option><option>500</option><option>1000</option></select></div>
+    <button class="run" id="runBtn"><span class="dot"></span>Run forecast</button>
+    <button class="run-status" id="runStatus" type="button" hidden></button>
+    <div class="bar-note">Live engine · local</div>
+  </div>
 </header>
 
 <main class="layout">
 
   <aside class="config-rail">
-    <div class="rail-head">Configs</div>
-    <div class="rail-tabs" id="tabs" role="tablist" aria-label="Forecast configs">
-      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Config 1</span><button class="x" type="button" aria-label="Close config">x</button></div>
+    <div class="rail-head">Scenarios</div>
+    <div class="rail-tabs" id="tabs" role="tablist" aria-label="Forecast scenarios">
+      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Scenario 1</span><button class="tab-tool rename-tab" type="button" title="Rename" aria-label="Rename"><img src="assets/ui/rename-pen.png" alt=""></button><button class="tab-tool save-tab" type="button" title="Save scenario" aria-label="Save scenario"><img src="assets/ui/save-down.png" alt=""></button><button class="tab-tool load-tab" type="button" title="Load scenario" aria-label="Load scenario"><img src="assets/ui/load-up.png" alt=""></button><button class="x" type="button" aria-label="Close scenario">x</button></div>
     </div>
-    <button class="rail-add" id="tabAdd" title="New / load config (max 5)">+ New config</button>
-    <div class="rail-hint">double-click to rename · click to switch</div>
+    <button class="rail-add" id="tabAdd" title="New scenario (max 5)">+ New scenario</button>
   </aside>
 
   <div class="content">
 
   <!-- ========= INPUT ========= -->
   <section class="input">
-    <div class="input-toolbar">
-      <button class="ghost-btn" id="saveBtn">⤓ Save config</button>
-      <button class="ghost-btn" id="loadBtn">⤒ Load config</button>
-      <div class="mini-field"><label>Runs</label>
-        <select class="val" id="runsSel" title="Monte-Carlo runs per forecast"><option>100</option><option>500</option><option selected>1000</option></select></div>
-      <button class="run" id="runBtn"><span class="dot"></span>Run forecast</button>
-      <button class="run-status" id="runStatus" type="button" hidden></button>
-    </div>
+    <div class="input-toolbar" hidden></div>
     <div class="sides-head">
       <div class="side-title me">
         <span class="badge">MY SIDE</span>
         <div class="role-toggle" id="roleToggle">
-          <button aria-pressed="true" data-role="Rally">Rally</button>
-          <button aria-pressed="false" data-role="Garrison">Garrison</button>
+          <button aria-pressed="true" data-role="Rally" title="Rally" aria-label="Rally"><img class="role-icon" src="assets/ui/rally-swords.png" alt=""></button>
+          <button aria-pressed="false" data-role="Garrison" title="Garrison" aria-label="Garrison"><img class="role-icon" src="assets/ui/garrison-shield.png" alt=""></button>
         </div>
       </div>
       <div class="vs-pill">VS</div>
       <div class="side-title foe">
-        <span class="role-static" id="foeRole">Garrison</span>
         <span class="badge">ENEMY</span>
+        <span class="role-static" id="foeRole" title="Garrison"><img class="role-icon" src="assets/ui/garrison-shield.png" alt=""></span>
       </div>
     </div>
 
@@ -707,8 +715,8 @@
       <div class="title">Input Stats Assumptions
         <label class="stats-type">Stats Type
           <span class="seg-toggle" id="statsTypeToggle">
-            <button type="button" data-mode="base" aria-pressed="true">Base</button>
-            <button type="button" data-mode="scouted" aria-pressed="false">Scouted</button>
+            <button type="button" data-mode="base" aria-pressed="true" title="Base Stats without any heroes or buffs">Base</button>
+            <button type="button" data-mode="scouted" aria-pressed="false" title="Stats directly inputted into scouted forts">Scouted</button>
           </span>
         </label>
       </div>
@@ -833,17 +841,18 @@
             <button type="button" data-tlclass="Lancer" aria-pressed="false">Lancer</button>
             <button type="button" data-tlclass="Marksman" aria-pressed="false">Marksman</button>
           </span>
-          <span class="tl-end">Battle 1</span>
-          <input type="range" class="tl-slider" id="tlSlider" min="1" max="1" value="1" step="1" disabled aria-label="Battle number">
-          <span class="tl-end" id="tlSmax">Battle 1</span>
-          <span class="tl-slabel" id="tlSlabel"></span>
           <span class="tl-key"><i class="tk-you"></i>you<i class="tk-enemy"></i>enemy</span>
+          <div class="tl-slider-wrap">
+            <input type="range" class="tl-slider" id="tlSlider" min="1" max="1" value="1" step="1" disabled aria-label="Battle number">
+            <span class="tl-slabel" id="tlSlabel"></span>
+          </div>
+          <span class="tl-end" id="tlSmax">Battle 1,000</span>
         </div>
         <div class="tl-block"><div class="tl-cap">Survivors remaining</div><div class="tl-line" id="tlSurv"></div></div>
-        <div class="tl-block"><div class="tl-cap">Troops lost each turn</div><div class="tl-bars" id="tlKill"></div></div>
+        <div class="tl-block"><div class="tl-cap">Troops lost each turn</div><div class="tl-bars" id="tlKill"></div><div class="tl-x" id="tlXKill"></div></div>
         <div class="tl-block"><div class="tl-cap">Troops killed each turn</div><div class="tl-bars" id="tlKilled"></div><div class="tl-procs" id="tlProcs"></div></div>
         <div class="tl-x" id="tlX"></div>
-        <div class="tl-xcap" id="tlXcap">turn →</div>
+        <div class="tl-xcap" id="tlXcap">turn #</div>
       </div>
 
       <!-- army loss distribution -->
@@ -883,8 +892,7 @@
       </div>
 
       <div class="fc-part hidden" id="skillTelemetryPart">
-        <div class="h">Skill details — hero procs &amp; direct kills</div>
-        <div class="sub">captain trio, top four joiners, and troop skills · per-skill median/range over simulations · proc and kill distributions</div>
+        <div class="h">Skill details — hero triggered &amp; direct kills</div>
         <div class="skill-telemetry" id="skillTelemetry"></div>
       </div>
 
@@ -896,7 +904,6 @@
     </div>
   </section>
 
-  <div class="foot">configs (left) → input → forecast · live local engine</div>
   </div>
 </main>
 <div id="liveStatus" class="sr-only" aria-live="polite"></div>
@@ -914,7 +921,7 @@ const DEFAULT_JOINERS_ME=['Hendrik','Jessie','Blanchette','Mia'];
 const DEFAULT_JOINERS_FOE=['Gatot','Patrick','Ling Xue','Wu Ming'];
 const $=(s,r=document)=>r.querySelector(s); const el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const enc=s=>encodeURIComponent(s); const avatar=f=>"avatars/"+enc(f);
-const fmtPct=v=>Number.isFinite(+v)?(+v).toFixed(2).replace(/\.?0+$/,''):'0';
+const fmtPct=v=>Number.isFinite(+v)?(+v).toFixed(1):'0.0';
 
 /* ---------- hero picker ---------- */
 let openPop=null, openWrap=null, heroPickerSeq=0;
@@ -1046,7 +1053,7 @@ function buildFormation(){
       const ic=el('div','fic'); ic.textContent=glyph[cl];
       const body=el('div','fbody'); const nm=el('div','fname'); nm.textContent=cl; const ctr=el('div','fctrls');
       const minus=el('button','fbtn'); minus.type='button'; minus.textContent='−';
-      const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=0.01; r.value=init[cl];
+      const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=0.1; r.value=init[cl];
       const plus=el('button','fbtn'); plus.type='button'; plus.textContent='+';
       const val=el('div','fval'); val.textContent=init[cl]+'%';
       if(auto){ r.disabled=minus.disabled=plus.disabled=true; }
@@ -1061,6 +1068,7 @@ function buildFormation(){
       body.append(nm,ctr,cwrap); row.append(ic,body); stack.appendChild(row);
       C[cl]={r,val,minus,plus,cnt};
     });
+    const totalMarker=el('div','formation-total'); totalMarker.textContent='100%'; stack.appendChild(totalMarker);
     const totalOf=()=>{ const t=numParse($(side==='me'?'#myTroops':'#foeTroops').value); return Number.isNaN(t)?0:t; };
     const paint=()=>['Infantry','Lancer','Marksman'].forEach(cl=>{
       C[cl].val.textContent=fmtPct(C[cl].r.value)+'%'; C[cl].r.style.setProperty('--fill',C[cl].r.value+'%'); });
@@ -1164,12 +1172,18 @@ function buildHeroes(){
 /* ---------- forecast charts (mock data) ---------- */
 const bell=(n,peak,sp,amp=1)=>Array.from({length:n},(_,i)=>{const x=(i-peak)/sp;return amp*Math.exp(-0.5*x*x);});
 const add=(a,b)=>a.map((v,i)=>v+b[i]); const mx=a=>Math.max(...a);
+function topIndexes(arr, n=2){
+  return arr.map((v,i)=>({v:+v||0,i})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v||a.i-b.i).slice(0,n).map(x=>x.i);
+}
 function vdist(mount,myArr,foeArr,animate){ mount.innerHTML=''; const m1=mx(myArr)||1,m2=mx(foeArr)||1;
+  const myTop=new Set(topIndexes(myArr)), foeTop=new Set(topIndexes(foeArr));
   for(let i=0;i<myArr.length;i++){ const row=el('div','vrow');
     const bl=el('div','bl'), br=el('div','br');
     const lw=(myArr[i]/m1*100), rw=(foeArr[i]/m2*100);
     if(animate){bl.style.width='0%';br.style.width='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{bl.style.width=lw+'%';br.style.width=rw+'%';}));}
     else{bl.style.width=lw+'%';br.style.width=rw+'%';}
+    if(myTop.has(i)) bl.textContent=fmtMetric(myArr[i])+' battles';
+    if(foeTop.has(i)) br.textContent=fmtMetric(foeArr[i])+' battles';
     row.append(bl,br); mount.appendChild(row);
   } }
 function buildArmy(animate){
@@ -1212,6 +1226,11 @@ function buildRounds(animate){ const c=$('#roundsBars'); c.innerHTML='';
     else{up.style.height=uh+'%';dn.style.height=dh+'%';}
     col.append(up,dn); c.appendChild(col);
   }
+  const winTop=new Set(topIndexes(wins)), lossTop=new Set(topIndexes(losses));
+  [...c.children].forEach((col,i)=>{
+    if(winTop.has(i)){ const lab=el('span','bar-label'); lab.textContent=fmtMetric(wins[i])+' battles'; col.querySelector('.up').appendChild(lab); }
+    if(lossTop.has(i)){ const lab=el('span','bar-label'); lab.textContent=fmtMetric(losses[i])+' battles'; col.querySelector('.dn').appendChild(lab); }
+  });
   const edges=(w&&w.edges)||(l&&l.edges)||[0,80];
   const lo=Math.round(edges[0]), hi=Math.round(edges[edges.length-1]);
   const xs=$('#roundsX'); if(xs){ xs.innerHTML=''; for(let k=0;k<=4;k++){const s=el('span');s.textContent=Math.round(lo+(hi-lo)*k/4);xs.appendChild(s);} }
@@ -1248,6 +1267,15 @@ function tlClassNoun(){
   const cls=tlSelectedClass();
   return cls==='Total'?'troops':cls.toLowerCase();
 }
+function tlTroopWord(n){ return Math.round(+(n||0))===1?'troop':'troops'; }
+function updateTlSliderLabel(){
+  const slider=$('#tlSlider'), label=$('#tlSlabel');
+  if(!slider||!label) return;
+  const min=+slider.min||1, max=+slider.max||1, val=+slider.value||min;
+  const pct=max>min?(val-min)/(max-min)*100:0;
+  label.style.setProperty('--pos',pct+'%');
+  label.textContent='Battle '+val.toLocaleString();
+}
 function tlClassView(data){
   const cls=tlSelectedClass();
   const turns=(data&&data.turns)||[];
@@ -1282,7 +1310,7 @@ function tlBars(mount, turns, youArr, enemyArr, verb, animate){
     }else{
       const yourLabel=noun==='troops'?'You':'Your '+noun;
       const enemyLabel=noun==='troops'?'Enemy':'Enemy '+noun;
-      col.title='Turn '+t+'  •  '+yourLabel+' killed '+fmtMetric(youArr[i])+' troops  •  '+enemyLabel+' killed '+fmtMetric(enemyArr[i])+' troops';
+      col.title='Turn '+t+'  •  '+yourLabel+' killed '+fmtMetric(youArr[i])+' '+tlTroopWord(youArr[i])+'  •  '+enemyLabel+' killed '+fmtMetric(enemyArr[i])+' '+tlTroopWord(enemyArr[i]);
     }
     const by=el('div','b you'), be=el('div','b enemy');
     const hy=Math.max(0,youArr[i]/max*100), he=Math.max(0,enemyArr[i]/max*100);
@@ -1303,7 +1331,7 @@ function tlProcs(mount, turns, procs){
       else { ic=el('div','tl-proc-icon miss '+p.side); ic.textContent=(p.name||'?').slice(0,1); }
       const sideLabel=p.side==='own'?'You':'Enemy';
       const kills=+(p.kills||0);
-      ic.title=sideLabel+': '+(p.name||'Unknown skill')+' (turn '+t+')'+(kills>0?' killed '+fmtMetric(kills)+' troops':'');
+      ic.title=sideLabel+': '+(p.name||'Unknown skill')+' (turn '+t+')'+(kills>0?' killed '+fmtMetric(kills)+' '+tlTroopWord(kills):'');
       (p.side==='enemy'?enemyLane:ownLane).appendChild(ic); });
     cell.append(ownLane,enemyLane);
     mount.appendChild(cell); });
@@ -1317,8 +1345,8 @@ function tlRenderCharts(data, animate){
   // troops KILLED = casualties inflicted by the selected class (Total reverses losses)
   tlBars($('#tlKilled'), turns, data.own_dealt, data.enemy_dealt, 'killed', animate);
   tlProcs($('#tlProcs'), turns, data.procs);   // procs only present in Per Battle data
-  const ax=$('#tlX'); if(ax){ ax.innerHTML='';
-    turns.forEach(t=>{ const s=el('span','tl-x-turn'); s.textContent=t; ax.appendChild(s); }); }
+  ['#tlXKill','#tlX'].forEach(sel=>{ const ax=$(sel); if(ax){ ax.innerHTML='';
+    turns.forEach(t=>{ const s=el('span','tl-x-turn'); s.textContent=t; ax.appendChild(s); }); } });
 }
 // fetch one battle's timeline on demand — deterministic via (seed, index), so it
 // matches the averaged run exactly (no new sim). Cached per index.
@@ -1338,12 +1366,14 @@ function tlUpdate(animate){
   if(mode!=='battle'){
     if(slider) slider.disabled=true;
     if(slabel) slabel.textContent='avg · '+(TL.n||0).toLocaleString()+' sims';
+    if(slabel) slabel.style.setProperty('--pos','0%');
     if(cap) cap.textContent='turn →'+(TL.avg.truncated?'  · first '+TL.avg.turns.length+' turns':'');
     tlRenderCharts(TL.avg, animate); return;
   }
   if(slider) slider.disabled=false;
   const i=Math.min(TL.n||1,Math.max(1,+((slider&&slider.value)||1)));
-  if(slabel) slabel.textContent='Battle '+i.toLocaleString();
+  if(slider) slider.value=i;
+  updateTlSliderLabel();
   if(cap) cap.textContent='turn →';
   const tok=++TL.token;
   tlFetchBattle(i-1).then(d=>{ if(tok!==TL.token) return; tlRenderCharts(d, false); })
@@ -1438,7 +1468,7 @@ function skillLine(skill, animate){
   sub.textContent=(skill.source==='troop'?'troop · ':'')+(skill.troop||skill.slot||'');
   if(skill.effect){ nm.title=skill.effect; sub.title=skill.effect; }
   copy.append(nm,sub);
-  line.append(copy,skillMetric('Procs',skill.triggers,'procs',animate,compact),skillMetric('Kills',skill.kills,'kills',animate,compact));
+  line.append(copy,skillMetric('Triggered',skill.triggers,'procs',animate,compact),skillMetric('Kills',skill.kills,'kills',animate,compact));
   return line;
 }
 function skillCard(row, side, animate){
@@ -1565,7 +1595,7 @@ function initAccordions(){
     while(title.nextSibling) body.appendChild(title.nextSibling);
     block.appendChild(body);
     const btn=el('button','accordion-toggle');
-    btn.type='button'; btn.textContent='▾'; btn.title='Collapse section';
+    btn.type='button'; btn.textContent='▸'; btn.title='Collapse section';
     btn.setAttribute('aria-label','Collapse section');
     btn.setAttribute('aria-expanded','true');
     btn.setAttribute('aria-controls',body.id);
@@ -1573,7 +1603,7 @@ function initAccordions(){
       e.stopPropagation();
       const open=btn.getAttribute('aria-expanded')==='true';
       btn.setAttribute('aria-expanded',String(!open));
-      btn.textContent=open?'▸':'▾';
+      btn.textContent=open?'▾':'▸';
       btn.title=(open?'Expand ':'Collapse ')+(btn.dataset.sec||'section');
       btn.setAttribute('aria-label',btn.title);
       body.hidden=open;
@@ -1595,7 +1625,7 @@ function initAccordions(){
       : (titleText.includes('input stats assumptions') || titleText.includes('buffs') || titleText.includes('troop quality'));
     if(startsCollapsed){
       btn.setAttribute('aria-expanded','false');
-      btn.textContent='>';
+      btn.textContent='▾';
       btn.title='Expand '+secName;
       btn.setAttribute('aria-label',btn.title);
       body.hidden=true;
@@ -1612,7 +1642,10 @@ function initInteractions(){
   $('#roleToggle').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true');
-    $('#foeRole').textContent = b.dataset.role==='Rally'?'Garrison':'Rally';
+    const foeRole=b.dataset.role==='Rally'?'Garrison':'Rally';
+    const foe=$('#foeRole'), img=foe&&foe.querySelector('img');
+    if(foe){ foe.title=foeRole; foe.setAttribute('aria-label',foeRole); }
+    if(img) img.src=foeRole==='Rally'?'assets/ui/rally-swords.png':'assets/ui/garrison-shield.png';
     updateFinalStats();
   });
   // troops mirror
@@ -1637,7 +1670,7 @@ function initInteractions(){
   const tlc=$('#tlClassToggle'); if(tlc) tlc.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); tlUpdate(false); });
   const tls=$('#tlSlider'); if(tls) tls.addEventListener('input',()=>{
-    const sl=$('#tlSlabel'); if(sl) sl.textContent='Battle '+(+tls.value).toLocaleString();   // label instantly
+    updateTlSliderLabel();   // label follows the thumb instantly
     clearTimeout(tlSlideTimer); tlSlideTimer=setTimeout(()=>tlUpdate(false),90);              // fetch after the slide settles
   });
   const inputZone=document.querySelector('.input');
@@ -1662,6 +1695,16 @@ function initInteractions(){
   }
   $('#tabs').addEventListener('dblclick',e=>{ const t=e.target.closest('.tab'); if(t) startRename(t); });
   $('#tabs').addEventListener('click',e=>{
+    const tool=e.target.closest('.tab-tool');
+    if(tool){
+      e.stopPropagation();
+      const tab=tool.closest('.tab');
+      if(tab) selectTab(tab);
+      if(tool.classList.contains('rename-tab')) startRename(tab);
+      else if(tool.classList.contains('save-tab')) saveConfig();
+      else if(tool.classList.contains('load-tab')) loadConfig();
+      return;
+    }
     const close=e.target.closest('.x');
     if(close){ e.stopPropagation(); closeTab(close.closest('.tab')); return; }
     const t=e.target.closest('.tab'); if(t) selectTab(t);
@@ -1675,7 +1718,7 @@ function initInteractions(){
   let tabN=1;
   $('#tabAdd').addEventListener('click',()=>{ if(document.querySelectorAll('#tabs .tab').length>=5)return;
     snapshotTab(activeTab()); tabN++;
-    const cfg=formToConfig(); cfg.name='Config '+tabN;
+    const cfg=formToConfig(); cfg.name='Scenario '+tabN;
     const t=makeTab(cfg.name,cfg,null); selectTab(t);
   });
   updateTabAddState();
@@ -1684,8 +1727,6 @@ function initInteractions(){
   $('#runBtn').addEventListener('click',triggerRun);
   $('#refreshBtn').addEventListener('click',triggerRun);
   $('#runStatus').addEventListener('click',()=>{ (lastRunFailed?$('#fcError'):document.querySelector('.forecast'))?.scrollIntoView({block:'center'}); });
-  $('#saveBtn').addEventListener('click',saveConfig);
-  $('#loadBtn').addEventListener('click',loadConfig);
   document.addEventListener('keydown',e=>{
     if(e.key!=='Enter'||openPop) return;
     const target=e.target;
@@ -1884,7 +1925,7 @@ function buildProfile(which){   // 'me' | 'foe'
     lead_heroes:leadMap, joiners:joiners.length?joiners:null }; }
 
 /* ---------- save / load config (a config = both side profiles as JSON) ---------- */
-function activeTabName(){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); return t?t.textContent.trim():'Config 1'; }
+function activeTabName(){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); return t?t.textContent.trim():'Scenario 1'; }
 function renameActiveTab(name){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); if(t)t.textContent=name; }
 function currentRuns(){ return parseInt(($('#runsSel').value||'1000').replace(/[^0-9]/g,''))||1000; }
 function activeTab(){ return document.querySelector('#tabs .tab[aria-selected="true"]'); }
@@ -1894,7 +1935,7 @@ function updateTabAddState(){
   if(!add)return;
   const capped=count>=5;
   add.disabled=capped;
-  add.title=capped?'Maximum 5 configs':'New config (max 5)';
+  add.title=capped?'Maximum 5 scenarios':'New scenario (max 5)';
 }
 function setRunStatus(state,msg){
   const chip=$('#runStatus'); if(!chip)return;
@@ -1928,7 +1969,7 @@ function restoreTab(tab){
     if(FORECAST){ renderCharts(false); clearForecastStale(); }
     else needsRun=true;
   } finally { applyingConfig=false; updateFinalStats(); updateAccordionSummaries(); }
-  if(needsRun) markForecastStale('Run this config');
+  if(needsRun) markForecastStale('Run this scenario');
 }
 function selectTab(tab){
   if(!tab||tab===activeTab()) return;
@@ -1950,8 +1991,12 @@ function closeTab(tab){
 function makeTab(name, cfg, forecast){
   const t=el('div','tab'); t.setAttribute('role','tab'); t.tabIndex=-1; t.setAttribute('aria-selected','false');
   const nm=el('span','tname'); nm.textContent=name;
-  const x=el('button','x'); x.type='button'; x.setAttribute('aria-label','Close config'); x.textContent='x';
-  t.append(nm,x); $('#tabs').appendChild(t);
+  const mkTool=(cls,title,src)=>{ const b=el('button','tab-tool '+cls); b.type='button'; b.title=title; b.setAttribute('aria-label',title); const img=el('img'); img.src=src; img.alt=''; b.appendChild(img); return b; };
+  const rn=mkTool('rename-tab','Rename','assets/ui/rename-pen.png');
+  const sv=mkTool('save-tab','Save scenario','assets/ui/save-down.png');
+  const ld=mkTool('load-tab','Load scenario','assets/ui/load-up.png');
+  const x=el('button','x'); x.type='button'; x.setAttribute('aria-label','Close scenario'); x.textContent='x';
+  t.append(nm,rn,sv,ld,x); $('#tabs').appendChild(t);
   tabState.set(t,{config:cfg||formToConfig(), forecast:forecast||null});
   updateTabAddState();
   return t;
@@ -1973,7 +2018,7 @@ function restoreAutosave(){
   if(!raw) return false;
   try{
     const cfg=JSON.parse(raw); if(!cfg||!cfg.own||!cfg.enemy)return false;
-    applyingConfig=true; configToForm(cfg); renameActiveTab(cfg.name||'Config 1');
+    applyingConfig=true; configToForm(cfg); renameActiveTab(cfg.name||'Scenario 1');
     return true;
   }catch(_){ return false; }
   finally{ applyingConfig=false; updateFinalStats(); }
@@ -2008,7 +2053,7 @@ async function saveConfig(){
       const writable=await handle.createWritable();
       await writable.write(JSON.stringify(cfg,null,2)); await writable.close();
       hideError(); return;
-    }catch(err){ if(err&&err.name==='AbortError')return; showError('Could not save config: '+(err.message||err)); return; }
+    }catch(err){ if(err&&err.name==='AbortError')return; showError('Could not save scenario: '+(err.message||err)); return; }
   }
   downloadConfigFallback(cfg);
 }
@@ -2021,13 +2066,13 @@ async function loadConfig(){
     }else file=await pickConfigFileFallback();
     if(!file)return;
     await loadConfigFile(file);
-  }catch(err){ if(err&&err.name==='AbortError')return; showError('Could not load config: '+(err.message||err)); }
+  }catch(err){ if(err&&err.name==='AbortError')return; showError('Could not load scenario: '+(err.message||err)); }
 }
 async function loadConfigFile(file){
   let cfg; try{ cfg=JSON.parse(await file.text()); }catch(_){ showError("That file isn't valid JSON."); return; }
   if(!cfg||!cfg.own||!cfg.enemy){ showError('Not a WoS config file (missing own/enemy).'); return; }
   const opt=[...$('#runsSel').options].find(o=>+o.textContent.replace(/[^0-9]/g,'')===cfg.runs); if(opt)$('#runsSel').value=opt.value;
-  renameActiveTab(cfg.name||stripJsonExt(file.name));
+  renameActiveTab(cfg.name||stripJsonExt(file.name)||'Scenario 1');
   applyingConfig=true;
   try{ configToForm(cfg); }catch(err){ showError('Could not apply config: '+err.message); return; }
   finally{ applyingConfig=false; updateFinalStats(); }
@@ -2039,7 +2084,9 @@ function configToForm(cfg){
   activeSeed=cfg.seed||DEFAULT_SEED;
   const myR=own.role==='garrison'?'Garrison':'Rally';
   document.querySelectorAll('#roleToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.role===myR?'true':'false'));
-  $('#foeRole').textContent = myR==='Rally'?'Garrison':'Rally';
+  const foeR=myR==='Rally'?'Garrison':'Rally', foe=$('#foeRole'), foeImg=foe&&foe.querySelector('img');
+  if(foe){ foe.title=foeR; foe.setAttribute('aria-label',foeR); }
+  if(foeImg) foeImg.src=foeR==='Rally'?'assets/ui/rally-swords.png':'assets/ui/garrison-shield.png';
   const eq=$('#eqTroops'); $('#myTroops').value = numFmt(own.troops_total!=null?own.troops_total:1000000);
   const same=(own.troops_total!=null && own.troops_total===enemy.troops_total); eq.checked=same;
   if(!same && enemy.troops_total!=null) $('#foeTroops').value=numFmt(enemy.troops_total);

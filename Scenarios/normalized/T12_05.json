@@ -1,0 +1,134 @@
+{
+  "wos_config": 1,
+  "name": "T12_05",
+  "runs": 200,
+  "seed": 4471,
+  "own": {
+    "role": "rally",
+    "troops_total": 1421184,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5241003276141584,
+      "Lancer": 0.0,
+      "Marksman": 0.4758996723858417
+    },
+    "formation_counts": {
+      "Infantry": 744843.0,
+      "Lancer": 0.0,
+      "Marksman": 676341.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 9,
+        "tier": 10.5,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 26.471,
+      "Infantry|Defense": 23.744,
+      "Infantry|Lethality": 26.506,
+      "Infantry|Health": 23.4,
+      "Lancer|Attack": 17.194000000000003,
+      "Lancer|Defense": 15.517000000000001,
+      "Lancer|Lethality": 23.747,
+      "Lancer|Health": 20.888,
+      "Marksman|Attack": 26.471,
+      "Marksman|Defense": 23.734,
+      "Marksman|Lethality": 26.451999999999998,
+      "Marksman|Health": 23.386
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Gregory",
+      "Lancer": "Mia",
+      "Marksman": "Blanchette"
+    },
+    "joiners": [
+      "Nora",
+      "Nora",
+      "Nora",
+      "Nora"
+    ]
+  },
+  "enemy": {
+    "role": "garrison",
+    "troops_total": 1421819,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.47380011098459085,
+      "Lancer": 0.33769980567146735,
+      "Marksman": 0.1885000833439418
+    },
+    "formation_counts": {
+      "Infantry": 673658.0,
+      "Lancer": 480148.0,
+      "Marksman": 268013.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 8,
+        "tier": 10.5,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 8,
+        "tier": 10.5,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 9,
+        "tier": 10.5,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 21.197,
+      "Infantry|Defense": 24.511999999999997,
+      "Infantry|Lethality": 24.388,
+      "Infantry|Health": 27.56,
+      "Lancer|Attack": 22.899,
+      "Lancer|Defense": 26.426,
+      "Lancer|Lethality": 24.749000000000002,
+      "Lancer|Health": 27.919,
+      "Marksman|Attack": 22.899,
+      "Marksman|Defense": 26.426,
+      "Marksman|Lethality": 24.801,
+      "Marksman|Health": 27.969
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Magnus",
+      "Lancer": "Freya",
+      "Marksman": "Blanchette"
+    },
+    "joiners": [
+      "Gregory",
+      "Seo-yoon",
+      "Jessie",
+      "Jessie"
+    ]
+  },
+  "_expected_real_outcome": {
+    "real_winner": "enemy",
+    "own_surv_frac": 0.0,
+    "enemy_surv_frac": 0.18387220876918933,
+    "own_role": "attacker"
+  }
+}

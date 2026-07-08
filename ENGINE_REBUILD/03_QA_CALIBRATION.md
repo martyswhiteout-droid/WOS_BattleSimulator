@@ -133,3 +133,37 @@ magnitude honestly, and never let the UI imply certainty the physics doesn't hav
 A model that says "coin-flip, catastrophic losses either way" for a near-even rally is
 CORRECT and valuable. A model that says "you win with 62,364 survivors" is a lie, even
 when it happens to be right.
+
+---
+
+## 8. OVERFIT GUARDRAIL — gate G12 (added 2026-07-08, Martin's directive)
+
+**The problem this prevents:** iteratively tuning `TURN_PARAMS` to match the
+latest battle report, and silently breaking battles that were already correct.
+
+**The lock.** `wos_sim/normalize_reports.py` converts ALL 13 real battle reports
+(the 5 `pvp_t12_report_00N` + the 8 `data/reports/report_00N`) into ONE front-end
+scenario format, and `wos_sim/data/golden_baseline.json` records the set whose
+WINNER the engine currently predicts correctly (`locked_pass`, currently 7/13).
+
+**G12 (blocking):** `py -m wos_sim.eval_reports` → `golden_regression()` must return
+`ok=True`, i.e.:
+- every `locked_pass` battle still has the correct winner (no `broken`), AND
+- no NEW silent wrong-winner (a confident wrong call with no coin-flip flag).
+
+Enforced by `regression.py` check #13 and
+`predictor/tests/test_golden_anchors.py`. **A change may FIX a `known_miss`
+(move it into `locked_pass` and update the JSON); it may NEVER drop a
+`locked_pass` id.** The golden pass count may only increase.
+
+**Procedure for ANY calibration change (mandatory):**
+1. Make the change. 2. Run `py -m wos_sim.eval_reports` and read the 13-battle
+table. 3. If any previously-passing battle flipped to a miss → the change is
+overfit; revert or rework. 4. Only if the pass count held or rose do you proceed.
+
+**Standing finding (why tuning alone won't work):** sweeping `def_k` across its
+whole range never exceeds 8/13 winners — the ~5 remaining misses are STRUCTURAL
+(garrison/fortress defense not in the troop panel; composition/ambush upsets;
+near-even chaos), not calibration. Do not chase them with parameters; they need
+a model term (e.g. a garrison-defense factor derived from a controlled mirror
+test), added without breaking G12.

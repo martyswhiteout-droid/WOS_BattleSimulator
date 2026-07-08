@@ -101,5 +101,6 @@ def _turn_procs(turn_record, own_is_attacker: bool) -> list:
         side = "own" if ((p.get("side") == "attacker") == own_is_attacker) else "enemy"
         out.append({"name": meta.get("name") or p.get("name"),
                     "icon": meta.get("icon"), "side": side,
+                    "troop": p.get("troop"),
                     "kills": p.get("kills", 0)})
     return out

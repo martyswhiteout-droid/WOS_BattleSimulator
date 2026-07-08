@@ -1,0 +1,135 @@
+{
+  "wos_config": 1,
+  "name": "RAW_03",
+  "runs": 200,
+  "seed": 4471,
+  "own": {
+    "role": "garrison",
+    "troops_total": 1502640,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.4848300324761753,
+      "Lancer": 0.1079366980780493,
+      "Marksman": 0.4072332694457754
+    },
+    "formation_counts": {
+      "Infantry": 728525.0,
+      "Lancer": 162190.0,
+      "Marksman": 611925.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 35.519,
+      "Infantry|Defense": 32.726,
+      "Infantry|Lethality": 31.272,
+      "Infantry|Health": 27.641,
+      "Lancer|Attack": 33.463,
+      "Lancer|Defense": 30.829,
+      "Lancer|Lethality": 30.687,
+      "Lancer|Health": 27.073,
+      "Marksman|Attack": 35.519,
+      "Marksman|Defense": 32.726,
+      "Marksman|Lethality": 31.216,
+      "Marksman|Health": 27.545
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Hervor",
+      "Lancer": "Lloyd",
+      "Marksman": "Ligeia"
+    },
+    "joiners": [
+      "Gatot",
+      "Gatot",
+      "Ling Xue",
+      "Magnus"
+    ]
+  },
+  "enemy": {
+    "role": "rally",
+    "troops_total": 1824472,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5158237561332814,
+      "Lancer": 0.2213747319772515,
+      "Marksman": 0.262800963785687
+    },
+    "formation_counts": {
+      "Infantry": 941106.0,
+      "Lancer": 403892.0,
+      "Marksman": 479473.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 9,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 35.313,
+      "Infantry|Defense": 29.257,
+      "Infantry|Lethality": 29.53,
+      "Infantry|Health": 29.446,
+      "Lancer|Attack": 35.313,
+      "Lancer|Defense": 29.257,
+      "Lancer|Lethality": 29.541,
+      "Lancer|Health": 29.476,
+      "Marksman|Attack": 35.313,
+      "Marksman|Defense": 29.257,
+      "Marksman|Lethality": 29.498,
+      "Marksman|Health": 29.476
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Hervor",
+      "Lancer": "Karol",
+      "Marksman": "Ligeia"
+    },
+    "joiners": [
+      "Jessie",
+      "Seo-yoon",
+      "Jessie",
+      "Jessie"
+    ]
+  },
+  "_expected_real_outcome": {
+    "real_winner": "own",
+    "own_surv_frac": 0.25189599637970506,
+    "enemy_surv_frac": 0.0,
+    "own_role": "defender",
+    "note": ""
+  }
+}

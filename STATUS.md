@@ -654,3 +654,21 @@ error-independent finding, NOT acted on: anchors 1/2/5 (all real rallies)
 suggest large multi-player garrison defenders are under-credited by flat
 def_k=0.45 — the reverted size-dep scale targeted this; must be re-derived on
 corrected data if pursued, not resurrected from the withdrawn cliff.
+
+## 23. Golden-anchor overfit guardrail — all 13 real battles normalized (2026-07-08)
+
+Martin's anti-overfit directive. Normalized ALL real reports into ONE front-end
+scenario format (`wos_sim/normalize_reports.py`): the 5 `pvp_t12_report_00N`
+(T12_01-05) + the 8 raw `data/reports/report_00N` (RAW_01-08) → 13 battles
+spanning attacker wins/losses AND defender wins/losses. Ran every one through
+the production path (`wos_sim/eval_reports.py`): **7/13 winners correct.** The 6
+misses are all UPSETS (the weaker-on-troop-stats side won); 2 (RAW_03, RAW_04)
+are silent (confident wrong winner, no coin-flip flag). def_k sweep over the
+full set: 0.30→8/13, current 0.45→7/13, nothing exceeds 8/13 → the misses are
+STRUCTURAL (garrison defense off-panel + composition upsets + near-even chaos),
+NOT tunable. Did NOT reactively re-tune (that's the overfit reflex). GUARDRAIL:
+`golden_baseline.json` locks the 7 correct winners; `golden_regression()` +
+regression #13 + `test_golden_anchors.py` FAIL if any locked battle regresses or
+a new silent miss appears — proven to catch a def_k=0.60 bump (breaks RAW_08).
+Rule (QA doc G12): a change may FIX a known miss, never BREAK a locked one; pass
+count may only increase. 91 tests green.

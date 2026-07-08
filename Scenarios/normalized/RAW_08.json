@@ -1,0 +1,135 @@
+{
+  "wos_config": 1,
+  "name": "RAW_08",
+  "runs": 200,
+  "seed": 4471,
+  "own": {
+    "role": "rally",
+    "troops_total": 1615708,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5043999286999878,
+      "Lancer": 0.0,
+      "Marksman": 0.49549980565795304
+    },
+    "formation_counts": {
+      "Infantry": 814963.0,
+      "Lancer": 0.0,
+      "Marksman": 800583.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 31.348,
+      "Infantry|Defense": 28.256,
+      "Infantry|Lethality": 25.983,
+      "Infantry|Health": 27.241,
+      "Lancer|Attack": 31.348,
+      "Lancer|Defense": 28.256,
+      "Lancer|Lethality": 26.005,
+      "Lancer|Health": 27.233,
+      "Marksman|Attack": 31.348,
+      "Marksman|Defense": 28.256,
+      "Marksman|Lethality": 25.7,
+      "Marksman|Health": 26.95
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Eleonora",
+      "Lancer": "Lloyd",
+      "Marksman": "Rufus"
+    },
+    "joiners": [
+      "Nora",
+      "Nora",
+      "Nora",
+      "Nora"
+    ]
+  },
+  "enemy": {
+    "role": "garrison",
+    "troops_total": 1618888,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.6129997875084626,
+      "Lancer": 0.3869001438024125,
+      "Marksman": 0.0
+    },
+    "formation_counts": {
+      "Infantry": 992378.0,
+      "Lancer": 626348.0,
+      "Marksman": 0.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 31.751,
+      "Infantry|Defense": 25.478,
+      "Infantry|Lethality": 24.813,
+      "Infantry|Health": 28.002,
+      "Lancer|Attack": 31.751,
+      "Lancer|Defense": 25.478,
+      "Lancer|Lethality": 24.804,
+      "Lancer|Health": 28.004,
+      "Marksman|Attack": 23.869,
+      "Marksman|Defense": 19.173,
+      "Marksman|Lethality": 23.02,
+      "Marksman|Health": 25.968
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Eleonora",
+      "Lancer": "Lloyd",
+      "Marksman": "Bradley"
+    },
+    "joiners": [
+      "Gatot",
+      "Hendrik",
+      "Jessie",
+      "Eleonora"
+    ]
+  },
+  "_expected_real_outcome": {
+    "real_winner": "own",
+    "own_surv_frac": 0.24675498295484086,
+    "enemy_surv_frac": 0.0,
+    "own_role": "attacker",
+    "note": ""
+  }
+}

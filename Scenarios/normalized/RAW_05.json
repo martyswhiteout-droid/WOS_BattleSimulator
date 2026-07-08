@@ -1,0 +1,135 @@
+{
+  "wos_config": 1,
+  "name": "RAW_05",
+  "runs": 200,
+  "seed": 4471,
+  "own": {
+    "role": "garrison",
+    "troops_total": 1771872,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.6164147297321703,
+      "Lancer": 0.1742800834371783,
+      "Marksman": 0.2093051868306514
+    },
+    "formation_counts": {
+      "Infantry": 1092208.0,
+      "Lancer": 308802.0,
+      "Marksman": 370862.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 38.285,
+      "Infantry|Defense": 31.571,
+      "Infantry|Lethality": 32.656,
+      "Infantry|Health": 32.103,
+      "Lancer|Attack": 38.285,
+      "Lancer|Defense": 31.571,
+      "Lancer|Lethality": 32.606,
+      "Lancer|Health": 32.082,
+      "Marksman|Attack": 36.229,
+      "Marksman|Defense": 29.87,
+      "Marksman|Lethality": 31.968,
+      "Marksman|Health": 31.399
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Gisela",
+      "Lancer": "Flora",
+      "Marksman": "Ligeia"
+    },
+    "joiners": [
+      "Gatot",
+      "Ahmose",
+      "Nora",
+      "Vulcanus"
+    ]
+  },
+  "enemy": {
+    "role": "rally",
+    "troops_total": 1678246,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5113159810897806,
+      "Lancer": 0.2685351253630278,
+      "Marksman": 0.22014710596658654
+    },
+    "formation_counts": {
+      "Infantry": 858114.0,
+      "Lancer": 450668.0,
+      "Marksman": 369461.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 9,
+        "tier": 10.8,
+        "t12_stack": 0
+      },
+      "Lancer": {
+        "fc": 9,
+        "tier": 10.9,
+        "t12_stack": 0
+      },
+      "Marksman": {
+        "fc": 9,
+        "tier": 10.9,
+        "t12_stack": 0
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 36.783,
+      "Infantry|Defense": 30.768,
+      "Infantry|Lethality": 24.772,
+      "Infantry|Health": 24.561,
+      "Lancer|Attack": 36.434,
+      "Lancer|Defense": 29.479,
+      "Lancer|Lethality": 24.022,
+      "Lancer|Health": 23.192,
+      "Marksman|Attack": 36.783,
+      "Marksman|Defense": 30.268,
+      "Marksman|Lethality": 24.311,
+      "Marksman|Health": 24.067
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Gisela",
+      "Lancer": "Flora",
+      "Marksman": "Vulcanus"
+    },
+    "joiners": [
+      "Jessie",
+      "Jessie",
+      "Renee",
+      "Jessie"
+    ]
+  },
+  "_expected_real_outcome": {
+    "real_winner": "enemy",
+    "own_surv_frac": 0.0,
+    "enemy_surv_frac": 0.3637404766643269,
+    "own_role": "defender",
+    "note": ""
+  }
+}

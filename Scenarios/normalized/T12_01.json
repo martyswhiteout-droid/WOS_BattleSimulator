@@ -1,0 +1,134 @@
+{
+  "wos_config": 1,
+  "name": "T12_01",
+  "runs": 200,
+  "seed": 4471,
+  "own": {
+    "role": "rally",
+    "troops_total": 1805272,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.4340559206590475,
+      "Lancer": 0.18364490226403557,
+      "Marksman": 0.38229917707691696
+    },
+    "formation_counts": {
+      "Infantry": 783589.0,
+      "Lancer": 331529.0,
+      "Marksman": 690154.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.3,
+        "t12_stack": 4
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 11.6,
+        "t12_stack": 5
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.5,
+        "t12_stack": 8
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 40.93,
+      "Infantry|Defense": 34.191,
+      "Infantry|Lethality": 33.889,
+      "Infantry|Health": 30.405,
+      "Lancer|Attack": 41.015,
+      "Lancer|Defense": 33.851,
+      "Lancer|Lethality": 33.816,
+      "Lancer|Health": 29.961,
+      "Marksman|Attack": 38.875,
+      "Marksman|Defense": 32.149,
+      "Marksman|Lethality": 33.172,
+      "Marksman|Health": 29.346
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Elif",
+      "Lancer": "Dominic",
+      "Marksman": "Vulcanus"
+    },
+    "joiners": [
+      "Blanchette",
+      "Hendrik",
+      "Ligeia",
+      "Bradley"
+    ]
+  },
+  "enemy": {
+    "role": "garrison",
+    "troops_total": 1868495,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5240731176695683,
+      "Lancer": 0.18636496217544066,
+      "Marksman": 0.28956192015499105
+    },
+    "formation_counts": {
+      "Infantry": 979228.0,
+      "Lancer": 348222.0,
+      "Marksman": 541045.0
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 11.0,
+        "t12_stack": 4
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 10.8,
+        "t12_stack": 3
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 11.1,
+        "t12_stack": 3
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 37.062,
+      "Infantry|Defense": 38.466,
+      "Infantry|Lethality": 36.242,
+      "Infantry|Health": 32.268,
+      "Lancer|Attack": 36.52,
+      "Lancer|Defense": 37.908,
+      "Lancer|Lethality": 35.773,
+      "Lancer|Health": 31.525,
+      "Marksman|Attack": 36.52,
+      "Marksman|Defense": 37.919000000000004,
+      "Marksman|Lethality": 35.966,
+      "Marksman|Health": 31.909000000000002
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Elif",
+      "Lancer": "Dominic",
+      "Marksman": "Cara"
+    },
+    "joiners": [
+      "Eleonora",
+      "Ligeia",
+      "Renee",
+      "Blanchette"
+    ]
+  },
+  "_expected_real_outcome": {
+    "real_winner": "own",
+    "own_surv_frac": 0.034545486774292186,
+    "enemy_surv_frac": 0.0,
+    "own_role": "attacker"
+  }
+}

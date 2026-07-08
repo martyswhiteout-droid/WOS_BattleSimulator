@@ -212,6 +212,27 @@ def main():
         ok &= _check("turn engine ranks anchors A1-A4 (winner=A; A5 known miss)",
                      False, f"harness error: {exc}")
 
+    # 13. OVERFIT GUARDRAIL (2026-07-08): every real battle whose winner the
+    #     engine currently gets right (golden_baseline.json::locked_pass) must
+    #     STAY right, and silent wrong-winners must not grow. This is the lock
+    #     that stops a future param tweak from fitting one report and breaking
+    #     others. See ENGINE_REBUILD/03_QA_CALIBRATION.md gate G12.
+    try:
+        from .eval_reports import golden_regression
+        v = golden_regression(n=20)
+        detail = f"{v['match_count']}/13 winners; locked intact={not v['broken']}"
+        if v["broken"]:
+            detail += f"; BROKE {v['broken']}"
+        if v["new_silent"]:
+            detail += f"; NEW SILENT MISS {v['new_silent']}"
+        if v["improved"]:
+            detail += f"; improved {v['improved']} (update golden_baseline.json)"
+        ok &= _check("overfit guardrail (golden battles hold, no new silent miss)",
+                     v["ok"], detail)
+    except Exception as exc:
+        ok &= _check("overfit guardrail (golden battles hold, no new silent miss)",
+                     False, f"harness error: {exc}")
+
     print(f"\n{'ALL GREEN' if ok else 'REGRESSIONS PRESENT'}")
     sys.exit(0 if ok else 1)
 

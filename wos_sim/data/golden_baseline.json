@@ -1,0 +1,18 @@
+{
+  "_purpose": "OVERFIT GUARDRAIL. The set of real battles whose WINNER the turn engine currently predicts correctly. Any engine/TURN_PARAMS change MUST keep every id in `locked_pass` passing. The golden pass count may only INCREASE, never drop. See ENGINE_REBUILD/03_QA_CALIBRATION.md gate G12 and wos_sim/eval_reports.py::golden_regression.",
+  "established": "2026-07-08",
+  "engine_params_at_baseline": {"rate": 168.0, "def_k": 0.45, "def_ed": 1.0, "fire_mode": "start", "mod_gamma": 0.30, "stat_floor": 0.4, "K_skill": 0.15, "q_def": 0.7},
+  "total_battles": 13,
+  "baseline_pass_count": 7,
+  "locked_pass": ["T12_01", "T12_02", "T12_03", "T12_04", "RAW_02", "RAW_06", "RAW_08"],
+  "known_miss": {
+    "T12_05": "near-mirror rally, real defender win (coin-flip, flagged)",
+    "RAW_01": "attacker lost a rally (coin-flip, flagged)",
+    "RAW_03": "defender won a foundry battle - SILENT wrong winner (not flagged near-even)",
+    "RAW_04": "defender lost despite better stats - SILENT wrong winner (not flagged near-even)",
+    "RAW_05": "defender lost despite better stats (flagged near-even)",
+    "RAW_07": "defender won a 40-turn wall grind (flagged near-even)"
+  },
+  "silent_miss_baseline": ["RAW_03", "RAW_04"],
+  "rule": "A change may FIX a known_miss (moves it into locked_pass - update this file). A change may NOT drop any locked_pass id, and may NOT increase silent_miss beyond baseline. If it does, the regression FAILS."
+}
