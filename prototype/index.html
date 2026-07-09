@@ -1137,10 +1137,10 @@
   .km-note{font-family:var(--mono);font-size:11px;color:#8d6d56;background:rgba(176,106,46,.1);border:1px solid rgba(176,106,46,.28);border-radius:8px;padding:10px 12px;margin:6px 0}
   /* stacked bar chart: one column per turn, segments = victim class (inf bottom -> mar top) */
   .km-bars{display:flex;align-items:flex-end;gap:4px;height:120px;padding:0 2px}
-  .km-col{flex:1;min-width:0;height:100%;display:flex;flex-direction:column-reverse;justify-content:flex-start;border-radius:4px 4px 0 0;overflow:hidden}
+  .km-col{flex:1;min-width:0;height:100%;display:flex;flex-direction:column-reverse;justify-content:flex-start}
   .km-seg2{width:100%;transition:height .5s}
   .km-seg2.inf{background:#2a78d6} .km-seg2.lan{background:#1baf7a} .km-seg2.mar{background:#eda100}
-  .km-seg2:first-child{border-radius:4px 4px 0 0}
+  .km-seg2.km-top{border-radius:4px 4px 0 0}   /* round only the true top of the stack, so segments stay flush */
 
   /* ============================================================
      Round 6 — captain hero rows: mirrored sides + aligned columns
@@ -1834,7 +1834,8 @@ function kmBars(mount, turns, series, maxT, animate){ if(!mount) return; mount.i
   turns.forEach((t,i)=>{ const vec=series[i]||[0,0,0]; const tot=vec[0]+vec[1]+vec[2];
     const col=el('div','km-col');
     col.title='Turn '+t+'  •  killed '+fmtMetric(tot)+' — '+KM_CLASSES.map((c,vi)=>fmtMetric(vec[vi])+' '+c).join(', ');
-    vec.forEach((v,vi)=>{ const seg=el('div','km-seg2 '+['inf','lan','mar'][vi]); const h=Math.max(0,v/maxT*100);
+    const topIdx=vec[2]>0?2:(vec[1]>0?1:(vec[0]>0?0:-1));   // highest victim class present = top of the stack
+    vec.forEach((v,vi)=>{ const seg=el('div','km-seg2 '+['inf','lan','mar'][vi]+(vi===topIdx?' km-top':'')); const h=Math.max(0,v/maxT*100);
       if(animate){ seg.style.height='0%'; requestAnimationFrame(()=>requestAnimationFrame(()=>seg.style.height=h+'%')); }
       else seg.style.height=h+'%';
       col.appendChild(seg); });
