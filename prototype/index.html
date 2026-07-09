@@ -1100,8 +1100,8 @@
      ============================================================ */
   /* wider columns (min width, horizontal scroll if the round range is long);
      count labels smaller, unbolded, and sitting inside the bar */
-  .rbars{overflow-x:auto;overflow-y:visible;gap:4px}
-  .rcol{min-width:54px}
+  .rbars{overflow:visible;gap:6px}   /* NOT overflow-x:auto — that forces overflow-y to clip the outside labels */
+  .rcol{min-width:0}
   .rcol .up,.rcol .dn{left:4px;right:4px;border-radius:4px 4px 0 0}
   .rcol .dn{border-radius:0 0 4px 4px}
   .bar-label{font-size:8px;font-weight:400;text-shadow:0 1px 2px rgba(0,0,0,.75);letter-spacing:0}
@@ -1124,6 +1124,27 @@
   /* battle-length counts sit OUTSIDE the bar: above the blue (win) top, below the red (loss) bottom */
   .rcol .up .bar-label{top:auto;bottom:100%;transform:translateX(-50%);margin-bottom:3px;color:var(--ice-bright);text-shadow:none}
   .rcol .dn .bar-label{top:100%;bottom:auto;transform:translateX(-50%);margin-top:3px;color:var(--ember-bright);text-shadow:none}
+
+  /* ============================================================
+     Kill breakdown block (top of Kills and Losses) — attacker class -> victim class
+     ============================================================ */
+  .km-note{color:#b06a2e;font-weight:600}
+  .km-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
+  .km-controls label{font-family:var(--mono);font-size:11px;color:#8d6d56;letter-spacing:.06em;text-transform:uppercase}
+  .km-controls input[type=range]{flex:0 1 220px;accent-color:#2a78d6}
+  .km-controls #kmTurnOut{font-family:var(--disp);font-weight:700;font-size:13px;color:#6a5647;min-width:20px}
+  .km-legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-family:var(--mono);font-size:10.5px;color:#8d6d56}
+  .km-legend span{display:flex;align-items:center;gap:5px}
+  .km-legend i{width:11px;height:11px;border-radius:3px;flex:none}
+  .km-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 26px}
+  .km-side-h{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.04em;margin-bottom:10px}
+  .km-side-h.you{color:#1682D8} .km-side-h.enemy{color:#C0392B}
+  .km-row{margin-bottom:11px}
+  .km-row-head{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:#6a5647;margin-bottom:3px}
+  .km-row-head .t{color:#8d6d56}
+  .km-bar{display:flex;gap:2px;height:20px}
+  .km-seg{display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden;font-family:var(--mono);font-size:10.5px;color:#fff}
+  @media (max-width:520px){ .km-legend{margin-left:0} }
 </style>
 </head>
 <body>
@@ -1345,6 +1366,26 @@
         <div class="tl-block"><div class="tl-cap">Troops killed each turn</div><div class="tl-bars" id="tlKilled"></div><div class="tl-procs" id="tlProcs"></div></div>
         <div class="tl-x" id="tlX"></div>
         <div class="tl-xcap" id="tlXcap">Turns</div>
+      </div>
+
+      <!-- kill breakdown (attacker class -> victim class), top of Kills and Losses -->
+      <div class="fc-part" id="killMatrixPart">
+        <div class="h">Kill breakdown — who killed what</div>
+        <div class="sub">each troop type's kills for the selected turn, split by the class it killed · <b class="km-note">preview · sample data until the engine wires per-turn kills</b></div>
+        <div class="km-controls">
+          <label for="kmTurn">Turn</label>
+          <input type="range" id="kmTurn" min="1" max="14" step="1" value="12">
+          <span id="kmTurnOut">12</span>
+          <span class="km-legend">
+            <span><i style="background:#2a78d6"></i>killed Infantry</span>
+            <span><i style="background:#1baf7a"></i>killed Lancer</span>
+            <span><i style="background:#eda100"></i>killed Marksman</span>
+          </span>
+        </div>
+        <div class="km-grid">
+          <div class="km-side"><div class="km-side-h you">Your troops' kills</div><div id="kmYou"></div></div>
+          <div class="km-side"><div class="km-side-h enemy">Enemy troops' kills</div><div id="kmFoe"></div></div>
+        </div>
       </div>
 
       <!-- army loss distribution -->
@@ -1736,6 +1777,22 @@ function buildRounds(animate){ const c=$('#roundsBars'); c.innerHTML='';
   const lo=Math.round(edges[0]), hi=Math.round(edges[edges.length-1]);
   const xs=$('#roundsX'); if(xs){ xs.innerHTML=''; for(let k=0;k<=4;k++){const s=el('span');s.textContent=Math.round(lo+(hi-lo)*k/4);xs.appendChild(s);} }
 }
+// ---- kill breakdown (attacker class -> victim class) — SAMPLE data until the engine
+//      ships the per-turn kill matrix (see ENGINE_HANDOFF_kill_matrix.md). Same layout the
+//      real data will drop into: bar length = that troop's total kills, split by victim class.
+const KM_COLORS=['#2a78d6','#1baf7a','#eda100'], KM_CLASSES=['Infantry','Lancer','Marksman'];
+function kmMock(t,you){ const b=you?1:0.66, g=1+t*0.11;
+  return [[160,14,10],[92,42,8],[68,28,54]].map(r=>r.map(v=>Math.round(v*b*g))); }
+function kmRender(mountId,you,t,maxT){ const mount=$('#'+mountId); if(!mount) return; const m=kmMock(t,you); mount.innerHTML='';
+  m.forEach((row,ai)=>{ const tot=row[0]+row[1]+row[2]; let segs='';
+    row.forEach((v,vi)=>{ if(v<=0) return; const w=v/maxT*100; const lab=w>7?v.toLocaleString():'';
+      segs+='<div class="km-seg" title="'+KM_CLASSES[ai]+' killed '+v.toLocaleString()+' '+KM_CLASSES[vi]+'" style="width:'+w.toFixed(2)+'%;background:'+KM_COLORS[vi]+'">'+lab+'</div>'; });
+    mount.insertAdjacentHTML('beforeend','<div class="km-row"><div class="km-row-head"><span>'+KM_CLASSES[ai]
+      +'</span><span class="t">'+tot.toLocaleString()+' killed</span></div><div class="km-bar">'+segs+'</div></div>'); });
+}
+function buildKillMatrix(){ const inp=$('#kmTurn'); if(!inp) return; const t=+inp.value; setText('#kmTurnOut',String(t));
+  const maxT=Math.max(1,...[true,false].reduce((a,y)=>a.concat(kmMock(t,y).map(r=>r[0]+r[1]+r[2])),[]));
+  kmRender('kmYou',true,t,maxT); kmRender('kmFoe',false,t,maxT); }
 // two-line chart (you=ice, enemy=ember) as an SVG stretched to fill its frame
 function lineChartSVG(turns, own, enemy, opts){
   opts=opts||{}; const W=300, H=opts.vh||60, n=turns.length;
@@ -2819,7 +2876,7 @@ function initForecastTabs(){
   if(verdict && oq){ while(oq.firstChild) verdict.appendChild(oq.firstChild); oq.remove(); }
   // 2) tab groups — Timeline is first/default and also holds Battle length as its last box
   const groups=[{name:'Timeline', ids:['timelinePart'], match:['battle length']},
-                {name:'Kills and Losses', match:['troops lost']},
+                {name:'Kills and Losses', ids:['killMatrixPart'], match:['troops lost']},
                 {name:'Skills', ids:['skillTelemetryPart'], match:['skill details']}];
   const tabParts=[...fc.querySelectorAll(':scope > .fc-part')].filter(p=>!p.querySelector(':scope > .verdict'));
   if(tabParts.length<2) return;
@@ -2846,6 +2903,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   initProvTip();
   initTelemetryCollapse();
   initForecastTabs();
+  const kmT=$('#kmTurn'); if(kmT) kmT.addEventListener('input',buildKillMatrix); buildKillMatrix();
   const restored=restoreAutosave();
   if(restored) showSessionNote('Restored your last session');
   updateFinalStats();
