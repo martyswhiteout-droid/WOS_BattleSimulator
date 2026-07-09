@@ -948,7 +948,7 @@
 
   /* #5 · pet-buff sliders styled like the T12-stack slider (plain value, no boxed output) */
   .input #petBuffs .slider-wrap output{background:transparent;border:0;box-shadow:none;padding:0;
-    min-width:44px;font-family:var(--mono);font-size:12px;color:#31506b}
+    min-width:44px;font-family:var(--mono);font-size:12px;color:#dbeafc}   /* light: the value floats on the navy panel, not in a box */
   .input #petBuffs .slider-wrap{max-width:200px;gap:10px}
 
   /* #7 · dropdowns + text inputs — clean light control (Troop-Power reference) */
@@ -2836,7 +2836,11 @@ function renderCharts(animate){
 
 function setVerdict(){
   const v=FORECAST.verdict, eng=FORECAST.engine;
-  const win=pctN(v.win.p), mut=pctN(v.mutual.p), loss=Math.max(0,pctN(v.loss.p));
+  const win=pctN(v.win.p), mut=pctN(v.mutual.p);
+  // loss = the complement of the DISPLAYED win (the engine's joiner-aware win_prob_override
+  // replaces p_win but leaves the raw p_loss ~0 on a near-deterministic sim, which left the
+  // bar's loss portion blank). Complement keeps win+mut+loss = 100% so the red loss bar fills.
+  const loss=Math.max(0,100-win-mut);
   const se=pctN(v.win.se), me=pctN(eng.model_error), eff=pctN(v.win_effective);
   $('#pctNum').textContent=win.toFixed(1)+'%';
   $('#effNote').innerHTML='+'+mut.toFixed(1)+'% mutual wipe → <b>'+eff.toFixed(1)+'% effective</b>';
