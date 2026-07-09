@@ -387,7 +387,8 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
               engine_path: str = "general", engine_note: str = "",
               stochastic: bool = True, severe_fraction: float = 0.35,
               calibrated: bool = False, near_even: bool = False,
-              confidence: str = "directional") -> Forecast:
+              confidence: str = "directional",
+              win_prob_override: float | None = None) -> Forecast:
     n = len(records)
     own, enemy = ('A', 'D') if own_is_attacker else ('D', 'A')
     wins = sum(1 for r in records if r.winner == own)
@@ -396,6 +397,18 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
 
     eff_win = (wins + mutual) if own_is_attacker else wins        # mutual -> attacker
     eff_loss = (losses + mutual) if not own_is_attacker else losses
+
+    # win_prob_override: the joiner-aware DISPLAYED probability (winprob.py). The
+    # Monte-Carlo `wins/n` above is a near-deterministic 1/0 that ignores joiners
+    # for the winner and reads 100% on a coin flip; when supplied, the override
+    # replaces the reported p_win (and its effective, mutual-adjusted form).
+    p_win_prop = _prop(wins, n)
+    p_win_eff = eff_win / n if n else 0.0
+    if win_prob_override is not None:
+        ov = max(0.0, min(1.0, win_prob_override))
+        p_win_prop = Proportion(ov, p_win_prop.se)
+        mutual_bonus = (mutual / n) if (own_is_attacker and n) else 0.0
+        p_win_eff = min(1.0, ov + mutual_bonus)
 
     buckets = {i: 0 for i in range(1, 9)}
     for r in records:
@@ -418,8 +431,8 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
 
     return Forecast(
         n=n,
-        p_win=_prop(wins, n), p_mutual=_prop(mutual, n), p_loss=_prop(losses, n),
-        p_win_effective=eff_win / n if n else 0.0,
+        p_win=p_win_prop, p_mutual=_prop(mutual, n), p_loss=_prop(losses, n),
+        p_win_effective=p_win_eff,
         p_loss_effective=eff_loss / n if n else 0.0,
         outcome_quality=buckets, army_losses=army_losses,
         class_losses=class_losses, rounds=rounds,

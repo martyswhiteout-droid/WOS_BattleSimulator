@@ -1,0 +1,205 @@
+{
+  "wos_config": 1,
+  "name": "Scenario_1",
+  "runs": 100,
+  "seed": 4471,
+  "own": {
+    "role": "rally",
+    "troops_total": 1000000,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5,
+      "Lancer": 0.2,
+      "Marksman": 0.3
+    },
+    "formation_counts": {
+      "Infantry": 500000,
+      "Lancer": 200000,
+      "Marksman": 300000
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 37.58356666666667,
+      "Infantry|Defense": 34.6156,
+      "Infantry|Lethality": 33.38571428571428,
+      "Infantry|Health": 29.828571428571426,
+      "Lancer|Attack": 37.58356666666667,
+      "Lancer|Defense": 34.6156,
+      "Lancer|Lethality": 33.38571428571428,
+      "Lancer|Health": 29.828571428571426,
+      "Marksman|Attack": 37.58356666666667,
+      "Marksman|Defense": 34.6156,
+      "Marksman|Lethality": 33.38571428571428,
+      "Marksman|Health": 29.828571428571426
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Hank",
+      "Lancer": "Estrella",
+      "Marksman": "Viveca"
+    },
+    "joiners": null,
+    "_ui_buffs": {
+      "item": [
+        "20",
+        "20",
+        "20",
+        "20",
+        "-20",
+        "-20"
+      ],
+      "pet": [
+        10,
+        10,
+        10,
+        10,
+        5,
+        5,
+        10
+      ]
+    },
+    "_ui_max_item": true,
+    "_ui_max_pet": true,
+    "_ui_input_panel": {
+      "Infantry|Attack": 13,
+      "Infantry|Defense": 13,
+      "Infantry|Lethality": 13,
+      "Infantry|Health": 13,
+      "Lancer|Attack": 13,
+      "Lancer|Defense": 13,
+      "Lancer|Lethality": 13,
+      "Lancer|Health": 13,
+      "Marksman|Attack": 13,
+      "Marksman|Defense": 13,
+      "Marksman|Lethality": 13,
+      "Marksman|Health": 13
+    },
+    "_ui_max_gears": {
+      "Infantry": true,
+      "Lancer": true,
+      "Marksman": true
+    },
+    "_ui_stats_type": "base"
+  },
+  "enemy": {
+    "role": "garrison",
+    "troops_total": 1000000,
+    "stats_mode": "scouted",
+    "formation": {
+      "Infantry": 0.5,
+      "Lancer": 0.2,
+      "Marksman": 0.3
+    },
+    "formation_counts": {
+      "Infantry": 500000,
+      "Lancer": 200000,
+      "Marksman": 300000
+    },
+    "quality": {
+      "Infantry": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Lancer": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      },
+      "Marksman": {
+        "fc": 10,
+        "tier": 12,
+        "t12_stack": 24
+      }
+    },
+    "panel": {
+      "Infantry|Attack": 42.035516666666666,
+      "Infantry|Defense": 34.6156,
+      "Infantry|Lethality": 29.828571428571426,
+      "Infantry|Health": 33.38571428571428,
+      "Lancer|Attack": 42.035516666666666,
+      "Lancer|Defense": 34.6156,
+      "Lancer|Lethality": 29.828571428571426,
+      "Lancer|Health": 33.38571428571428,
+      "Marksman|Attack": 42.035516666666666,
+      "Marksman|Defense": 34.6156,
+      "Marksman|Lethality": 29.828571428571426,
+      "Marksman|Health": 33.38571428571428
+    },
+    "panel_is_final": true,
+    "widgets_in_panel": true,
+    "own_buffs": {},
+    "debuffs_on_enemy": {},
+    "lead_heroes": {
+      "Infantry": "Hank",
+      "Lancer": "Estrella",
+      "Marksman": "Viveca"
+    },
+    "joiners": [
+      "Gatot",
+      "Patrick",
+      "Ling Xue",
+      "Wu Ming"
+    ],
+    "_ui_buffs": {
+      "item": [
+        "20",
+        "20",
+        "20",
+        "20",
+        "-20",
+        "-20"
+      ],
+      "pet": [
+        10,
+        10,
+        10,
+        10,
+        5,
+        5,
+        10
+      ]
+    },
+    "_ui_max_item": true,
+    "_ui_max_pet": true,
+    "_ui_input_panel": {
+      "Infantry|Attack": 13,
+      "Infantry|Defense": 13,
+      "Infantry|Lethality": 13,
+      "Infantry|Health": 13,
+      "Lancer|Attack": 13,
+      "Lancer|Defense": 13,
+      "Lancer|Lethality": 13,
+      "Lancer|Health": 13,
+      "Marksman|Attack": 13,
+      "Marksman|Defense": 13,
+      "Marksman|Lethality": 13,
+      "Marksman|Health": 13
+    },
+    "_ui_max_gears": {
+      "Infantry": true,
+      "Lancer": true,
+      "Marksman": true
+    },
+    "_ui_stats_type": "base"
+  }
+}

@@ -25,12 +25,38 @@ def predict(own: SideProfile, enemy: SideProfile, *, n: int = 10_000, seed: int 
     meta = kernel.engine_meta(con.attacker_units, con.defender_units, eng_params)
     records = kernel.run_batch(con, n=n, seed=seed, kernel=kernel_impl, params=eng_params)
     err = engine_model_error if engine_model_error is not None else meta["model_error"]
+
+    # Joiner-aware DISPLAYED win probability (turn engine only). The turn engine
+    # decides the winner + mechanics, but its raw win% is a near-deterministic
+    # 1/0 that ignores joiners for the winner and reads 100% on a coin flip.
+    # winprob.hybrid_win_prob folds joiners into an effective-strength sigmoid:
+    # coin flip -> ~50%, a 4-joiner deficit -> ~10%, without ever overriding the
+    # sim's winner on the structural upsets. See winprob.py.
+    win_override = None
+    near_even = meta.get("near_even", False)
+    confidence = meta.get("confidence", "directional")
+    note = meta.get("note", "")
+    if turn_engine and records:
+        from . import winprob
+        own_tag = 'A' if con.own_is_attacker else 'D'
+        wins = sum(1 for r in records if r.winner == own_tag)
+        mutual = sum(1 for r in records if r.winner == 'mutual')
+        p_turn_own = (wins + (mutual if con.own_is_attacker else 0)) / len(records)
+        win_override, near_even = winprob.hybrid_win_prob(
+            con, p_turn_own, blind_near_even=meta.get("near_even", False))
+        confidence = "coin_flip" if near_even else "directional"
+        # keep the note consistent with the FINAL (joiner-aware) near-even call
+        note = ("Near-even armies: the win% reflects the strength balance "
+                "(joiners included); ~40-60% is a coin flip either side can take."
+                if near_even else
+                "Turn-by-turn skill engine; win% reflects the joiner-aware "
+                "strength balance. Read survivor magnitudes as directional.")
+
     return summary.summarize(
         records, own_is_attacker=con.own_is_attacker, engine_model_error=err,
-        engine_path=meta.get("path", "general"), engine_note=meta.get("note", ""),
+        engine_path=meta.get("path", "general"), engine_note=note,
         stochastic=meta.get("stochastic", True), calibrated=meta.get("calibrated", False),
-        near_even=meta.get("near_even", False),
-        confidence=meta.get("confidence", "directional"))
+        near_even=near_even, confidence=confidence, win_prob_override=win_override)
 
 
 def battle_timeline(own: SideProfile, enemy: SideProfile, *, seed: int = 0,
