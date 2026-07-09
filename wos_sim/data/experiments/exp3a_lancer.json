@@ -1,18 +1,28 @@
 {
   "_type": "lancer_vs_marksman",
-  "setup": "attacker 5k inf+15k LANCER (+238.7% stronger) vs defender 5k inf+15k MARKSMAN (+231.5%), T10, HEROES (no skills) both sides, ENCAMPMENT",
-  "outcome": "DEFEAT - MARKSMAN DEFENDER WON despite lower stats",
+  "type": 1,
+  "setup": "ATTACHMENT-2 battle (23:23:25): 10k PURE LANCER vs 10k PURE MARKSMAN, Lv 6.0 (no skills/procs => DETERMINISTIC). Attacker (Lancer) WON with 4205 survivors (~42%) per Martin.",
+  "outcome": "LANCER (attacker) WON, ~4205 survivors (42%)",
   "attacker": {
-    "troops": 20000,
-    "survivors": 0
+    "deployed_class": "Lancer (INFERRED - CONFIRM: which side deployed lancer vs marksman?)",
+    "troops": 10000,
+    "survivors": 4205, "surv_frac": 0.42,
+    "stats_pct_LEFT_side": {
+      "Infantry": {"Attack": 176.2, "Defense": 169.0, "Lethality": 109.7, "Health": 109.3},
+      "Lancer":   {"Attack": 182.7, "Defense": 163.0, "Lethality": 135.5, "Health": 134.1},
+      "Marksman": {"Attack": 176.2, "Defense": 166.0, "Lethality": 129.1, "Health": 129.0}
+    }
   },
   "defender": {
-    "troops": 20000,
-    "survivors": 8302,
-    "surv_frac": 0.415
+    "deployed_class": "Marksman (INFERRED)",
+    "troops": 10000,
+    "survivors": 0,
+    "stats_pct_RIGHT_side": {
+      "Infantry": {"Attack": 179.1, "Defense": 157.2, "Lethality": 112.0, "Health": 108.7},
+      "Lancer":   {"Attack": 179.1, "Defense": 150.7, "Lethality": 105.3, "Health": 102.6},
+      "Marksman": {"Attack": 179.1, "Defense": 155.7, "Lethality": 121.2, "Health": 118.6}
+    }
   },
-  "engine": {
-    "winner": "ATTACKER (lancer) 84% - WRONG. Engine over-credits lancer vs marksman"
-  },
-  "_extraction": "CONFIRMED by Martin 2026-07-08"
+  "NEEDS_CONFIRMATION": "(1) Which side deployed LANCER vs MARKSMAN (I inferred attacker=left=Lancer). (2) This is DISTINCT from the old exp3a content (a 20k MIXED 5k-inf+15k-lancer vs 5k-inf+15k-marksman battle where the MARKSMAN DEFENDER won 8302/41.5%) - that battle is a SEPARATE Type-1 report that ALSO needs its stats; it was overwritten here and must be re-recorded separately.",
+  "_extraction": "STATS captured 2026-07-09 from attachment 2; class assignment INFERRED - confirm."
 }

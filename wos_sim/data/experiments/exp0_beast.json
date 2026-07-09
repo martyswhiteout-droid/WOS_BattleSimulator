@@ -1,17 +1,22 @@
 {
   "_type": "beast_control",
-  "setup": "20,000 T10 (5k inf+15k lancer) vs Lv18 Titan Roc",
-  "outcome": "DEFEAT (beast not killed)",
+  "type": 1,
+  "setup": "20,000 Infantry Lv 1.0 (attacker) vs BEAST 'Colonel Müller'-style, 3 units Lv 6.0 (counts 2595 / 3025 / 3025 = 8645; the 3 beast icons = shield/sword/crossbow ~ inf/lancer/marksman analog). Beast stats are FLAT +57.0% on every stat.",
+  "outcome": "UNKNOWN - attachment 1 shows only Troop Power + Stat Bonuses screens, NOT the Battle Overview. NEED the outcome screen (survivors) to use this as a Type-1 target.",
   "attacker": {
+    "deployed_class": "Infantry",
     "troops": 20000,
-    "losses": 0,
-    "injured": 7000,
-    "lightly": 13000,
-    "survivors": 0
+    "tier_display": "Lv 1.0",
+    "stats_pct": {
+      "Infantry": {"Attack": 181.3, "Defense": 153.0, "Lethality": 112.0, "Health": 108.7},
+      "Lancer":   {"Attack": 184.6, "Defense": 150.7, "Lethality": 105.3, "Health": 102.6},
+      "Marksman": {"Attack": 185.6, "Defense": 155.7, "Lethality": 121.2, "Health": 118.6}
+    }
   },
   "defender_beast": {
-    "survivors": 7176
+    "units_Lv6": [2595, 3025, 3025],
+    "stats_pct_FLAT": {"all_classes_all_stats": 57.0}
   },
-  "note": "beast hunt = separate combat system; not mapped to PvP turn engine",
-  "_extraction": "PROVISIONAL - read from dense screenshots 2026-07-08; VERIFY before using in calibration"
+  "CAVEATS": "(1) Beasts are a SEPARATE combat system (flat-stat multi-unit) - may not map cleanly to the PvP turn engine; treat as its own Type-1 track. (2) The previous exp0 record described a DIFFERENT battle (T10 5k inf+15k lancer vs Lv18 Titan Roc, DEFEAT) - that was provisional/unverified and is superseded here by attachment 1's data. (3) Outcome/survivors still needed.",
+  "_extraction": "STATS captured 2026-07-09 from attachment 1; OUTCOME still needed."
 }

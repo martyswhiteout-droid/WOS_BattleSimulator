@@ -1,18 +1,30 @@
 {
   "_type": "counter",
-  "setup": "10k INFANTRY attacker vs 10k LANCER defender, Lv6 (no skills), heroes-no-skill, encampment, +199.2 vs +189.1",
+  "type": 1,
+  "setup": "10k INFANTRY attacker vs 10k LANCER defender, Lv 6.0 (no skills/procs => DETERMINISTIC), heroes-no-skill, encampment. SAME two players/stats as exp5 (only the DEFENDER's deployed class differs). Exact-fit Type-1 counter target.",
   "counter": "Infantry > Lancer (favorable for attacker)",
-  "outcome": "INFANTRY WON",
+  "outcome": "INFANTRY (attacker) WON",
   "attacker": {
+    "deployed_class": "Infantry",
     "troops": 10000,
-    "injured": 1913,
-    "lightly": 3551,
-    "survivors": 4536,
-    "surv_frac": 0.4536
+    "losses": 0, "injured": 1913, "lightly_injured": 3551, "survivors": 4536, "surv_frac": 0.4536,
+    "stats_pct": {
+      "Infantry": {"Attack": 199.2, "Defense": 192.0, "Lethality": 119.7, "Health": 119.3},
+      "Lancer":   {"Attack": 205.7, "Defense": 186.0, "Lethality": 145.5, "Health": 144.1},
+      "Marksman": {"Attack": 199.2, "Defense": 189.0, "Lethality": 139.1, "Health": 139.0}
+    }
   },
   "defender": {
+    "deployed_class": "Lancer",
     "troops": 10000,
-    "survivors": 0
+    "survivors": 0, "surv_frac": 0.0,
+    "stats_pct": {
+      "Infantry": {"Attack": 189.1, "Defense": 167.2, "Lethality": 122.0, "Health": 118.7},
+      "Lancer":   {"Attack": 189.1, "Defense": 160.7, "Lethality": 115.3, "Health": 112.6},
+      "Marksman": {"Attack": 189.1, "Defense": 165.7, "Lethality": 131.2, "Health": 128.6}
+    }
   },
-  "_extraction": "CONFIRMED by Martin 2026-07-09 (deterministic, repeated identical)"
+  "combat_stats": "Attacker deploys INFANTRY (Atk199.2/Def192.0/Leth119.7/HP119.3) vs Defender LANCER (Atk189.1/Def160.7/Leth115.3/HP112.6).",
+  "engine_recon": "def_k=1.0 + LIVE firing: infantry WINS (correct) but 21% vs real 45% - counter magnitude UNDER-modeled. Fix the counter mechanic, no fudge.",
+  "_extraction": "CONFIRMED by Martin 2026-07-09; FULL STATS captured 2026-07-09 (only Inf Attack '+199.2 vs +189.1' was noted before)."
 }
