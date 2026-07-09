@@ -1128,23 +1128,18 @@
   /* ============================================================
      Kill breakdown block (top of Kills and Losses) — attacker class -> victim class
      ============================================================ */
-  .km-note{color:#b06a2e;font-weight:600}
-  .km-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
-  .km-controls label{font-family:var(--mono);font-size:11px;color:#8d6d56;letter-spacing:.06em;text-transform:uppercase}
-  .km-controls input[type=range]{flex:0 1 220px;accent-color:#2a78d6}
-  .km-controls #kmTurnOut{font-family:var(--disp);font-weight:700;font-size:13px;color:#6a5647;min-width:20px}
-  .km-legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-family:var(--mono);font-size:10.5px;color:#8d6d56}
-  .km-legend span{display:flex;align-items:center;gap:5px}
-  .km-legend i{width:11px;height:11px;border-radius:3px;flex:none}
-  .km-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 26px}
-  .km-side-h{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.04em;margin-bottom:10px}
-  .km-side-h.you{color:#1682D8} .km-side-h.enemy{color:#C0392B}
-  .km-row{margin-bottom:11px}
-  .km-row-head{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:#6a5647;margin-bottom:3px}
-  .km-row-head .t{color:#8d6d56}
-  .km-bar{display:flex;gap:2px;height:20px}
-  .km-seg{display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden;font-family:var(--mono);font-size:10.5px;color:#fff}
-  @media (max-width:520px){ .km-legend{margin-left:0} }
+  /* legend swatches (victim classes) */
+  .km-key .tk-inf{background:#2a78d6} .km-key .tk-lan{background:#1baf7a} .km-key .tk-mar{background:#eda100}
+  /* chart titles + the pending-average note */
+  .km-title{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.02em;color:#1682D8;text-transform:none}
+  .km-title.enemy{color:#C0392B}
+  .km-note{font-family:var(--mono);font-size:11px;color:#8d6d56;background:rgba(176,106,46,.1);border:1px solid rgba(176,106,46,.28);border-radius:8px;padding:10px 12px;margin:6px 0}
+  /* stacked bar chart: one column per turn, segments = victim class (inf bottom -> mar top) */
+  .km-bars{display:flex;align-items:flex-end;gap:4px;height:120px;padding:0 2px}
+  .km-col{flex:1;min-width:0;height:100%;display:flex;flex-direction:column-reverse;justify-content:flex-start;border-radius:4px 4px 0 0;overflow:hidden}
+  .km-seg2{width:100%;transition:height .5s}
+  .km-seg2.inf{background:#2a78d6} .km-seg2.lan{background:#1baf7a} .km-seg2.mar{background:#eda100}
+  .km-seg2:first-child{border-radius:4px 4px 0 0}
 
   /* ============================================================
      Round 6 — captain hero rows: mirrored sides + aligned columns
@@ -1396,21 +1391,32 @@
       <!-- kill breakdown (attacker class -> victim class), top of Kills and Losses -->
       <div class="fc-part" id="killMatrixPart">
         <div class="h">Kill breakdown — who killed what</div>
-        <div class="sub">each troop type's kills for the selected turn, split by the class it killed · <b class="km-note">preview · sample data until the engine wires per-turn kills</b></div>
-        <div class="km-controls">
-          <label for="kmTurn">Turn</label>
-          <input type="range" id="kmTurn" min="1" max="14" step="1" value="12">
-          <span id="kmTurnOut">12</span>
-          <span class="km-legend">
-            <span><i style="background:#2a78d6"></i>killed Infantry</span>
-            <span><i style="background:#1baf7a"></i>killed Lancer</span>
-            <span><i style="background:#eda100"></i>killed Marksman</span>
+        <div class="tl-controls">
+          <span class="seg-toggle" id="kmModeToggle">
+            <button type="button" data-tlmode="avg" aria-pressed="false">Average</button>
+            <button type="button" data-tlmode="battle" aria-pressed="true">Per Battle</button>
           </span>
+          <span class="seg-toggle tl-class-toggle" id="kmClassToggle" aria-label="Attacking troop class">
+            <button type="button" data-tlclass="Total" aria-pressed="true">Total</button>
+            <button type="button" data-tlclass="Infantry" aria-pressed="false">Infantry</button>
+            <button type="button" data-tlclass="Lancer" aria-pressed="false">Lancer</button>
+            <button type="button" data-tlclass="Marksman" aria-pressed="false">Marksman</button>
+          </span>
+          <span class="tl-key km-key"><i class="tk-inf"></i>Infantry<i class="tk-lan"></i>Lancer<i class="tk-mar"></i>Marksman</span>
+          <div class="tl-slider-wrap">
+            <input type="range" class="tl-slider" id="kmSlider" min="1" max="1" value="1" step="1" disabled aria-label="Battle number">
+            <span class="tl-slabel" id="kmSlabel"></span>
+          </div>
+          <span class="tl-end" id="kmSmax">Battle 1,000</span>
         </div>
-        <div class="km-grid">
-          <div class="km-side"><div class="km-side-h you">Your troops' kills</div><div id="kmYou"></div></div>
-          <div class="km-side"><div class="km-side-h enemy">Enemy troops' kills</div><div id="kmFoe"></div></div>
-        </div>
+        <div class="km-note" id="kmNote" hidden></div>
+        <div class="tl-block"><div class="tl-cap km-title" id="kmYouTitle">What your troops killed</div>
+          <div class="tl-bars km-bars" id="kmYouChart"></div><div class="tl-x" id="kmYouX"></div>
+          <div class="tl-procs" id="kmYouProcs"></div></div>
+        <div class="tl-block"><div class="tl-cap km-title enemy" id="kmFoeTitle">What enemy's troops killed</div>
+          <div class="tl-bars km-bars" id="kmFoeChart"></div><div class="tl-x" id="kmFoeX"></div>
+          <div class="tl-procs" id="kmFoeProcs"></div></div>
+        <div class="tl-xcap">Turns</div>
       </div>
 
       <!-- army loss distribution -->
@@ -1805,22 +1811,88 @@ function buildRounds(animate){ const c=$('#roundsBars'); c.innerHTML='';
   const lo=Math.round(edges[0]), hi=Math.round(edges[edges.length-1]);
   const xs=$('#roundsX'); if(xs){ xs.innerHTML=''; for(let k=0;k<=4;k++){const s=el('span');s.textContent=Math.round(lo+(hi-lo)*k/4);xs.appendChild(s);} }
 }
-// ---- kill breakdown (attacker class -> victim class) — SAMPLE data until the engine
-//      ships the per-turn kill matrix (see ENGINE_HANDOFF_kill_matrix.md). Same layout the
-//      real data will drop into: bar length = that troop's total kills, split by victim class.
-const KM_COLORS=['#2a78d6','#1baf7a','#eda100'], KM_CLASSES=['Infantry','Lancer','Marksman'];
-function kmMock(t,you){ const b=you?1:0.66, g=1+t*0.11;
-  return [[160,14,10],[92,42,8],[68,28,54]].map(r=>r.map(v=>Math.round(v*b*g))); }
-function kmRender(mountId,you,t,maxT){ const mount=$('#'+mountId); if(!mount) return; const m=kmMock(t,you); mount.innerHTML='';
-  m.forEach((row,ai)=>{ const tot=row[0]+row[1]+row[2]; let segs='';
-    row.forEach((v,vi)=>{ if(v<=0) return; const w=v/maxT*100; const lab=w>7?v.toLocaleString():'';
-      segs+='<div class="km-seg" title="'+KM_CLASSES[ai]+' killed '+v.toLocaleString()+' '+KM_CLASSES[vi]+'" style="width:'+w.toFixed(2)+'%;background:'+KM_COLORS[vi]+'">'+lab+'</div>'; });
-    mount.insertAdjacentHTML('beforeend','<div class="km-row"><div class="km-row-head"><span>'+KM_CLASSES[ai]
-      +'</span><span class="t">'+tot.toLocaleString()+' killed</span></div><div class="km-bar">'+segs+'</div></div>'); });
+// ---- kill breakdown: Timeline-style controls; the battle slider drives two stacked
+//      bar charts (my kills / enemy kills). Stack = victim class (Inf/Lan/Mar); the
+//      Total/Inf/Lan/Mar toggle chooses which ATTACKING class's kills to show. Reuses
+//      the on-demand /api/battle fetch (kill_matrix + procs). Per-Battle only for now —
+//      the averaged matrix is a pending engine piece (ENGINE_HANDOFF_kill_matrix.md).
+const KM_VCOLORS=['#2a78d6','#1baf7a','#eda100'], KM_CLASSES=['Infantry','Lancer','Marksman'];
+let KM_SLIDE=null;
+function kmSelectedClass(){ const b=$('#kmClassToggle [aria-pressed="true"]'); return b?b.dataset.tlclass:'Total'; }
+function kmNoun(){ const c=kmSelectedClass(); return c==='Total'?'troops':c.toLowerCase(); }
+// per-turn victim vector [inf,lan,mar] for the selected attacker class (Total = sum of rows)
+function kmVictimSeries(matrix){ const cls=kmSelectedClass();
+  return (matrix||[]).map(turn=>{ turn=turn||[[0,0,0],[0,0,0],[0,0,0]];
+    if(cls==='Total') return [0,1,2].map(v=>+turn[0][v]+ +turn[1][v]+ +turn[2][v]);
+    const a=KM_CLASSES.indexOf(cls); return [0,1,2].map(v=>+((turn[a]||[])[v]||0)); }); }
+function kmBars(mount, turns, series, maxT, animate){ if(!mount) return; mount.innerHTML='';
+  turns.forEach((t,i)=>{ const vec=series[i]||[0,0,0]; const tot=vec[0]+vec[1]+vec[2];
+    const col=el('div','km-col');
+    col.title='Turn '+t+'  •  killed '+fmtMetric(tot)+' — '+KM_CLASSES.map((c,vi)=>fmtMetric(vec[vi])+' '+c).join(', ');
+    vec.forEach((v,vi)=>{ const seg=el('div','km-seg2 '+['inf','lan','mar'][vi]); const h=Math.max(0,v/maxT*100);
+      if(animate){ seg.style.height='0%'; requestAnimationFrame(()=>requestAnimationFrame(()=>seg.style.height=h+'%')); }
+      else seg.style.height=h+'%';
+      col.appendChild(seg); });
+    mount.appendChild(col); });
 }
-function buildKillMatrix(){ const inp=$('#kmTurn'); if(!inp) return; const t=+inp.value; setText('#kmTurnOut',String(t));
-  const maxT=Math.max(1,...[true,false].reduce((a,y)=>a.concat(kmMock(t,y).map(r=>r[0]+r[1]+r[2])),[]));
-  kmRender('kmYou',true,t,maxT); kmRender('kmFoe',false,t,maxT); }
+// procs for ONE side, no class filter (show every triggered skill for that side)
+function kmProcs(mount, turns, procs, side){ if(!mount) return; mount.innerHTML='';
+  if(!procs){ mount.style.display='none'; return; } mount.style.display='flex';
+  turns.forEach((t,i)=>{ const cell=el('div','tl-proc-cell'); const lane=el('div','tl-proc-lane '+side);
+    (procs[i]||[]).filter(p=>p.side===side).forEach(p=>{ let ic;
+      if(p.icon){ ic=el('img','tl-proc-icon '+side); ic.src=p.icon; ic.alt=p.name||''; ic.loading='lazy'; }
+      else { ic=el('div','tl-proc-icon miss '+side); ic.textContent=(p.name||'?').slice(0,1); }
+      const kills=+(p.kills||0);
+      ic.title=(side==='own'?'You':'Enemy')+': '+(p.name||'Unknown skill')+' (turn '+t+')'+(kills>0?' killed '+fmtMetric(kills)+' '+tlTroopWord(kills):'');
+      lane.appendChild(ic); });
+    cell.appendChild(lane); mount.appendChild(cell); });
+}
+function kmRenderCharts(data, animate){ const turns=data.turns||[];
+  const km=data.kill_matrix; if(!km){ kmShowNote('Restart the server to load kill data.'); return; }
+  const ownS=kmVictimSeries(km.own), foeS=kmVictimSeries(km.enemy);
+  const maxT=Math.max(1,...ownS.map(v=>v[0]+v[1]+v[2]),...foeS.map(v=>v[0]+v[1]+v[2]));
+  const noun=kmNoun();
+  setText('#kmYouTitle','What your '+noun+' killed'); setText('#kmFoeTitle','What enemy’s '+noun+' killed');
+  kmBars($('#kmYouChart'), turns, ownS, maxT, animate); kmBars($('#kmFoeChart'), turns, foeS, maxT, animate);
+  kmProcs($('#kmYouProcs'), turns, data.procs, 'own'); kmProcs($('#kmFoeProcs'), turns, data.procs, 'enemy');
+  [['#kmYouX'],['#kmFoeX']].forEach(([sel])=>{ const ax=$(sel); if(ax){ ax.innerHTML='';
+    turns.forEach(t=>{ const s=el('span','tl-x-turn'); s.textContent=t; ax.appendChild(s); }); } });
+}
+function kmShowNote(msg){ const n=$('#kmNote'); if(n){ n.textContent=msg; n.hidden=false; }
+  ['#kmYouChart','#kmFoeChart','#kmYouProcs','#kmFoeProcs','#kmYouX','#kmFoeX'].forEach(s=>{ const e=$(s); if(e) e.innerHTML=''; }); }
+function kmHideNote(){ const n=$('#kmNote'); if(n) n.hidden=true; }
+function kmUpdate(animate){
+  if(!TL.avg){ return; }
+  const btn=$('#kmModeToggle [aria-pressed="true"]'), mode=btn?btn.dataset.tlmode:'battle';
+  const slider=$('#kmSlider'), slabel=$('#kmSlabel');
+  if(mode!=='battle'){   // averaged kill matrix is a pending engine piece
+    if(slider) slider.disabled=true; if(slabel){ slabel.textContent=''; slabel.style.setProperty('--pos','0%'); }
+    kmShowNote('Per-turn kill breakdown is available per battle. Switch to Per Battle to view it (averaged view pending engine support).');
+    return;
+  }
+  kmHideNote();
+  if(slider) slider.disabled=false;
+  const i=Math.min(TL.n||1,Math.max(1,+((slider&&slider.value)||1)));
+  if(slider) slider.value=i;
+  kmSliderLabel();
+  const tok=++TL.token;
+  tlFetchBattle(i-1).then(d=>{ if(tok!==TL.token) return; kmRenderCharts(d, animate); })
+    .catch(()=>{ if(tok!==TL.token) return; kmShowNote('Battle '+i.toLocaleString()+' — restart the server to view kill data.'); });
+}
+function kmSliderLabel(){ const slider=$('#kmSlider'), label=$('#kmSlabel'); if(!slider||!label) return;
+  const min=+slider.min||1, max=+slider.max||1, val=+slider.value||min;
+  label.style.setProperty('--pos', (max>min?(val-min)/(max-min)*100:0)+'%'); label.textContent='Battle '+val.toLocaleString(); }
+function buildKillBreakdown(animate){
+  const part=$('#killMatrixPart'); if(!part) return;
+  const canBattle=(TL.n>1 && !!TL.req);
+  const battleBtn=$('#kmModeToggle [data-tlmode="battle"]');
+  if(battleBtn){ battleBtn.disabled=!canBattle;
+    if(!canBattle) document.querySelectorAll('#kmModeToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.tlmode==='avg'?'true':'false')); }
+  const slider=$('#kmSlider'), smax=$('#kmSmax');
+  if(slider){ slider.max=Math.max(1,TL.n||1); if(+slider.value>TL.n||+slider.value<1) slider.value=1; }
+  if(smax) smax.textContent='Battle '+(TL.n||1).toLocaleString();
+  kmUpdate(animate);
+}
 // two-line chart (you=ice, enemy=ember) as an SVG stretched to fill its frame
 function lineChartSVG(turns, own, enemy, opts){
   opts=opts||{}; const W=300, H=opts.vh||60, n=turns.length;
@@ -2759,7 +2831,7 @@ function renderCharts(animate){
   setVerdict();
   document.querySelectorAll('#obar .oseg').forEach((s,i)=>{ const t=s.dataset.b;
     if(animate){s.style.flexBasis='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{s.style.transitionDelay=(i*80)+'ms';s.style.flexBasis=t;}));} else s.style.flexBasis=t; });
-  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildSkillTelemetry(animate); renderMeta();
+  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildKillBreakdown(animate); buildSkillTelemetry(animate); renderMeta();
 }
 
 function setVerdict(){
@@ -2931,7 +3003,13 @@ window.addEventListener('DOMContentLoaded',()=>{
   initProvTip();
   initTelemetryCollapse();
   initForecastTabs();
-  const kmT=$('#kmTurn'); if(kmT) kmT.addEventListener('input',buildKillMatrix); buildKillMatrix();
+  // kill-breakdown controls (mirror the Timeline): mode + class toggles + battle slider
+  const kmm=$('#kmModeToggle'); if(kmm) kmm.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.disabled)return;
+    [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); kmUpdate(false); });
+  const kmc=$('#kmClassToggle'); if(kmc) kmc.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+    [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); kmUpdate(false); });
+  const kms=$('#kmSlider'); if(kms) kms.addEventListener('input',()=>{ kmSliderLabel();
+    clearTimeout(KM_SLIDE); KM_SLIDE=setTimeout(()=>kmUpdate(false),90); });
   const restored=restoreAutosave();
   if(restored) showSessionNote('Restored your last session');
   updateFinalStats();
