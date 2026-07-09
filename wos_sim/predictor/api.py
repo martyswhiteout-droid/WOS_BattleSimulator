@@ -108,10 +108,19 @@ def battle_timeline(own: SideProfile, enemy: SideProfile, *, seed: int = 0,
         for i, name in enumerate(names)
     }
     procs = [_turn_procs(tr, con.own_is_attacker) for tr in log]   # per-turn proc icons
+    # per-turn 3x3 kill matrix [attacker_class][victim_class] (fixed Inf/Lan/Mar
+    # order), mapped own/enemy the same way as the other a_*/d_* series. Row sums
+    # equal that side's kills-by-class; column sums equal the OTHER side's
+    # per-class casualties. See ENGINE_HANDOFF_kill_matrix.md.
+    _z33 = ((0.0, 0.0, 0.0),) * 3
+    a_kmx = [(r[8] if len(r) > 8 else _z33) for r in tl]
+    d_kmx = [(r[9] if len(r) > 9 else _z33) for r in tl]
+    own_kmx, enemy_kmx = (a_kmx, d_kmx) if con.own_is_attacker else (d_kmx, a_kmx)
     return {"index": index, "turns": list(range(1, len(tl) + 1)),
             "own_survivors": os_, "enemy_survivors": es,
             "own_killed": ok, "enemy_killed": ek,
-            "by_class": by_class, "procs": procs}
+            "by_class": by_class, "procs": procs,
+            "kill_matrix": {"own": own_kmx, "enemy": enemy_kmx}}
 
 
 def _turn_procs(turn_record, own_is_attacker: bool) -> list:

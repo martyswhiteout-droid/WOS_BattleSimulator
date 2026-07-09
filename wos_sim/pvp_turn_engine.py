@@ -182,6 +182,9 @@ class TurnRecord:
     attack_events: dict = field(default_factory=dict)
     procs: list = field(default_factory=list)   # chance/turn-based skills that fired this turn
     kills_by_troop: dict = field(default_factory=dict)
+    # {"attacker": {(atk_class, victim_class): n}, "defender": {...}} - the joint
+    # kill matrix whose row/col sums are kills_by_troop / casualties.
+    kills_matrix: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -1322,10 +1325,15 @@ def _skill_packets(skill: SkillDef, trigger_troops: list[TroopType | None],
 
 
 def _apply_packets_full(packets: list[DamagePacket],
-                        stacks: dict[TroopType, TypeStack]) -> tuple[dict, dict, dict]:
+                        stacks: dict[TroopType, TypeStack]) -> tuple[dict, dict, dict, dict]:
     casualties = {t: 0.0 for t in stacks}
     kills_by_source: dict[str, float] = defaultdict(float)
     kills_by_troop: dict[TroopType, float] = defaultdict(float)
+    # joint (attacker troop class -> victim troop class) kills. The marginals
+    # above are exactly this matrix's row sums (attacker) and, on the opposing
+    # side, its column sums (victim). Pure instrumentation - see
+    # ENGINE_HANDOFF_kill_matrix.md.
+    kills_matrix: dict[tuple[TroopType, TroopType], float] = defaultdict(float)
     for pkt in packets:
         order = list(pkt.target_types) if pkt.target_mode == "backline" else list(ORDER)
         remaining = max(0.0, pkt.magnitude)
@@ -1346,15 +1354,16 @@ def _apply_packets_full(packets: list[DamagePacket],
                 src_troop = pkt.source.troop
             if src_troop is not None:
                 kills_by_troop[src_troop] += killed
+                kills_matrix[(src_troop, troop)] += killed   # (attacker, victim)
             if isinstance(pkt.source, SkillDef):
                 pkt.source.kills += killed
             remaining -= killed
-    return casualties, dict(kills_by_source), dict(kills_by_troop)
+    return casualties, dict(kills_by_source), dict(kills_by_troop), dict(kills_matrix)
 
 
 def apply_packets(packets: list[DamagePacket],
                   stacks: dict[TroopType, TypeStack]) -> tuple[dict, dict]:
-    casualties, kills_by_source, _kills_by_troop = _apply_packets_full(packets, stacks)
+    casualties, kills_by_source, _kbt, _kmx = _apply_packets_full(packets, stacks)
     return casualties, kills_by_source
 
 
@@ -1494,8 +1503,8 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
         offsets = _damage_offsets(active_effects, t)
         a_packets = _apply_offsets(a_packets, offsets.get("defender", 0.0))
         d_packets = _apply_offsets(d_packets, offsets.get("attacker", 0.0))
-        cas_d, kills_a, kills_a_troop = _apply_packets_full(a_packets, d)
-        cas_a, kills_d, kills_d_troop = _apply_packets_full(d_packets, a)
+        cas_d, kills_a, kills_a_troop, kmx_a = _apply_packets_full(a_packets, d)
+        cas_a, kills_d, kills_d_troop, kmx_d = _apply_packets_full(d_packets, a)
         _assert_conservation(cas_d, kills_a)
         _assert_conservation(cas_a, kills_d)
         turn_attack_events = {"attacker": {}, "defender": {}}
@@ -1525,7 +1534,8 @@ def simulate_turns(a_units, d_units, skills: list[SkillDef], params=None,
             t, start, {"attacker": cas_a, "defender": cas_d},
             {"attacker": kills_a, "defender": kills_d},
             turn_attack_events, turn_procs,
-            {"attacker": kills_a_troop, "defender": kills_d_troop}))
+            {"attacker": kills_a_troop, "defender": kills_d_troop},
+            {"attacker": kmx_a, "defender": kmx_d}))
         aa, da = _total(a) > EPS, _total(d) > EPS
         if not aa or not da:
             winner = "mutual" if not aa and not da else "D" if not aa else "A"
@@ -1639,6 +1649,7 @@ def _compact_timeline(turn_log) -> list:
       2-3: attacker/defender casualties suffered, total
       4-5: attacker/defender casualties suffered by class
       6-7: attacker/defender kills dealt by source class
+      8-9: attacker/defender kill matrix [attacker_class][victim_class] (3x3)
     """
     out = []
     for tr in turn_log:
@@ -1648,14 +1659,19 @@ def _compact_timeline(turn_log) -> list:
         cd = tr.casualties.get("defender") or {}
         ka = tr.kills_by_troop.get("attacker") or {}
         kd = tr.kills_by_troop.get("defender") or {}
+        ma = tr.kills_matrix.get("attacker") or {}
+        md = tr.kills_matrix.get("defender") or {}
         a_alive = tuple(sa.get(t, 0.0) - ca.get(t, 0.0) for t in _TL_CLASSES)
         d_alive = tuple(sd.get(t, 0.0) - cd.get(t, 0.0) for t in _TL_CLASSES)
         a_lost = tuple(ca.get(t, 0.0) for t in _TL_CLASSES)
         d_lost = tuple(cd.get(t, 0.0) for t in _TL_CLASSES)
         a_dealt = tuple(ka.get(t, 0.0) for t in _TL_CLASSES)
         d_dealt = tuple(kd.get(t, 0.0) for t in _TL_CLASSES)
+        # rows = attacker class, cols = victim class, fixed _TL_CLASSES order
+        a_kmx = tuple(tuple(ma.get((atk, vic), 0.0) for vic in _TL_CLASSES) for atk in _TL_CLASSES)
+        d_kmx = tuple(tuple(md.get((atk, vic), 0.0) for vic in _TL_CLASSES) for atk in _TL_CLASSES)
         out.append((a_alive, d_alive, sum(ca.values()), sum(cd.values()),
-                    a_lost, d_lost, a_dealt, d_dealt))
+                    a_lost, d_lost, a_dealt, d_dealt, a_kmx, d_kmx))
     return out
 
 

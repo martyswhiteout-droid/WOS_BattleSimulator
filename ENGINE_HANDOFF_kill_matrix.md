@@ -1,5 +1,14 @@
 # Engine handoff — per-turn attacker×victim kill matrix
 
+> **STATUS: IMPLEMENTED 2026-07-09.** All 6 edits landed in `pvp_turn_engine.py`
+> + `api.py`. The per-battle UI call `api.battle_timeline(...)` now returns
+> `kill_matrix: {"own": [<3x3 per turn>], "enemy": [...]}` (rows = attacker
+> class, cols = victim class, fixed Inf/Lan/Mar order). Invariants asserted in
+> `wos_sim/predictor/tests/test_kill_matrix.py` (row sums = kills-by-class, col
+> sums = opposing casualties). Pure instrumentation - back-test unchanged
+> (7/13). Average-mode aggregation (`summary._battle_timeline` + `serialize`)
+> deferred per "Per-Battle is enough for v1".
+
 **Requested by:** front-end / app layer
 **Owner to implement:** engine agent (owns `wos_sim/pvp_turn_engine.py`)
 **Goal:** expose, per turn, how many of each *victim* troop class was killed by each *attacker* troop class — e.g. "Turn 12: my Infantry killed 200 Infantry, 10 Lancer, 10 Marksman."
