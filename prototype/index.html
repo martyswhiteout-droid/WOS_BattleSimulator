@@ -1128,7 +1128,8 @@
   /* ============================================================
      Kill breakdown block (top of Kills and Losses) — attacker class -> victim class
      ============================================================ */
-  /* legend swatches (victim classes) */
+  /* legend swatches (victim classes) + brown text matching the block header */
+  .km-key{color:#8d5b31}
   .km-key .tk-inf{background:#2a78d6} .km-key .tk-lan{background:#1baf7a} .km-key .tk-mar{background:#eda100}
   /* chart titles + the pending-average note */
   .km-title{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.02em;color:#1682D8;text-transform:none}
@@ -1147,8 +1148,11 @@
   /* fixed inner columns so hero box, Max Gears and class icon line up across all
      three rows; hero box (1fr) is flush to the outer edge, class icon toward centre */
   #capMe .lead-row,#capFoe .lead-row{display:grid;align-items:center;gap:8px 10px;width:100%}
-  #capMe .lead-row{grid-template-columns:minmax(0,1fr) 96px 100px 30px}   /* hero-box | impact | Max Gears | class-icon */
-  #capFoe .lead-row{grid-template-columns:30px 100px 96px minmax(0,1fr)}  /* class-icon | Max Gears | impact | hero-box */
+  /* the ~155px outer column holds the widget effect and insets the hero box so it lines
+     up with the formation card (which sits inside the narrower tab panel) */
+  #capMe .lead-row{grid-template-columns:145px minmax(0,1fr) auto 30px}    /* widget | hero-box | Max Gears | class-icon */
+  #capFoe .lead-row{grid-template-columns:30px auto minmax(0,1fr) 145px}   /* class-icon | Max Gears | hero-box | widget */
+  #capMe .widget-impact,#capFoe .widget-impact{white-space:normal}
   #capMe .lead-row .hpick,#capFoe .lead-row .hpick{max-width:none;width:100%}
   #capMe .lead-row .hpick-btn,#capFoe .lead-row .hpick-btn{width:100%}
   /* avatar on the outer side: me = left, foe = right */
@@ -1734,9 +1738,10 @@ function buildHeroes(){
     gear.append(gearInput,document.createTextNode('Max Gears'));
     const pick=heroPicker(c,n);
     const impact=el('span','widget-impact'); impact.dataset.widgetImpact='1';
-    // mirror the two sides: hero box flush to the outer edge, class icon toward the centre
-    if(side==='me') row.append(pick,impact,gear,g);   // [hero-box | impact | Max Gears | class-icon]
-    else row.append(g,gear,impact,pick);              // [class-icon | Max Gears | impact | hero-box]
+    // mirror the two sides: widget effect in the outer gutter, then the hero box aligned
+    // to the formation card, then Max Gears + class icon toward the centre
+    if(side==='me') row.append(impact,pick,gear,g);   // [widget | hero-box | Max Gears | class-icon]
+    else row.append(g,gear,pick,impact);              // [class-icon | Max Gears | hero-box | widget]
     mount.appendChild(row);
   });
   lead($('#capMe'),DEFAULT_LEAD_HEROES,'me');   // Inf, Lan, Mar — one per line
