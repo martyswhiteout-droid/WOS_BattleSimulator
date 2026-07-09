@@ -1179,7 +1179,8 @@
      FC / Tier / T12-stack merged into each formation row (one line, shorter slider);
      enemy side mirrored. Icon, name, +/- buttons, card colour left as-is.
      ============================================================ */
-  .form-ctl{gap:6px}
+  .form-ctl{gap:10px;padding:9px 14px}
+  .form-ctl .fic{width:32px;height:32px}   /* smaller class icon */
   .qctl{display:flex;flex-direction:column;gap:2px;flex:none;min-width:0}
   .qlbl2{font-family:var(--mono);font-size:9px;letter-spacing:.02em;text-transform:uppercase;color:var(--mute-2);text-align:center;white-space:nowrap;line-height:1}
   .form-ctl .qctl select{height:28px;font-size:11px;padding:0 15px 0 4px;border-radius:7px;min-width:0;
@@ -1189,20 +1190,14 @@
   .fctrls{display:flex;align-items:center;gap:6px;flex:1;min-width:56px;grid-template-columns:none}
   .form-ctl input[type=range]{flex:1;min-width:34px}
   .fval{min-width:44px}
-  /* class identity: name stacked above the icon (compact, frees width for the slider) */
-  .fclass{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none}
+  /* class identity: name stacked above the icon; fixed width so the icons line up across rows */
+  .fclass{display:flex;flex-direction:column;align-items:center;gap:3px;flex:none;width:74px}
   .fname{margin-bottom:0;white-space:nowrap;text-align:center}
   .fcount{width:auto;flex:1;min-width:56px}
   /* enemy side mirror: icon -> % -> slider -> T12 -> Tier -> FC */
   .foe .form-ctl{flex-direction:row-reverse}
   .foe .fctrls{flex-direction:row-reverse}
   .foe .fcount{flex-direction:row-reverse}
-  /* widen the row: Formation label + Ratio/Quantity move to a header; cards span 2 columns */
-  .form-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px}
-  .form-head-lab{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#cfe3f4}
-  .form-head .mode-checks{flex-direction:row;gap:8px 16px;margin-top:0}
-  .form-head .mode-checks .gchk{color:#cfe3f4}
-  .duo.form-duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 </style>
 </head>
 <body>
@@ -1264,15 +1259,14 @@
         <div class="lab">Total troops</div>
         <div class="foe"><input type="text" class="num-only" id="foeTroops" value="1,000,000" inputmode="numeric" autocomplete="off" disabled></div>
       </div>
-      <div class="form-head">
-        <span class="form-head-lab">Formation</span>
-        <div class="mode-checks" id="formModeChecks">
-          <label class="gchk"><input type="checkbox" id="formRatio" checked> Input By Troop Ratio</label>
-          <label class="gchk"><input type="checkbox" id="formQty"> Input By Troop Quantity</label>
-        </div>
-      </div>
-      <div class="duo form-duo" style="margin-top:6px;align-items:start">
+      <div class="duo" style="margin-top:14px;align-items:start">
         <div class="me"><div class="form-stack" id="formMe"></div></div>
+        <div class="lab">Formation
+          <div class="mode-checks" id="formModeChecks">
+            <label class="gchk"><input type="checkbox" id="formRatio" checked> Input By Troop Ratio</label>
+            <label class="gchk"><input type="checkbox" id="formQty"> Input By Troop Quantity</label>
+          </div>
+          </div>
         <div class="foe"><div class="form-stack" id="formFoe"></div></div>
       </div>
     </div>
