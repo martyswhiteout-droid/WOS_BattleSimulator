@@ -50,7 +50,7 @@
     color:var(--ember-bright);border:1px solid color-mix(in srgb,var(--ember) 40%,transparent);background:var(--ember-ghost);border-radius:7px;padding:5px 11px}
   .top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
 
-  main{max-width:1520px;margin:0 auto;padding:clamp(16px,2.4vw,30px) clamp(14px,3vw,30px) 90px}
+  main{max-width:1680px;margin:0 auto;padding:clamp(16px,2.4vw,30px) clamp(14px,3vw,30px) 90px}
   .sec-head{display:flex;align-items:baseline;gap:14px;margin:28px 0 16px}
   .sec-head:first-child{margin-top:6px}
   .sec-head h2{font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:.2em;text-transform:uppercase}
@@ -376,7 +376,7 @@
   .tl-slider{width:100%;accent-color:var(--ice);cursor:pointer}
   .tl-slider:disabled{opacity:.35;cursor:not-allowed}
   .tl-end{font-family:var(--mono);font-size:9.5px;color:var(--mute-2);white-space:nowrap}
-  .tl-slabel{position:absolute;top:23px;left:var(--pos,0%);transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--ice-bright);white-space:nowrap;min-width:0;background:var(--void);border:1px solid var(--line);border-radius:6px;padding:1px 5px;pointer-events:none}
+  .tl-slabel{position:absolute;top:23px;left:var(--pos,0%);transform:none;font-family:var(--mono);font-size:10px;color:var(--ice-bright);white-space:nowrap;min-width:0;background:var(--void);border:1px solid var(--line);border-radius:6px;padding:1px 5px;pointer-events:none}
   .tl-controls .tl-key{margin-left:auto}
   .tl-block{margin-top:12px}
   .tl-cap{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-2);margin-bottom:5px}
@@ -509,7 +509,7 @@
   .form-ctl input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);cursor:pointer}
   .form-ctl input[type=range]:disabled{opacity:.7}
   .fval{font-family:var(--mono);font-size:12px;color:var(--white);background:var(--void);border:1px solid var(--line);border-radius:7px;padding:4px 7px;min-width:54px;text-align:center;flex:none}
-  .formation-total{margin-top:9px;font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:.08em;text-align:right;color:var(--ice-bright)}
+  .formation-total{margin-top:9px;font-family:var(--disp);font-size:14px;font-weight:700;letter-spacing:.08em;text-align:right;color:var(--ice-bright)}
   .foe .formation-total{color:var(--ember-bright);text-align:left}
   /* count-entry mode: number of troops per type (Marksman = Total - Inf - Lan) */
   .fcount{display:none;align-items:center;gap:8px;margin-top:2px;width:100%}
@@ -830,7 +830,7 @@
   .tabgroup{margin:16px 0}
   .tabbar{display:flex;gap:5px;padding:0 3px}
   .tab-btn{flex:1;min-width:0;padding:10px 6px;border:0;cursor:pointer;font-family:var(--disp);
-    font-weight:700;font-size:12px;letter-spacing:.02em;line-height:1.15;border-radius:11px 11px 0 0;
+    font-weight:700;font-size:14px;letter-spacing:.02em;line-height:1.15;border-radius:11px 11px 0 0;
     transition:background .15s,color .15s,transform .08s}
   .tab-btn:active{transform:translateY(1px)}
   .tabpanels{border-radius:0 14px 14px 14px;padding:16px}
@@ -1105,6 +1105,25 @@
   .rcol .up,.rcol .dn{left:4px;right:4px;border-radius:4px 4px 0 0}
   .rcol .dn{border-radius:0 0 4px 4px}
   .bar-label{font-size:8px;font-weight:400;text-shadow:0 1px 2px rgba(0,0,0,.75);letter-spacing:0}
+
+  /* ============================================================
+     Feedback round 5 — fit 4 joiners, count labels outside bars
+     ============================================================ */
+
+  /* hero rows get more horizontal room: narrower center label column */
+  .hero-block .duo{grid-template-columns:minmax(0,1fr) 132px minmax(0,1fr)}
+
+  /* joiners: smaller boxes so four fit a row, plus a shrink+ellipsis safety for very
+     long names / narrow panels (shrink chain: .hpick -> .hpick-btn -> name span) */
+  #joinMe .hpick,#joinFoe .hpick{flex:0 1 auto;min-width:0;display:flex}
+  #joinMe .hpick-btn,#joinFoe .hpick-btn{min-width:0;width:100%;padding:3px 6px 3px 3px;gap:4px}
+  #joinMe .hpick-btn img,#joinFoe .hpick-btn img{width:22px;height:22px}
+  #joinMe .hpick-btn span,#joinFoe .hpick-btn span{flex:0 1 auto;min-width:0;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #joinMe .hpick-btn .hpick-open,#joinFoe .hpick-btn .hpick-open{width:11px;height:11px;margin-left:2px}
+
+  /* battle-length counts sit OUTSIDE the bar: above the blue (win) top, below the red (loss) bottom */
+  .rcol .up .bar-label{top:auto;bottom:100%;transform:translateX(-50%);margin-bottom:3px;color:var(--ice-bright);text-shadow:none}
+  .rcol .dn .bar-label{top:100%;bottom:auto;transform:translateX(-50%);margin-top:3px;color:var(--ember-bright);text-shadow:none}
 </style>
 </head>
 <body>
@@ -1305,8 +1324,8 @@
         <div class="h">Battle timeline</div>
         <div class="tl-controls">
           <span class="seg-toggle" id="tlModeToggle">
-            <button type="button" data-tlmode="avg" aria-pressed="true">Average</button>
-            <button type="button" data-tlmode="battle" aria-pressed="false">Per Battle</button>
+            <button type="button" data-tlmode="avg" aria-pressed="false">Average</button>
+            <button type="button" data-tlmode="battle" aria-pressed="true">Per Battle</button>
           </span>
           <span class="seg-toggle tl-class-toggle" id="tlClassToggle" aria-label="Timeline troop class">
             <button type="button" data-tlclass="Total" aria-pressed="true">Total</button>
@@ -1703,7 +1722,7 @@ function buildRounds(animate){ const c=$('#roundsBars'); c.innerHTML='';
   const n=Math.max(wins.length, losses.length, 1);
   const m=Math.max(mx(wins.length?wins:[0]), mx(losses.length?losses:[0]), 1);
   for(let i=0;i<n;i++){ const col=el('div','rcol'); const up=el('div','up'), dn=el('div','dn');
-    const uh=(wins[i]||0)/m*48, dh=(losses[i]||0)/m*48;
+    const uh=(wins[i]||0)/m*40, dh=(losses[i]||0)/m*40;   // *40 (was 48) leaves room for the count label outside the bar
     if(animate){up.style.height='0%';dn.style.height='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{up.style.height=uh+'%';dn.style.height=dh+'%';}));}
     else{up.style.height=uh+'%';dn.style.height=dh+'%';}
     col.append(up,dn); c.appendChild(col);
