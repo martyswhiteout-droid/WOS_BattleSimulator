@@ -589,11 +589,14 @@ class TestCatalogCoverage(unittest.TestCase):
             mods.stat.get(("attacker", TroopType.INFANTRY, StatType.DEFENSE), 0.0),
             0.0)
 
-    def test_duplicate_joiners_apply_once(self):
-        # DUPLICATE-JOINER DEDUP (anchor 5, the real 4x-Nora defeat): the same
-        # hero's joiner Skill-1 applies ONCE, not per copy.
-        for joiners, expected in ((["Nora"], 1), (["Nora"] * 4, 1),
-                                  (["Nora", "Gatot", "Nora"], 2)):
+    def test_duplicate_joiners_stack(self):
+        # GUARDRAIL: duplicate joiners STACK - N copies of a hero fire N Skill-1s,
+        # they do NOT dedupe to one (WoS game-authoritative, Martin 2026-07-09).
+        # This is the REVERSE of the retired test_duplicate_joiners_apply_once;
+        # if it fails because a `seen_joiners`/`seen` dedup was re-added, remove
+        # that dedup - do not weaken this test. See ENGINE_HANDOFF_joiner_stacking.md.
+        for joiners, expected in ((["Nora"], 1), (["Nora"] * 4, 4),
+                                  (["Nora", "Gatot", "Nora"], 3)):
             own = _side(
                 "rally",
                 leads={"Infantry": "Gisela", "Lancer": "", "Marksman": ""},
@@ -611,8 +614,21 @@ class TestCatalogCoverage(unittest.TestCase):
             con = construct.build(Matchup(own, enemy), apply_legacy_skills=False)
             skills = skill_defs_from_matchup(con, {"engine": "turn"})
             names = [s.owner for s in skills if s.role == "joiner"]
-            self.assertEqual(len(names), expected, joiners)
-            self.assertEqual(len(names), len(set(names)), joiners)
+            self.assertEqual(len(names), expected, joiners)   # every copy applies - no dedup
+        # magnitude: 4x a stat joiner shifts the joiner-aware strength fold
+        # materially more than 1x (stacks, not collapses to one).
+        from wos_sim.predictor import winprob
+
+        def ratio(nj):
+            o = _side("rally", leads={"Infantry": "Gisela", "Lancer": "", "Marksman": ""},
+                      joiners=(["Gatot"] * nj), widgets_in_panel=True)
+            e = _side("garrison", leads={"Infantry": "", "Lancer": "Karol", "Marksman": "Vulcanus"},
+                      joiners=[""], widgets_in_panel=True)
+            o.panel_is_final = True
+            e.panel_is_final = True
+            return winprob.effective_ratio(construct.build(Matchup(o, e), apply_legacy_skills=False))
+
+        self.assertGreater(ratio(4), ratio(1) + 0.03, "4x joiner must stack well beyond 1x")
 
     def test_qa_named_static_stat_skills_emit_turn_engine_mods(self):
         book = load_skill_book()

@@ -1,5 +1,17 @@
 # Engine handoff — duplicate joiners STACK (remove the dedup)
 
+> **STATUS: DONE 2026-07-09.** Dedup removed in BOTH paths + guardrail comments:
+> `pvp_turn_engine.py` (`seen_joiners`, turn/production path) AND
+> `predictor/skills.py` (`seen`, general/legacy path — **this handoff said skills.py
+> had none; it did**, so both were fixed). Verified: 4x a joiner -> 4 skill-defs,
+> 4 telemetry rows (UI shows all 4), and the effect STACKS in the sim (own
+> survivors 62%->74% for 0->4 Gatot) and the strength fold (ratio 0.973->1.115).
+> `test_duplicate_joiners_apply_once` replaced by `test_duplicate_joiners_stack`.
+> Back-test PASS (7/13 locked winners held, no new silent). The 4x-Nora
+> pvp_t12_report_005 did NOT blow up to a confident win - it stays a labelled
+> coin-flip miss because the near-even tempering (winprob.py) absorbs it, which
+> is exactly the "fix it via the coin-flip path" the note below asks for.
+
 **Requested by:** Martin (domain-authoritative), via front-end agent — 2026-07-09
 **Owner to implement:** engine agent (`wos_sim/pvp_turn_engine.py`)
 **Correction:** The earlier **duplicate-joiner dedup is WRONG.** In WoS, four copies of the
@@ -40,7 +52,9 @@ no-panel-suppression behavior (that fix is correct — joiners are never panel-s
 - `wos_sim/assemble.py::_dedupe_damage_category_splits` is a **different** dedup (it merges
   DD/DT category splits *within one activation*) and its own comment says it must run
   per-activation so *duplicate joiner stacks* are preserved — **leave it alone.**
-- No other joiner dedup path exists (`skills.py` has none; grep-confirmed).
+- CORRECTION (2026-07-09): `skills.py` **did** have a second joiner dedup (a `seen`
+  set in `_side_effects`, ~line 56, general/legacy path) — this handoff's original
+  "skills.py has none" was wrong. BOTH were removed.
 
 ## Tests
 

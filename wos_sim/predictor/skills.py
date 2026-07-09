@@ -53,13 +53,18 @@ def _side_effects(side, book, context):
             if e.source != SkillSource.WIDGET or not _widgets_in_panel(side)
         ]
         effects.extend((e, "captain") for e in _dedupe_damage_category_splits(rows))
-    seen = set()
     for flag in side.joiners[:4]:
-        if not flag or flag in seen:
-            # duplicate-joiner dedup: the same hero's Skill-1 applies once
-            # (anchored on pvp_t12_report_005, the real 4x-Nora defeat).
+        if not flag:
             continue
-        seen.add(flag)
+        # GUARDRAIL - DUPLICATE JOINERS STACK. DO NOT RE-ADD A DEDUP HERE.
+        # N copies of the same joiner hero fire N stacking Skill-1s (WoS
+        # game-authoritative, Martin 2026-07-09). A `seen` dedup was tried from
+        # ONE battle (4x-Nora pvp_t12_report_005 loss) and REVERTED - it silently
+        # dropped 3 of every 4 duplicate joiners. `_dedupe_damage_category_splits`
+        # below is a DIFFERENT, correct dedup (merges DD/DT splits WITHIN one
+        # activation); it runs per-copy so stacks are preserved. Fix report_005
+        # via the coin-flip path, never by suppressing stacking.
+        # See ENGINE_HANDOFF_joiner_stacking.md.
         rows = [e for e in book.for_hero(flag) if e.source == SkillSource.SKILL_1]
         effects.extend((e, "joiner") for e in _dedupe_damage_category_splits(rows))
     return effects

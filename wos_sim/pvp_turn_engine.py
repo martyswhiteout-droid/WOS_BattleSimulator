@@ -723,26 +723,27 @@ def skill_defs_from_matchup(construct, params: dict | None = None) -> list[Skill
                                                  troop, hero_ordinal,
                                                  getattr(profile, "panel_is_final", False)))
             ordinal += 1
-        seen_joiners: set[str] = set()
         for hero in (profile.joiners or [])[:4]:
             if not hero:
                 continue
-            # DUPLICATE-JOINER DEDUP: the same hero's joiner Skill-1 applies
-            # ONCE, not per copy. Anchored on pvp_t12_report_005 (real 4x-Nora
-            # rally, near-mirror totals, LOST): full additive stacking predicts
-            # a guaranteed 60%-survivor win; dedup lands the forecast at the
-            # coin-flip edge, consistent with the real defeat. One-battle
-            # evidence - flagged as an assumption in QA_REPORT.
-            if hero in seen_joiners:
-                continue
-            seen_joiners.add(hero)
+            # =====================================================================
+            # GUARDRAIL - DUPLICATE JOINERS STACK. DO NOT RE-ADD A DEDUP HERE.
+            # In WoS, N copies of the same joiner hero fire N Skill-1s that STACK
+            # (game-authoritative, confirmed by Martin 2026-07-09). Every slot in
+            # profile.joiners[:4] MUST append its own joiner skill-def with its own
+            # ordinal, so 4x a hero applies ~4x its effect and the UI shows all 4.
+            # A `seen_joiners` dedup was previously added from ONE battle (4x-Nora
+            # pvp_t12_report_005, a near-mirror LOSS) and has been REVERTED: it
+            # silently zeroed 3 of every 4 duplicate joiners. If report_005 now
+            # looks like a win, that is the near-even/coin-flip ranking miss - fix
+            # it via the coin-flip path, NEVER by restoring this dedup.
+            # See ENGINE_HANDOFF_joiner_stacking.md + test_duplicate_joiners_stack.
+            # =====================================================================
             rows = _hero_rows(book, hero, SkillSource.SKILL_1, battle)
             if rows:
                 # JOINER stat rows are NEVER panel-suppressed: a joiner is
                 # another player's hero, so its stat skills cannot be inside
                 # this side's scouted/final panel (unlike the captains').
-                # Suppressing them silently zeroed stat-joiners (Patrick,
-                # Gatot) while DD/DT-joiners (Nora, Bahiti) passed in full.
                 defs.append(_make_hero_skill(hero, SkillSource.SKILL_1, rows, side,
                                              "joiner", None, ordinal, False))
                 ordinal += 1
