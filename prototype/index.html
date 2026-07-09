@@ -488,7 +488,7 @@
   .buffs-title .ctr{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
 
   /* game-style formation sliders */
-  .form-stack{display:flex;flex-direction:column;gap:9px;width:100%;max-width:330px}
+  .form-stack{display:flex;flex-direction:column;gap:9px;width:100%;max-width:470px}
   .me .form-stack{margin-left:auto}
   .form-ctl{display:flex;align-items:center;gap:11px;background:var(--void-2);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
   .me .form-ctl{--fc:var(--ice);--tk:#20313d;border-color:color-mix(in srgb,var(--ice) 18%,var(--line))}
@@ -1174,6 +1174,35 @@
     #capMe .lead-row,#capFoe .lead-row{display:flex;flex-wrap:wrap;grid-template-columns:none;gap:6px 8px}
     #capMe .lead-row .hpick,#capFoe .lead-row .hpick{flex:1 1 160px}
   }
+
+  /* ============================================================
+     FC / Tier / T12-stack merged into each formation row (one line, shorter slider);
+     enemy side mirrored. Icon, name, +/- buttons, card colour left as-is.
+     ============================================================ */
+  .form-ctl{gap:6px}
+  .qctl{display:flex;flex-direction:column;gap:2px;flex:none;min-width:0}
+  .qlbl2{font-family:var(--mono);font-size:9px;letter-spacing:.02em;text-transform:uppercase;color:var(--mute-2);text-align:center;white-space:nowrap;line-height:1}
+  .form-ctl .qctl select{height:28px;font-size:11px;padding:0 15px 0 4px;border-radius:7px;min-width:0;
+    background-position:calc(100% - 6px) 52%,calc(100% - 3px) 52%}
+  .qctl-fc select{width:44px} .qctl-tier select{width:54px} .qctl-t12 select{width:50px}
+  /* the slider row shrinks to fill whatever's left (flex, not the old fixed grid) */
+  .fctrls{display:flex;align-items:center;gap:6px;flex:1;min-width:56px;grid-template-columns:none}
+  .form-ctl input[type=range]{flex:1;min-width:34px}
+  .fval{min-width:44px}
+  /* class identity: name stacked above the icon (compact, frees width for the slider) */
+  .fclass{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none}
+  .fname{margin-bottom:0;white-space:nowrap;text-align:center}
+  .fcount{width:auto;flex:1;min-width:56px}
+  /* enemy side mirror: icon -> % -> slider -> T12 -> Tier -> FC */
+  .foe .form-ctl{flex-direction:row-reverse}
+  .foe .fctrls{flex-direction:row-reverse}
+  .foe .fcount{flex-direction:row-reverse}
+  /* widen the row: Formation label + Ratio/Quantity move to a header; cards span 2 columns */
+  .form-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px}
+  .form-head-lab{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#cfe3f4}
+  .form-head .mode-checks{flex-direction:row;gap:8px 16px;margin-top:0}
+  .form-head .mode-checks .gchk{color:#cfe3f4}
+  .duo.form-duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 </style>
 </head>
 <body>
@@ -1235,14 +1264,15 @@
         <div class="lab">Total troops</div>
         <div class="foe"><input type="text" class="num-only" id="foeTroops" value="1,000,000" inputmode="numeric" autocomplete="off" disabled></div>
       </div>
-      <div class="duo" style="margin-top:14px;align-items:start">
+      <div class="form-head">
+        <span class="form-head-lab">Formation</span>
+        <div class="mode-checks" id="formModeChecks">
+          <label class="gchk"><input type="checkbox" id="formRatio" checked> Input By Troop Ratio</label>
+          <label class="gchk"><input type="checkbox" id="formQty"> Input By Troop Quantity</label>
+        </div>
+      </div>
+      <div class="duo form-duo" style="margin-top:6px;align-items:start">
         <div class="me"><div class="form-stack" id="formMe"></div></div>
-        <div class="lab">Formation
-          <div class="mode-checks" id="formModeChecks">
-            <label class="gchk"><input type="checkbox" id="formRatio" checked> Input By Troop Ratio</label>
-            <label class="gchk"><input type="checkbox" id="formQty"> Input By Troop Quantity</label>
-          </div>
-          </div>
         <div class="foe"><div class="form-stack" id="formFoe"></div></div>
       </div>
     </div>
@@ -1279,11 +1309,7 @@
       </div>
     </div>
 
-    <!-- troop quality -->
-    <div class="iblock">
-      <div class="title">Troop quality — FC · Tier · T12 stacking</div>
-      <div class="quality" id="quality"></div>
-    </div>
+    <!-- troop quality (FC / Tier / T12 stack) now lives per row in Troops Formation -->
 
     <!-- captain -->
     <div class="iblock hero-block">
@@ -1634,8 +1660,14 @@ function buildFormation(){
     const stack=$(sel); stack.innerHTML=''; const init={Infantry:50,Lancer:20,Marksman:30}; const C={};
     ['Infantry','Lancer','Marksman'].forEach(cl=>{
       const auto=cl==='Marksman'; const row=el('div','form-ctl'+(auto?' auto':''));
-      const ic=el('div','fic'); ic.appendChild(troopIcon(cl));
-      const body=el('div','fbody'); const nm=el('div','fname'); nm.textContent=cl; const ctr=el('div','fctrls');
+      // FC / Tier / T12-stack (moved here from the old Troop & FC level tab). T12 is now a
+      // dropdown (0-24, default 24) enabled only when Tier = T12.
+      const fc=fcSelect(), tier=tierSelect(), t12=t12Select();
+      const fcCtl=qctl('FC','qctl-fc',fc), tierCtl=qctl('Tier','qctl-tier',tier), t12Ctl=qctl('T12 Stack','qctl-t12',t12);
+      tier.addEventListener('change',()=>{ const on=tier.value==='12'; t12.disabled=!on;
+        if(!on){ t12.value='0'; } else if(+t12.value===0){ t12.value='24'; } });
+      // formation slider (controls + styling unchanged)
+      const ctr=el('div','fctrls');
       const minus=el('button','fbtn'); minus.type='button'; minus.textContent='−';
       const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=0.1; r.value=init[cl];
       const plus=el('button','fbtn'); plus.type='button'; plus.textContent='+';
@@ -1649,7 +1681,10 @@ function buildFormation(){
       if(auto){ cnt.readOnly=true; cnt.tabIndex=-1; }
       const cunit=el('div','fcunit'); cunit.textContent=auto?'auto':'troops';
       cwrap.append(cnt,cunit);
-      body.append(nm,ctr,cwrap); row.append(ic,body); stack.appendChild(row);
+      // class identity (real icon + name) — sits at the outer edge
+      const fclass=el('div','fclass'); const ic=el('div','fic'); ic.appendChild(troopIcon(cl));
+      const nm=el('div','fname'); nm.textContent=cl; fclass.append(nm,ic);   // icon sits at the outer edge (mirrored for foe via CSS)
+      row.append(fcCtl,tierCtl,t12Ctl,ctr,cwrap,fclass); stack.appendChild(row);
       C[cl]={r,val,minus,plus,cnt};
     });
     const totalMarker=el('div','formation-total'); totalMarker.textContent='100%'; stack.appendChild(totalMarker);
@@ -1733,6 +1768,8 @@ function qlbl(t){const d=el('div','qlbl');d.textContent=t;return d;}
 function qval(t){const d=el('div','qval');d.textContent=t;return d;}
 function fcSelect(){const s=el('select');for(let i=10;i>=1;i--){const o=el('option');o.value=i;o.textContent=i;if(i===10)o.selected=true;s.appendChild(o);}return s;}
 function tierSelect(){const s=el('select');['10','10.5','11','11.5','12'].forEach(v=>{const o=el('option');o.value=v;o.textContent='T'+v;if(v==='12')o.selected=true;s.appendChild(o);});return s;}
+function t12Select(){const s=el('select');for(let i=24;i>=0;i--){const o=el('option');o.value=i;o.textContent=i;if(i===24)o.selected=true;s.appendChild(o);}return s;}
+function qctl(lab,cls,select){const d=el('div','qctl '+cls);const l=el('div','qlbl2');l.textContent=lab;d.append(l,select);return d;}
 function buildHeroes(){
   const lead=(mount,arr,side)=>arr.forEach(([c,n])=>{
     const row=el('div','lead-row '+(side==='me'?'me-row':'foe-row'));
@@ -2439,9 +2476,13 @@ function readCounts(id,total){
   inf=Math.max(0,Math.min(inf,total)); lan=Math.max(0,Math.min(lan,total));
   if(inf+lan>total) lan=total-inf;
   return {Infantry:inf, Lancer:lan, Marksman:Math.max(0,total-inf-lan)}; }
-function readQuality(which){ const cards=[...document.querySelectorAll('#quality .qcard.'+which)]; const q={};
-  ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const s=cards[i].querySelectorAll('select');
-    q[c]={fc:+s[0].value, tier:+s[1].value, t12_stack:+cards[i].querySelector('input[type=range]').value}; }); return q; }
+// FC / Tier / T12-stack now live per row in the Troops Formation cards (#formMe/#formFoe)
+function readQuality(which){ const sel=which==='me'?'#formMe':'#formFoe'; const rows=[...document.querySelectorAll(sel+' .form-ctl')]; const q={};
+  ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const row=rows[i];
+    if(!row){ q[c]={fc:10,tier:12,t12_stack:24}; return; }
+    const t12=row.querySelector('.qctl-t12 select');
+    q[c]={ fc:+row.querySelector('.qctl-fc select').value, tier:+row.querySelector('.qctl-tier select').value,
+           t12_stack:(t12&&!t12.disabled)?+t12.value:0 }; }); return q; }
 function selectedStatsType(){
   return ($('#statsScouted')&&$('#statsScouted').checked)?'scouted':'base';
 }
@@ -2798,12 +2839,12 @@ function applyFormation(id,f){ const r=[...document.querySelectorAll(id+' .form-
   if(f.Infantry!=null) r[0].value=fmtPct(f.Infantry*100);
   if(f.Lancer!=null) r[1].value=fmtPct(f.Lancer*100);
   r[1].dispatchEvent(new Event('input')); }        // recalc -> marksman + fill
-function applyQuality(which,q){ const cards=[...document.querySelectorAll('#quality .qcard.'+which)];
-  ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const cfg=q[c]; if(!cfg||!cards[i])return;
-    const sels=cards[i].querySelectorAll('select'), range=cards[i].querySelector('input[type=range]');
-    if(cfg.fc!=null) sels[0].value=String(cfg.fc);
-    if(cfg.tier!=null){ sels[1].value=String(cfg.tier); sels[1].dispatchEvent(new Event('change')); }   // gates T12
-    if(cfg.t12_stack!=null && String(cfg.tier)==='12'){ range.value=cfg.t12_stack; range.dispatchEvent(new Event('input')); }
+function applyQuality(which,q){ const sel=which==='me'?'#formMe':'#formFoe'; const rows=[...document.querySelectorAll(sel+' .form-ctl')];
+  ['Infantry','Lancer','Marksman'].forEach((c,i)=>{ const cfg=q[c], row=rows[i]; if(!cfg||!row)return;
+    const fc=row.querySelector('.qctl-fc select'), tier=row.querySelector('.qctl-tier select'), t12=row.querySelector('.qctl-t12 select');
+    if(cfg.fc!=null && fc) fc.value=String(cfg.fc);
+    if(cfg.tier!=null && tier){ tier.value=String(cfg.tier); tier.dispatchEvent(new Event('change')); }   // gates T12
+    if(cfg.t12_stack!=null && String(cfg.tier)==='12' && t12){ t12.value=String(cfg.t12_stack); }
   }); }
 function applyPanel(which,panel){ const inp=[...document.querySelectorAll('#statPanel .duo .'+which+' input')];
   const C=['Infantry','Lancer','Marksman'], S=['Attack','Defense','Lethality','Health'];
@@ -2954,7 +2995,7 @@ function selectTabIn(bar, panels, id){
 }
 // merge Troops Formation / Stats / Buffs / Troop & FC into 4 horizontal tabs (title controls move into the panel)
 function initInputTabs(){
-  const specs=[['troops &','Troops Formation'],['input stats','Stats'],['buffs','Buffs'],['quality','Troop & FC level']];
+  const specs=[['troops &','Troops Formation'],['input stats','Stats'],['buffs','Buffs']];
   const found=[];
   document.querySelectorAll('.input .iblock').forEach(b=>{
     if(b.classList.contains('output-block')) return;
@@ -3011,7 +3052,7 @@ function initForecastTabs(){
   bar.addEventListener('click',e=>{ const btn=e.target.closest('.tab-btn'); if(btn) selectTabIn(bar,panels,btn.dataset.tab); });
 }
 window.addEventListener('DOMContentLoaded',()=>{
-  buildStats(); buildFinalStats(); buildFormation(); buildItemBuffs(); buildPetBuffs(); buildQuality(); buildHeroes();
+  buildStats(); buildFinalStats(); buildFormation(); buildItemBuffs(); buildPetBuffs(); buildHeroes();
   initInputTabs();
   initAccordions();
   initInteractions();
