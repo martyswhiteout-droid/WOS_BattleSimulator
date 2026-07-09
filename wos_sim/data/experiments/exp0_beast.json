@@ -1,12 +1,18 @@
 {
   "_type": "beast_control",
   "type": 1,
-  "setup": "20,000 Infantry Lv 1.0 (attacker) vs BEAST 'Colonel Müller'-style, 3 units Lv 6.0 (counts 2595 / 3025 / 3025 = 8645; the 3 beast icons = shield/sword/crossbow ~ inf/lancer/marksman analog). Beast stats are FLAT +57.0% on every stat.",
-  "outcome": "UNKNOWN - attachment 1 shows only Troop Power + Stat Bonuses screens, NOT the Battle Overview. NEED the outcome screen (survivors) to use this as a Type-1 target.",
+  "timestamp": "2026-07-08 21:37:45",
+  "setup": "20,000 Lv 1.0 Infantry (attacker [RTS]Colonel Müller) vs Lv.18 Titan Roc BEAST (defender), 8,645 beast troops in 3 Lv 6.0 units. DETERMINISTIC. Beast stats FLAT +57.0% on every stat.",
+  "outcome": "ATTACKER DEFEAT (0 survivors). Beast survived 7,176.",
   "attacker": {
+    "name": "[RTS]Colonel Müller",
+    "coords": "X:767 Y:486",
     "deployed_class": "Infantry",
-    "troops": 20000,
     "tier_display": "Lv 1.0",
+    "troops": 20000,
+    "power_loss": -120,
+    "kills": 1469,
+    "losses": 0, "injured": 40, "lightly_injured": 19960, "survivors": 0,
     "stats_pct": {
       "Infantry": {"Attack": 181.3, "Defense": 153.0, "Lethality": 112.0, "Health": 108.7},
       "Lancer":   {"Attack": 184.6, "Defense": 150.7, "Lethality": 105.3, "Health": 102.6},
@@ -14,9 +20,21 @@
     }
   },
   "defender_beast": {
-    "units_Lv6": [2595, 3025, 3025],
-    "stats_pct_FLAT": {"all_classes_all_stats": 57.0}
+    "name": "Lv.18 Titan Roc",
+    "coords": "X:755 Y:494",
+    "troops": 8645,
+    "power_loss": -29380,
+    "kills": 40,
+    "losses": 1469, "injured": 0, "lightly_injured": 0, "survivors": 7176,
+    "unit_tier_display": "Lv 6.0",
+    "stats_pct_FLAT": {"all_classes_all_stats": 57.0},
+    "per_unit": {
+      "Infantry": {"start": 2595, "kills": 5,  "losses": 1469, "injured": 0, "lightly_injured": 0, "survivors": 1126},
+      "Lancer":   {"start": 3025, "kills": 14, "losses": 0,    "injured": 0, "lightly_injured": 0, "survivors": 3025},
+      "Marksman": {"start": 3025, "kills": 21, "losses": 0,    "injured": 0, "lightly_injured": 0, "survivors": 3025}
+    }
   },
-  "CAVEATS": "(1) Beasts are a SEPARATE combat system (flat-stat multi-unit) - may not map cleanly to the PvP turn engine; treat as its own Type-1 track. (2) The previous exp0 record described a DIFFERENT battle (T10 5k inf+15k lancer vs Lv18 Titan Roc, DEFEAT) - that was provisional/unverified and is superseded here by attachment 1's data. (3) Outcome/survivors still needed.",
-  "_extraction": "STATS captured 2026-07-09 from attachment 1; OUTCOME still needed."
+  "PASSIVES_THAT_APPLY": "Beast MARKSMAN has Ranged Strike (+10% DD vs Infantry) - applies to our infantry. Beast INFANTRY has Master Brawler (+10% DD vs Lancer) - N/A (we have no lancer). Beast LANCER has Charge (+10% DD vs Marksman) - N/A. OUR infantry has Master Brawler (+10% DD vs Lancer) - applies to the beast's lancer unit. ALL T1 passives, deterministic. Currently the engine does NOT apply these (dormant) - the counter is faked by cm/km fudge.",
+  "EXACT_MATCH_TARGETS": "attacker survivors=0, kills=1469; beast survivors=7176 (inf1126/lan3025/mar3025), beast kills=40 (inf5/lan14/mar21), beast losses=1469 (all infantry). Note: attacker only reached the beast's FRONT infantry (killed 1469); beast lancer/marksman untouched (frontline absorption).",
+  "_extraction": "FULL capture 2026-07-09 from the large 3-panel image (Battle Overview + Stat Bonuses + Battle Details). Supersedes the earlier provisional/partial exp0."
 }
