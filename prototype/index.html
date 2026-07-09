@@ -1141,6 +1141,11 @@
   .km-seg2{width:100%;transition:height .5s}
   .km-seg2.inf{background:#2a78d6} .km-seg2.lan{background:#1baf7a} .km-seg2.mar{background:#eda100}
   .km-seg2.km-top{border-radius:4px 4px 0 0}   /* round only the true top of the stack, so segments stay flush */
+  /* kill-breakdown proc icons: one centred lane per turn, larger, no ring (each chart is a single side) */
+  #kmYouProcs .tl-proc-cell,#kmFoeProcs .tl-proc-cell{grid-template-columns:1fr}
+  #kmYouProcs .tl-proc-lane,#kmFoeProcs .tl-proc-lane{align-items:center;gap:4px}
+  #kmYouProcs .tl-proc-icon,#kmFoeProcs .tl-proc-icon{width:30px;height:30px;border:0;border-radius:6px}
+  #kmYouProcs .tl-proc-icon.miss,#kmFoeProcs .tl-proc-icon.miss{font-size:12px}
 
   /* ============================================================
      Round 6 — captain hero rows: mirrored sides + aligned columns
