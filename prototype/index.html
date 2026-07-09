@@ -1145,6 +1145,31 @@
   .km-bar{display:flex;gap:2px;height:20px}
   .km-seg{display:flex;align-items:center;justify-content:center;border-radius:4px;overflow:hidden;font-family:var(--mono);font-size:10.5px;color:#fff}
   @media (max-width:520px){ .km-legend{margin-left:0} }
+
+  /* ============================================================
+     Round 6 — captain hero rows: mirrored sides + aligned columns
+     ============================================================ */
+  /* fixed inner columns so hero box, Max Gears and class icon line up across all
+     three rows; hero box (1fr) is flush to the outer edge, class icon toward centre */
+  #capMe .lead-row,#capFoe .lead-row{display:grid;align-items:center;gap:8px 10px;width:100%}
+  #capMe .lead-row{grid-template-columns:minmax(0,1fr) 96px 100px 30px}   /* hero-box | impact | Max Gears | class-icon */
+  #capFoe .lead-row{grid-template-columns:30px 100px 96px minmax(0,1fr)}  /* class-icon | Max Gears | impact | hero-box */
+  #capMe .lead-row .hpick,#capFoe .lead-row .hpick{max-width:none;width:100%}
+  #capMe .lead-row .hpick-btn,#capFoe .lead-row .hpick-btn{width:100%}
+  /* avatar on the outer side: me = left, foe = right */
+  .foe-row .hpick-btn{flex-direction:row-reverse}
+  .lead-row .hpick-btn span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .me-row .hpick-btn span{text-align:left}
+  .foe-row .hpick-btn span{text-align:right}
+  .lead-row .hpick-btn .hpick-open{margin-left:0;flex:none}
+  /* column alignment of the smaller cells */
+  .me-row .widget-impact{text-align:left}  .foe-row .widget-impact{text-align:right}
+  .me-row .gear-check{justify-self:start}  .foe-row .gear-check{justify-self:end}
+  .lead-row .lead-cls{justify-self:center}
+  @media (max-width:960px){   /* narrow: let the row wrap instead of overflowing the fixed columns */
+    #capMe .lead-row,#capFoe .lead-row{display:flex;flex-wrap:wrap;grid-template-columns:none;gap:6px 8px}
+    #capMe .lead-row .hpick,#capFoe .lead-row .hpick{flex:1 1 160px}
+  }
 </style>
 </head>
 <body>
@@ -1703,7 +1728,10 @@ function buildHeroes(){
     gear.append(gearInput,document.createTextNode('Max Gears'));
     const pick=heroPicker(c,n);
     const impact=el('span','widget-impact'); impact.dataset.widgetImpact='1';
-    row.append(g,gear,pick,impact); mount.appendChild(row);
+    // mirror the two sides: hero box flush to the outer edge, class icon toward the centre
+    if(side==='me') row.append(pick,impact,gear,g);   // [hero-box | impact | Max Gears | class-icon]
+    else row.append(g,gear,impact,pick);              // [class-icon | Max Gears | impact | hero-box]
+    mount.appendChild(row);
   });
   lead($('#capMe'),DEFAULT_LEAD_HEROES,'me');   // Inf, Lan, Mar — one per line
   lead($('#capFoe'),DEFAULT_LEAD_HEROES,'foe');
