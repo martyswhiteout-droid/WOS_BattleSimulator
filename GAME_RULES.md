@@ -97,11 +97,23 @@ Final stat = TroopBase × (1 + Σ standard bonuses) × (1 + Σ special bonuses, 
 
 ## 4. Battle mechanics (CONFIRMED)
 
-- Turn-based. Per turn there are **6 normal attacks** (all types alive),
-  resolved in sequence — **attacker (rally) first, then defender (garrison)
-  retaliates**:
-  Rally Inf → Rally Lancer → Rally Marksman → Garrison Inf → Garrison
-  Lancer → Garrison Marksman.
+- Turn-based. Per turn each surviving troop class on each side makes its
+  normal attack(s) (**6 normal attacks** total when all types are alive: 3
+  classes x 2 sides).
+- **RESOLUTION IS SIMULTANEOUS (Martin, domain-authoritative — CONFIRMED
+  2026-07-09).** The attacker (rally) and defender (garrison) BOTH compute their
+  damage from the SAME start-of-turn troop counts; procs/skills are calculated;
+  then casualties are removed TOGETHER at the END of the turn (reducing counts
+  for the NEXT turn only). There is **NO first-strike and NO within-turn
+  retaliation** — a side's losses this turn do NOT reduce its own output this
+  turn, and the defender does NOT fire with an already-thinned army. Any earlier
+  "attacker first, then defender retaliates" wording was WRONG. (The turn engine
+  already resolves this way: both sides' damage packets are built from the
+  current counts, then both applied — `pvp_turn_engine.py` turn loop.)
+  Corollary: with EXACTLY equal stats on both sides a battle is a mutual
+  annihilation (both wiped the same turn). Real reports never have exactly equal
+  stats — each player's chief gear / island / expert / research bonuses differ,
+  so every real battle is decided by the stat + proc gap, not a role advantage.
 - **Damage absorption order: Infantry → Lancer → Marksman.** All attacks hit
   Infantry while any Infantry lives; then Lancers; then Marksmen.
 - **Exception — Ambusher (LANCERS ONLY)**: Lancer attacks have a 20% chance
