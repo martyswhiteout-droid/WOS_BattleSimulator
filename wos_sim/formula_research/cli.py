@@ -7,8 +7,11 @@ from pathlib import Path
 from typing import Sequence
 
 from .dataset import ROOT, discover_nanomart, manifest_summary
+from .constraints import derive_one_v_one_constraints, write_constraints
 from .evaluate import deepseek_equation_checks, evaluate, write_evaluation
 from .models import DeepSeekPublishedModel, DeepSeekRepairedHPModel
+from .candidate import model_from_dict
+from .search import run_search
 
 
 OUTPUT_DIR = ROOT / "ENGINE_REBUILD" / "formula_research"
@@ -124,12 +127,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("manifest", help="normalize and inventory NanoMart fixtures")
+    subparsers.add_parser(
+        "constraints", help="derive one-unit clocks and modeled-input conflicts"
+    )
     evaluate_parser = subparsers.add_parser("evaluate", help="evaluate a candidate model")
     evaluate_parser.add_argument(
         "--model",
         required=True,
-        choices=("deepseek", "deepseek-published"),
+        choices=("deepseek", "deepseek-published", "best"),
     )
+    search_parser = subparsers.add_parser("search", help="fit shared candidate families")
+    search_parser.add_argument("--maxiter", type=int, default=35)
+    search_parser.add_argument("--popsize", type=int, default=8)
     return parser
 
 
@@ -139,16 +148,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         summary = _write_manifest()
         print(json.dumps(summary, indent=2))
         return 0 if summary["included"] == 70 else 2
+    if args.command == "constraints":
+        battles = [record for record in discover_nanomart() if record.included]
+        rows, conflicts = derive_one_v_one_constraints(battles)
+        write_constraints(OUTPUT_DIR, rows, conflicts)
+        print(
+            json.dumps(
+                {"one_v_one_clocks": len(rows), "input_conflicts": conflicts},
+                indent=2,
+            )
+        )
+        return 0
     if args.command == "evaluate":
         battles = [record for record in discover_nanomart() if record.included]
-        model = (
-            DeepSeekRepairedHPModel()
-            if args.model == "deepseek"
-            else DeepSeekPublishedModel()
-        )
+        if args.model == "deepseek":
+            model = DeepSeekRepairedHPModel()
+        elif args.model == "deepseek-published":
+            model = DeepSeekPublishedModel()
+        else:
+            model = model_from_dict(
+                json.loads((OUTPUT_DIR / "best_model.json").read_text(encoding="utf-8"))
+            )
         rows, summary = evaluate(model, battles)
-        checks = deepseek_equation_checks()
+        checks = deepseek_equation_checks() if args.model != "best" else []
         write_evaluation(OUTPUT_DIR, model, rows, summary, checks)
         print(json.dumps({"summary": summary, "equation_checks": checks}, indent=2))
+        return 0
+    if args.command == "search":
+        battles = [record for record in discover_nanomart() if record.included]
+        result = run_search(
+            OUTPUT_DIR, battles, maxiter=args.maxiter, popsize=args.popsize
+        )
+        print(json.dumps({"best": result["best"]}, indent=2))
         return 0
     raise AssertionError(args.command)

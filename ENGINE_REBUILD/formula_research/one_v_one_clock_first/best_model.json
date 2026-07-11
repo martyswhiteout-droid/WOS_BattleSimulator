@@ -1,0 +1,19 @@
+{
+  "name": "candidate_affine_c5",
+  "family": "affine",
+  "kernel": {
+    "log_scale": -4.7284768911454105,
+    "defense_weight": 0.061332307497225846,
+    "lethality_weight": 0.3487789158280472,
+    "positive_floor": 2.012572638801534,
+    "target_health_exponent": 0.2892479582823084
+  },
+  "mechanics": {
+    "hp_exponent": 0.6178570475796235,
+    "frontage_exponent": 0.9532639944092113,
+    "vulcanus_s2_cadence": 5,
+    "vulcanus_s2_multiplier": 1.2,
+    "minimum_hp_fraction": 0.003706410438651775
+  },
+  "max_turns": 500
+}

@@ -4,6 +4,8 @@ from dataclasses import asdict, dataclass
 import csv
 import json
 from pathlib import Path
+import math
+import statistics
 from typing import Any
 
 from .dataset import BattleRecord
@@ -71,6 +73,11 @@ def residual(battle: BattleRecord, result: SimulationResult) -> Residual:
 def evaluate(model: Model, battles: list[BattleRecord]) -> tuple[list[Residual], dict[str, Any]]:
     rows = [residual(battle, model.simulate(battle)) for battle in battles]
     turn_rows = [row for row in rows if row.turn_match is not None]
+    absolute_turn_errors = [abs(row.turn_error or 0) for row in turn_rows]
+    absolute_survivor_errors = [
+        abs(row.attacker_survivor_error) + abs(row.defender_survivor_error)
+        for row in rows
+    ]
     summary = {
         "model": model.name,
         "reports": len(rows),
@@ -78,7 +85,18 @@ def evaluate(model: Model, battles: list[BattleRecord]) -> tuple[list[Residual],
         "survivor_matches": sum(row.survivor_match for row in rows),
         "reports_with_turn_evidence": len(turn_rows),
         "turn_matches": sum(bool(row.turn_match) for row in turn_rows),
+        "turn_mae": statistics.mean(absolute_turn_errors) if absolute_turn_errors else None,
+        "turn_median_absolute_error": (
+            statistics.median(absolute_turn_errors) if absolute_turn_errors else None
+        ),
+        "turn_max_absolute_error": max(absolute_turn_errors) if absolute_turn_errors else None,
+        "survivor_total_mae": statistics.mean(absolute_survivor_errors),
         "status": "REJECTED",
+        "classification_rule": (
+            "EXACT requires every winner, survivor pair, and available turn range; "
+            "PARTIAL requires at least 90% winner matches and at least 50% of both "
+            "survivor pairs and available turn ranges"
+        ),
     }
     if (
         summary["winner_matches"] == len(rows)
@@ -86,6 +104,12 @@ def evaluate(model: Model, battles: list[BattleRecord]) -> tuple[list[Residual],
         and summary["turn_matches"] == len(turn_rows)
     ):
         summary["status"] = "EXACT"
+    elif (
+        summary["winner_matches"] >= math.ceil(0.90 * len(rows))
+        and summary["survivor_matches"] >= math.ceil(0.50 * len(rows))
+        and summary["turn_matches"] >= math.ceil(0.50 * len(turn_rows))
+    ):
+        summary["status"] = "PARTIAL"
     return rows, summary
 
 
@@ -121,6 +145,10 @@ def write_evaluation(
         f"- Winner matches: {summary['winner_matches']}/{summary['reports']}",
         f"- Survivor matches: {summary['survivor_matches']}/{summary['reports']}",
         f"- Turn matches: {summary['turn_matches']}/{summary['reports_with_turn_evidence']}",
+        f"- Turn MAE: {summary['turn_mae']}",
+        f"- Turn median absolute error: {summary['turn_median_absolute_error']}",
+        f"- Turn maximum absolute error: {summary['turn_max_absolute_error']}",
+        f"- Survivor total MAE: {summary['survivor_total_mae']}",
         "",
     ]
     if equation_checks:
@@ -163,6 +191,25 @@ def write_evaluation(
             f"{row.observed_attacker_survivors}/{row.predicted_attacker_survivors} | "
             f"{row.observed_defender_survivors}/{row.predicted_defender_survivors} |"
         )
+    worst_turns = sorted(
+        (row for row in rows if row.turn_error is not None),
+        key=lambda row: abs(row.turn_error or 0),
+        reverse=True,
+    )[:10]
+    lines.extend(
+        [
+            "",
+            "## Largest Clock Residuals",
+            "",
+            "| Report | Observed range | Predicted | Signed error |",
+            "|---|---:|---:|---:|",
+        ]
+    )
+    for row in worst_turns:
+        lines.append(
+            f"| {row.report_id} | {row.observed_turns_min}-{row.observed_turns_max} | "
+            f"{row.predicted_turns} | {row.turn_error} |"
+        )
     (output_dir / f"{stem}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -190,4 +237,3 @@ def deepseek_equation_checks() -> list[dict[str, Any]]:
             }
         )
     return checks
-

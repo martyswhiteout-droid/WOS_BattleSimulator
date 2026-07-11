@@ -1,0 +1,19 @@
+{
+  "name": "candidate_power_law_c5",
+  "family": "power_law",
+  "kernel": {
+    "log_scale": -4.171021239994624,
+    "attack_exponent": 0.6982453750372779,
+    "defense_exponent": 0.16277392751074826,
+    "lethality_exponent": 0.39003345532353717,
+    "target_health_exponent": 0.35476386527479464
+  },
+  "mechanics": {
+    "hp_exponent": 0.5216875056987722,
+    "frontage_exponent": 0.532951949160861,
+    "vulcanus_s2_cadence": 5,
+    "vulcanus_s2_multiplier": 1.2,
+    "minimum_hp_fraction": 0.001039274168888358
+  },
+  "max_turns": 500
+}

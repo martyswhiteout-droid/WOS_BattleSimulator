@@ -1,0 +1,341 @@
+{
+  "seed": 20260711,
+  "objective_definition": {
+    "winner_mismatch_weight": 4.0,
+    "normalized_survivor_error_weight": 2.0,
+    "normalized_out_of_range_turn_error_weight": 2.0,
+    "duplicate_weight": 0.0
+  },
+  "maxiter": 25,
+  "popsize": 6,
+  "results": [
+    {
+      "family": "power_law",
+      "cadence": 5,
+      "objective": 0.12337036612189096,
+      "optimizer_success": false,
+      "optimizer_message": "Maximum number of iterations has been exceeded.",
+      "iterations": 25,
+      "evaluations": 1257,
+      "parameter_names": [
+        "log_scale",
+        "attack_exponent",
+        "defense_exponent",
+        "lethality_exponent",
+        "target_health_exponent",
+        "hp_exponent",
+        "frontage_exponent",
+        "minimum_hp_fraction"
+      ],
+      "bounds": [
+        [
+          -8.0,
+          1.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.25,
+          2.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.02
+        ]
+      ],
+      "model": {
+        "name": "candidate_power_law_c5",
+        "family": "power_law",
+        "kernel": {
+          "log_scale": -4.171021239994624,
+          "attack_exponent": 0.6982453750372779,
+          "defense_exponent": 0.16277392751074826,
+          "lethality_exponent": 0.39003345532353717,
+          "target_health_exponent": 0.35476386527479464
+        },
+        "mechanics": {
+          "hp_exponent": 0.5216875056987722,
+          "frontage_exponent": 0.532951949160861,
+          "vulcanus_s2_cadence": 5,
+          "vulcanus_s2_multiplier": 1.2,
+          "minimum_hp_fraction": 0.001039274168888358
+        },
+        "max_turns": 500
+      },
+      "evaluation": {
+        "model": "candidate_power_law_c5",
+        "reports": 37,
+        "winner_matches": 35,
+        "survivor_matches": 35,
+        "reports_with_turn_evidence": 37,
+        "turn_matches": 0,
+        "status": "REJECTED",
+        "classification_rule": "EXACT requires every winner, survivor pair, and available turn range; PARTIAL requires at least 90% winner matches and at least 50% of both survivor pairs and available turn ranges"
+      }
+    },
+    {
+      "family": "affine",
+      "cadence": 5,
+      "objective": 0.12967538877182852,
+      "optimizer_success": false,
+      "optimizer_message": "Maximum number of iterations has been exceeded.",
+      "iterations": 25,
+      "evaluations": 1257,
+      "parameter_names": [
+        "log_scale",
+        "defense_weight",
+        "lethality_weight",
+        "positive_floor",
+        "target_health_exponent",
+        "hp_exponent",
+        "frontage_exponent",
+        "minimum_hp_fraction"
+      ],
+      "bounds": [
+        [
+          -8.0,
+          1.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0001,
+          5.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.25,
+          2.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.02
+        ]
+      ],
+      "model": {
+        "name": "candidate_affine_c5",
+        "family": "affine",
+        "kernel": {
+          "log_scale": -5.108145951116176,
+          "defense_weight": 0.10579234555136718,
+          "lethality_weight": 0.6560169232078241,
+          "positive_floor": 0.6450018242458924,
+          "target_health_exponent": 0.10389165817807955
+        },
+        "mechanics": {
+          "hp_exponent": 0.41779501654751283,
+          "frontage_exponent": 0.4634037333965436,
+          "vulcanus_s2_cadence": 5,
+          "vulcanus_s2_multiplier": 1.2,
+          "minimum_hp_fraction": 0.0028536297629304323
+        },
+        "max_turns": 500
+      },
+      "evaluation": {
+        "model": "candidate_affine_c5",
+        "reports": 37,
+        "winner_matches": 34,
+        "survivor_matches": 34,
+        "reports_with_turn_evidence": 37,
+        "turn_matches": 1,
+        "status": "REJECTED",
+        "classification_rule": "EXACT requires every winner, survivor pair, and available turn range; PARTIAL requires at least 90% winner matches and at least 50% of both survivor pairs and available turn ranges"
+      }
+    },
+    {
+      "family": "power_law",
+      "cadence": 6,
+      "objective": 0.13782137350909737,
+      "optimizer_success": false,
+      "optimizer_message": "Maximum number of iterations has been exceeded.",
+      "iterations": 25,
+      "evaluations": 1257,
+      "parameter_names": [
+        "log_scale",
+        "attack_exponent",
+        "defense_exponent",
+        "lethality_exponent",
+        "target_health_exponent",
+        "hp_exponent",
+        "frontage_exponent",
+        "minimum_hp_fraction"
+      ],
+      "bounds": [
+        [
+          -8.0,
+          1.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.25,
+          2.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.02
+        ]
+      ],
+      "model": {
+        "name": "candidate_power_law_c6",
+        "family": "power_law",
+        "kernel": {
+          "log_scale": -3.6554594025104223,
+          "attack_exponent": 0.8273166741403326,
+          "defense_exponent": 0.3488860777087557,
+          "lethality_exponent": 0.4692068028784646,
+          "target_health_exponent": 0.2068426006952464
+        },
+        "mechanics": {
+          "hp_exponent": 0.7472662792883602,
+          "frontage_exponent": 0.44920574536463564,
+          "vulcanus_s2_cadence": 6,
+          "vulcanus_s2_multiplier": 1.2,
+          "minimum_hp_fraction": 0.0013361819953507381
+        },
+        "max_turns": 500
+      },
+      "evaluation": {
+        "model": "candidate_power_law_c6",
+        "reports": 37,
+        "winner_matches": 35,
+        "survivor_matches": 35,
+        "reports_with_turn_evidence": 37,
+        "turn_matches": 1,
+        "status": "REJECTED",
+        "classification_rule": "EXACT requires every winner, survivor pair, and available turn range; PARTIAL requires at least 90% winner matches and at least 50% of both survivor pairs and available turn ranges"
+      }
+    },
+    {
+      "family": "affine",
+      "cadence": 6,
+      "objective": 0.16872964545619035,
+      "optimizer_success": false,
+      "optimizer_message": "Maximum number of iterations has been exceeded.",
+      "iterations": 25,
+      "evaluations": 1257,
+      "parameter_names": [
+        "log_scale",
+        "defense_weight",
+        "lethality_weight",
+        "positive_floor",
+        "target_health_exponent",
+        "hp_exponent",
+        "frontage_exponent",
+        "minimum_hp_fraction"
+      ],
+      "bounds": [
+        [
+          -8.0,
+          1.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.0001,
+          5.0
+        ],
+        [
+          0.0,
+          3.0
+        ],
+        [
+          0.25,
+          2.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.02
+        ]
+      ],
+      "model": {
+        "name": "candidate_affine_c6",
+        "family": "affine",
+        "kernel": {
+          "log_scale": -5.149774671473573,
+          "defense_weight": 0.11484108017191086,
+          "lethality_weight": 0.5482986241066161,
+          "positive_floor": 2.1071494872127574,
+          "target_health_exponent": 0.1808668375656428
+        },
+        "mechanics": {
+          "hp_exponent": 0.5196050039071559,
+          "frontage_exponent": 0.3058140380449906,
+          "vulcanus_s2_cadence": 6,
+          "vulcanus_s2_multiplier": 1.2,
+          "minimum_hp_fraction": 0.003840379665326696
+        },
+        "max_turns": 500
+      },
+      "evaluation": {
+        "model": "candidate_affine_c6",
+        "reports": 37,
+        "winner_matches": 31,
+        "survivor_matches": 31,
+        "reports_with_turn_evidence": 37,
+        "turn_matches": 0,
+        "status": "REJECTED",
+        "classification_rule": "EXACT requires every winner, survivor pair, and available turn range; PARTIAL requires at least 90% winner matches and at least 50% of both survivor pairs and available turn ranges"
+      }
+    }
+  ]
+}

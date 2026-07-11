@@ -10,8 +10,8 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 
 - [x] (2026-07-11 09:34Z) Established a canonical, duplicate-aware manifest: 71 JSON files discovered, 70 included, one stale user-corrected artifact excluded, 60 with turn evidence, and 10 survivor-only.
 - [x] (2026-07-11 09:40Z) Implemented the replay/evaluation harness and independently rejected both DeepSeek's literal pseudocode and its charitable repaired-HP interpretation across all 70 canonical fixtures.
-- [ ] Derive algebraic constraints from the 1v1 clocks and count-scaling controls, then test candidate kernel families without report-specific parameters.
-- [ ] Emit the complete NanoMart observed-versus-predicted table and classify the best model honestly as rejected, partial, or exact.
+- [x] (2026-07-11 10:28Z) Derived 37 unique one-unit clock constraints, exposed one incompatible modeled-input pair, and tested power-law and affine persistent-HP families with five- and six-event Vulcanus schedules. All candidate families were rejected.
+- [x] (2026-07-11 10:30Z) Emitted the complete 70-report observed-versus-predicted table for the best bounded-search candidate. It is `REJECTED`: 69/70 winners, 54/70 survivor pairs, and 6/60 turn ranges.
 - [ ] Run the frozen best NanoMart model against the untouched complete Far Seer holdout and emit a separate residual table.
 - [ ] Complete the contamination audit, update governing documentation, and record the final outcome and remaining unknowns.
 
@@ -23,6 +23,10 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 - Two included files are exact duplicate captures: the Set A T6-vs-T2 `Duplicate2` artifact and the Set B reversed-role copy of the Set A T1-vs-T1 report. They remain visible in the 70-source manifest but are flagged for de-weighting in model search.
 - One Vulcanus-versus-Vulcanus source records a skill level as the literal text `not displayed`. The loader preserves it as unknown and does not coerce it to Level 1.
 - DeepSeek's literal pseudocode matches 12/70 winners, 0/70 survivor pairs, and 0/60 turn observations. Repairing only its HP-conservation bug improves this to 54/70 winners, 42/70 survivor pairs, and 1/60 turn observations. Its constants solve 0/5 claimed equations.
+- Two independently captured T5-Infantry-vs-T1-Infantry reports have identical modeled inputs and the same 1/0 survivor result, but disjoint inferred clocks of 79-81 and 67-69 turns. A deterministic formula over the captured fields cannot fit both.
+- The wiki wording for Vulcanus S2 is "after every 5 attacks." The experiment counters are internally compatible with an empowered sixth attack (6, 12, 18, ...) when cross-checked against the assumed S3 clock, not with empowered attacks 5, 10, 15, .... This supports cadence 6 for the counter interpretation but does not independently prove the game's internal event index.
+- A shared minimum-HP damage floor was tested because same-class Infantry mirrors remain near 264 turns across tiers. Adding that floor did not rescue either candidate family; the clock-first floor search matched at most 1/37 turn ranges.
+- The best all-report bounded-search candidate is still structurally poor: 6/60 exact turn ranges, median absolute clock error 18 turns, and maximum error 167 turns. Its optimizer exhausted the declared 35-generation budget rather than converging, so it is only the best observed candidate, not a global optimum.
 
 ## Decision Log
 
@@ -31,6 +35,8 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 - 2026-07-11: A failed exact search is an acceptable outcome. The deliverable must preserve falsifying examples and residuals rather than force a neat formula.
 - 2026-07-11: Preserve all 70 canonical source fixtures in reporting, but give exact duplicate fingerprints zero additional fitting weight so repeated screenshots cannot bias parameter selection.
 - 2026-07-11: Treat `deepseek_published` and `deepseek_repaired_hp` as separate rejected models. This distinguishes the delivered code defect from the independent failure of the delivered kernel constants.
+- 2026-07-11: A modeled-input conflict blocks `EXACT` status independently of formula family. Keep both source captures visible and require screenshot/counter re-verification rather than silently dropping the harder row.
+- 2026-07-11: Treat Vulcanus S2 cadence 5 and cadence 6 as competing hypotheses in search. Do not infer cadence from English wording alone; report the counter cross-check separately.
 
 ## Outcomes & Retrospective
 
