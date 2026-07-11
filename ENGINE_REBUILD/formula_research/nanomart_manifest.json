@@ -1,0 +1,5593 @@
+{
+  "summary": {
+    "discovered": 71,
+    "included": 70,
+    "excluded": 1,
+    "included_with_turn_evidence": 60,
+    "included_without_turn_evidence": 10,
+    "duplicate_artifacts": 2,
+    "duplicate_ids": [
+      {
+        "report_id": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus_Duplicate2",
+        "duplicate_of": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus"
+      },
+      {
+        "report_id": "NanoMart_SetB_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+        "duplicate_of": "NanoMart_SetA_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3"
+      }
+    ],
+    "excluded_ids": [
+      {
+        "report_id": "NanoMart_1v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+        "reason": "stale mislabelled artifact explicitly removed from the canonical corpus by Martin on 2026-07-11"
+      }
+    ]
+  },
+  "records": [
+    {
+      "report_id": "NanoMart_100_NoHero",
+      "source_file": "wos_sim/data/experiments/NanoMart_100_NoHero.json",
+      "source_sha256": "7c955a7827905f7ec8e8e7c0dea65a48be1dd18c3173f52c0d36a3e4f38a991b",
+      "schema": "nanomart_nohero_ladder",
+      "timestamp": "2026-07-09 21:30:45",
+      "setup": "NanoMart farm ladder: 100 T6 Infantry attacker vs 200 T6 Infantry defender. No heroes, no buffs, deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 100,
+        "losses": 0,
+        "injured": 35,
+        "lightly_injured": 65,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 18,
+        "lightly_injured": 33,
+        "survivors": 149,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {},
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_100_SeoYoonlvl1",
+      "source_file": "wos_sim/data/experiments/NanoMart_100_SeoYoonlvl1.json",
+      "source_sha256": "bfc5321c7731048388765d265bafc379676c1647b2eca1890c6eaec32d876049",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 22:28:19",
+      "setup": "NanoMart farm ladder: 100 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 1 (+5% Troops Attack). Deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 100,
+        "losses": 0,
+        "injured": 35,
+        "lightly_injured": 65,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L1"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 19,
+        "lightly_injured": 34,
+        "survivors": 147,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_100_SeoYoonlvl2",
+      "source_file": "wos_sim/data/experiments/NanoMart_100_SeoYoonlvl2.json",
+      "source_sha256": "789ea9a75ee52fcecafeef0cfc3c1d5039cb1b4178f0327829849d4657205551",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 22:38:50",
+      "setup": "NanoMart farm ladder: 100 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 2 (+10% Troops Attack). Deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 100,
+        "losses": 0,
+        "injured": 35,
+        "lightly_injured": 65,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L2"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 20,
+        "lightly_injured": 36,
+        "survivors": 144,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_100_SeoYoonlvl3",
+      "source_file": "wos_sim/data/experiments/NanoMart_100_SeoYoonlvl3.json",
+      "source_sha256": "3ac5e6f5c46d3c2ad9261295ccd1f14c221bfc8233f1a20cf5a8568abe8b1057",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 23:26:26",
+      "setup": "NanoMart farm ladder: 100 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 100,
+        "losses": 0,
+        "injured": 35,
+        "lightly_injured": 65,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 21,
+        "lightly_injured": 38,
+        "survivors": 141,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_100_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_100_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "9cb0c06887ae661da2472214d9fd9b1fd3bf85c4a7a7676c6f4de82da5dc81e7",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 23:41:48",
+      "setup": "NanoMart farm ladder: 100 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Defender has Vulcanus level-1 Expedition skills for deterministic clock.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 100,
+        "losses": 0,
+        "injured": 35,
+        "lightly_injured": 65,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 18,
+        "lightly_injured": 33,
+        "survivors": 148,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": 210,
+      "turns_max": 210,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 35,
+        "Vulcanus Skill 3": 70
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_100_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_100_Vulcanus.json",
+      "source_sha256": "a23af5b94dc6c0a6709e5ac27353e1fac615427e3b5f9645c247099b78433422",
+      "schema": "nanomart_vulcanus_ladder",
+      "timestamp": "2026-07-09 20:46:38",
+      "setup": "NanoMart farm ladder: 100 T6 Infantry attacker vs 200 T6 Infantry defender. Defender has Vulcanus with level-1 Expedition skills. Deterministic; no chance procs.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 100,
+        "losses": 0,
+        "injured": 35,
+        "lightly_injured": 65,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 16,
+        "lightly_injured": 28,
+        "survivors": 156,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": 205,
+      "turns_max": 207,
+      "turn_method": null,
+      "counters": {
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 34,
+        "Vulcanus Skill 3": 69
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "0f01326daacd067a4d94fee02438b124e3d8f8e3ec76cb3f65bcde5e8a7f2abf",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:10:51",
+      "setup": "T1 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 264,
+      "turns_min": 264,
+      "turns_max": 264,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 44,
+        "Vulcanus Skill 3": 88
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1InfvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1InfvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "3c893588186f386ce76853bf269e2df7e57e22d3a189cea5d9d51cd4fc7e269d",
+      "schema": "nanomart_1v1_skill_clock",
+      "timestamp": "2026-07-10 02:22:28",
+      "setup": "NanoMart 1v1 deterministic probe: T1 Infantry attacker vs T1 Lancer defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Defender has Vulcanus level-1 Expedition skills for deterministic clock.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 80,
+      "turns_min": 79,
+      "turns_max": 81,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 13,
+        "Vulcanus Skill 3": 27
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1InfvT1MM_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1InfvT1MM_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "edf7aa3a0622cd2ec44e3ce5e5c405ffaac026dcd3aa0a7bdac17179e67326a0",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 14:29:23",
+      "setup": "T1 Inf vs T1 MM",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 8,
+      "turns_min": 7,
+      "turns_max": 9,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 1,
+        "Vulcanus Skill 3": 3
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1InfvT6Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1InfvT6Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "92f457550b5a05e282b12342043cbe900d9763321d88a617c90f5b9c3b120399",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:07:19",
+      "setup": "T1 inf vs T6 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 68,
+      "turns_min": 67,
+      "turns_max": 69,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 11,
+        "Vulcanus Skill 3": 23
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "e2f7abc10b89c579281ffe923d9353a688d13d7c931641465c3aa9696c1f317b",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 14:29:22",
+      "setup": "T1 Lan vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 8,
+      "turns_min": 7,
+      "turns_max": 9,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 1,
+        "Vulcanus Skill 3": 3
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": false,
+      "exclusion_reason": "stale mislabelled artifact explicitly removed from the canonical corpus by Martin on 2026-07-11"
+    },
+    {
+      "report_id": "NanoMart_1v1_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1LanvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "52422267a75301f70c6763dd3f976b04f3e4ecce556445905a7f3856170286a7",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:12:32",
+      "setup": "T1 Lan vs T1 Lan",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 30,
+      "turns_min": 30,
+      "turns_max": 30,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 5,
+        "Vulcanus Skill 3": 10
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "8454b769308a46fe2486a84a3fdbe6e90a5eeb1ac325143c1d93389df2e97e8d",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:36:16",
+      "setup": "T1 Lan vs T1 MM",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 80,
+      "turns_min": 79,
+      "turns_max": 81,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 13,
+        "Vulcanus Skill 3": 27
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1MMvT1Inf_NoAttackerHero_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1MMvT1Inf_NoAttackerHero_Vulcanus.json",
+      "source_sha256": "9e1ad6be34ee50891977b81a92cce8b3c6bffeea1df04baa8edb5d0bb632e9de",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 14:23:49",
+      "setup": "T1 MM vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 68,
+      "turns_min": 67,
+      "turns_max": 69,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 11,
+        "Vulcanus Skill 3": 23
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1MMvT1Lan_NoAttackerHero_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1MMvT1Lan_NoAttackerHero_Vulcanus.json",
+      "source_sha256": "5b633b4f8a88cd92051f07d2c380b2b2c6cfa018ef6c81a73264c1b191898db1",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 14:35:57",
+      "setup": "T1 MM vs T1 Lan",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 20,
+      "turns_min": 19,
+      "turns_max": 21,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 3,
+        "Vulcanus Skill 3": 7
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T1MMvT1MM_VulcanusVsVulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T1MMvT1MM_VulcanusVsVulcanus.json",
+      "source_sha256": "a98c01f77e4db68c55cc29fb14387373957e9df5b94ec2a2c37a4726d0868777",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 14:12:48",
+      "setup": "T1 MM vs T1 MM",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 336.1,
+          "Defense": 334.1,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 Lnot displayed"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 12,
+      "turns_min": 12,
+      "turns_max": 12,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Attacker Vulcanus Skill 1": 1,
+        "Attacker Vulcanus Skill 2": 2,
+        "Defender Vulcanus Skill 1": 1,
+        "Defender Vulcanus Skill 2": 2,
+        "Defender Vulcanus Skill 3": 4
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T2InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T2InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "14bb65270764522dd33931479290ddae0b916692bb60f08e2245293eb6c2fa68",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:52:41",
+      "setup": "T2 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 176,
+      "turns_min": 175,
+      "turns_max": 177,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 29,
+        "Vulcanus Skill 3": 59
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T2InfvT2Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T2InfvT2Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "8f9c240f0d571f9a669ade5c92fe1dbf6357f4b4085ca011dfa18790ce400061",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:54:45",
+      "setup": "T2 inf vs T2 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 266,
+      "turns_min": 265,
+      "turns_max": 267,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 44,
+        "Vulcanus Skill 3": 89
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T3InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T3InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "1e8eb73170037a28e41bedc2d02836f292681cae96f8487c02e639751a99326c",
+      "schema": "nanomart_1v1_skill_clock",
+      "timestamp": "2026-07-10 02:29:53",
+      "setup": "NanoMart 1v1 deterministic probe: T3 Infantry attacker vs T1 Infantry defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Defender has Vulcanus level-1 Expedition skills for deterministic clock.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 3,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 126,
+      "turns_min": 126,
+      "turns_max": 126,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 21,
+        "Vulcanus Skill 3": 42
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T3InfvT3Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T3InfvT3Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "34320a37f243bab914a8cf5c04a31a2d94dec3e33778e5131ed1b8963d24bff0",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:56:15",
+      "setup": "T3 inf vs T3 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 3,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 3,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 266,
+      "turns_min": 265,
+      "turns_max": 267,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 44,
+        "Vulcanus Skill 3": 89
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T4InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T4InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "05c72d8bb4bbcd126f263972a26020aec0c7e8a526dbdd491d5ffb539393efa4",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:59:25",
+      "setup": "T4 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 4,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 96,
+      "turns_min": 96,
+      "turns_max": 96,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 16,
+        "Vulcanus Skill 3": 32
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T5InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T5InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "2a057e27aad02e54849fed7db7f44a9e1d2ce832e196f7487c40479c599a29da",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 13:59:55",
+      "setup": "T5 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 5,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 80,
+      "turns_min": 79,
+      "turns_max": 81,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 13,
+        "Vulcanus Skill 3": 27
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T6InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T6InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "0e1612db5fffbea2a9054ec2ef0a8a229d944b11a540a0174730c00d4a01cd4d",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10 14:02:27",
+      "setup": "T6 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 96,
+      "turns_min": 96,
+      "turns_max": 96,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 16,
+        "Vulcanus Skill 3": 32
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v1_T6InfvT6Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v1_T6InfvT6Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "34e0ac4015f98fcb6cdf719a646ea41f88afafb1920b9485062ddacc576ba1d6",
+      "schema": "nanomart_exp1_1v1_report",
+      "timestamp": "2026-07-10",
+      "setup": "T6 Infantry vs T6 Infantry",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 264,
+      "turns_min": 264,
+      "turns_max": 264,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 44,
+        "Vulcanus Skill 3": 88
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "74c4d6d838ad6d8cc534c2a93aab144d5f85aa4e3a9cd12cfb335a3e9d3bee37",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 15:25:57",
+      "setup": "1v2 T1 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 192,
+      "turns_min": 192,
+      "turns_max": 192,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 32,
+        "Vulcanus Skill 3": 64
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v2_T1InfvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v2_T1InfvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "237f9e0aec1343566a9811bb4c9f79fbb63d3ae0c6a06d880ef1e600130bcffc",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 15:30:54",
+      "setup": "1v2 T1 Inf vs T1 Lan",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 62,
+      "turns_min": 61,
+      "turns_max": 63,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 10,
+        "Vulcanus Skill 3": 21
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v2_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v2_T1LanvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "ffd2a6f5dbec3e007f46811fc96edccfbe121badb8e367e60282617fd2c04def",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 15:29:16",
+      "setup": "1v2 T1 Lan vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 56,
+      "turns_min": 55,
+      "turns_max": 57,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 9,
+        "Vulcanus Skill 3": 19
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v2_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v2_T1LanvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "5a3bb66fb08cc02fec1cfeba7cb4d41ec4c9e03a2d752a02c34e5768f649cad2",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 15:27:06",
+      "setup": "1v2 T1 Lan vs T1 Lan",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 20,
+      "turns_min": 19,
+      "turns_max": 21,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 3,
+        "Vulcanus Skill 3": 7
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_1v2_T1MMvT1MM_VulcanusVsVulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_1v2_T1MMvT1MM_VulcanusVsVulcanus.json",
+      "source_sha256": "2c2159201cbd4c641fe7ecb8a3be659f28966ecd60ed07cd3ff861662fbc0609",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 15:48:15",
+      "setup": "1v2 T1 MM vs T1 MM",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 336.1,
+          "Defense": 334.1,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 Lnot displayed"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 8,
+      "turns_min": 7,
+      "turns_max": 9,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Attacker Vulcanus Skill 1": 1,
+        "Attacker Vulcanus Skill 2": 1,
+        "Defender Vulcanus Skill 1": 1,
+        "Defender Vulcanus Skill 2": 1,
+        "Defender Vulcanus Skill 3": 3
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_200_NoHero",
+      "source_file": "wos_sim/data/experiments/NanoMart_200_NoHero.json",
+      "source_sha256": "7fd205339aa40415f8a3105981deb71d4b0b2deeab8b4f65978d1bbd522eb6c0",
+      "schema": "nanomart_nohero_ladder",
+      "timestamp": "2026-07-09 21:32:10",
+      "setup": "NanoMart farm ladder: 200 T6 Infantry attacker vs 200 T6 Infantry defender. No heroes, no buffs, deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 69,
+        "lightly_injured": 127,
+        "survivors": 4,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {},
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_200_SeoYoonlvl3",
+      "source_file": "wos_sim/data/experiments/NanoMart_200_SeoYoonlvl3.json",
+      "source_sha256": "36fcdafdcc00a1d4e5edff01a5d87290e56deb43c8091f167d241a05656db10c",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 23:50:11",
+      "setup": "NanoMart farm ladder: 200 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Defender has no hero. Deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 52,
+        "lightly_injured": 96,
+        "survivors": 52,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_200_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_200_Vulcanus.json",
+      "source_sha256": "0437cccb551b994cfd3c22048771d0ab751e85fb8a219a9e8e2ef63626c0f4cf",
+      "schema": "nanomart_vulcanus_ladder",
+      "timestamp": "2026-07-09 20:47:45",
+      "setup": "NanoMart farm ladder: 200 T6 Infantry attacker vs 200 T6 Infantry defender. Defender has Vulcanus with level-1 Expedition skills. Deterministic; no chance procs.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 54,
+        "lightly_injured": 100,
+        "survivors": 46,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": null,
+      "turns_min": 379,
+      "turns_max": 381,
+      "turn_method": null,
+      "counters": {
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 63,
+        "Vulcanus Skill 3": 127
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_250_NoHero",
+      "source_file": "wos_sim/data/experiments/NanoMart_250_NoHero.json",
+      "source_sha256": "648b7773858be86a4bbdc78a615b84201f685f234a7ffb350245b522e5f0bc57",
+      "schema": "nanomart_nohero_ladder",
+      "timestamp": "2026-07-09 21:33:51",
+      "setup": "NanoMart farm ladder: 250 T6 Infantry attacker vs 200 T6 Infantry defender. No heroes, no buffs, deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 250,
+        "losses": 0,
+        "injured": 50,
+        "lightly_injured": 91,
+        "survivors": 109,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {},
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_250_SeoYoonlvl3",
+      "source_file": "wos_sim/data/experiments/NanoMart_250_SeoYoonlvl3.json",
+      "source_sha256": "3ea7a15e5f7afa859110170921b79a1a7962010f402511503969e58f6fc0679d",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 23:51:40",
+      "setup": "NanoMart farm ladder: 250 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Defender has no hero. Deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 250,
+        "losses": 0,
+        "injured": 42,
+        "lightly_injured": 77,
+        "survivors": 131,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_250_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_250_Vulcanus.json",
+      "source_sha256": "5576f994b190ceab70f508169f97cf476c6fffa1ba29cc728692c52795a88b39",
+      "schema": "nanomart_vulcanus_ladder",
+      "timestamp": "2026-07-09 20:55:53",
+      "setup": "NanoMart farm ladder: 250 T6 Infantry attacker vs 200 T6 Infantry defender. Defender has Vulcanus with level-1 Expedition skills. Deterministic; no chance procs.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 250,
+        "losses": 0,
+        "injured": 59,
+        "lightly_injured": 107,
+        "survivors": 84,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": 355,
+      "turns_max": 357,
+      "turn_method": null,
+      "counters": {
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 59,
+        "Vulcanus Skill 3": 119
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_2v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_2v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "445ad25b4a32fd07f975f53dea494aacb828bc1732611b4d030b3ffa390e8a3d",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 16:15:37",
+      "setup": "2v1 T1 inf vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 186,
+      "turns_min": 186,
+      "turns_max": 186,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 31,
+        "Vulcanus Skill 3": 62
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_2v1_T1InfvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_2v1_T1InfvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "f5cbee722e75b1cf75ff64d9ff8e80f142ec8ae4334224ef0759394e2ecc9aca",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 16:25:59",
+      "setup": "2v1 T1 Inf vs T1 Lan",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 56,
+      "turns_min": 55,
+      "turns_max": 57,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 9,
+        "Vulcanus Skill 3": 19
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_2v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_2v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "8ac46e6e77559522f716aa639cb5c40e01eb76ccdf9e293280b7c316d61b5f25",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 16:27:23",
+      "setup": "2v1 T1 Lan vs T1 Inf",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 62,
+      "turns_min": 61,
+      "turns_max": 63,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 10,
+        "Vulcanus Skill 3": 21
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_2v1_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_2v1_T1LanvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "090d9b995e8ce5dea3964ad67f423bf44d3ca48a379b4ecf5d70bbd63519242f",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 16:19:53",
+      "setup": "2v1 T1 Lan vs T1 Lan",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 2,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": 20,
+      "turns_min": 19,
+      "turns_max": 21,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 3,
+        "Vulcanus Skill 3": 7
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_2v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_2v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "b6d6fa4910bd913e5fe4f6721147af25c0282a28ca2b826ea156b47e7da4337d",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 16:23:13",
+      "setup": "2v1 T1 Lan vs T1 MM",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 1,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 6,
+      "turns_min": 6,
+      "turns_max": 6,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 1,
+        "Vulcanus Skill 3": 2
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_2v1_T1MMvT1MM_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_2v1_T1MMvT1MM_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "30dba3c7b7d2e25e5edcb3f9affe11b13795f930afc77f6e4e8ed350ff46a395",
+      "schema": "nanomart_exp2_count_scaling_report",
+      "timestamp": "2026-07-10 16:21:16",
+      "setup": "2v1 T1 MM vs T1 MM",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 1,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 46.7,
+          "Defense": 44.7,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Marksman",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 517.2,
+          "Defense": 515.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "defender",
+      "turns": 8,
+      "turns_min": 7,
+      "turns_max": 9,
+      "turn_method": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+      "counters": {
+        "Seo-yoon Skill 1": 1,
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 1,
+        "Vulcanus Skill 3": 3
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_300_NoHero",
+      "source_file": "wos_sim/data/experiments/NanoMart_300_NoHero.json",
+      "source_sha256": "09eaed4c98bd864394e8acff1b968fea20fdaa4d26b6c73504216fa1c7a88c65",
+      "schema": "nanomart_nohero_ladder",
+      "timestamp": "2026-07-09 21:34:53",
+      "setup": "NanoMart farm ladder: 300 T6 Infantry attacker vs 200 T6 Infantry defender. No heroes, no buffs, deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 300,
+        "losses": 0,
+        "injured": 43,
+        "lightly_injured": 79,
+        "survivors": 178,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {},
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_300_SeoYoonlvl3",
+      "source_file": "wos_sim/data/experiments/NanoMart_300_SeoYoonlvl3.json",
+      "source_sha256": "15b0f1321add718ed50556155b55bab565b96027835f2c5f0e569ead739da433",
+      "schema": "nanomart_seoyoon_ladder",
+      "timestamp": "2026-07-09 23:53:06",
+      "setup": "NanoMart farm ladder: 300 T6 Infantry attacker vs 200 T6 Infantry defender. Attacker has Seo-yoon Skill 1 level 3 (+15% Troops Attack). Defender has no hero. Deterministic.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 300,
+        "losses": 0,
+        "injured": 37,
+        "lightly_injured": 67,
+        "survivors": 196,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3"
+        ],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": null,
+      "turns_max": null,
+      "turn_method": null,
+      "counters": {
+        "Seo-yoon Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_300_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_300_Vulcanus.json",
+      "source_sha256": "79a5e99c4d4c3e615eefaa9d74144fdec85dec54c3ac444ace82a9e8a824b725",
+      "schema": "nanomart_vulcanus_ladder",
+      "timestamp": "2026-07-09 20:49:27",
+      "setup": "NanoMart farm ladder: 300 T6 Infantry attacker vs 200 T6 Infantry defender. Defender has Vulcanus with level-1 Expedition skills. Deterministic; no chance procs.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 300,
+        "losses": 0,
+        "injured": 50,
+        "lightly_injured": 91,
+        "survivors": 159,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": []
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 200,
+        "losses": 0,
+        "injured": 70,
+        "lightly_injured": 130,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1",
+          "Vulcanus Skill 2 L1",
+          "Vulcanus Skill 3 L1"
+        ],
+        "troop_passives": []
+      },
+      "winner": "attacker",
+      "turns": null,
+      "turns_min": 295,
+      "turns_max": 297,
+      "turn_method": null,
+      "counters": {
+        "Vulcanus Skill 1": 1,
+        "Vulcanus Skill 2": 49,
+        "Vulcanus Skill 3": 99
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report"
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+10D+10H_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+10D+10H_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "ebc6b075a65d82f8e770c46b4cd65088963e3acbc50205b80fff20082e977eb5",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:26:07",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Attack and +10 Lethality; defender header says +10 Attack, +10 Defense, and +10 Health.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 12.4,
+          "Defense": 0.2,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 10.0,
+          "Lethality": 10.0,
+          "Health": 10.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 246,
+      "turns_min": 244,
+      "turns_max": 246,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 41,
+        "defender:Vulcanus:Skill 3": 82
+      },
+      "procs": [],
+      "assumptions": [
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 41 is cross-checked as attack events 6, 12, 18, ... and implies turns in [246, 251].",
+        "The chosen value 246 lies in the Skill 2 / Skill 3 intersection [246, 246].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+20D+10H_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+20D+10H_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "64936b872f3732f02571655fa457bd7681113da17e1af0ea22b6e17ec4bf93ea",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:24:00",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Attack and +10 Lethality; defender +10 Attack, +20 Defense, and +10 Health.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 12.4,
+          "Defense": 0.2,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 13.4,
+          "Defense": 22.5,
+          "Lethality": 0.0,
+          "Health": 10.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 242,
+      "turns_min": 241,
+      "turns_max": 243,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 40,
+        "defender:Vulcanus:Skill 3": 81
+      },
+      "procs": [],
+      "assumptions": [
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 40 is cross-checked as attack events 6, 12, 18, ... and implies turns in [240, 245].",
+        "The chosen value 242 lies in the Skill 2 / Skill 3 intersection [241, 243].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+20D_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+20D_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "19ff393fc6efa91528c44eecd18dd8ecedd30b360b7ca0c585d187ac1431804f",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:05:35",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Attack and +10 Lethality; defender +10 Attack and +20 Defense.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 13.5,
+          "Defense": 11.5,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 13.4,
+          "Defense": 22.5,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 266,
+      "turns_min": 265,
+      "turns_max": 267,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 44,
+        "defender:Vulcanus:Skill 3": 89
+      },
+      "procs": [],
+      "assumptions": [
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 44 is cross-checked as attack events 6, 12, 18, ... and implies turns in [264, 269].",
+        "The chosen value 266 lies in the Skill 2 / Skill 3 intersection [265, 267].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "03cea40f4d3951a1af06111088ea5bf90c211bae67b86597efac9141f2bcfe7d",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:20:50",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Attack and +10 Lethality; defender +10 Defense and +10 Health.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 12.4,
+          "Defense": 0.2,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 10.0,
+          "Lethality": 0.0,
+          "Health": 10.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 264,
+      "turns_min": 262,
+      "turns_max": 264,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 44,
+        "defender:Vulcanus:Skill 3": 88
+      },
+      "procs": [],
+      "assumptions": [
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 44 is cross-checked as attack events 6, 12, 18, ... and implies turns in [264, 269].",
+        "The chosen value 264 lies in the Skill 2 / Skill 3 intersection [264, 264].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10A+20D_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10A+20D_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "e2485d4f682133c169c7ab756bbf29b8b2da57612fd2a7c048128762da360654",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:04:44",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Lethality; defender +10 Attack and +20 Defense.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 13.4,
+          "Defense": 22.5,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 242,
+      "turns_min": 241,
+      "turns_max": 243,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 40,
+        "defender:Vulcanus:Skill 3": 81
+      },
+      "procs": [],
+      "assumptions": [
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 40 is cross-checked as attack events 6, 12, 18, ... and implies turns in [240, 245].",
+        "The chosen value 242 lies in the Skill 2 / Skill 3 intersection [241, 243].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "86d0a104feae6e1bd6daeb6c3b2a041d1473ac3a8920a214eb6dcd8cf44d5553",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:19:16",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Lethality; defender +10 Defense and +10 Health.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 10.0,
+          "Lethality": 0.0,
+          "Health": 10.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 270,
+      "turns_min": 268,
+      "turns_max": 270,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 45,
+        "defender:Vulcanus:Skill 3": 90
+      },
+      "procs": [],
+      "assumptions": [
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 45 is cross-checked as attack events 6, 12, 18, ... and implies turns in [270, 275].",
+        "The chosen value 270 lies in the Skill 2 / Skill 3 intersection [270, 270].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "408279f68d1fa026eca56f118c1c0e21e60c8443fa7a7efc33ca71fafb32c848",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:03:33",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Attacker +10 Lethality; defender +10 Defense.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 10.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 10.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 264,
+      "turns_min": 262,
+      "turns_max": 264,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 44,
+        "defender:Vulcanus:Skill 3": 88
+      },
+      "procs": [],
+      "assumptions": [
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 44 is cross-checked as attack events 6, 12, 18, ... and implies turns in [264, 269].",
+        "The chosen value 264 lies in the Skill 2 / Skill 3 intersection [264, 264].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+10D_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+10D_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "37ed4bb4ca9a8bdb7da505aa92f9d425cfd39fa89b04d05df22545d711d78a4a",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 22:51:58",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Defender +10 Attack and +10 Defense.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 13.4,
+          "Defense": 11.4,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 242,
+      "turns_min": 241,
+      "turns_max": 243,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 40,
+        "defender:Vulcanus:Skill 3": 81
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 40 is cross-checked as attack events 6, 12, 18, ... and implies turns in [240, 245].",
+        "The chosen value 242 lies in the Skill 2 / Skill 3 intersection [241, 243].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+20D+10H_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+20D+10H_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "19d65bee2f701a15b53cc8b9ddecdd0804b2bae4bca03ee956c30be6bb8c8f2a",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 23:00:11",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Defender +10 Attack, +20 Defense, and +10 Health.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 13.4,
+          "Defense": 22.5,
+          "Lethality": 0.0,
+          "Health": 10.1
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 242,
+      "turns_min": 241,
+      "turns_max": 243,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 40,
+        "defender:Vulcanus:Skill 3": 81
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 40 is cross-checked as attack events 6, 12, 18, ... and implies turns in [240, 245].",
+        "The chosen value 242 lies in the Skill 2 / Skill 3 intersection [241, 243].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+20D_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+20D_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "356c8072186d6e2fb695a8b4112e8b0e1a6bb743348b28cea5f5cc68e50f0ef4",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 22:52:47",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Defender +10 Attack and +20 Defense.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 13.4,
+          "Defense": 22.5,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 242,
+      "turns_min": 241,
+      "turns_max": 243,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 40,
+        "defender:Vulcanus:Skill 3": 81
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 40 is cross-checked as attack events 6, 12, 18, ... and implies turns in [240, 245].",
+        "The chosen value 242 lies in the Skill 2 / Skill 3 intersection [241, 243].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10D_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10D_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "eb6c56567b3634de46c2ab0ddec610d96017864c12ef74ae1a068ea159ac3091",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-10 22:53:44",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender. Defender +10 Defense.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 10.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 270,
+      "turns_min": 268,
+      "turns_max": 270,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 45,
+        "defender:Vulcanus:Skill 3": 90
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 45 is cross-checked as attack events 6, 12, 18, ... and implies turns in [270, 275].",
+        "The chosen value 270 lies in the Skill 2 / Skill 3 intersection [270, 270].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_Exp4_1v1_T1LanvT1Inf_Att+20_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_Exp4_1v1_T1LanvT1Inf_Att+20_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "8dae59f81a7d9be3de1cd18d3701382d1f8ecf89d0b2d58624d8f9d0aece8ca3",
+      "schema": "experiment_1v1_stat_modifier",
+      "timestamp": "2026-07-11 01:27:41",
+      "setup": "1 Lv 1.0 Lancer attacker versus 1 Lv 1.0 Infantry defender. Attacker +20 Lethality.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 20.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Lancer Charge: +10% attack damage to Marksmen (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=True)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 72,
+      "turns_min": 70,
+      "turns_max": 72,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 12,
+        "defender:Vulcanus:Skill 3": 24
+      },
+      "procs": [],
+      "assumptions": [
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count 12 is cross-checked as attack events 6, 12, 18, ... and implies turns in [72, 77].",
+        "The chosen value 72 lies in the Skill 2 / Skill 3 intersection [72, 72].",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3.json",
+      "source_sha256": "c4b0c95bf23690ab244ab1dad41fc543788ea570b221633d9639b196c4e747b4",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:27:13",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 264,
+      "turns_min": 262,
+      "turns_max": 264,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Vulcanus:Skill 1": 1,
+        "attacker:Vulcanus:Skill 2": 44,
+        "attacker:Vulcanus:Skill 3": 88,
+        "defender:Seo-yoon:Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the attacker side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T3InfvT2Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T3InfvT2Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "bd8ae4fe276a503cd3b76348f5265feb80a06f673c163cdfb9a88b13c455bbfc",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:00:13",
+      "setup": "1 Lv 3.0 Infantry attacker versus 1 Lv 2.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 3,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 188,
+      "turns_min": 187,
+      "turns_max": 189,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 31,
+        "defender:Vulcanus:Skill 3": 63
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T4InfvT2Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T4InfvT2Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "21041f080c932f78e7f9361d0b591dc2066dd02c3c5500901827aa28401908ce",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:03:52",
+      "setup": "1 Lv 4.0 Infantry attacker versus 1 Lv 2.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 4,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 144,
+      "turns_min": 142,
+      "turns_max": 144,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 24,
+        "defender:Vulcanus:Skill 3": 48
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T5InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T5InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "8997e79a41a2dd334358d920be81c0575b5febc9cfabb805f139613f1e7a9bf0",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:25:10",
+      "setup": "1 Lv 5.0 Infantry attacker versus 1 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 5,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 68,
+      "turns_min": 67,
+      "turns_max": 69,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 11,
+        "defender:Vulcanus:Skill 3": 23
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T5InfvT2Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T5InfvT2Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "4ea74f1f34cdf154b5d228797d7278e39e17390e741c646ab23dd9966c0cc37b",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:06:00",
+      "setup": "1 Lv 5.0 Infantry attacker versus 1 Lv 2.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 5,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 120,
+      "turns_min": 118,
+      "turns_max": 120,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 20,
+        "defender:Vulcanus:Skill 3": 40
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "886931d4e1a79c35b8dbb707f634e1def257afe34091b56fec459f5f147b1d41",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:09:12",
+      "setup": "1 Lv 6.0 Infantry attacker versus 1 Lv 2.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 102,
+      "turns_min": 100,
+      "turns_max": 102,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 17,
+        "defender:Vulcanus:Skill 3": 34
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus_Duplicate2",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus_Duplicate2.json",
+      "source_sha256": "1ddc0aa87137708614b89af384d667ed2cbc1b477e0506fd838a42acbf7a0090",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:09:12",
+      "setup": "1 Lv 6.0 Infantry attacker versus 1 Lv 2.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 6,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 2,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 102,
+      "turns_min": 100,
+      "turns_max": 102,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 17,
+        "defender:Vulcanus:Skill 3": 34
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus",
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetB_1v1_T1InfvT1Inf_NoAttackerHero_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetB_1v1_T1InfvT1Inf_NoAttackerHero_Vulcanus.json",
+      "source_sha256": "92f68e881f3c9101730bedee3c2e23ff216b809a3776b0be1b55bb57779da183",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:34:07",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 270,
+      "turns_min": 268,
+      "turns_max": 270,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 45,
+        "defender:Vulcanus:Skill 3": 90
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetB_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetB_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3.json",
+      "source_sha256": "eb479305837ebf9557e853d01c42f9514daae4e506db9f41b8dca1e14ecf9eb3",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:27:13",
+      "setup": "1 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 264,
+      "turns_min": 262,
+      "turns_max": 264,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Vulcanus:Skill 1": 1,
+        "attacker:Vulcanus:Skill 2": 44,
+        "attacker:Vulcanus:Skill 3": 88,
+        "defender:Seo-yoon:Skill 1": 1
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the attacker side."
+      ],
+      "warnings": [],
+      "duplicate_of": "NanoMart_SetA_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetB_1v1_T1LanvT1Lan_NoAttackerHero_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetB_1v1_T1LanvT1Lan_NoAttackerHero_Vulcanus.json",
+      "source_sha256": "63d8c6d8dece88029de8b3640fd5df4ccc40aff75c531e2195df857c3c66efe1",
+      "schema": "experiment_1v1",
+      "timestamp": "2026-07-10 18:34:07",
+      "setup": "1 Lv 1.0 Lancer attacker versus 1 Lv 1.0 Lancer defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [],
+        "hero_skills": [],
+        "troop_passives": [
+          "Lancer Charge: +10% attack damage to Marksmen (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Lancer Charge: +10% attack damage to Marksmen (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 30,
+      "turns_min": 28,
+      "turns_max": 30,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 5,
+        "defender:Vulcanus:Skill 3": 10
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetC_1v3_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetC_1v3_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "1dd896fe6381a3ac6ddba18fa1b58972abcf1a0d4802a15ca64f9272d982da4b",
+      "schema": "experiment_count",
+      "timestamp": "2026-07-10 18:59:24",
+      "setup": "1 Lv 1.0 Infantry attacker versus 3 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 3,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 3,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 156,
+      "turns_min": 154,
+      "turns_max": 156,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 26,
+        "defender:Vulcanus:Skill 3": 52
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetC_1v5_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetC_1v5_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "aae4801d1c2c6e02b2e0686c0f352821802edf35a70da0cfb4bbccb8a674a9b0",
+      "schema": "experiment_count",
+      "timestamp": "2026-07-10 19:02:48",
+      "setup": "1 Lv 1.0 Infantry attacker versus 5 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 5,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 5,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "defender",
+      "turns": 120,
+      "turns_min": 118,
+      "turns_max": 120,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 20,
+        "defender:Vulcanus:Skill 3": 40
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetC_2v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetC_2v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "6472f1debcfaa2fa5740c02f800fca82d89b4752dabdf63cca1dd2d3a608116e",
+      "schema": "experiment_count",
+      "timestamp": "2026-07-10 18:57:14",
+      "setup": "2 Lv 1.0 Infantry attacker versus 2 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 1,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 318,
+      "turns_min": 316,
+      "turns_max": 318,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 53,
+        "defender:Vulcanus:Skill 3": 106
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetC_2v2_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetC_2v2_T1LanvT1Lan_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "f31f4eff83ce03141e04009116096873272d60a554a2dea5943b0e886d1de56f",
+      "schema": "experiment_count",
+      "timestamp": "2026-07-10 19:04:59",
+      "setup": "2 Lv 1.0 Lancer attacker versus 2 Lv 1.0 Lancer defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 1,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Lancer Charge: +10% attack damage to Marksmen (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Lancer",
+        "tier": 1,
+        "troops": 2,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 1,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Lancer Charge: +10% attack damage to Marksmen (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 36,
+      "turns_min": 34,
+      "turns_max": 36,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 6,
+        "defender:Vulcanus:Skill 3": 12
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    },
+    {
+      "report_id": "NanoMart_SetC_3v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+      "source_file": "wos_sim/data/experiments/NanoMart_SetC_3v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus.json",
+      "source_sha256": "e9e4e8cc1122907478a8547cb506de95232bb2264df2113e23754bb719893261",
+      "schema": "experiment_count",
+      "timestamp": "2026-07-10 19:00:53",
+      "setup": "3 Lv 1.0 Infantry attacker versus 1 Lv 1.0 Infantry defender.",
+      "attacker": {
+        "name": "nanomart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 3,
+        "losses": 0,
+        "injured": 0,
+        "lightly_injured": 0,
+        "survivors": 3,
+        "panel_pct": {
+          "Attack": 2.2,
+          "Defense": 0.2,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Seo-yoon"
+        ],
+        "hero_skills": [
+          "Seo-yoon Skill 1 L3: +15% Troops Attack"
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "defender": {
+        "name": "minimart",
+        "troop_class": "Infantry",
+        "tier": 1,
+        "troops": 1,
+        "losses": 0,
+        "injured": 1,
+        "lightly_injured": 0,
+        "survivors": 0,
+        "panel_pct": {
+          "Attack": 2.0,
+          "Defense": 0.0,
+          "Lethality": 0.0,
+          "Health": 0.0
+        },
+        "heroes": [
+          "Vulcanus"
+        ],
+        "hero_skills": [
+          "Vulcanus Skill 1 L1: -4% enemy Troops Attack",
+          "Vulcanus Skill 2 L1: Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+          "Vulcanus Skill 3 L1: -12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ..."
+        ],
+        "troop_passives": [
+          "Infantry Master Brawler: +10% attack damage to Lancers (applies=False)"
+        ]
+      },
+      "winner": "attacker",
+      "turns": 152,
+      "turns_min": 151,
+      "turns_max": 153,
+      "turn_method": "vulcanus_proc_count",
+      "counters": {
+        "attacker:Seo-yoon:Skill 1": 1,
+        "defender:Vulcanus:Skill 1": 1,
+        "defender:Vulcanus:Skill 2": 25,
+        "defender:Vulcanus:Skill 3": 51
+      },
+      "procs": [],
+      "assumptions": [
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Lethality panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Health panel set to 0% from Martin's NanoMart/MiniMart chief-level confirmation; field is not visible in this report",
+        "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+        "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+        "Vulcanus is on the defender side."
+      ],
+      "warnings": [],
+      "duplicate_of": null,
+      "included": true,
+      "exclusion_reason": null
+    }
+  ]
+}

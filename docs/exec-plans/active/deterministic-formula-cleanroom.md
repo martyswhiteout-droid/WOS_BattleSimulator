@@ -8,7 +8,7 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 
 ## Progress
 
-- [ ] Establish a canonical, duplicate-aware manifest of eligible NanoMart reports and quarantine incomplete or contradictory records.
+- [x] (2026-07-11 09:34Z) Established a canonical, duplicate-aware manifest: 71 JSON files discovered, 70 included, one stale user-corrected artifact excluded, 60 with turn evidence, and 10 survivor-only.
 - [ ] Implement a reproducible replay/evaluation harness and independently reproduce the rejection of DeepSeek's published kernel.
 - [ ] Derive algebraic constraints from the 1v1 clocks and count-scaling controls, then test candidate kernel families without report-specific parameters.
 - [ ] Emit the complete NanoMart observed-versus-predicted table and classify the best model honestly as rejected, partial, or exact.
@@ -19,12 +19,15 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 
 - The exec-plan skill expects `docs/PLANS.md`, but this repository does not contain that template. This plan uses every mandatory section specified by the skill itself.
 - `ENGINE_REBUILD/DEEPSEEK_KERNEL_VALIDATION.md` claims an executable 14-row replay, but its cited `scratchpad/validate_deepseek.py` is absent. Treat the document as an unverified report until the result is independently reproduced.
+- The live experiment directory contains 71 NanoMart JSON files, not 70. The difference is the stale `NanoMart_1v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus.json` artifact that Martin explicitly corrected and asked to remove. Excluding it yields the canonical 70.
+- Two included files are exact duplicate captures: the Set A T6-vs-T2 `Duplicate2` artifact and the Set B reversed-role copy of the Set A T1-vs-T1 report. They remain visible in the 70-source manifest but are flagged for de-weighting in model search.
 
 ## Decision Log
 
 - 2026-07-11: Far Seer is holdout-only. It cannot be used to choose constants, formula shape, rounding, or skill semantics.
 - 2026-07-11: Candidate formula families may use shared global or documented class/mechanic parameters, but no per-report scalar, identity-specific adjustment, or hidden branch keyed to a fixture name.
 - 2026-07-11: A failed exact search is an acceptable outcome. The deliverable must preserve falsifying examples and residuals rather than force a neat formula.
+- 2026-07-11: Preserve all 70 canonical source fixtures in reporting, but give exact duplicate fingerprints zero additional fitting weight so repeated screenshots cannot bias parameter selection.
 
 ## Outcomes & Retrospective
 
