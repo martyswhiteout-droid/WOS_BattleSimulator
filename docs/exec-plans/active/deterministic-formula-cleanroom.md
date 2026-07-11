@@ -9,7 +9,7 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 ## Progress
 
 - [x] (2026-07-11 09:34Z) Established a canonical, duplicate-aware manifest: 71 JSON files discovered, 70 included, one stale user-corrected artifact excluded, 60 with turn evidence, and 10 survivor-only.
-- [ ] Implement a reproducible replay/evaluation harness and independently reproduce the rejection of DeepSeek's published kernel.
+- [x] (2026-07-11 09:40Z) Implemented the replay/evaluation harness and independently rejected both DeepSeek's literal pseudocode and its charitable repaired-HP interpretation across all 70 canonical fixtures.
 - [ ] Derive algebraic constraints from the 1v1 clocks and count-scaling controls, then test candidate kernel families without report-specific parameters.
 - [ ] Emit the complete NanoMart observed-versus-predicted table and classify the best model honestly as rejected, partial, or exact.
 - [ ] Run the frozen best NanoMart model against the untouched complete Far Seer holdout and emit a separate residual table.
@@ -21,6 +21,8 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 - `ENGINE_REBUILD/DEEPSEEK_KERNEL_VALIDATION.md` claims an executable 14-row replay, but its cited `scratchpad/validate_deepseek.py` is absent. Treat the document as an unverified report until the result is independently reproduced.
 - The live experiment directory contains 71 NanoMart JSON files, not 70. The difference is the stale `NanoMart_1v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus.json` artifact that Martin explicitly corrected and asked to remove. Excluding it yields the canonical 70.
 - Two included files are exact duplicate captures: the Set A T6-vs-T2 `Duplicate2` artifact and the Set B reversed-role copy of the Set A T1-vs-T1 report. They remain visible in the 70-source manifest but are flagged for de-weighting in model search.
+- One Vulcanus-versus-Vulcanus source records a skill level as the literal text `not displayed`. The loader preserves it as unknown and does not coerce it to Level 1.
+- DeepSeek's literal pseudocode matches 12/70 winners, 0/70 survivor pairs, and 0/60 turn observations. Repairing only its HP-conservation bug improves this to 54/70 winners, 42/70 survivor pairs, and 1/60 turn observations. Its constants solve 0/5 claimed equations.
 
 ## Decision Log
 
@@ -28,6 +30,7 @@ No statement may use the words “exact,” “verified,” or “solved” unle
 - 2026-07-11: Candidate formula families may use shared global or documented class/mechanic parameters, but no per-report scalar, identity-specific adjustment, or hidden branch keyed to a fixture name.
 - 2026-07-11: A failed exact search is an acceptable outcome. The deliverable must preserve falsifying examples and residuals rather than force a neat formula.
 - 2026-07-11: Preserve all 70 canonical source fixtures in reporting, but give exact duplicate fingerprints zero additional fitting weight so repeated screenshots cannot bias parameter selection.
+- 2026-07-11: Treat `deepseek_published` and `deepseek_repaired_hp` as separate rejected models. This distinguishes the delivered code defect from the independent failure of the delivered kernel constants.
 
 ## Outcomes & Retrospective
 

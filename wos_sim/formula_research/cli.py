@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Sequence
 
 from .dataset import ROOT, discover_nanomart, manifest_summary
+from .evaluate import deepseek_equation_checks, evaluate, write_evaluation
+from .models import DeepSeekPublishedModel, DeepSeekRepairedHPModel
 
 
 OUTPUT_DIR = ROOT / "ENGINE_REBUILD" / "formula_research"
@@ -122,6 +124,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("manifest", help="normalize and inventory NanoMart fixtures")
+    evaluate_parser = subparsers.add_parser("evaluate", help="evaluate a candidate model")
+    evaluate_parser.add_argument(
+        "--model",
+        required=True,
+        choices=("deepseek", "deepseek-published"),
+    )
     return parser
 
 
@@ -131,5 +139,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         summary = _write_manifest()
         print(json.dumps(summary, indent=2))
         return 0 if summary["included"] == 70 else 2
+    if args.command == "evaluate":
+        battles = [record for record in discover_nanomart() if record.included]
+        model = (
+            DeepSeekRepairedHPModel()
+            if args.model == "deepseek"
+            else DeepSeekPublishedModel()
+        )
+        rows, summary = evaluate(model, battles)
+        checks = deepseek_equation_checks()
+        write_evaluation(OUTPUT_DIR, model, rows, summary, checks)
+        print(json.dumps({"summary": summary, "equation_checks": checks}, indent=2))
+        return 0
     raise AssertionError(args.command)
-

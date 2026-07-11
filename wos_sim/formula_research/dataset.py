@@ -38,6 +38,7 @@ class SideRecord:
     panel_pct: dict[str, float]
     heroes: tuple[str, ...] = ()
     hero_skills: tuple[str, ...] = ()
+    skill_levels: dict[str, int] = field(default_factory=dict)
     troop_passives: tuple[str, ...] = ()
 
 
@@ -156,6 +157,24 @@ def _skills(side: dict[str, Any]) -> tuple[str, ...]:
     return tuple(dict.fromkeys(values))
 
 
+def _skill_levels(side: dict[str, Any]) -> dict[str, int]:
+    result: dict[str, int] = {}
+    lead = side.get("lead_hero")
+    if lead:
+        for slot, level in (side.get("skill_levels") or {}).items():
+            try:
+                result[f"{lead}:{slot}"] = int(level)
+            except (TypeError, ValueError):
+                continue
+    for skill in side.get("hero_skills") or []:
+        if not isinstance(skill, dict) or skill.get("level") is None:
+            continue
+        hero = skill.get("hero") or "unknown hero"
+        slot = skill.get("slot") or "unknown slot"
+        result[f"{hero}:{slot}"] = int(skill["level"])
+    return result
+
+
 def _passives(side: dict[str, Any]) -> tuple[str, ...]:
     values: list[str] = []
     for passive in side.get("troop_passives_active") or []:
@@ -185,6 +204,7 @@ def _side(side: dict[str, Any], data: dict[str, Any]) -> tuple[SideRecord, list[
             panel_pct=panel,
             heroes=_heroes(side),
             hero_skills=_skills(side),
+            skill_levels=_skill_levels(side),
             troop_passives=_passives(side),
         ),
         assumptions,
@@ -314,4 +334,3 @@ def manifest_summary(records: list[BattleRecord]) -> dict[str, Any]:
             for r in excluded
         ],
     }
-
