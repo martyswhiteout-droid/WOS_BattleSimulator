@@ -1198,6 +1198,618 @@
   .foe .form-ctl{flex-direction:row-reverse}
   .foe .fctrls{flex-direction:row-reverse}
   .foe .fcount{flex-direction:row-reverse}
+
+  /* Troops Formation cleanup: same colors/icons, calmer hierarchy. */
+  .troops-formation-block .accordion-body{padding-top:14px}
+  .troops-formation-block .duo{gap:10px 20px}
+  .troops-formation-block .duo:first-of-type{align-items:end;padding:2px 0 8px}
+  .troops-formation-block .duo:first-of-type .lab{
+    align-self:end;padding-bottom:8px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.02em;text-transform:none}
+  .troops-formation-block .troops-me,.troops-formation-block .foe{min-width:0}
+  .troops-formation-block .troops-me{gap:10px}
+  .troops-formation-block .eqchk{gap:7px;font-size:11px;opacity:.95}
+  .troops-formation-block #myTroops,.troops-formation-block #foeTroops{
+    height:36px;width:150px;max-width:100%;text-align:center;font-weight:700;letter-spacing:.03em}
+  .troops-formation-block .duo:nth-of-type(2){margin-top:10px!important}
+  .troops-formation-block .duo:nth-of-type(2)>.lab{
+    align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;min-height:100%;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:none}
+  .troops-formation-block #formModeChecks{
+    width:100%;gap:8px;padding:10px;border-radius:12px;background:rgba(255,255,255,.055);
+    box-shadow:inset 0 1px rgba(255,255,255,.06)}
+  .troops-formation-block #formModeChecks .gchk{font-size:11.5px}
+
+  .troops-formation-block .form-stack{max-width:500px;gap:11px}
+  .troops-formation-block .form-ctl{
+    min-height:76px;align-items:stretch;gap:12px;padding:11px 12px;border-radius:16px;
+    box-shadow:inset 0 1px rgba(255,255,255,.68),0 7px 16px -13px rgba(0,0,0,.55)}
+  .troops-formation-block .form-ctl.auto{opacity:.78}
+  .troops-formation-block .formation-row-body{
+    flex:1;min-width:0;display:grid;grid-template-rows:auto auto;gap:8px;align-self:center}
+  .troops-formation-block .formation-quality{
+    display:grid;grid-template-columns:44px 54px 50px;gap:8px;align-items:end;justify-content:start}
+  .troops-formation-block .foe .formation-quality{justify-content:end}
+  .troops-formation-block .formation-ratio{display:grid;gap:5px}
+  .troops-formation-block .fctrls{width:100%;gap:7px;min-width:0}
+  .troops-formation-block .fbtn{width:30px;min-width:30px;height:30px;min-height:30px;border-radius:9px}
+  .troops-formation-block .form-ctl input[type=range]{min-width:64px;height:8px}
+  .troops-formation-block .form-ctl input[type=range]::-webkit-slider-thumb{width:18px;height:18px}
+  .troops-formation-block .form-ctl input[type=range]::-moz-range-thumb{width:15px;height:15px}
+  .troops-formation-block .fval{min-width:50px;padding:5px 7px;font-size:12px;font-weight:700}
+  .troops-formation-block .fcount{margin:0}
+  .troops-formation-block .fcount input{height:30px}
+  .troops-formation-block .fcunit{align-self:center}
+  .troops-formation-block .fclass{
+    width:74px;align-self:stretch;justify-content:center;padding-inline:2px}
+  .troops-formation-block .fname{
+    font-size:12px;font-weight:700;letter-spacing:.01em;line-height:1.1;color:#31506b}
+  .troops-formation-block .form-ctl .fic{
+    width:38px;height:38px;border-radius:12px;box-shadow:inset 0 1px rgba(255,255,255,.35)}
+  .troops-formation-block .qctl{gap:3px}
+  .troops-formation-block .qlbl2{
+    font-size:8.5px;letter-spacing:.08em;color:#48677e;opacity:.82}
+  .troops-formation-block .form-ctl .qctl select{
+    height:28px;text-align:center;font-weight:700;color:#31506b}
+  .troops-formation-block .formation-total{
+    margin-top:10px;padding-inline:4px;font-size:17px;line-height:1;text-shadow:0 1px rgba(0,0,0,.2)}
+
+  @media (max-width:960px){
+    .troops-formation-block .duo{gap:8px 12px}
+    .troops-formation-block .duo:nth-of-type(2)>.lab{
+      align-items:flex-start;min-height:0;padding:0}
+    .troops-formation-block #formModeChecks{flex-direction:row;flex-wrap:wrap}
+    .troops-formation-block .form-stack{max-width:none}
+  }
+  @media (max-width:700px){
+    .troops-formation-block .form-ctl{padding:9px;gap:8px}
+    .troops-formation-block .fclass{width:58px}
+    .troops-formation-block .form-ctl .fic{width:34px;height:34px}
+    .troops-formation-block .formation-quality{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+    .troops-formation-block .form-ctl .qctl select{width:100%;min-width:0;padding-inline:4px 14px}
+    .troops-formation-block .fctrls{gap:5px}
+    .troops-formation-block .fbtn{width:26px;min-width:26px;height:26px;min-height:26px}
+    .troops-formation-block .fval{min-width:42px;font-size:11px;padding-inline:5px}
+  }
+  @media (max-width:520px){
+    .troops-formation-block .duo{grid-template-columns:1fr;gap:10px}
+    .troops-formation-block .duo .lab{grid-column:auto}
+    .troops-formation-block .troops-me,.troops-formation-block .foe,.troops-formation-block .me .form-stack{justify-content:stretch;margin-left:0}
+    .troops-formation-block .troops-me{display:grid;grid-template-columns:auto minmax(0,1fr)}
+    .troops-formation-block #myTroops,.troops-formation-block #foeTroops{width:100%}
+    .troops-formation-block .form-ctl{min-height:72px}
+    .troops-formation-block .formation-total{text-align:right}
+    .troops-formation-block .foe .formation-total{text-align:right}
+  }
+
+  /* ============================================================
+     Round 7 — material & micro-interaction polish.
+     No new hues: every value below is a shade/alpha of the existing
+     navy / glossy-blue / parchment-gold / ice / ember palette.
+     ============================================================ */
+
+  /* page furniture: selection tint + slim game scrollbars */
+  ::selection{background:rgba(46,161,242,.35)}
+  ::-webkit-scrollbar{width:11px;height:11px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(70,122,168,.55);border-radius:8px;border:3px solid rgba(10,20,32,.9);background-clip:padding-box}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(95,160,215,.75);background-clip:padding-box;border:3px solid rgba(10,20,32,.9)}
+
+  /* header: soft vertical light + faction hairline tucked inside the rounded bar */
+  .bar{background:linear-gradient(180deg,#10334f,#0B273D)}
+  .bar::after{content:"";display:block;position:absolute;left:26px;right:26px;bottom:0;height:2px;border-radius:2px;opacity:.75;
+    background:linear-gradient(90deg,transparent,rgba(85,191,255,.75) 22%,rgba(255,129,129,.75) 78%,transparent)}
+  .flake{border:0;color:#fff;background:radial-gradient(circle at 50% 28%,#4aa6ec,#1b5e9e 68%,#12405f);
+    text-shadow:0 1px 2px rgba(2,26,47,.65);
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.5),inset 0 -2px 3px rgba(6,30,54,.65),0 3px 6px -2px rgba(2,26,47,.6)}
+  .run-status{transition:color .15s,border-color .15s,box-shadow .2s}
+  .run-status.running{box-shadow:0 0 12px -2px rgba(85,191,255,.5)}
+
+  /* number inputs: hide the browser spinners — cleaner mono columns (typing/arrows still work) */
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield}
+
+  /* interactive controls: one shared motion grammar (ranges excluded — live fill must not lag) */
+  .input input:not([type=range]),.input select,.hpick-btn,.tab-tool,.accordion-toggle{
+    transition:border-color .15s,box-shadow .15s,background-color .15s,color .15s,transform .12s}
+  .input input[type=text]:focus-visible,.input input[type=number]:focus-visible,.input select:focus-visible{
+    outline:0;border-color:#5AAEF3;
+    box-shadow:inset 0 1px rgba(255,255,255,.85),0 0 0 3px rgba(90,174,243,.3)}
+
+  /* faction badges: gradient-metal lettering + short underline in each side's colour */
+  .side-title .badge{font-size:16px;letter-spacing:.12em;
+    -webkit-background-clip:text;background-clip:text;
+    filter:drop-shadow(0 2px 2px rgba(2,26,47,.55))}
+  .side-title.me .badge{color:transparent;background-image:linear-gradient(180deg,#EAF6FF 20%,#8FD3FF 55%,#55BFFF)}
+  .side-title.foe .badge{color:transparent;background-image:linear-gradient(180deg,#FFEFEF 20%,#FFAFAF 55%,#FF8181)}
+  .side-title .badge::after{content:"";display:block;width:52px;height:2px;border-radius:2px;margin:3px auto 0}
+  .side-title.me .badge::after{background:linear-gradient(90deg,transparent,rgba(85,191,255,.8),transparent)}
+  .side-title.foe .badge::after{background:linear-gradient(90deg,transparent,rgba(255,129,129,.8),transparent)}
+
+  /* VS medallion: embossed game token (radial face, inner bevel, seated shadow) */
+  .vs-pill{width:48px;height:48px;border:0;color:#fff;font-size:15px;text-shadow:0 1px 2px rgba(10,52,96,.65);
+    background:radial-gradient(circle at 50% 26%,#8ED0FF,#3E97E8 60%,#1F6FB8 100%);
+    box-shadow:0 0 0 2px rgba(255,255,255,.16),0 5px 10px -3px rgba(2,26,47,.75),
+      inset 0 2px 3px rgba(255,255,255,.55),inset 0 -3px 5px rgba(14,74,133,.8)}
+
+  /* section header bars already glossy — give their chevron a hinge instead of a glyph swap */
+  .accordion-toggle::before{content:"⌃";transition:transform .25s cubic-bezier(.2,.7,.25,1.2)}
+  .accordion-toggle[aria-expanded="false"]::before{content:"⌃";transform:rotate(180deg)}
+
+  /* green checks: hover ring + a little pop when ticked */
+  .gchk input{transition:background .15s,border-color .15s,box-shadow .15s}
+  .gchk:hover input{border-color:#8fbde4;box-shadow:inset 0 1px 2px rgba(0,0,0,.12),0 0 0 3px rgba(90,174,243,.16)}
+  .gchk input:checked::after{animation:chk-pop .16s ease-out}
+  @keyframes chk-pop{from{transform:rotate(42deg) scale(.4)}to{transform:rotate(42deg) scale(1)}}
+
+  /* primary buttons: pressed ledge already exists — add the glass sheen sweep on hover */
+  .run,.refresh{position:relative;overflow:hidden}
+  .run::after,.refresh::after{content:"";position:absolute;top:-2px;bottom:-2px;left:-70%;width:45%;
+    transform:skewX(-22deg);pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
+  .run:hover::after,.refresh:hover::after{opacity:1;animation:sheen .8s ease .05s}
+  @keyframes sheen{from{left:-70%}to{left:130%}}
+  .input .fbtn:active:not(:disabled){transform:translateY(1px);
+    box-shadow:inset 0 2px rgba(255,255,255,.4),inset 0 -1px rgba(18,108,190,.5),0 1px 0 #1666A7}
+  .input .foe .fbtn:active:not(:disabled){box-shadow:inset 0 2px rgba(255,255,255,.35),inset 0 -1px rgba(177,45,45,.5),0 1px 0 #A83A3A}
+
+  /* scenario rail: bottom ledge 3D, lift on hover, lit face when active */
+  .rail-tabs .tab{transition:transform .12s,box-shadow .15s,background .15s,color .15s;
+    box-shadow:inset 0 1px rgba(255,255,255,.16),0 3px 0 rgba(6,24,42,.55),0 9px 16px -10px rgba(0,0,0,.6)}
+  .rail-tabs .tab:hover{transform:translateY(-1px)}
+  .rail-tabs .tab:active{transform:translateY(1px);box-shadow:inset 0 1px rgba(255,255,255,.16),0 1px 0 rgba(6,24,42,.55)}
+  .rail-tabs .tab[aria-selected="true"]{
+    box-shadow:inset 0 1px rgba(255,255,255,.45),inset 0 0 14px rgba(255,255,255,.12),
+      0 3px 0 rgba(12,58,102,.7),0 10px 20px -10px rgba(24,90,160,.9)}
+
+  /* hero pickers: lift on hover, faction ring on the avatar, springy dropdown */
+  .hpick-btn:hover{transform:translateY(-1px);border-color:#8fbde4;
+    box-shadow:inset 0 1px rgba(255,255,255,.85),0 5px 10px -5px rgba(2,26,47,.55)}
+  .hpick-btn:active{transform:translateY(0)}
+  .hpick-btn img:not(.hpick-open):not(.none-red),.hpick-btn .empty-avatar{
+    box-shadow:0 0 0 2px var(--ring,rgba(49,80,107,.35)),0 2px 4px rgba(2,26,47,.35)}
+  .me .hpick-btn{--ring:rgba(46,161,242,.6)}
+  .foe .hpick-btn{--ring:rgba(239,95,95,.55)}
+  .hpick-pop{border-radius:14px;background:rgba(233,246,255,.95);border:1px solid rgba(49,80,107,.28);
+    box-shadow:0 20px 44px -18px rgba(2,26,47,.6),0 4px 12px -6px rgba(2,26,47,.4),inset 0 1px 0 rgba(255,255,255,.75);
+    backdrop-filter:blur(10px) saturate(1.05)}
+  .hpick-pop.open{animation:pop-in .16s cubic-bezier(.2,.85,.3,1.15)}
+  @keyframes pop-in{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none}}
+  .hpick-pop::-webkit-scrollbar{width:9px}
+  .hpick-pop::-webkit-scrollbar-thumb{background:#9dc3e2;border:2px solid rgba(233,246,255,.95);background-clip:padding-box}
+  .hpick-it{border-radius:9px;transition:background .12s,box-shadow .12s}
+  .hpick-it:hover{background:rgba(24,133,237,.14)}
+  .hpick-it[aria-selected="true"]{background:rgba(24,133,237,.09);box-shadow:inset 0 0 0 1px rgba(24,133,237,.3)}
+  .tip-pop{border-radius:12px;border-color:rgba(49,80,107,.28);
+    box-shadow:0 18px 40px -16px rgba(2,26,47,.55),inset 0 1px 0 rgba(255,255,255,.7);backdrop-filter:blur(10px)}
+
+  /* pet-buff sliders: real groove + gradient fill + the formation sliders' glossy thumb */
+  .input .slider-wrap input[type=range]{-webkit-appearance:none;appearance:none;height:9px;border-radius:6px;margin:0;
+    background:linear-gradient(90deg,var(--sc,#2EA1F2) 0 var(--fill,100%),#0e2c47 var(--fill,100%) 100%);
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.06)}
+  .input .me .slider-wrap input[type=range]{--sc:#2EA1F2}
+  .input .foe .slider-wrap input[type=range]{--sc:#EF5F5F}
+  .input .slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:#eef7fa;border:3px solid var(--sc,#2EA1F2);cursor:pointer;
+    box-shadow:0 1px 4px rgba(0,0,0,.5),inset 0 1px 1px rgba(255,255,255,.8)}
+  .input .slider-wrap input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;
+    background:#eef7fa;border:3px solid var(--sc,#2EA1F2);cursor:pointer}
+  .input .slider-wrap input[type=range]::-moz-range-progress{background:var(--sc,#2EA1F2);height:9px;border-radius:6px}
+  .input .slider-wrap input[type=range]:disabled{opacity:.6;filter:saturate(.55)}
+  .input .slider-wrap input[type=range]:disabled::-webkit-slider-thumb{cursor:default}
+
+  /* forecast battle-number sliders: parchment groove + ice thumb */
+  .forecast .tl-slider{-webkit-appearance:none;appearance:none;height:8px;border-radius:5px;
+    background:rgba(106,86,71,.22);box-shadow:inset 0 1px 2px rgba(106,86,71,.4)}
+  .forecast .tl-slider::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;
+    background:#fffdf8;border:3px solid #2EA1F2;cursor:pointer;box-shadow:0 1px 4px rgba(106,86,71,.55)}
+  .forecast .tl-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fffdf8;border:3px solid #2EA1F2;cursor:pointer}
+
+  /* ---------- forecast: the battle report gets its glass-and-gold pass ---------- */
+
+  /* parchment cards: double frame (gold edge + inner light) and a deeper seat */
+  .forecast .fc-part,.forecast .honesty{
+    box-shadow:0 12px 24px -14px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.5),inset 0 1px 0 rgba(255,255,255,.75)}
+  .forecast .fc-part>.h{display:flex;align-items:center;gap:10px}
+  .forecast .fc-part>.h::after{content:"";flex:0 0 44px;height:3px;border-radius:2px;margin-top:1px;
+    background:linear-gradient(90deg,#D9A94F,rgba(217,169,79,0))}
+
+  /* verdict: letterpress win% stamped into the parchment */
+  .forecast .verdict .pct{
+    background-image:linear-gradient(180deg,#3FA9F5 0%,#1682D8 52%,#0E5FA4 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 1px 0 rgba(255,255,255,.65)) drop-shadow(0 4px 8px rgba(106,86,71,.3))}
+  .forecast .verdict .plabel{color:#8d5b31;letter-spacing:.26em}
+
+  /* probability bar: glass tube — outer frame, top sheen, bevelled segments */
+  .obar{height:46px;border:1px solid rgba(106,86,71,.42);
+    box-shadow:0 7px 14px -8px rgba(106,86,71,.6),inset 0 2px 4px rgba(0,0,0,.22)}
+  .obar::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.12) 38%,rgba(255,255,255,0) 52%,rgba(0,0,0,.07) 100%)}
+  .oseg+.oseg{box-shadow:inset 2px 0 3px -1px rgba(0,0,0,.28)}
+
+  /* forecast segmented toggles: parchment pills with the ember active face */
+  .forecast .seg-toggle{border:1px solid rgba(106,86,71,.32);border-radius:9px;background:rgba(255,255,255,.55);
+    box-shadow:inset 0 1px 2px rgba(106,86,71,.16)}
+  .forecast .seg-toggle button{color:#8d6d56;transition:background .15s,color .15s}
+  .forecast .seg-toggle button:hover:not(:disabled){color:#6a4a2f}
+  .forecast .seg-toggle button[aria-pressed="true"]{background:linear-gradient(180deg,#FF9E7A,#EF6A4A);color:#fff;
+    text-shadow:0 1px 1px rgba(93,17,17,.5);box-shadow:inset 0 1px rgba(255,255,255,.45),inset 0 -2px rgba(140,42,20,.3)}
+
+  /* chart tiles read as inset wells in the parchment */
+  .forecast .vbody,.forecast .cbox,.forecast .rounds,.forecast .tl-bars,.forecast .tl-line,
+  .forecast .cats,.forecast .skill-card,.forecast .joiner-entry,.forecast .skill-spark{
+    box-shadow:inset 0 2px 5px rgba(106,86,71,.13),inset 0 0 0 1px rgba(255,255,255,.55);
+    border-color:rgba(106,86,71,.22)}
+
+  /* every data bar gets the candy edge: light on the outer rim, shade on the inner */
+  .vrow .bl,.vrow .br,.rcol .up,.km-seg2,.catcol .cbar,.tl-col .b,.mbar .ml,.mbar .mr,.skill-spark i,.oseg.win,.oseg.loss{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.12)}
+  .rcol .dn{box-shadow:inset 0 -1px 0 rgba(255,255,255,.3),inset 0 1px 0 rgba(0,0,0,.12)}
+
+  /* simulation overlay: glossy striped game progress bar */
+  .sim-track{height:16px;border-radius:10px;background:#0a2438;border:1px solid rgba(255,255,255,.16);
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.06)}
+  .sim-fill{position:relative;overflow:hidden;border-radius:8px;
+    background:linear-gradient(180deg,#7CC8FF,#2EA1F2 55%,#1682D8);
+    box-shadow:0 0 16px rgba(85,191,255,.55),inset 0 1px 0 rgba(255,255,255,.55)}
+  .sim-fill::after{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(-45deg,rgba(255,255,255,.25) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.25) 50%,rgba(255,255,255,.25) 75%,transparent 75%,transparent);
+    background-size:22px 22px;animation:sim-stripes .7s linear infinite}
+  @keyframes sim-stripes{to{background-position:22px 0}}
+
+  .stale-chip{box-shadow:0 5px 12px -4px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.25)}
+
+  /* ============================================================
+     Round 8 — deeper gloss + backdrop parallax.
+     Fix: the formation mode checks ("Input By Troop Quantity")
+     overflowed their well — the nowrap label was wider than the
+     168px centre column.
+     ============================================================ */
+
+  /* formation centre column: wide enough for the mode labels on one line (desktop
+     only — the ≤960px layout stacks the label full-width already); labels may wrap
+     instead of escaping the well if they ever grow again */
+  @media (min-width:961px){
+    .troops-formation-block .duo{grid-template-columns:minmax(0,1fr) 200px minmax(0,1fr)}
+  }
+  .troops-formation-block #formModeChecks{min-width:0}
+  .troops-formation-block #formModeChecks .gchk{white-space:normal;align-items:flex-start;line-height:1.35;text-align:left}
+  .troops-formation-block #formModeChecks .gchk input{margin-top:0}
+  /* …and the well itself becomes a dark glass inset so the green checks pop */
+  .troops-formation-block #formModeChecks{background:rgba(6,20,34,.38);
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.45),inset 0 -1px 0 rgba(255,255,255,.07),0 1px 0 rgba(255,255,255,.06)}
+
+  /* formation cards: curved-plastic ramp + crisp specular across the top half */
+  .input .form-ctl{position:relative;isolation:isolate;
+    background:linear-gradient(180deg,#ddeffc 0%,#cfe6f9 55%,#c0dbf3 100%)}
+  .input .form-ctl::before{content:"";position:absolute;z-index:-1;inset:1px 1px 52% 1px;
+    border-radius:15px 15px 12px 12px;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.07))}
+  .troops-formation-block .form-ctl{
+    box-shadow:inset 0 1px rgba(255,255,255,.78),inset 0 -2px 3px rgba(49,80,107,.14),0 9px 18px -12px rgba(0,0,0,.62)}
+  .input .fic{background:linear-gradient(180deg,#a6d3f3,#7db5e3);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.55),inset 0 -2px 3px rgba(30,80,125,.3),0 2px 4px -2px rgba(2,26,47,.4)}
+
+  /* sliders become glass tubes: highlight ridge over the fill, groove shadow under it */
+  .input .form-ctl input[type=range]{height:10px;
+    background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 55%),
+      linear-gradient(90deg,var(--fc,#2EA1F2) 0 var(--fill,50%),var(--tk,#20313d) var(--fill,50%) 100%);
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.42),inset 0 -1px 1px rgba(255,255,255,.16)}
+  .input .slider-wrap input[type=range]{
+    background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 55%),
+      linear-gradient(90deg,var(--sc,#2EA1F2) 0 var(--fill,100%),#0e2c47 var(--fill,100%) 100%)}
+  .input .form-ctl input[type=range]::-webkit-slider-thumb,
+  .input .slider-wrap input[type=range]::-webkit-slider-thumb{
+    background:radial-gradient(circle at 50% 30%,#ffffff 0%,#eef7fa 55%,#cfe3ee 100%);
+    box-shadow:0 2px 4px rgba(0,0,0,.45),inset 0 1px 1px rgba(255,255,255,.9)}
+  .input .form-ctl input[type=range]::-moz-range-thumb,
+  .input .slider-wrap input[type=range]::-moz-range-thumb{
+    background:radial-gradient(circle at 50% 30%,#ffffff 0%,#eef7fa 55%,#cfe3ee 100%)}
+
+  /* green checks: porcelain finish */
+  .gchk input{background:linear-gradient(180deg,#f7fbfd,#e2eaef);border-color:#a9bac4;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.9),inset 0 -1px 2px rgba(0,0,0,.10),0 1px 2px rgba(2,26,47,.28)}
+  .gchk input:checked{background:linear-gradient(180deg,#ffffff,#eefaec)}
+
+  /* light controls: porcelain ramp (selects restate their chevron layers + the ramp) */
+  .input input[type=text],.input input[type=number],.input .fval,.input .hpick-btn{
+    background-image:linear-gradient(180deg,#ffffff,#eef6fd)}
+  .input select{
+    background-image:linear-gradient(45deg,transparent 50%,#6f9dc4 50%),linear-gradient(135deg,#6f9dc4 50%,transparent 50%),linear-gradient(180deg,#ffffff,#eef6fd);
+    background-position:calc(100% - 14px) 52%,calc(100% - 9px) 52%,0 0;
+    background-size:5px 5px,5px 5px,100% 100%;background-repeat:no-repeat}
+  .form-ctl .qctl select{background-position:calc(100% - 6px) 52%,calc(100% - 3px) 52%,0 0}
+
+  /* input section tabs: glossier rest / lit active face */
+  .input-tabs .tab-btn{background:linear-gradient(180deg,#1a4f80,#123f66);
+    box-shadow:inset 0 1px rgba(255,255,255,.15),inset 0 -3px rgba(0,0,0,.3)}
+  .input-tabs .tab-btn:hover{background:linear-gradient(180deg,#215f97,#164a78)}
+  .input-tabs .tab-btn[aria-selected="true"]{
+    box-shadow:inset 0 1px rgba(255,255,255,.6),inset 0 -3px rgba(20,96,170,.5),0 3px 8px -3px rgba(24,113,190,.75)}
+
+  /* backdrop parallax: layers move only when JS opts in (html.parallax-on);
+     reduced-motion never gets the class, so the static composition is untouched */
+  html.parallax-on .bg-video,html.parallax-on body::before{
+    transform:translate3d(var(--par-x,0px),var(--par-y,0px),0) scale(1.1);will-change:transform}
+
+  /* ============================================================
+     Round 9 — finishing details.
+     Paper grain on the report, faction tinting on the VS row,
+     zebra data tables, gold world-bridges, honesty wax seal,
+     stale-chip pulse, remaining press states, cinema vignette.
+     New alphas of existing hues only; baseline regenerated
+     deliberately with this round.
+     ============================================================ */
+
+  /* cinematic vignette: corners fall off so the panels sit in a pool of light */
+  body::after{background:
+    radial-gradient(130% 100% at 50% 38%,transparent 55%,rgba(8,18,32,.55) 100%),
+    linear-gradient(180deg,rgba(8,18,32,.42) 0%,rgba(8,18,32,.70) 58%,rgba(8,18,32,.86) 100%)}
+
+  /* VS row: each faction's half of the header glows faintly in its own colour */
+  .input .sides-head{border-radius:12px;background:
+    linear-gradient(90deg,rgba(46,161,242,.12),transparent 32%,transparent 68%,rgba(239,95,95,.12))}
+
+  /* remaining toggles get the shared press grammar (filter = no new colours) */
+  .input .role-toggle button,.input .seg-toggle button{
+    transition:filter .15s,box-shadow .15s,transform .1s}
+  .input .role-toggle button:hover,.input .seg-toggle button:hover{filter:brightness(1.09)}
+  .input .role-toggle button:active,.input .seg-toggle button:active{transform:translateY(1px)}
+
+  /* header engine chip: same game-chip finish as the red buttons */
+  .bar-note{background:linear-gradient(180deg,#FF9090,#EF6868 55%,#DB4F4F);border:0;border-radius:9px;
+    box-shadow:inset 0 1px rgba(255,255,255,.45),inset 0 -2px rgba(140,42,20,.3),0 2px 4px -2px rgba(0,0,0,.5)}
+
+  /* dense stat tables: zebra rows for scanability (navy world + parchment world) */
+  .stat-panel .duo{padding-inline:8px;border-radius:8px}
+  #statPanel .duo:nth-of-type(odd){background:rgba(255,255,255,.03)}
+  .final-stats .duo:nth-of-type(odd){background:rgba(106,86,71,.05)}
+
+  /* world bridges: gold hairline under the forecast meta strip, gold section rule,
+     and the Forecast heading itself warms from white into parchment */
+  .forecast .fc-meta{position:relative}
+  .forecast .fc-meta::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(231,199,131,.55),transparent)}
+  .sec-head .rule{background:linear-gradient(90deg,rgba(231,199,131,.5),transparent)}
+  .sec-head h2{text-shadow:none;background:linear-gradient(180deg,#ffffff 30%,#F7E3B9);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 8px rgba(0,0,0,.55))}
+
+  /* the battle report becomes paper: colourless fractal grain, behind the content */
+  .forecast .fc-part,.forecast .honesty{position:relative;isolation:isolate}
+  .forecast .fc-part::after,.forecast .honesty::after{content:"";position:absolute;inset:0;z-index:-1;
+    border-radius:inherit;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* honesty note: the half-moon glyph becomes a pressed wax seal */
+  .honesty .ic{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:50%;
+    font-size:16px;color:#fff;text-shadow:0 1px 1px rgba(93,17,17,.55);
+    background:radial-gradient(circle at 50% 30%,#FF8181,#EF5F5F 62%,#C94646 100%);
+    box-shadow:0 0 0 2px rgba(255,255,255,.35),0 3px 6px -2px rgba(106,86,71,.6),
+      inset 0 1px 2px rgba(255,255,255,.5),inset 0 -2px 3px rgba(93,17,17,.4)}
+
+  /* telemetry portraits: gold-ringed like report medallions */
+  .forecast .skill-hero img,.forecast .joiner-entry-head img{
+    box-shadow:0 0 0 2px rgba(231,199,131,.6),0 1px 3px rgba(106,86,71,.4)}
+
+  /* stale chip: soft ember ripple — the one attention animation the page earns
+     (globally killed under prefers-reduced-motion) */
+  .stale-chip{animation:stale-pulse 2.2s ease-in-out infinite}
+  @keyframes stale-pulse{
+    0%,100%{box-shadow:0 5px 12px -4px rgba(0,0,0,.55),0 0 0 0 rgba(239,95,95,.35)}
+    50%{box-shadow:0 5px 12px -4px rgba(0,0,0,.55),0 0 0 7px rgba(239,95,95,0)}}
+
+  /* ============================================================
+     Round 10 — role toggle: visible Rally/Garrison labels,
+     enabled state = full intensity, disabled = dimmed.
+     Existing palette only (no baseline change).
+     ============================================================ */
+  .role-lab{display:block;font-family:var(--disp);font-weight:700;font-size:9px;
+    letter-spacing:.1em;text-transform:uppercase;line-height:1;pointer-events:none}
+  .input .role-toggle button{min-width:66px;min-height:54px;padding:7px 10px 6px;gap:3px;align-content:center}
+  .input .role-toggle button .role-lab{color:#CFE4F5;opacity:.55;
+    text-shadow:0 1px 1px rgba(0,0,0,.45);transition:opacity .15s,color .15s}
+  .input .role-toggle button img{opacity:.5;transition:opacity .15s}
+  .input .role-toggle button[aria-pressed="true"] img{opacity:1}
+  .input .role-toggle button[aria-pressed="true"] .role-lab{color:#fff;opacity:1}
+  /* enemy chip mirrors the toggle's size; always full intensity (it's a fact, not a choice) */
+  .input .role-static{min-width:66px;min-height:54px;padding:7px 10px 6px;gap:3px;align-content:center}
+  .input .role-static .role-lab{color:#FF8181;text-shadow:0 1px 1px rgba(93,17,17,.55)}
+
+  /* ============================================================
+     Round 11 — mobile pass (approved plan 2026-07-11).
+     Phones: compact chrome, card-based hero rows, 2-col joiners,
+     sideways-scroll chart wells, static backdrop, real tap targets.
+     Everything media-scoped: desktop rendering is untouched.
+     Existing palette only (no baseline change).
+     ============================================================ */
+
+  /* phones get the still backdrop (JS also stops the mp4 from loading) */
+  @media (max-width:700px){
+    .bg-video{display:none}
+  }
+
+  /* --- chrome compaction --- */
+  @media (max-width:700px){
+    /* header: one row — flake · brand · runs · run */
+    .bar{flex-wrap:nowrap;align-items:center;gap:8px;padding:8px 10px;margin:0 8px}
+    .flake{width:28px;height:28px;font-size:15px;border-radius:8px}
+    .brand{min-width:0}
+    .brand h1{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brand p{display:none}
+    .top-actions{margin-left:auto;width:auto;display:flex;align-items:center;gap:6px;flex:none}
+    .top-actions .run{padding:9px 13px;font-size:12px;border-radius:12px}
+    .top-actions .run-status{max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mini-field label{font-size:8px}
+  }
+  @media (max-width:960px){
+    /* scenario rail: one horizontal chip row */
+    .config-rail{flex-direction:row;align-items:center;gap:8px;padding:8px 10px}
+    .rail-head{display:none}
+    .rail-tabs{flex:1;min-width:0;padding-bottom:0}
+    .rail-tabs .tab{min-height:44px;padding:8px 10px}
+    .rail-add{flex:none;width:44px;min-height:44px;padding:0;font-size:0;line-height:1}
+    .rail-add::before{content:"+";font-size:19px;font-family:var(--mono)}
+  }
+  @media (max-width:700px){
+    /* VS row: tighter without losing the labelled toggles */
+    .sides-head{padding:8px 0 6px;gap:0 8px}
+    .side-title{gap:4px}
+    .side-title .badge{font-size:13px;letter-spacing:.1em}
+    .side-title .badge::after{width:40px;margin-top:2px}
+    .input .role-toggle button,.input .role-static{min-width:60px;min-height:48px;padding:5px 8px 4px}
+  }
+
+  /* --- input: hero rows become self-labelled cards ---
+     Root cause on small screens: .hero-block .duo kept its desktop 3-column grid
+     (a later rule beat the generic ≤960 collapse), squeezing each side to ~92px.
+     ≤960: me|foe side-by-side columns of cards. ≤700: one stacked column. */
+  @media (max-width:960px){
+    .hero-block .duo{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+    .hero-block .duo > .lab{display:none}   /* cards label themselves (My/Enemy + class) */
+    #capMe,#capFoe{align-items:stretch;width:100%}
+    #capMe .lead-row,#capFoe .lead-row{
+      display:grid;grid-template-columns:34px minmax(0,1fr) auto;
+      grid-template-areas:"label label label" "cls hero hero" "cls gear widget";
+      gap:5px 8px;align-items:center;
+      background:rgba(255,255,255,.055);border-radius:12px;padding:8px 9px;
+      box-shadow:inset 0 1px rgba(255,255,255,.06)}
+    #capMe .lead-row::before,#capFoe .lead-row::before{
+      grid-area:label;font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+      text-transform:uppercase;color:#B9D2E5}
+    #capMe .lead-row::before{content:"My " attr(data-cls) " Hero";color:#55BFFF}
+    #capFoe .lead-row::before{content:"Enemy " attr(data-cls) " Hero";color:#FF8181}
+    #capMe .lead-row + .lead-row,#capFoe .lead-row + .lead-row{margin-top:8px;padding-top:8px;border-top:0}
+    .lead-row .lead-cls{grid-area:cls;width:30px;height:30px;justify-self:start}
+    .lead-row .hpick{grid-area:hero;width:100%;max-width:none;flex:none}
+    .lead-row .hpick-btn{min-height:44px}
+    .lead-row .gear-check{grid-area:gear;justify-self:start}
+    .lead-row .widget-impact{grid-area:widget;text-align:right;min-width:0;white-space:normal}
+    /* joiners: 2-column grid of full-width pickers with My/Enemy eyebrows;
+       width:100% because the .duo side wrappers are shrink-to-fit flex boxes */
+    #joinMe,#joinFoe{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;align-items:stretch}
+    #joinMe::before,#joinFoe::before{grid-column:1/-1;font-family:var(--mono);font-size:9px;
+      letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+    #joinMe::before{content:"My joiners";color:#55BFFF}
+    #joinFoe::before{content:"Enemy joiners";color:#FF8181}
+    #joinMe .hpick,#joinFoe .hpick{width:100%;display:flex}
+    #joinMe .hpick-btn,#joinFoe .hpick-btn{width:100%;min-height:44px;padding:5px 8px 5px 5px;gap:6px}
+    #joinMe .hpick-btn img,#joinFoe .hpick-btn img{width:28px;height:28px}
+    #joinMe .hpick-btn span,#joinFoe .hpick-btn span{font-size:12px}
+    #joinMe .hpick-btn .hpick-open,#joinFoe .hpick-btn .hpick-open{width:13px;height:13px}
+  }
+  @media (max-width:700px){
+    /* phones: the two sides stack — my cards, then enemy cards */
+    .hero-block .duo{grid-template-columns:1fr}
+  }
+
+  /* --- tap targets --- */
+  @media (max-width:700px){
+    .tab-btn{min-height:46px;font-size:11.5px;letter-spacing:0;line-height:1.15;padding:8px 4px}
+  }
+  @media (any-pointer:coarse) and (max-width:520px){
+    /* the ≤520 density rule shrank these to 24px — touch needs more */
+    .fbtn,.form-ctl button{width:32px;min-width:32px;height:32px;min-height:32px}
+  }
+
+  /* --- forecast: controls restack, per-turn charts become scroll wells --- */
+  @media (max-width:700px){
+    .fc-meta{padding:10px 12px;gap:8px 10px}
+    .tl-controls{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+    .tl-controls .seg-toggle{align-self:flex-start;max-width:100%;overflow-x:auto}
+    .tl-controls .tl-key{margin-left:0;align-self:flex-start}
+    .tl-slider-wrap{width:100%}
+    .tl-end{align-self:flex-end}
+
+    #tlX{display:none}   /* shared axis can't scroll-sync with the wells above it */
+  }
+  /* scroll wells apply through tablet too — pre-Round-11 the per-turn charts
+     silently CLIPPED (overflow:hidden + 2px column floor) once turns × width
+     exceeded the card, at every width ≤960 */
+  @media (max-width:960px){
+    /* each chart block scrolls sideways; columns keep a readable width.
+       bars + ticks + proc lanes share one min-width so they stay aligned */
+    .tl-block{overflow-x:auto;overflow-y:hidden;padding-bottom:4px}
+    .tl-block .tl-bars,.tl-block .tl-x,.tl-block .tl-procs{min-width:max-content}
+    .tl-block .tl-bars{width:max-content;min-width:100%}
+    .tl-col,.tl-x-turn,.tl-proc-cell,.km-bars .km-col{min-width:20px}
+    .tl-proc-icon{width:18px;height:18px}
+    #kmYouProcs .tl-proc-icon,#kmFoeProcs .tl-proc-icon{width:22px;height:22px}
+
+    /* battle-length chart scrolls the same way (labels live outside the bars,
+       so the scroll box gets breathing room instead of clipping them) */
+    .rplot{overflow-x:auto;overflow-y:hidden;padding-top:16px;padding-bottom:2px}
+    .rplot .rbars,.rplot .rx{min-width:max-content}
+    .rcol{min-width:14px}
+    .rbars{padding-bottom:14px}
+
+    .cats{overflow-x:auto}
+    .catbars,.catx{min-width:430px}
+  }
+
+  /* ============================================================
+     Round 12 — narrow-screen hardening + field diet.
+     Fixes the 521–700px truncation band (formation columns were
+     still side-by-side there, each narrower than a card's minimum
+     content) and shortens over-long fields so phone layouts read
+     tidy instead of stretched. Existing palette only.
+     ============================================================ */
+
+  @media (max-width:700px){
+    /* nothing inside a duo may force the page wider than the screen */
+    .input .duo > *,.input .duo .me > *,.input .duo .foe > *{min-width:0}
+    .input select,.input input:not([type=range]),.input .hpick-btn{max-width:100%}
+
+    /* formation: one column below 700px (was ≤520 only — large phones and
+       landscape sat in a two-column squeeze that truncated the right side) */
+    .troops-formation-block .duo{grid-template-columns:1fr;gap:10px}
+    .troops-formation-block .duo .lab{grid-column:auto;text-align:left}
+    .troops-formation-block .troops-me,.troops-formation-block .foe,
+    .troops-formation-block .me .form-stack{justify-content:flex-start;margin-left:0}
+    .troops-formation-block .form-stack{max-width:none;width:100%}
+
+    /* stacked sides need their identity back: faction eyebrows */
+    #formMe::before,#formFoe::before{display:block;font-family:var(--mono);font-size:9px;
+      letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}
+    #formMe::before{content:"My formation";color:#55BFFF}
+    #formFoe::before{content:"Enemy formation";color:#FF8181}
+    .troops-formation-block .duo:first-of-type .me::before{content:"Mine";display:block;width:100%;
+      font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#55BFFF}
+    .troops-formation-block .duo:first-of-type .foe::before{content:"Enemy";display:block;width:100%;
+      font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#FF8181}
+    .troops-formation-block .duo:first-of-type .me{flex-wrap:wrap}
+
+    /* field diet: number boxes sized to their contents, not the screen */
+    .troops-formation-block #myTroops,.troops-formation-block #foeTroops{width:170px;max-width:100%}
+    .stat-panel input{max-width:110px}
+    .formation-total{text-align:left}
+    .foe .formation-total{text-align:left}
+
+    /* formation card internals relax into the full-width column */
+    .troops-formation-block .form-ctl{min-height:0;padding:9px 10px;gap:10px}
+    .troops-formation-block .formation-quality{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;justify-content:stretch}
+    .troops-formation-block .fclass{width:56px}
+  }
+  /* ============================================================
+     Round 13 - session-restore toast.
+     The note used to be appended to .input-toolbar, whose `hidden`
+     attribute never actually hid it: .input-toolbar{display:flex} (Round 1)
+     overrides the UA [hidden]{display:none}, so the pill rendered buried at
+     the top of the input section (desktop) / in the mobile bottom bar. The
+     toolbar is also vestigial - its Save/Load/Run controls moved to the
+     header + scenario rail - so showSessionNote() now mounts the note on
+     <body> as a header-anchored, auto-dismissing toast and the empty
+     .input-toolbar div is removed. Palette-locked: no new color literals.
+     ============================================================ */
+  @keyframes toast-in{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
+  .session-toast{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:150;
+    max-width:min(92vw,420px);box-shadow:var(--shadow);animation:toast-in 170ms cubic-bezier(.2,.8,.2,1) both}
+  @media (max-width:700px){
+    .session-toast{top:66px}
+    /* the removed .input-toolbar was the only fixed bottom bar on phones; reclaim its reserved space */
+    body{padding-bottom:env(safe-area-inset-bottom)}
+  }
 </style>
 </head>
 <body>
@@ -1205,6 +1817,13 @@
 <video class="bg-video" autoplay muted loop playsinline preload="auto" poster="assets/Backdrop/Backdrop1.png" aria-hidden="true">
   <source src="assets/Backdrop/Backdrop6_loop.mp4" type="video/mp4">
 </video>
+<script>
+/* Round 11 — phones keep the still backdrop (body::before): drop the mp4 before it streams */
+if(window.matchMedia && matchMedia('(max-width:700px)').matches){
+  var _bgv=document.currentScript.previousElementSibling;
+  if(_bgv && _bgv.tagName==='VIDEO'){ _bgv.removeAttribute('autoplay'); _bgv.preload='none'; _bgv.remove(); }
+}
+</script>
 
 <header class="bar">
   <div class="flake">❄</div>
@@ -1232,24 +1851,23 @@
 
   <!-- ========= INPUT ========= -->
   <section class="input">
-    <div class="input-toolbar" hidden></div>
     <div class="sides-head">
       <div class="side-title me">
         <span class="badge">MY SIDE</span>
         <div class="role-toggle" id="roleToggle">
-          <button aria-pressed="true" data-role="Rally" title="Rally" aria-label="Rally"><img class="role-icon" src="assets/ui/rally-swords.png" alt=""></button>
-          <button aria-pressed="false" data-role="Garrison" title="Garrison" aria-label="Garrison"><img class="role-icon" src="assets/ui/garrison-shield.png" alt=""></button>
+          <button aria-pressed="true" data-role="Rally" title="Rally" aria-label="Rally"><img class="role-icon" src="assets/ui/rally-swords.png" alt=""><span class="role-lab">Rally</span></button>
+          <button aria-pressed="false" data-role="Garrison" title="Garrison" aria-label="Garrison"><img class="role-icon" src="assets/ui/garrison-shield.png" alt=""><span class="role-lab">Garrison</span></button>
         </div>
       </div>
       <div class="vs-pill">VS</div>
       <div class="side-title foe">
         <span class="badge">ENEMY</span>
-        <span class="role-static" id="foeRole" title="Garrison"><img class="role-icon" src="assets/ui/garrison-shield.png" alt=""></span>
+        <span class="role-static" id="foeRole" title="Garrison"><img class="role-icon" src="assets/ui/garrison-shield.png" alt=""><span class="role-lab">Garrison</span></span>
       </div>
     </div>
 
     <!-- troops + formation -->
-    <div class="iblock">
+    <div class="iblock troops-formation-block">
       <div class="title">Troops &amp; formation</div>
       <div class="duo">
         <div class="me"><div class="troops-me">
@@ -1646,7 +2264,9 @@ function buildPetBuffs(){ const c=$('#petBuffs'); c.innerHTML='';
 function sideSlider(side,max){ const d=el('div',side); const w=el('div','slider-wrap');
   const mag=Math.abs(max), neg=max<0;   // 0 on the left, max magnitude on the right
   const r=el('input'); r.type='range'; r.min=0; r.max=mag; r.step=0.01; r.value=mag; r.classList.add('maxlock-'+side);
-  const o=el('output'); o.textContent=fmtPct(mag).replace(/^/,(neg?'-':'+'))+'%'; r.oninput=()=>o.textContent=fmtPct(r.value).replace(/^/,(neg?'-':'+'))+'%';
+  const paintFill=()=>r.style.setProperty('--fill',(mag?r.value/mag*100:0)+'%');   // gradient-fill track (CSS --fill)
+  const o=el('output'); o.textContent=fmtPct(mag).replace(/^/,(neg?'-':'+'))+'%'; r.oninput=()=>{o.textContent=fmtPct(r.value).replace(/^/,(neg?'-':'+'))+'%'; paintFill();};
+  paintFill();
   if(side==='me') w.append(o,r); else w.append(r,o); d.appendChild(w); return d; }
 
 function buildFormation(){
@@ -1678,7 +2298,13 @@ function buildFormation(){
       // class identity (real icon + name) — sits at the outer edge
       const fclass=el('div','fclass'); const ic=el('div','fic'); ic.appendChild(troopIcon(cl));
       const nm=el('div','fname'); nm.textContent=cl; fclass.append(nm,ic);   // icon sits at the outer edge (mirrored for foe via CSS)
-      row.append(fcCtl,tierCtl,t12Ctl,ctr,cwrap,fclass); stack.appendChild(row);
+      const fbody=el('div','formation-row-body');
+      const quality=el('div','formation-quality');
+      quality.append(fcCtl,tierCtl,t12Ctl);
+      const controls=el('div','formation-ratio');
+      controls.append(ctr,cwrap);
+      fbody.append(quality,controls);
+      row.append(fbody,fclass); stack.appendChild(row);
       C[cl]={r,val,minus,plus,cnt};
     });
     const totalMarker=el('div','formation-total'); totalMarker.textContent='100%'; stack.appendChild(totalMarker);
@@ -2346,7 +2972,8 @@ function initInteractions(){
     b.setAttribute('aria-pressed','true');
     const foeRole=b.dataset.role==='Rally'?'Garrison':'Rally';
     const foe=$('#foeRole'), img=foe&&foe.querySelector('img');
-    if(foe){ foe.title=foeRole; foe.setAttribute('aria-label',foeRole); }
+    if(foe){ foe.title=foeRole; foe.setAttribute('aria-label',foeRole);
+      const lab=foe.querySelector('.role-lab'); if(lab) lab.textContent=foeRole; }
     if(img) img.src=foeRole==='Rally'?'assets/ui/rally-swords.png':'assets/ui/garrison-shield.png';
     updateFinalStats();
   });
@@ -2726,8 +3353,11 @@ function scheduleAutosave(){
 }
 function showSessionNote(msg){
   let note=$('#sessionNote');
-  if(!note){ note=el('div','session-note'); note.id='sessionNote'; note.innerHTML='<span></span><button type="button" aria-label="Dismiss restored-session note">x</button>'; $('.input-toolbar').appendChild(note); note.querySelector('button').onclick=()=>note.remove(); }
+  if(!note){ note=el('div','session-note session-toast'); note.id='sessionNote'; note.setAttribute('role','status'); note.setAttribute('aria-live','polite');
+    note.innerHTML='<span></span><button type="button" aria-label="Dismiss restored-session note">x</button>';
+    document.body.appendChild(note); note.querySelector('button').onclick=()=>{ clearTimeout(note._hideT); note.remove(); }; }
   note.querySelector('span').textContent=msg;
+  clearTimeout(note._hideT); note._hideT=setTimeout(()=>note.remove(),8000);   // header-anchored toast: auto-dismiss after 8s (manual x still works)
 }
 function restoreAutosave(){
   let raw=null; try{ raw=localStorage.getItem(AUTOSAVE_KEY); }catch(_){}
@@ -2802,7 +3432,8 @@ function configToForm(cfg){
   const myR=own.role==='garrison'?'Garrison':'Rally';
   document.querySelectorAll('#roleToggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.role===myR?'true':'false'));
   const foeR=myR==='Rally'?'Garrison':'Rally', foe=$('#foeRole'), foeImg=foe&&foe.querySelector('img');
-  if(foe){ foe.title=foeR; foe.setAttribute('aria-label',foeR); }
+  if(foe){ foe.title=foeR; foe.setAttribute('aria-label',foeR);
+    const lab=foe.querySelector('.role-lab'); if(lab) lab.textContent=foeR; }
   if(foeImg) foeImg.src=foeR==='Rally'?'assets/ui/rally-swords.png':'assets/ui/garrison-shield.png';
   const eq=$('#eqTroops'); $('#myTroops').value = numFmt(own.troops_total!=null?own.troops_total:1000000);
   const same=(own.troops_total!=null && own.troops_total===enemy.troops_total); eq.checked=same;
@@ -3006,6 +3637,7 @@ function initInputTabs(){
     const btn=el('button','tab-btn'); btn.type='button'; btn.textContent=spec[1]; btn.dataset.tab=id;
     btn.setAttribute('role','tab'); btn.setAttribute('aria-selected', String(first)); bar.appendChild(btn);
     const panel=el('div','tabpanel'); panel.dataset.tab=id; panel.hidden=!first;
+    if(b.classList.contains('troops-formation-block')) panel.classList.add('troops-formation-block');
     const title=b.querySelector(':scope > .title');
     const ctrls=[...title.children].filter(c=>!c.classList.contains('ctr'));   // move toggles/checkboxes in, drop the redundant "Buffs" label
     if(ctrls.length){ const row=el('div','tab-ctlrow'); ctrls.forEach(c=>row.appendChild(c)); panel.appendChild(row); }
@@ -3067,6 +3699,33 @@ window.addEventListener('DOMContentLoaded',()=>{
   snapshotTab(activeTab());
   runForecast();   // initial forecast from the live engine
 });
+</script>
+<script>
+/* Round 8 — backdrop parallax: pointer drift on fine pointers + scroll depth drift.
+   Writes --par-x/--par-y on <html>; CSS applies them only under html.parallax-on,
+   so reduced-motion users (and no-JS) keep the exact static composition. */
+(function(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var root=document.documentElement;
+  var fine=window.matchMedia && matchMedia('(pointer: fine)').matches;
+  var tx=0,ty=0,cx=0,cy=0,raf=null;
+  function targetY(){ return ty + Math.max(-26,Math.min(26,-(window.scrollY||0)*.045)); }
+  function tick(){ raf=null;
+    var gx=tx, gy=targetY();
+    cx+=(gx-cx)*.08; cy+=(gy-cy)*.08;
+    root.style.setProperty('--par-x',cx.toFixed(2)+'px');
+    root.style.setProperty('--par-y',cy.toFixed(2)+'px');
+    if(Math.abs(gx-cx)>.05 || Math.abs(gy-cy)>.05) raf=requestAnimationFrame(tick);
+  }
+  function kick(){ if(!raf) raf=requestAnimationFrame(tick); }
+  window.addEventListener('scroll',kick,{passive:true});
+  if(fine) window.addEventListener('pointermove',function(e){
+    tx=(e.clientX/window.innerWidth-.5)*-14;
+    ty=(e.clientY/window.innerHeight-.5)*-10;
+    kick();
+  },{passive:true});
+  root.classList.add('parallax-on'); kick();
+})();
 </script>
 </body>
 </html>
