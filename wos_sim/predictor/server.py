@@ -82,6 +82,21 @@ def battle(req: BattleRequest):
 from pathlib import Path                       # noqa: E402
 from fastapi.staticfiles import StaticFiles    # noqa: E402
 
+
+class _NoCacheHTML(StaticFiles):
+    """HTML responses must always revalidate. Without Cache-Control, browsers
+    apply heuristic caching to index.html and keep showing a stale UI long
+    after the file changed on disk (observed 2026-07-14: fixes invisible until
+    a hard refresh). Assets (fonts/images/video) keep normal caching."""
+
+    async def get_response(self, path, scope):
+        resp = await super().get_response(path, scope)
+        ctype = resp.headers.get("content-type", "")
+        if "text/html" in ctype:
+            resp.headers["Cache-Control"] = "no-cache"
+        return resp
+
+
 _PROTOTYPE = Path(__file__).resolve().parents[2] / "prototype"
 if _PROTOTYPE.is_dir():
-    app.mount("/", StaticFiles(directory=str(_PROTOTYPE), html=True), name="app")
+    app.mount("/", _NoCacheHTML(directory=str(_PROTOTYPE), html=True), name="app")

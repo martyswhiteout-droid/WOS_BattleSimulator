@@ -134,6 +134,14 @@ Selects must restate their two chevron gradient layers BEFORE the ramp layer.
   `html.parallax-on` with `scale(1.1)` headroom; JS refuses to start under reduced-motion.
 - Never animate layout properties; transform/opacity/filter only. Never attach transitions
   to `input[type=range]` backgrounds (live fill must not lag the thumb).
+- **Result-reveal motion is confidence-tiered** (Round 14): celebration intensity comes ONLY
+  from engine signals (`engine.confidence`/`near_even`/`calibrated` — coin_flip lands clean
+  with no glow; uncalibrated gets a small settle; validated gets the full stamp+bloom).
+  `win>=50` picks ice-vs-ember *direction* only, never intensity. Choreography fires only on
+  user-initiated runs (never the page-load auto-run). Contract: `.claude/skills/wos-emotional-design/`.
+- JS-animated **data values** (e.g. the `#pctNum` count-up) must guarantee completion via a
+  non-rAF fallback (`setTimeout`) — rAF parks in hidden/background panes and the displayed
+  number is data, not decoration.
 
 ## 6. Layout invariants
 

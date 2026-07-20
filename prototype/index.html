@@ -1810,6 +1810,69 @@
     /* the removed .input-toolbar was the only fixed bottom bar on phones; reclaim its reserved space */
     body{padding-bottom:env(safe-area-inset-bottom)}
   }
+  /* ============================================================
+     Round 14 - result-reveal choreography (Pilot A: verdict landing).
+     Contract: .claude/skills/wos-emotional-design/ - celebration intensity
+     is tiered from ENGINE signals only (confidence/near_even/calibrated):
+     coin_flip lands clean (count-up, no stamp/glow), directional-uncalibrated
+     gets a small settle, directional-validated gets the full bounce + bloom
+     (ice for a win read, ember for a defeat read - same weight, defeat is
+     information not punishment). JS gates everything to user-initiated runs;
+     the page-load auto-run and tab restores stay instant. Palette-locked:
+     rgba(85,191,255,.55) / rgba(239,95,95,.55) / #8d6d56 all pre-existing.
+     ============================================================ */
+  /* overlay: fade the curtain instead of hard-cutting (display swap kept, 260ms JS timer) */
+  .sim-overlay{transition:opacity .24s ease}
+  .sim-overlay.leaving{opacity:0}
+  /* verdict number landing stamps (one-shot, restarted in JS) */
+  .verdict .pct.stamp-soft{animation:stamp-soft .18s ease}
+  @keyframes stamp-soft{50%{transform:scale(1.04)}}
+  .verdict .pct.stamp-full[data-side="ice"]{animation:stamp-ice .4s cubic-bezier(.34,1.4,.4,1)}
+  .verdict .pct.stamp-full[data-side="ember"]{animation:stamp-ember .4s cubic-bezier(.34,1.4,.4,1)}
+  /* keyframes restate the letterpress drop-shadows so the bloom ADDS to them (missing
+     filter frames would otherwise interpolate the base stack away mid-animation) */
+  @keyframes stamp-ice{55%{transform:scale(1.1);
+    filter:drop-shadow(0 1px 0 rgba(255,255,255,.65)) drop-shadow(0 4px 8px rgba(106,86,71,.3)) drop-shadow(0 0 18px rgba(85,191,255,.55))}
+    100%{transform:scale(1)}}
+  @keyframes stamp-ember{55%{transform:scale(1.1);
+    filter:drop-shadow(0 1px 0 rgba(255,255,255,.65)) drop-shadow(0 4px 8px rgba(106,86,71,.3)) drop-shadow(0 0 18px rgba(239,95,95,.55))}
+    100%{transform:scale(1)}}
+  /* verdict meaning line: revived (hidden since ce4e065 with no recorded design
+     rationale; the JS never stopped computing it). Framing clause colors: default
+     <b> stays ice (win reads), .vc-ember = defeat reads, .vc-flat = coin-flip neutral. */
+  .forecast .verdict .eff{display:block}
+  .verdict .eff b.vc-ember{color:var(--ember-bright)}
+  .verdict .eff b.vc-flat{color:#8d6d56;font-weight:600}
+  /* delayed entrances ride the existing pop-in keyframe; 'both' keeps them
+     hidden until their beat. Reduced-motion kill-switch collapses to visible. */
+  .forecast .verdict .eff.in{animation:pop-in .3s cubic-bezier(.2,.8,.2,1) .9s both}
+  .fc-meta .prov.stamp{animation:pop-in .3s cubic-bezier(.2,.8,.2,1) 1.05s both}
+
+  /* ============================================================
+     Round 15 — input alignment + stat-row format (Martin, 2026-07-14).
+     1. Total-troops boxes: same size, left edges aligned — the "equal"
+        check moves AFTER my box so both boxes start flush.
+     2. Stat rows on mobile read [my stat] [label] [enemy stat] on one
+        line (the stacked label-on-top form hid which value was whose).
+     Existing palette only.
+     ============================================================ */
+  @media (max-width:700px){
+    .troops-formation-block .troops-me{flex-wrap:wrap}
+    .troops-formation-block .troops-me .eqchk{order:2}
+    /* the Enemy eyebrow (::before) is a full-width flex sibling — without wrap it
+       shared the line with the input and crushed it right (116px, misaligned) */
+    .troops-formation-block .duo:first-of-type .foe{display:flex;flex-wrap:wrap;justify-content:flex-start}
+    .troops-formation-block #myTroops,.troops-formation-block #foeTroops{width:170px;flex:none;margin:0}
+  }
+  @media (max-width:960px){
+    .stat-panel .duo{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:4px 8px;align-items:center}
+    .stat-panel .duo .lab{order:0;grid-column:auto;text-align:center;margin-top:0}
+    .stat-panel .duo .me{justify-content:flex-start}
+    .stat-panel .duo .foe{justify-content:flex-end}
+    .stat-panel input{width:100%;max-width:110px;min-width:0}
+    .final-stats .duo .me{text-align:left}
+    .final-stats .duo .foe{text-align:right}
+  }
 </style>
 </head>
 <body>
@@ -2543,9 +2606,11 @@ function kmUpdate(animate){
   const i=Math.min(TL.n||1,Math.max(1,+((slider&&slider.value)||1)));
   if(slider) slider.value=i;
   kmSliderLabel();
-  const tok=++TL.token;
-  tlFetchBattle(i-1).then(d=>{ if(tok!==TL.token) return; kmRenderCharts(d, animate); })
-    .catch(()=>{ if(tok!==TL.token) return; kmShowNote('Battle '+i.toLocaleString()+' — restart the server to view kill data.'); });
+  // own counter: sharing TL.token with tlUpdate cancelled the timeline's in-flight
+  // render on every load (km always ran second and won the race)
+  const tok=++TL.kmToken;
+  tlFetchBattle(i-1).then(d=>{ if(tok!==TL.kmToken) return; kmRenderCharts(d, animate); })
+    .catch(()=>{ if(tok!==TL.kmToken) return; kmShowNote('Battle '+i.toLocaleString()+' — restart the server to view kill data.'); });
 }
 function kmSliderLabel(){ const slider=$('#kmSlider'), label=$('#kmSlabel'); if(!slider||!label) return;
   const min=+slider.min||1, max=+slider.max||1, val=+slider.value||min;
@@ -2577,7 +2642,7 @@ function lineChart(turns, own, enemy, opts){
   turns.forEach((t,i)=>{ const c=el('div'); c.title='Turn '+t+'  •  you '+fmtMetric(own[i])+'  •  enemy '+fmtMetric(enemy[i]); hov.appendChild(c); });
   wrap.appendChild(hov); return wrap;
 }
-let TL={avg:null,n:0,req:null,cache:{},token:0}, tlSlideTimer=null;
+let TL={avg:null,n:0,req:null,cache:{},token:0,kmToken:0}, tlSlideTimer=null;
 function tlSelectedClass(){
   const b=$('#tlClassToggle [aria-pressed="true"]');
   return b?b.dataset.tlclass:'Total';
@@ -2710,7 +2775,7 @@ function buildTimeline(animate){
   const tl=FORECAST.battle_timeline;
   if(!tl||!tl.turns||!tl.turns.length){ part.classList.add('hidden'); return; }
   part.classList.remove('hidden');
-  TL.avg=tl; TL.n=FORECAST.n||0; TL.req=LAST_RUN; TL.cache={}; TL.token=0;
+  TL.avg=tl; TL.n=FORECAST.n||0; TL.req=LAST_RUN; TL.cache={}; TL.token=0; TL.kmToken=0;
   const slider=$('#tlSlider'), smax=$('#tlSmax'), battleBtn=$('#tlModeToggle [data-tlmode="battle"]');
   const canBattle=(TL.n>1 && !!TL.req);
   if(battleBtn){ battleBtn.disabled=!canBattle;
@@ -3057,7 +3122,7 @@ function initInteractions(){
   });
   updateTabAddState();
   // run / refresh — identical: both call the SAME handler (same profile, n, seed, fetch)
-  function triggerRun(e){ const b=e&&e.currentTarget; if(b){ b.style.filter='brightness(1.25)'; setTimeout(()=>b.style.filter='',220); } runForecast(); }
+  function triggerRun(e){ const b=e&&e.currentTarget; if(b){ b.style.filter='brightness(1.25)'; setTimeout(()=>b.style.filter='',220); } runForecast({celebrate:true}); }
   $('#runBtn').addEventListener('click',triggerRun);
   $('#refreshBtn').addEventListener('click',triggerRun);
   $('#runStatus').addEventListener('click',()=>{ (lastRunFailed?$('#fcError'):document.querySelector('.forecast'))?.scrollIntoView({block:'center'}); });
@@ -3066,7 +3131,7 @@ function initInteractions(){
     const target=e.target;
     if(!inputZone.contains(target)) return;
     if(/^(BUTTON|SELECT|TEXTAREA)$/i.test(target.tagName)) return;
-    e.preventDefault(); runForecast();
+    e.preventDefault(); runForecast({celebrate:true});
   });
 }
 /* ---------- real forecast pipeline (POST /api/predict) ---------- */
@@ -3364,7 +3429,7 @@ function restoreAutosave(){
   if(!raw) return false;
   try{
     const cfg=JSON.parse(raw); if(!cfg||!cfg.own||!cfg.enemy)return false;
-    applyingConfig=true; configToForm(cfg); renameActiveTab(cfg.name||'Scenario 1');
+    applyingConfig=true; configToForm(cfg,{skipStatsType:true}); renameActiveTab(cfg.name||'Scenario 1');
     return true;
   }catch(_){ return false; }
   finally{ applyingConfig=false; updateFinalStats(); }
@@ -3426,7 +3491,7 @@ async function loadConfigFile(file){
   snapshotTab(activeTab());
   hideError(); runForecast();
 }
-function configToForm(cfg){
+function configToForm(cfg, opts){
   const own=cfg.own||{}, enemy=cfg.enemy||{};
   activeSeed=cfg.seed||DEFAULT_SEED;
   const myR=own.role==='garrison'?'Garrison':'Rally';
@@ -3455,9 +3520,13 @@ function configToForm(cfg){
   if(own._ui_buffs){ if(!oi) applyBuffControls('me',{item:own._ui_buffs.item}); if(!op) applyBuffControls('me',{pet:own._ui_buffs.pet}); }
   if(enemy._ui_buffs){ if(!ei) applyBuffControls('foe',{item:enemy._ui_buffs.item}); if(!ep) applyBuffControls('foe',{pet:enemy._ui_buffs.pet}); }
   applyGearControls('me', own._ui_max_gears); applyGearControls('foe', enemy._ui_max_gears);
-  const mode=own._ui_stats_type||enemy._ui_stats_type||'base';
-  if($('#statsBase')) $('#statsBase').checked=(mode!=='scouted');
-  if($('#statsScouted')) $('#statsScouted').checked=(mode==='scouted');
+  // stats-type toggle: explicit scenario loads restore it; the autosave path skips it
+  // so a fresh session always opens on "Input Base Stats" (the default)
+  if(!(opts&&opts.skipStatsType)){
+    const mode=own._ui_stats_type||enemy._ui_stats_type||'base';
+    if($('#statsBase')) $('#statsBase').checked=(mode!=='scouted');
+    if($('#statsScouted')) $('#statsScouted').checked=(mode==='scouted');
+  }
   updateFinalStats();
 }
 function applyFormation(id,f){ const r=[...document.querySelectorAll(id+' .form-ctl input[type=range]')]; if(r.length<2)return;
@@ -3482,7 +3551,8 @@ function applyHeroes(id,names){
   });
 }
 
-async function runForecast(){
+async function runForecast(opts){
+  const celebrate=!!(opts&&opts.celebrate);   // true only for user-initiated runs (Run/Refresh/Enter) — never the page-load auto-run or tab restore
   if(activeRun) activeRun.abort();
   const controller=new AbortController();
   activeRun=controller; lastRunFailed=false;
@@ -3495,7 +3565,10 @@ async function runForecast(){
       body:JSON.stringify(body), signal:controller.signal});
     if(activeRun!==controller) return;
     if(!res.ok){ let m='Request failed ('+res.status+')'; try{const e=await res.json(); m=(e.problems||[e.detail]).filter(Boolean).join(' · ')||m;}catch(_){} throw new Error(m); }
-    FORECAST=await res.json(); renderCharts(true); clearForecastStale(); setRunStatus(null,''); setText('#liveStatus','Forecast updated - win chance '+pctN(FORECAST.verdict.win.p).toFixed(1)+'%'); snapshotTab(activeTab()); scheduleAutosave();
+    FORECAST=await res.json(); renderCharts(true,celebrate); clearForecastStale(); setRunStatus(null,'');
+    const ariaWin=pctN(FORECAST.verdict.win.p);
+    setText('#liveStatus','Forecast updated - win chance '+ariaWin.toFixed(1)+'% - '+verdictClause(revealTier(FORECAST.engine),ariaWin).txt);
+    snapshotTab(activeTab()); scheduleAutosave();
   }catch(err){
     if(err&&err.name==='AbortError') return;
     lastRunFailed=true; setRunStatus('failed','Failed'); showError(err.message||'Could not reach the engine — is the server running?');
@@ -3503,15 +3576,15 @@ async function runForecast(){
   finally{ if(activeRun===controller){ activeRun=null; setRunBusy(false); showProgress(false); } }
 }
 
-function renderCharts(animate){
+function renderCharts(animate,celebrate){
   if(!FORECAST) return;
-  setVerdict();
+  setVerdict(celebrate);
   document.querySelectorAll('#obar .oseg').forEach((s,i)=>{ const t=s.dataset.b;
     if(animate){s.style.flexBasis='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{s.style.transitionDelay=(i*80)+'ms';s.style.flexBasis=t;}));} else s.style.flexBasis=t; });
-  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildKillBreakdown(animate); buildSkillTelemetry(animate); renderMeta();
+  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildKillBreakdown(animate); buildSkillTelemetry(animate); renderMeta(celebrate);
 }
 
-function setVerdict(){
+function setVerdict(celebrate){
   const v=FORECAST.verdict, eng=FORECAST.engine;
   const win=pctN(v.win.p), mut=pctN(v.mutual.p);
   // loss = the complement of the DISPLAYED win (the engine's joiner-aware win_prob_override
@@ -3519,8 +3592,12 @@ function setVerdict(){
   // bar's loss portion blank). Complement keeps win+mut+loss = 100% so the red loss bar fills.
   const loss=Math.max(0,100-win-mut);
   const se=pctN(v.win.se), me=pctN(eng.model_error), eff=pctN(v.win_effective);
-  $('#pctNum').textContent=win.toFixed(1)+'%';
-  $('#effNote').innerHTML='+'+mut.toFixed(1)+'% mutual wipe → <b>'+eff.toFixed(1)+'% effective</b>';
+  const tier=revealTier(eng);
+  landVerdict($('#pctNum'),win,tier,celebrate);
+  const vc=verdictClause(tier,win), effEl=$('#effNote');
+  effEl.innerHTML='<b'+(vc.cls?' class="'+vc.cls+'"':'')+'>'+vc.txt+'</b> · +'+mut.toFixed(1)+'% mutual wipe → <b>'+eff.toFixed(1)+'% effective</b>';
+  effEl.classList.remove('in');
+  if(celebrate&&!REVEAL.noMotion()){ void effEl.offsetWidth; effEl.classList.add('in'); }
   const segs=document.querySelectorAll('#obar .oseg'), data=[win,mut,loss];
   segs.forEach((s,i)=>{ s.dataset.b=data[i]+'%'; s.querySelector('.oval').textContent=data[i].toFixed(1); });
   $('#caliper').style.left=win+'%'; setText('#caliper .clabel','± '+se.toFixed(1)+'%');
@@ -3541,7 +3618,7 @@ function setVerdict(){
   setText('.verdict .err .mc b','± '+se.toFixed(1)+'%');
 }
 
-function renderMeta(){
+function renderMeta(celebrate){
   const eng=FORECAST.engine;
   setText('#fcRuns', FORECAST.n.toLocaleString());
   // Render the badge on `calibrated`, NOT the number: an uncalibrated model_error
@@ -3550,8 +3627,50 @@ function renderMeta(){
   if(prov){
     if(calibrated){ const me=pctN(eng.model_error); prov.textContent='Validated ± '+(me<10?me.toFixed(1):me.toFixed(0))+'%'; }
     else { prov.textContent='Uncalibrated · directional'; }
-    prov.title=eng.note||''; prov.classList.toggle('validated', calibrated); }
+    prov.title=eng.note||''; prov.classList.toggle('validated', calibrated);
+    prov.classList.remove('stamp');
+    if(celebrate&&!REVEAL.noMotion()){ void prov.offsetWidth; prov.classList.add('stamp'); } }
   setText('.fc-meta .conv', eng.stochastic ? '● '+'stochastic' : '● deterministic · single outcome');
+}
+
+/* ---------- verdict-landing choreography (Round 14, Pilot A) ----------
+   Contract: .claude/skills/wos-emotional-design/ — celebration intensity comes
+   ONLY from engine signals (confidence / near_even / calibrated), never from a
+   front-end threshold; win>=50 picks the ice/ember COLOR direction, not intensity.
+   Fires only when celebrate===true (user-initiated runs). */
+const REVEAL={id:0,noMotion:()=>matchMedia('(prefers-reduced-motion: reduce)').matches};
+function revealTier(eng){
+  if(eng.confidence==='coin_flip'||eng.near_even) return 'hedge';
+  const calibrated=(eng.calibrated!=null)?eng.calibrated:(eng.path==='pvp_kernel');
+  return calibrated?'full':'restrained';
+}
+function verdictClause(tier,win){
+  if(tier==='hedge') return {txt:'Too close to call',cls:'vc-flat'};
+  const ahead=win>=50;
+  if(tier==='full') return {txt:ahead?'Clear win read':'Clear defeat read',cls:ahead?'':'vc-ember'};
+  return {txt:ahead?'Leans your way':"Leans the enemy's way",cls:ahead?'':'vc-ember'};
+}
+function landVerdict(el,win,tier,celebrate){
+  const id=++REVEAL.id;                       // a newer render (any path) cancels an in-flight count-up
+  let fin=false;
+  el.classList.remove('stamp-soft','stamp-full');
+  const done=()=>{ if(fin) return; fin=true;
+    el.textContent=win.toFixed(1)+'%';
+    if(!celebrate||REVEAL.noMotion()||tier==='hedge') return;   // hedge = clean stop: no bounce, no glow
+    void el.offsetWidth;                      // restart the one-shot stamp animation
+    el.dataset.side=(win>=50)?'ice':'ember';
+    el.classList.add(tier==='full'?'stamp-full':'stamp-soft'); };
+  if(!celebrate||REVEAL.noMotion()){ done(); return; }
+  const from=parseFloat(el.textContent)||0, t0=performance.now(), MS=750;
+  // rAF is parked in hidden/background panes — the displayed number is DATA, so a
+  // timeout guarantees completion even if the renderer never grants a frame.
+  setTimeout(()=>{ if(REVEAL.id===id) done(); },MS+250);
+  requestAnimationFrame(function step(now){
+    if(REVEAL.id!==id||fin) return;
+    const t=Math.min(1,(now-t0)/MS), e=1-Math.pow(1-t,3);   // easeOutCubic
+    el.textContent=(from+(win-from)*e).toFixed(1)+'%';
+    if(t<1) requestAnimationFrame(step); else done();
+  });
 }
 
 // Kept for older callers; config tabs now restore their own saved form/forecast state.
@@ -3563,7 +3682,7 @@ function showProgress(on){ const ov=$('#simProgress'); if(!ov)return; const fill
     const runs=currentRuns(), expectedMs=Math.max(3500, runs*180);
     ov._runId=(ov._runId||0)+1; const id=ov._runId, started=Date.now(); let last=0;
     st.textContent='Simulating...';
-    ov.classList.add('on'); fill.style.width='0%'; pct.textContent='0%';
+    ov.classList.remove('leaving'); ov.classList.add('on'); fill.style.width='0%'; pct.textContent='0%';
     clearInterval(ov._t);
     ov._t=setInterval(()=>{
       const elapsed=Date.now()-started;
@@ -3578,7 +3697,8 @@ function showProgress(on){ const ov=$('#simProgress'); if(!ov)return; const fill
     const id=ov._runId;
     clearInterval(ov._t); fill.style.width='100%'; pct.textContent='100%';
     if(st) st.textContent='Rendering results...';
-    setTimeout(()=>{ if(ov._runId===id) ov.classList.remove('on'); },260);
+    ov.classList.add('leaving');   // opacity fade over the already-rendered report (hard cut → curtain lift)
+    setTimeout(()=>{ if(ov._runId===id) ov.classList.remove('on','leaving'); },260);
   } }
 function showError(msg){ let e=$('#fcError'); if(!e){ e=el('div','fc-error'); e.id='fcError'; e.setAttribute('role','alert'); $('.fc-body').prepend(e); }
   e.textContent='⚠ '+msg; e.style.display='block';
@@ -3692,8 +3812,14 @@ window.addEventListener('DOMContentLoaded',()=>{
     [...e.currentTarget.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false')); kmUpdate(false); });
   const kms=$('#kmSlider'); if(kms) kms.addEventListener('input',()=>{ kmSliderLabel();
     clearTimeout(KM_SLIDE); KM_SLIDE=setTimeout(()=>kmUpdate(false),90); });
-  const restored=restoreAutosave();
-  if(restored) showSessionNote('Restored your last session');
+  // boot must ALWAYS reach runForecast(): a malformed autosave (older schema,
+  // partial write) previously threw here and silently killed the initial run,
+  // leaving "--" and empty charts until the user touched a control
+  let restored=false;
+  try{ restored=restoreAutosave(); }
+  catch(err){ console.error('autosave restore failed — starting from defaults', err); }
+  try{ if(restored) showSessionNote('Restored your last session'); }
+  catch(err){ console.error('session note failed', err); }
   updateFinalStats();
   updateAccordionSummaries();   // chips were computed from defaults before the autosave restore
   snapshotTab(activeTab());

@@ -1,0 +1,12 @@
+# Caching policy for the WoS predictor front-end (Hostinger / LiteSpeed / Apache).
+# HTML must always revalidate — without this, browsers heuristically cache
+# index.html and keep showing a stale UI after deploys (observed 2026-07-14).
+# Assets (fonts/images/video) stay cacheable: they only change with new filenames.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(ttf|png|jpg|jpeg|svg|mp4|js)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>
