@@ -5,6 +5,14 @@ FastAPI entrypoint.
 
 ## Deploy
 
+One command (logs in only when needed, then deploys):
+
+```powershell
+.\deploy-vercel.ps1
+```
+
+Or manually:
+
 ```powershell
 npx vercel login
 npx vercel deploy --prod
