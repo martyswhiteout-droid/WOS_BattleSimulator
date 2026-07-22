@@ -1,0 +1,259 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_composition",
+  "type": 1,
+  "battle_date": "2026-07-13 11:55:21",
+  "recommended_filename": "ColonelMuller_2v2_2T1MMvFC1T1Inf+FC1T1MM_NoHeroes_Gatot+Vulcanus_20260713_115521.json",
+  "setup": "Colonel Mueller attacks with 2 T1 Marksman (no heroes) against Alpaca's 1 FC1 T1 Infantry + 1 FC1 T1 Marksman (Gatot Lv.64 + Vulcanus Lv.73).",
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory"
+  },
+  "turn_inference": {
+    "turns": 3,
+    "turns_range": [
+      3,
+      3
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal triggers each time Gatot's Infantry attacks",
+    "trigger_count": 3,
+    "assumptions": [
+      "Turn count = 3 per Martin's screenshot check; if the single Battle Details screen belongs to the 11:19:36 battle instead, this battle's counters were not separately captured (Martin-confirmed 3 turns).",
+      "Martin (2026-07-14) confirmed BOTH the 1-MM and 2-MM battles lasted 3 turns."
+    ]
+  },
+  "attacker": {
+    "name": "Colonel Mueller",
+    "display_name": "[Rfj]Colonel Müller",
+    "role": "attacker",
+    "coords": "X:745 Y:473",
+    "power_loss": -3,
+    "troops": 2,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 1,
+    "survivors": 0,
+    "kills": null,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 1.0",
+    "force_detail": [
+      {
+        "class": "Marksman",
+        "tier_display": "Lv 1.0",
+        "tier_code": "T1",
+        "count": 2,
+        "fire_crystal_level": null,
+        "is_fire_crystal": false
+      }
+    ],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 179.1,
+        "Defense": 179.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": 118.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Full 3-class 4-stat grid visible in the Stat Bonuses screen."
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "defender fields an Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Alpaca",
+    "display_name": "[RFJ]沃草泥的馬",
+    "role": "defender",
+    "coords": "X:747 Y:475",
+    "power_loss": 0,
+    "troops": 2,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 2,
+    "kills": null,
+    "deployed_class": "Mixed",
+    "tier_display": "FC1 Lv 1.0 Infantry + FC1 Lv 1.0 Marksman",
+    "force_detail": [
+      {
+        "class": "Infantry",
+        "tier_display": "FC1 Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "is_fire_crystal": true
+      },
+      {
+        "class": "Marksman",
+        "tier_display": "FC1 Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "is_fire_crystal": true
+      }
+    ],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 537.1,
+        "Defense": 529.9,
+        "Lethality": 119.7,
+        "Health": 119.3
+      },
+      "Lancer": {
+        "Attack": 205.7,
+        "Defense": 186.0,
+        "Lethality": 145.5,
+        "Health": 144.1
+      },
+      "Marksman": {
+        "Attack": 1072.5,
+        "Defense": 1062.3,
+        "Lethality": 257.2,
+        "Health": 160.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Full grid visible."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 64,
+        "stars": "3 visible, badge S8"
+      },
+      "Marksman": {
+        "name": "Vulcanus",
+        "level": 73,
+        "stars": "3 visible, badge S13"
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": null,
+        "effect": "Increases his Infantry's Defense (level not shown; Alpaca's Gatot is Lv.64 S8 — do NOT assume L1 effects)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified_level_unknown"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": null,
+        "effect": "Shield on his Infantry each time it attacks; trigger count == battle rounds",
+        "triggers": 3,
+        "kills": 0,
+        "status": "identified_level_unknown"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "Unidentified Gatot Skill 3",
+        "level": null,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 1",
+        "name": "Unidentified Vulcanus Skill 1",
+        "level": null,
+        "effect": "(-4% enemy Attack at L1; Alpaca's Vulcanus is Lv.73 S13 — level not shown)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified_level_unknown"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 2",
+        "name": "Periodic empowered damage",
+        "level": null,
+        "effect": "every 6th attack event; DID NOT FIRE (dash)",
+        "triggers": 0,
+        "kills": 0,
+        "status": "identified_level_unknown"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 3",
+        "name": "Periodic defense shred",
+        "level": null,
+        "effect": "fires turn 1 then every 3rd turn, effect lasts 3 turns -> active turns 1-3 here",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified_level_unknown"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": false,
+        "reason": "attacker fields no Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "_stat_base_reference": "STAT BASE REFERENCE: Alpaca deploys FC (Fire-Crystal) troops. Use docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json (FC1 rows), NOT normal-tier assumptions.",
+  "notes": [
+    "Kills row not present in the captured overview screens; kills=null (not fabricated).",
+    "Attacker hero slots explicitly Vacant (Battle Details screen).",
+    "Hero SKILL LEVELS not shown; Alpaca's Gatot Lv.64/S8 and Vulcanus Lv.73/S13 — L1 effect text must NOT be assumed.",
+    "Vulcanus S2 did not fire (dash); S3 fired once (turn 1; 3-turn effect spans the whole battle).",
+    "The '2 named MM = 3 turns' battle — Martin screenshot-verified 2026-07-14; suspect_equals_single flag RESOLVED as genuine. Wound split (1 injured + 1 lightly injured) shows BOTH marksmen absorbed damage before dying on turn 3."
+  ],
+  "source_images": [
+    "provided in-chat by Martin 2026-07-14 (battle overview, stat bonuses, battle details screens)"
+  ],
+  "_extraction": {
+    "extracted_by": "Claude (Fable 5), human-read from Martin's screenshots",
+    "timestamp": "2026-07-14",
+    "ocr_confidence": "high (manual read)",
+    "manual_overrides": []
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [
+      "kills (both sides)",
+      "hero skill levels"
+    ],
+    "suspicions": []
+  }
+}

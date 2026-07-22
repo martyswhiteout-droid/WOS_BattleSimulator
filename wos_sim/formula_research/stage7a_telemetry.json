@@ -1,0 +1,6956 @@
+{
+ "cadence_checks": [
+  {
+   "class": "Infantry",
+   "class_alive_end": true,
+   "hero": "Eleonora",
+   "k": 5,
+   "n": 2,
+   "pred_if_alive_all_T": [
+    2,
+    2
+   ],
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Eleonora Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Lancer",
+   "class_alive_end": true,
+   "hero": "Fred",
+   "k": 4,
+   "n": 3,
+   "pred_if_alive_all_T": [
+    3,
+    3
+   ],
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Fred Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": true,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    9,
+    10
+   ],
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "Ligeia Skill 2",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": true,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    9,
+    10
+   ],
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "Ligeia Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    9,
+    10
+   ],
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "Ligeia Skill 2",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    9,
+    10
+   ],
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "Ligeia Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    21,
+    21
+   ],
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Ligeia Skill 2",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    21,
+    21
+   ],
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Ligeia Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 3,
+   "pred_if_alive_all_T": [
+    22,
+    23
+   ],
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Ligeia Skill 2",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Ligeia",
+   "k": 2,
+   "n": 3,
+   "pred_if_alive_all_T": [
+    22,
+    23
+   ],
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Ligeia Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Infantry",
+   "class_alive_end": true,
+   "hero": "Eleonora",
+   "k": 5,
+   "n": 6,
+   "pred_if_alive_all_T": [
+    6,
+    7
+   ],
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "Eleonora Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Infantry",
+   "class_alive_end": false,
+   "hero": "Eleonora",
+   "k": 5,
+   "n": 5,
+   "pred_if_alive_all_T": [
+    6,
+    7
+   ],
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "Eleonora Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Lancer",
+   "class_alive_end": false,
+   "hero": "Fred",
+   "k": 4,
+   "n": 10,
+   "pred_if_alive_all_T": [
+    10,
+    10
+   ],
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Fred Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Blanchette",
+   "k": 2,
+   "n": 12,
+   "pred_if_alive_all_T": [
+    20,
+    21
+   ],
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Blanchette Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Marksman",
+   "class_alive_end": false,
+   "hero": "Blanchette",
+   "k": 3,
+   "n": 18,
+   "pred_if_alive_all_T": [
+    13,
+    14
+   ],
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Blanchette Skill 2",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Infantry",
+   "class_alive_end": true,
+   "hero": "Eleonora",
+   "k": 5,
+   "n": 8,
+   "pred_if_alive_all_T": [
+    8,
+    8
+   ],
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "Eleonora Skill 3",
+   "unit": "Strikes"
+  },
+  {
+   "class": "Infantry",
+   "class_alive_end": false,
+   "hero": "Eleonora",
+   "k": 5,
+   "n": 7,
+   "pred_if_alive_all_T": [
+    8,
+    8
+   ],
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "Eleonora Skill 3",
+   "unit": "Strikes"
+  }
+ ],
+ "clocks": [
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "T_band_offset1": [
+    25,
+    27
+   ],
+   "T_floor": [
+    28,
+    29
+   ],
+   "T_floor_with_strikes": [
+    28,
+    29
+   ],
+   "T_offset1": [
+    25,
+    27
+   ],
+   "T_offset1_with_strikes": [
+    25,
+    27
+   ],
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Lloyd",
+     "k": 3,
+     "n": 9,
+     "side": "enemy",
+     "skill": "Lloyd Skill 2",
+     "unit": "Turns"
+    },
+    {
+     "hero": "Bradley",
+     "k": 4,
+     "n": 7,
+     "side": "enemy",
+     "skill": "Bradley Skill 3",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_01",
+   "secondary_rows": []
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "T_band_offset1": [
+    9,
+    10
+   ],
+   "T_floor": null,
+   "T_floor_with_strikes": [
+    12,
+    14
+   ],
+   "T_offset1": null,
+   "T_offset1_with_strikes": [
+    9,
+    10
+   ],
+   "T_source": "strikes-cadence(A1)",
+   "primary_rows": [],
+   "rid": "RAW_02",
+   "secondary_rows": [
+    {
+     "class_alive_end": true,
+     "hero": "Eleonora",
+     "hero_class": "Infantry",
+     "k": 5,
+     "n": 2,
+     "side": "friendly",
+     "skill": "Eleonora Skill 3",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": true,
+     "hero": "Fred",
+     "hero_class": "Lancer",
+     "k": 4,
+     "n": 3,
+     "side": "friendly",
+     "skill": "Fred Skill 3",
+     "unit": "Strikes"
+    }
+   ]
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "T_band_offset1": [
+    16,
+    18
+   ],
+   "T_floor": [
+    18,
+    20
+   ],
+   "T_floor_with_strikes": [
+    20,
+    20
+   ],
+   "T_offset1": [
+    16,
+    18
+   ],
+   "T_offset1_with_strikes": null,
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Lloyd",
+     "k": 3,
+     "n": 6,
+     "side": "friendly",
+     "skill": "Lloyd Skill 2",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_03",
+   "secondary_rows": [
+    {
+     "class_alive_end": true,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 10,
+     "side": "friendly",
+     "skill": "Ligeia Skill 2",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": true,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 10,
+     "side": "friendly",
+     "skill": "Ligeia Skill 3",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 10,
+     "side": "enemy",
+     "skill": "Ligeia Skill 2",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 10,
+     "side": "enemy",
+     "skill": "Ligeia Skill 3",
+     "unit": "Strikes"
+    }
+   ]
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "T_band_offset1": [
+    40,
+    40
+   ],
+   "T_floor": [
+    42,
+    43
+   ],
+   "T_floor_with_strikes": [
+    42,
+    43
+   ],
+   "T_offset1": [
+    40,
+    40
+   ],
+   "T_offset1_with_strikes": [
+    40,
+    40
+   ],
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Flora",
+     "k": 4,
+     "n": 10,
+     "side": "friendly",
+     "skill": "Flora Skill 3",
+     "unit": "Turns"
+    },
+    {
+     "hero": "Flora",
+     "k": 4,
+     "n": 10,
+     "side": "enemy",
+     "skill": "Flora Skill 3",
+     "unit": "Turns"
+    },
+    {
+     "hero": "Vulcanus",
+     "k": 3,
+     "n": 14,
+     "side": "enemy",
+     "skill": "Vulcanus Skill 3",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_04",
+   "secondary_rows": [
+    {
+     "class_alive_end": false,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 10,
+     "side": "friendly",
+     "skill": "Ligeia Skill 2",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 10,
+     "side": "friendly",
+     "skill": "Ligeia Skill 3",
+     "unit": "Strikes"
+    }
+   ]
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "T_band_offset1": [
+    43,
+    44
+   ],
+   "T_floor": [
+    45,
+    47
+   ],
+   "T_floor_with_strikes": [
+    45,
+    47
+   ],
+   "T_offset1": [
+    43,
+    44
+   ],
+   "T_offset1_with_strikes": [
+    43,
+    44
+   ],
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Flora",
+     "k": 4,
+     "n": 11,
+     "side": "friendly",
+     "skill": "Flora Skill 3",
+     "unit": "Turns"
+    },
+    {
+     "hero": "Flora",
+     "k": 4,
+     "n": 11,
+     "side": "enemy",
+     "skill": "Flora Skill 3",
+     "unit": "Turns"
+    },
+    {
+     "hero": "Vulcanus",
+     "k": 3,
+     "n": 15,
+     "side": "enemy",
+     "skill": "Vulcanus Skill 3",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_05",
+   "secondary_rows": [
+    {
+     "class_alive_end": false,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 3,
+     "side": "friendly",
+     "skill": "Ligeia Skill 2",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Ligeia",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 3,
+     "side": "friendly",
+     "skill": "Ligeia Skill 3",
+     "unit": "Strikes"
+    }
+   ]
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "T_band_offset1": [
+    29,
+    32
+   ],
+   "T_floor": [
+    32,
+    35
+   ],
+   "T_floor_with_strikes": [
+    32,
+    34
+   ],
+   "T_offset1": [
+    29,
+    32
+   ],
+   "T_offset1_with_strikes": [
+    29,
+    30
+   ],
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Bradley",
+     "k": 4,
+     "n": 8,
+     "side": "enemy",
+     "skill": "Bradley Skill 3",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_06",
+   "secondary_rows": [
+    {
+     "class_alive_end": true,
+     "hero": "Eleonora",
+     "hero_class": "Infantry",
+     "k": 5,
+     "n": 6,
+     "side": "friendly",
+     "skill": "Eleonora Skill 3",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Eleonora",
+     "hero_class": "Infantry",
+     "k": 5,
+     "n": 5,
+     "side": "enemy",
+     "skill": "Eleonora Skill 3",
+     "unit": "Strikes"
+    }
+   ]
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "T_band_offset1": [
+    37,
+    40
+   ],
+   "T_floor": [
+    40,
+    43
+   ],
+   "T_floor_with_strikes": [
+    40,
+    43
+   ],
+   "T_offset1": [
+    37,
+    40
+   ],
+   "T_offset1_with_strikes": [
+    37,
+    40
+   ],
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Bradley",
+     "k": 4,
+     "n": 10,
+     "side": "friendly",
+     "skill": "Bradley Skill 3",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_07",
+   "secondary_rows": [
+    {
+     "class_alive_end": false,
+     "hero": "Fred",
+     "hero_class": "Lancer",
+     "k": 4,
+     "n": 10,
+     "side": "enemy",
+     "skill": "Fred Skill 3",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Blanchette",
+     "hero_class": "Marksman",
+     "k": 2,
+     "n": 12,
+     "side": "enemy",
+     "skill": "Blanchette Skill 3",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Blanchette",
+     "hero_class": "Marksman",
+     "k": 3,
+     "n": 18,
+     "side": "enemy",
+     "skill": "Blanchette Skill 2",
+     "unit": "Strikes"
+    }
+   ]
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "T_band_offset1": [
+    37,
+    40
+   ],
+   "T_floor": [
+    40,
+    43
+   ],
+   "T_floor_with_strikes": [
+    40,
+    43
+   ],
+   "T_offset1": [
+    37,
+    40
+   ],
+   "T_offset1_with_strikes": [
+    37,
+    40
+   ],
+   "T_source": "turns-cadence",
+   "primary_rows": [
+    {
+     "hero": "Bradley",
+     "k": 4,
+     "n": 10,
+     "side": "enemy",
+     "skill": "Bradley Skill 3",
+     "unit": "Turns"
+    }
+   ],
+   "rid": "RAW_08",
+   "secondary_rows": [
+    {
+     "class_alive_end": true,
+     "hero": "Eleonora",
+     "hero_class": "Infantry",
+     "k": 5,
+     "n": 8,
+     "side": "friendly",
+     "skill": "Eleonora Skill 3",
+     "unit": "Strikes"
+    },
+    {
+     "class_alive_end": false,
+     "hero": "Eleonora",
+     "hero_class": "Infantry",
+     "k": 5,
+     "n": 7,
+     "side": "enemy",
+     "skill": "Eleonora Skill 3",
+     "unit": "Strikes"
+    }
+   ]
+  }
+ ],
+ "convention_flips": [],
+ "death_turns": [
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    20,
+    20
+   ],
+   "from_skill": "Ligeia Skill 2",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 10,
+   "rid": "RAW_03",
+   "side": "enemy"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    20,
+    20
+   ],
+   "from_skill": "Ligeia Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 10,
+   "rid": "RAW_03",
+   "side": "enemy"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    20,
+    21
+   ],
+   "from_skill": "Ligeia Skill 2",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 10,
+   "rid": "RAW_04",
+   "side": "friendly"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    20,
+    21
+   ],
+   "from_skill": "Ligeia Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 10,
+   "rid": "RAW_04",
+   "side": "friendly"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    6,
+    7
+   ],
+   "from_skill": "Ligeia Skill 2",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 3,
+   "rid": "RAW_05",
+   "side": "friendly"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    6,
+    7
+   ],
+   "from_skill": "Ligeia Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 3,
+   "rid": "RAW_05",
+   "side": "friendly"
+  },
+  {
+   "class": "Infantry",
+   "death_turn_band_floor_conv": [
+    25,
+    29
+   ],
+   "from_skill": "Eleonora Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 5,
+   "n": 5,
+   "rid": "RAW_06",
+   "side": "enemy"
+  },
+  {
+   "class": "Lancer",
+   "death_turn_band_floor_conv": [
+    40,
+    43
+   ],
+   "from_skill": "Fred Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 4,
+   "n": 10,
+   "rid": "RAW_07",
+   "side": "enemy"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    24,
+    25
+   ],
+   "from_skill": "Blanchette Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 2,
+   "n": 12,
+   "rid": "RAW_07",
+   "side": "enemy"
+  },
+  {
+   "class": "Marksman",
+   "death_turn_band_floor_conv": [
+    54,
+    43
+   ],
+   "from_skill": "Blanchette Skill 2",
+   "impossible_under_catalog_cadence": true,
+   "k": 3,
+   "n": 18,
+   "rid": "RAW_07",
+   "side": "enemy"
+  },
+  {
+   "class": "Infantry",
+   "death_turn_band_floor_conv": [
+    35,
+    39
+   ],
+   "from_skill": "Eleonora Skill 3",
+   "impossible_under_catalog_cadence": false,
+   "k": 5,
+   "n": 7,
+   "rid": "RAW_08",
+   "side": "enemy"
+  }
+ ],
+ "kills": [
+  {
+   "hero": "Karol",
+   "kills": 1386,
+   "kills_per_trigger": 693.0,
+   "n": 2,
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (red arrows, likely Ambusher)"
+  },
+  {
+   "hero": "Rufus",
+   "kills": 13060,
+   "kills_per_trigger": 4353.3,
+   "n": 3,
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "Volley (10% second strike, direct kills)"
+  },
+  {
+   "hero": "Lloyd",
+   "kills": 35461,
+   "kills_per_trigger": 7092.2,
+   "n": 5,
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (red arrows, likely Ambusher)"
+  },
+  {
+   "hero": "Bradley",
+   "kills": 14703,
+   "kills_per_trigger": 1633.7,
+   "n": 9,
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "icon:troop-skill (gun)"
+  },
+  {
+   "hero": "Fred",
+   "kills": 51094,
+   "kills_per_trigger": 17031.3,
+   "n": 3,
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Fred Skill 3 (Floodbringer?)"
+  },
+  {
+   "hero": "Fred",
+   "kills": 4828,
+   "kills_per_trigger": 2414.0,
+   "n": 2,
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (likely Ambusher)"
+  },
+  {
+   "hero": "Rufus",
+   "kills": 65775,
+   "kills_per_trigger": 21925.0,
+   "n": 3,
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Volley (second strike, direct kills)"
+  },
+  {
+   "hero": "Mia",
+   "kills": 31506,
+   "kills_per_trigger": 2423.5,
+   "n": 13,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:proc with direct kills"
+  },
+  {
+   "hero": "Mia",
+   "kills": 9256,
+   "kills_per_trigger": 3085.3,
+   "n": 3,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (Ambusher?)"
+  },
+  {
+   "hero": "Rufus",
+   "kills": 7695,
+   "kills_per_trigger": 7695.0,
+   "n": 1,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "Volley (second strike, direct kills)"
+  },
+  {
+   "hero": "Lloyd",
+   "kills": 38386,
+   "kills_per_trigger": 7677.2,
+   "n": 5,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 62558,
+   "kills_per_trigger": 6255.8,
+   "n": 10,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "Ligeia Skill 2 (direct-damage proc)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 44344,
+   "kills_per_trigger": 6334.9,
+   "n": 7,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "hero": "Karol",
+   "kills": 35203,
+   "kills_per_trigger": 7040.6,
+   "n": 5,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 29356,
+   "kills_per_trigger": 2935.6,
+   "n": 10,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "Ligeia Skill 2 (direct-damage proc)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 21469,
+   "kills_per_trigger": 3067.0,
+   "n": 7,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "hero": "Flora",
+   "kills": 17317,
+   "kills_per_trigger": 2886.2,
+   "n": 6,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 34774,
+   "kills_per_trigger": 3477.4,
+   "n": 10,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Ligeia Skill 2 (direct-damage proc)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 12761,
+   "kills_per_trigger": 2552.2,
+   "n": 5,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "hero": "Flora",
+   "kills": 29706,
+   "kills_per_trigger": 4951.0,
+   "n": 6,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Vulcanus",
+   "kills": 56327,
+   "kills_per_trigger": 2964.6,
+   "n": 19,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Vulcanus Skill 2 (Target DT proc, direct kills)"
+  },
+  {
+   "hero": "Vulcanus",
+   "kills": 10621,
+   "kills_per_trigger": 1327.6,
+   "n": 8,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "hero": "Flora",
+   "kills": 34470,
+   "kills_per_trigger": 3830.0,
+   "n": 9,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 9927,
+   "kills_per_trigger": 3309.0,
+   "n": 3,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Ligeia Skill 2 (direct-damage proc)"
+  },
+  {
+   "hero": "Ligeia",
+   "kills": 2690,
+   "kills_per_trigger": 2690.0,
+   "n": 1,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "hero": "Flora",
+   "kills": 13165,
+   "kills_per_trigger": 2194.2,
+   "n": 6,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Vulcanus",
+   "kills": 56872,
+   "kills_per_trigger": 2843.6,
+   "n": 20,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Vulcanus Skill 2 (Target DT proc, direct kills)"
+  },
+  {
+   "hero": "Vulcanus",
+   "kills": 33827,
+   "kills_per_trigger": 2602.1,
+   "n": 13,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "hero": "Rufus",
+   "kills": 66372,
+   "kills_per_trigger": 6637.2,
+   "n": 10,
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "icon:marksman gun (direct kills)"
+  },
+  {
+   "hero": "Lloyd",
+   "kills": 17236,
+   "kills_per_trigger": 4309.0,
+   "n": 4,
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Gregory",
+   "kills": 96963,
+   "kills_per_trigger": 3591.2,
+   "n": 27,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "Gregory Skill 2 (Crit Rate - direct crit kills)"
+  },
+  {
+   "hero": "Freya",
+   "kills": 84335,
+   "kills_per_trigger": 4216.8,
+   "n": 20,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "Freya Skill 2 (direct-damage proc)"
+  },
+  {
+   "hero": "Freya",
+   "kills": 17731,
+   "kills_per_trigger": 2216.4,
+   "n": 8,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Gregory",
+   "kills": 35837,
+   "kills_per_trigger": 1558.1,
+   "n": 23,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Gregory Skill 2 (Crit Rate - direct crit kills)"
+  },
+  {
+   "hero": "Fred",
+   "kills": 32818,
+   "kills_per_trigger": 3281.8,
+   "n": 10,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Fred Skill 3 (Floodbringer, direct kills)"
+  },
+  {
+   "hero": "Fred",
+   "kills": 12584,
+   "kills_per_trigger": 1797.7,
+   "n": 7,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Ambusher (bypass, direct kills)"
+  },
+  {
+   "hero": "Blanchette",
+   "kills": 27827,
+   "kills_per_trigger": 2318.9,
+   "n": 12,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Blanchette Skill 3 (marked targets, direct kills)"
+  },
+  {
+   "hero": "Blanchette",
+   "kills": 114198,
+   "kills_per_trigger": 6344.3,
+   "n": 18,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Blanchette Skill 2 (Blood Hunter, direct kills)"
+  },
+  {
+   "hero": "Blanchette",
+   "kills": 21652,
+   "kills_per_trigger": 2405.8,
+   "n": 9,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "icon:marksman gun (direct kills)"
+  },
+  {
+   "hero": "Rufus",
+   "kills": 61884,
+   "kills_per_trigger": 4760.3,
+   "n": 13,
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "icon:marksman gun (direct kills)"
+  },
+  {
+   "hero": "Lloyd",
+   "kills": 47228,
+   "kills_per_trigger": 5903.5,
+   "n": 8,
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "Ambusher (bypass, direct kills)"
+  }
+ ],
+ "meta": {
+  "catalog_sources": "wos_sim.loader.load_skill_book() + wos_sim.troop_catalog.TROOP_SKILL_CATALOG",
+  "conventions": {
+   "A1": "one attack event per class-stack per battle turn",
+   "cadence_floor": "fires at k,2k,..: n=floor(T/k) (primary; Martin-confirmed report_001 notes; Vulcanus S3 triangulated 2026-07-18)",
+   "display1": "Triggered=1 rows are uninformative (report_001 note 9)"
+  },
+  "inputs": "wos_sim/data/reports/report_001..008.json + wos_sim/data/pvp_t12_report_001..005.json",
+  "script": "wos_sim/formula_research/stage7a_telemetry.py"
+ },
+ "pooled": [
+  {
+   "n_reports": 14,
+   "n_total": 76,
+   "overall": "stream-identified: own_class_strikes",
+   "p_catalog": 0.2,
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      229,
+      470
+     ],
+     "argmax_N": 379,
+     "k": 76,
+     "max_p": 1.0,
+     "rate": [
+      0.1617,
+      0.3319
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 1,
+   "n_total": 20,
+   "overall": "consistent (underdetermined among ['enemy_attack_events', 'own_class_strikes', 'turns'])",
+   "p_catalog": 0.5,
+   "skill": "Freya Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      40,
+      129
+     ],
+     "argmax_N": 40,
+     "k": 20,
+     "max_p": 1.0,
+     "rate": [
+      0.155,
+      0.5
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 80,
+     "k": 20,
+     "max_p": 9e-06,
+     "rate": [
+      0.2326,
+      0.25
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 40,
+     "k": 20,
+     "max_p": 1.0,
+     "rate": [
+      0.4651,
+      0.5
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 40,
+     "k": 20,
+     "max_p": 1.0,
+     "rate": [
+      0.4651,
+      0.5
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 4,
+   "n_total": 66,
+   "overall": "consistent (underdetermined among ['own_class_strikes', 'turns'])",
+   "p_catalog": 0.4,
+   "skill": "Gisela Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      261,
+      540
+     ],
+     "argmax_N": 261,
+     "k": 66,
+     "max_p": 1e-06,
+     "rate": [
+      0.1222,
+      0.2529
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      261,
+      540
+     ],
+     "argmax_N": 261,
+     "k": 66,
+     "max_p": 1e-06,
+     "rate": [
+      0.1222,
+      0.2529
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      117,
+      180
+     ],
+     "argmax_N": 164,
+     "k": 66,
+     "max_p": 1.0,
+     "rate": [
+      0.3667,
+      0.5641
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      174,
+      180
+     ],
+     "argmax_N": 175,
+     "k": 66,
+     "max_p": 0.589287,
+     "rate": [
+      0.3667,
+      0.3793
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 4,
+   "n_total": 74,
+   "overall": "consistent (underdetermined among ['own_class_strikes', 'turns'])",
+   "p_catalog": 0.4,
+   "skill": "Gisela Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      261,
+      540
+     ],
+     "argmax_N": 261,
+     "k": 74,
+     "max_p": 0.000109,
+     "rate": [
+      0.137,
+      0.2835
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      261,
+      540
+     ],
+     "argmax_N": 261,
+     "k": 74,
+     "max_p": 0.000109,
+     "rate": [
+      0.137,
+      0.2835
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      128,
+      180
+     ],
+     "argmax_N": 180,
+     "k": 74,
+     "max_p": 0.76142,
+     "rate": [
+      0.4111,
+      0.5781
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      174,
+      180
+     ],
+     "argmax_N": 180,
+     "k": 74,
+     "max_p": 0.76142,
+     "rate": [
+      0.4111,
+      0.4253
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 2,
+   "n_total": 50,
+   "overall": "consistent (underdetermined among ['enemy_attack_events', 'own_attack_events'])",
+   "p_catalog": 0.25,
+   "skill": "Gregory Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      120,
+      215
+     ],
+     "argmax_N": 199,
+     "k": 50,
+     "max_p": 1.0,
+     "rate": [
+      0.2326,
+      0.4167
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      120,
+      215
+     ],
+     "argmax_N": 199,
+     "k": 50,
+     "max_p": 1.0,
+     "rate": [
+      0.2326,
+      0.4167
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      63,
+      86
+     ],
+     "argmax_N": 86,
+     "k": 50,
+     "max_p": 0.0,
+     "rate": [
+      0.5814,
+      0.7937
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 86,
+     "k": 50,
+     "max_p": 0.0,
+     "rate": [
+      0.5814,
+      0.625
+     ],
+     "verdict": "rejected"
+    }
+   }
+  },
+  {
+   "n_reports": 6,
+   "n_total": 72,
+   "overall": "consistent (underdetermined among ['own_class_strikes', 'turns'])",
+   "p_catalog": 0.4,
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      262,
+      459
+     ],
+     "argmax_N": 262,
+     "k": 72,
+     "max_p": 2.9e-05,
+     "rate": [
+      0.1569,
+      0.2748
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      326,
+      459
+     ],
+     "argmax_N": 326,
+     "k": 72,
+     "max_p": 0.0,
+     "rate": [
+      0.1569,
+      0.2209
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      102,
+      205
+     ],
+     "argmax_N": 179,
+     "k": 72,
+     "max_p": 1.0,
+     "rate": [
+      0.3512,
+      0.7059
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      190,
+      205
+     ],
+     "argmax_N": 190,
+     "k": 72,
+     "max_p": 0.604368,
+     "rate": [
+      0.3512,
+      0.3789
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 5,
+   "n_total": 57,
+   "overall": "consistent (underdetermined among ['enemy_attack_events', 'own_attack_events'])",
+   "p_catalog": 0.2,
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      176,
+      327
+     ],
+     "argmax_N": 284,
+     "k": 57,
+     "max_p": 1.0,
+     "rate": [
+      0.1743,
+      0.3239
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      220,
+      327
+     ],
+     "argmax_N": 284,
+     "k": 57,
+     "max_p": 1.0,
+     "rate": [
+      0.1743,
+      0.2591
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      105,
+      135
+     ],
+     "argmax_N": 135,
+     "k": 57,
+     "max_p": 0.0,
+     "rate": [
+      0.4222,
+      0.5429
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      124,
+      135
+     ],
+     "argmax_N": 135,
+     "k": 57,
+     "max_p": 0.0,
+     "rate": [
+      0.4222,
+      0.4597
+     ],
+     "verdict": "rejected"
+    }
+   }
+  },
+  {
+   "n_reports": 2,
+   "n_total": 6,
+   "overall": "stream-identified: own_class_strikes",
+   "p_catalog": 0.1,
+   "skill": "Volley",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      15,
+      43
+     ],
+     "argmax_N": 43,
+     "k": 6,
+     "max_p": 0.439255,
+     "rate": [
+      0.1395,
+      0.4
+     ],
+     "verdict": "consistent"
+    }
+   }
+  }
+ ],
+ "pooled_offset_convention": [
+  {
+   "n_reports": 14,
+   "n_total": 76,
+   "overall": "stream-identified: own_class_strikes",
+   "p_catalog": 0.2,
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      214,
+      430
+     ],
+     "argmax_N": 379,
+     "k": 76,
+     "max_p": 1.0,
+     "rate": [
+      0.1767,
+      0.3551
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 1,
+   "n_total": 20,
+   "overall": "consistent (underdetermined among ['enemy_attack_events', 'own_class_strikes', 'turns'])",
+   "p_catalog": 0.5,
+   "skill": "Freya Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      37,
+      120
+     ],
+     "argmax_N": 39,
+     "k": 20,
+     "max_p": 1.0,
+     "rate": [
+      0.1667,
+      0.5405
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      74,
+      80
+     ],
+     "argmax_N": 74,
+     "k": 20,
+     "max_p": 9.6e-05,
+     "rate": [
+      0.25,
+      0.2703
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      37,
+      40
+     ],
+     "argmax_N": 39,
+     "k": 20,
+     "max_p": 1.0,
+     "rate": [
+      0.5,
+      0.5405
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      37,
+      40
+     ],
+     "argmax_N": 39,
+     "k": 20,
+     "max_p": 1.0,
+     "rate": [
+      0.5,
+      0.5405
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 4,
+   "n_total": 66,
+   "overall": "consistent (underdetermined among ['own_class_strikes', 'turns'])",
+   "p_catalog": 0.4,
+   "skill": "Gisela Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      249,
+      504
+     ],
+     "argmax_N": 249,
+     "k": 66,
+     "max_p": 1e-05,
+     "rate": [
+      0.131,
+      0.2651
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      249,
+      504
+     ],
+     "argmax_N": 249,
+     "k": 66,
+     "max_p": 1e-05,
+     "rate": [
+      0.131,
+      0.2651
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      113,
+      168
+     ],
+     "argmax_N": 164,
+     "k": 66,
+     "max_p": 1.0,
+     "rate": [
+      0.3929,
+      0.5841
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      166,
+      168
+     ],
+     "argmax_N": 166,
+     "k": 66,
+     "max_p": 1.0,
+     "rate": [
+      0.3929,
+      0.3976
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 4,
+   "n_total": 74,
+   "overall": "consistent (underdetermined among ['own_class_strikes', 'turns'])",
+   "p_catalog": 0.4,
+   "skill": "Gisela Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      249,
+      504
+     ],
+     "argmax_N": 249,
+     "k": 74,
+     "max_p": 0.000934,
+     "rate": [
+      0.1468,
+      0.2972
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      249,
+      504
+     ],
+     "argmax_N": 249,
+     "k": 74,
+     "max_p": 0.000934,
+     "rate": [
+      0.1468,
+      0.2972
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      124,
+      168
+     ],
+     "argmax_N": 168,
+     "k": 74,
+     "max_p": 0.306051,
+     "rate": [
+      0.4405,
+      0.5968
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      166,
+      168
+     ],
+     "argmax_N": 168,
+     "k": 74,
+     "max_p": 0.306051,
+     "rate": [
+      0.4405,
+      0.4458
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 2,
+   "n_total": 50,
+   "overall": "consistent (underdetermined among ['enemy_attack_events', 'own_attack_events'])",
+   "p_catalog": 0.25,
+   "skill": "Gregory Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      111,
+      200
+     ],
+     "argmax_N": 199,
+     "k": 50,
+     "max_p": 1.0,
+     "rate": [
+      0.25,
+      0.4505
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      111,
+      200
+     ],
+     "argmax_N": 199,
+     "k": 50,
+     "max_p": 1.0,
+     "rate": [
+      0.25,
+      0.4505
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      60,
+      80
+     ],
+     "argmax_N": 80,
+     "k": 50,
+     "max_p": 0.0,
+     "rate": [
+      0.625,
+      0.8333
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      74,
+      80
+     ],
+     "argmax_N": 80,
+     "k": 50,
+     "max_p": 0.0,
+     "rate": [
+      0.625,
+      0.6757
+     ],
+     "verdict": "rejected"
+    }
+   }
+  },
+  {
+   "n_reports": 6,
+   "n_total": 72,
+   "overall": "consistent (underdetermined among ['own_class_strikes', 'turns'])",
+   "p_catalog": 0.4,
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      239,
+      423
+     ],
+     "argmax_N": 239,
+     "k": 72,
+     "max_p": 0.001858,
+     "rate": [
+      0.1702,
+      0.3013
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      296,
+      423
+     ],
+     "argmax_N": 296,
+     "k": 72,
+     "max_p": 0.0,
+     "rate": [
+      0.1702,
+      0.2432
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      97,
+      189
+     ],
+     "argmax_N": 179,
+     "k": 72,
+     "max_p": 1.0,
+     "rate": [
+      0.381,
+      0.7423
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      173,
+      189
+     ],
+     "argmax_N": 179,
+     "k": 72,
+     "max_p": 1.0,
+     "rate": [
+      0.381,
+      0.4162
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "n_reports": 5,
+   "n_total": 57,
+   "overall": "consistent (underdetermined among ['enemy_attack_events', 'own_attack_events'])",
+   "p_catalog": 0.2,
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      152,
+      285
+     ],
+     "argmax_N": 284,
+     "k": 57,
+     "max_p": 1.0,
+     "rate": [
+      0.2,
+      0.375
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      193,
+      285
+     ],
+     "argmax_N": 284,
+     "k": 57,
+     "max_p": 1.0,
+     "rate": [
+      0.2,
+      0.2953
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      96,
+      119
+     ],
+     "argmax_N": 119,
+     "k": 57,
+     "max_p": 0.0,
+     "rate": [
+      0.479,
+      0.5938
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      109,
+      119
+     ],
+     "argmax_N": 119,
+     "k": 57,
+     "max_p": 0.0,
+     "rate": [
+      0.479,
+      0.5229
+     ],
+     "verdict": "rejected"
+    }
+   }
+  },
+  {
+   "n_reports": 2,
+   "n_total": 6,
+   "overall": "stream-identified: own_class_strikes",
+   "p_catalog": 0.1,
+   "skill": "Volley",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      12,
+      37
+     ],
+     "argmax_N": 37,
+     "k": 6,
+     "max_p": 0.263411,
+     "rate": [
+      0.1622,
+      0.5
+     ],
+     "verdict": "consistent"
+    }
+   }
+  }
+ ],
+ "power": [
+  {
+   "case": "Volley 10% vs 20%",
+   "p0": 0.1,
+   "p1": 0.2,
+   "rows": [
+    {
+     "N": 30,
+     "ci_width_at_expected": 0.309,
+     "power": 0.393
+    },
+    {
+     "N": 60,
+     "ci_width_at_expected": 0.215,
+     "power": 0.677
+    },
+    {
+     "N": 100,
+     "ci_width_at_expected": 0.165,
+     "power": 0.808
+    },
+    {
+     "N": 200,
+     "ci_width_at_expected": 0.115,
+     "power": 0.982
+    }
+   ]
+  },
+  {
+   "case": "Ambusher 20% vs 10%",
+   "p0": 0.2,
+   "p1": 0.1,
+   "rows": [
+    {
+     "N": 30,
+     "ci_width_at_expected": 0.244,
+     "power": 0.184
+    },
+    {
+     "N": 60,
+     "ci_width_at_expected": 0.167,
+     "power": 0.437
+    },
+    {
+     "N": 100,
+     "ci_width_at_expected": 0.127,
+     "power": 0.802
+    },
+    {
+     "N": 200,
+     "ci_width_at_expected": 0.088,
+     "power": 0.973
+    }
+   ]
+  },
+  {
+   "case": "Crystal Lance I 10% vs II 15%",
+   "p0": 0.1,
+   "p1": 0.15,
+   "rows": [
+    {
+     "N": 100,
+     "ci_width_at_expected": 0.149,
+     "power": 0.328
+    },
+    {
+     "N": 200,
+     "ci_width_at_expected": 0.104,
+     "power": 0.609
+    },
+    {
+     "N": 400,
+     "ci_width_at_expected": 0.072,
+     "power": 0.854
+    },
+    {
+     "N": 800,
+     "ci_width_at_expected": 0.051,
+     "power": 0.989
+    }
+   ]
+  },
+  {
+   "case": "Crystal Gunpowder 20% (cat.) vs 30%",
+   "p0": 0.2,
+   "p1": 0.3,
+   "rows": [
+    {
+     "N": 60,
+     "ci_width_at_expected": 0.244,
+     "power": 0.437
+    },
+    {
+     "N": 100,
+     "ci_width_at_expected": 0.187,
+     "power": 0.623
+    },
+    {
+     "N": 200,
+     "ci_width_at_expected": 0.131,
+     "power": 0.907
+    },
+    {
+     "N": 400,
+     "ci_width_at_expected": 0.092,
+     "power": 0.995
+    }
+   ]
+  },
+  {
+   "case": "Crystal Shield I 25% vs II 37.5%",
+   "p0": 0.25,
+   "p1": 0.375,
+   "rows": [
+    {
+     "N": 60,
+     "ci_width_at_expected": 0.255,
+     "power": 0.496
+    },
+    {
+     "N": 100,
+     "ci_width_at_expected": 0.198,
+     "power": 0.795
+    },
+    {
+     "N": 200,
+     "ci_width_at_expected": 0.138,
+     "power": 0.967
+    },
+    {
+     "N": 400,
+     "ci_width_at_expected": 0.097,
+     "power": 1.0
+    }
+   ]
+  },
+  {
+   "case": "Incandescent Field 10% vs 15%",
+   "p0": 0.1,
+   "p1": 0.15,
+   "rows": [
+    {
+     "N": 100,
+     "ci_width_at_expected": 0.149,
+     "power": 0.328
+    },
+    {
+     "N": 200,
+     "ci_width_at_expected": 0.104,
+     "power": 0.609
+    },
+    {
+     "N": 400,
+     "ci_width_at_expected": 0.072,
+     "power": 0.854
+    },
+    {
+     "N": 800,
+     "ci_width_at_expected": 0.051,
+     "power": 0.989
+    }
+   ]
+  },
+  {
+   "case": "Rufus S3 20%: per-turn vs 3x-stream (60%)",
+   "p0": 0.2,
+   "p1": 0.6,
+   "rows": [
+    {
+     "N": 20,
+     "ci_width_at_expected": 0.448,
+     "power": 0.979
+    },
+    {
+     "N": 30,
+     "ci_width_at_expected": 0.367,
+     "power": 0.997
+    },
+    {
+     "N": 45,
+     "ci_width_at_expected": 0.3,
+     "power": 1.0
+    }
+   ]
+  }
+ ],
+ "ratio_tests": [
+  {
+   "hero": "Gisela",
+   "note": "T-free conditional binomial; assumes both skills share one opportunity stream",
+   "pA": 0.4,
+   "pB": 0.4,
+   "p_cond": 0.5,
+   "per_report": [
+    {
+     "kA": 14,
+     "kB": 23,
+     "p_value": 0.1877,
+     "rid": "RAW_04",
+     "side": "friendly"
+    },
+    {
+     "kA": 17,
+     "kB": 17,
+     "p_value": 1.0,
+     "rid": "RAW_04",
+     "side": "enemy"
+    },
+    {
+     "kA": 16,
+     "kB": 18,
+     "p_value": 0.8642,
+     "rid": "RAW_05",
+     "side": "friendly"
+    },
+    {
+     "kA": 19,
+     "kB": 16,
+     "p_value": 0.7359,
+     "rid": "RAW_05",
+     "side": "enemy"
+    }
+   ],
+   "pooled_kA": 66,
+   "pooled_m": 140,
+   "pooled_p_value": 0.5543,
+   "pooled_rate": 0.4714,
+   "slots": [
+    "Skill 2",
+    "Skill 3"
+   ]
+  }
+ ],
+ "t12_prose": {
+  "pvp_t12_report_001.json": {
+   "calibration_finding_2026_07_05": "CORRECTED (Martin caught the error). My first reconstruction built units from PANELS ONLY - it applied the T12 troop skills but NOT the hero skills - and compared against r6/r8 which DO have their hero skills (via assemble). Invalid comparison. Also r6/r8 are a PRE-T12 regime (no T12 troop skills, sub-Gen11 heroes) so cannot be force-fit with this T12 regime (T12 skills + Gen14 heroes) under one rate/def_k/def_ed. REDONE via construct.build (hero skills applied): skills add +8% stat (skillmult x1.08) + LARGE Damage-Dealt (+55% inf/marks, +100% lancer). That ~1.5-2x extra damage crushes the battle to ~8 turns (real ~30+) and inflates the attacker win to ~70% survivors (real 3.45%) - the rate=168 calibrated on r6/r8's lower-DD PRE-T12 config does NOT fit this high-DD T12 config. So my earlier 'definitive structural mis-ranking' claim is RETRACTED - with skills in, the dominant issue is DD-driven over-acceleration + a regime/duration mismatch, and one T12 point cannot cleanly separate structure from calibration. Possible over-count in DD (conditional/targeted skills applied as flat - assemble v0 approximation) - TBD. PATH: calibrate the T12 regime SEPARATELY (own rate/def_k/def_ed), which needs SEVERAL T12 near-even reports (esp. an attacker-barely-LOSES) + this battle's real round count (Bradley S3 counter). Until then near-even T12 = untrustworthy (calibrated=false).",
+   "reconstructed_timeline_2026_07_05": "Martin reconstructed the clock from hero-skill trigger counts. REVISED to 16 turns (was 15): the clean anchor is Vulcanus SK3 '+60% def, every 3 turns' triggered 6x -> turns 1,4,7,10,13,16 -> marksman alive at T16 -> battle=16. Revised Vulcanus SK2 reading: 'every 5 attacks PER TROOP TYPE' (not total-side): his inf floor(12/5)=2 + lancer floor(14/5)=2 + marksman floor(16/5)=3 = 7 triggers. Other triggers: his Elif SK3 x12 (infantry die endT12), enemy Elif SK3 x15 (enemy infantry die endT15), enemy Cara x6 every-2 (enemy marksman die endT12). STAGING: T12 his INF die + enemy MARKSMAN die (his ambush); his LANCER die endT14 (revised from T12); T13-16 his MARKSMAN carry; enemy INF die endT15, enemy LANCER die endT16 (LAST to fall - their counter=his infantry died T12); his 62,364 marksman survive. MECHANICS (Martin, authoritative): volleys are STRICT FRONT-TO-BACK (inf->lancer->marksman); marksman are IMMORTAL behind a live wall EXCEPT bypass procs = enemy lancer Ambusher procs + enemy Cara SK3 (periodic every-2 burst hitting lancer+marksman directly). So his marksman were only chipped ~690k->~580k over T1-12 by procs, held FLAT ~580k T13-T15start (lancers soaked), exposed only T15-16. ENDGAME explains the razor-thin result: T15 ~0/0/580k vs enemy ~1/348k/0; his exposed marksman grind 348k enemy lancers over T15-16 at a COUNTER DISADVANTAGE (lancer counters marksman), losing ~518k to kill ~348k, ending 62,364 - won on NUMBERS alone (580k>348k); ~10% fewer marks = loss. NEAR-MUTUAL-ANNIHILATION, attacker edged 3.45%. Casualty check EXACT: 783589+331529+(690154-62364)=1,742,908=incap. Paired with report_002 (25t, LANCERS survive) this is a controlled near-even experiment - see report_002 engine_finding for the TWO structural gaps (casualty-allocation order + near-balance hypersensitivity). Both are validation anchors; neither is reproducible by the current engine.",
+   "specials_note": "Both sides +20% troops A/D/L/H items; -20% enemy A/D; pets +10% A/D/L/H both; enemy pet penalties Def -10% / Leth -5% / HP -5% both. Attacker widgets: Rally Attack +15%, Rally Lethality +15%. Defender widgets: Defender Defense +15%, Defender Lethality +15%. All already baked into panel_pct.",
+   "stats_note": "panel_pct = the in-game Stat Bonuses panel (FULL SCOUTED - includes heroes, gear, items, pets, widgets, penalties). Since the two sides differ, this is the ACTUAL-stats case (NOT pre-assumed symmetric) - feed as-is, NO hero relayering. KEY ASYMMETRY: attacker is OFFENSE-focused (higher Attack/Lethality), defender is DEFENSE-focused (higher Defense/Health) - via the widgets (attacker Rally Attack/Leth +15%, defender Defender Def/Leth +15%).",
+   "t12_notes": "Attacker HIGHER T12 research (Meridian 5 vs 3, Starfire 8 vs 3 -> +5%/+4% marks buffs vs +3%/+1.5%). Indomitable Wall tied L4 (-2.4% enemy dmg both). Likely decisive in the near-even outcome."
+  },
+  "pvp_t12_report_002.json": {
+   "engine_finding_2026_07_05": "CORRECTED (Martin: absorption IS strict front-to-back - the ORDER mechanic is RIGHT, not a bug). The real gap: the engine models hero skills as AVERAGED modifiers (Vulcanus SK2 +100%dd/freq5 -> ~+20% avg; Cara SK3 +40%dd/freq2 -> ~+20% avg) and does NOT fire discrete procs, so it cannot reproduce BACKLINE ANNIHILATION VIA BYPASS PROCS. report_002: his MARKSMAN (626k) were annihilated by ~T14 by enemy Ambusher procs + enemy Cara SK3 bursts (both bypass the front, hit marksman directly), while his LANCERS stayed immortal behind infantry until T19 then survived (118,068). The engine's only bypass is a fixed 20% ambush fraction (LANCER_BYPASS_CHANCE) - too weak - and Cara SK3 is not modeled as a backline hit, so the engine keeps marksman alive in BOTH battles (always returns MARKSMAN survivor). TWO real gaps: (1) skills must FIRE discretely turn-by-turn (with correct bypass magnitudes) to reproduce NON-LINEAR proc-driven attrition + the correct survivor type; averaging cannot. (2) near-balance hypersensitivity/bimodality (exact survivor% is chaotic near even). PATH = re-architect to a turn-by-turn skill-firing simulator (which also emits the trigger+kill telemetry the front-end now wants). Both battles are the validation anchors.",
+   "reconstructed_timeline_2026_07_05": "Martin reconstructed from hero-skill trigger counts. ROBUST anchors: (1) battle = 25 turns [Vulcanus SK3 'every 3 turns' triggered 9x -> turns 1,4,7,...,25 -> (9-1)*3+1=25]. (2) his infantry died end T19 [his Elif SK3 = 19]. (3) enemy infantry died end T22 [enemy Elif SK3 = 22]. (4) enemy marksman died ~T18 [enemy Cara 'every 2' = 9x -> 9*2=18]. (5) his LANCERS are the sole survivors (118,068). WRINKLE: Vulcanus SK2 (revised to 'every 5 attacks PER TROOP TYPE') = 10 triggers implies his MARKSMAN died ~T10-14 [inf floor(19/5)=3 + lancer floor(25/5)=5 + marks=2 -> 3+5+2=10], i.e. his marksman died EARLY. RESOLVED (Martin): his MARKSMAN were annihilated by ~T14 by enemy lancer Ambusher procs + enemy Cara SK3 bursts (bypass the front, hit marksman directly), NON-LINEARLY (step drops at each proc), while his LANCERS stayed IMMORTAL behind infantry until infantry died T19, then survived to T25 (118,068). So death order his side: MARKSMAN (~T14, via bypass procs) -> INFANTRY (T19, front wall) -> LANCER survives. permanent LOSSES=33,199 (non-zero here vs 0 in report_001).",
+   "stats_note": "panel_pct IDENTICAL to report_001 (same players/setup minutes apart). FULL SCOUTED. Special bonuses identical to report_001 (attacker +20% troop A/D/L/H, -20% enemy A/D, Rally Atk+15%/Leth+15% widgets, pets +10% all & enemy pet penalties; defender same but Defender Def+15%/Leth+15% widgets). t12_skill_levels ASSUMED same as report_001 (not separately visible in this report - same player, minutes apart). Attacker OFFENSE-focused, defender DEFENSE-focused."
+  },
+  "pvp_t12_report_003.json": {
+   "skill_triggers_note": "From the Skill Details panel (rows are icon-keyed; slot mapping partly uncertain): attacker Gisela x1/x19/x19/x59/x1, defender Gisela x1/x19/x18/x46. Flora (att lancer): x64/x1/x10/x5 + one row 6 triggers 4,759 kills. Karol (def lancer): 3 triggers 368 kills, x1. Ligeia (att marks): x19 w/ 7,328 kills, x19, x5, 6 triggers w/ 903 kills. Vulcanus (def marks): 16 triggers w/ 10,212 kills, x13, 7 triggers w/ 2,499 kills, x1. CLOCK: Gisela every-turn rows x19 both sides -> battle ~19-20 turns; defender Gisela x18 -> def infantry likely died end T18-19. Vulcanus 7-trigger row matches every-3-turns at ~19-20 turns (floor((19-1)/3)+1=7). OPEN PUZZLE: Vulcanus 16-trigger row exceeds the 'every 5 attacks per troop type' formula (~9-12 at this length) - cadence semantics still not fully solved; direct skill kills (both sides ~13k total) are small vs 217k casualties.",
+   "specials_note": "Both sides: +20% troops A/D/L/H items, -20% enemy A/D items, pets +10% A/D/L/H, enemy pet penalties -10% def/-5% leth/-5% hp. Defender widget: Defender Troops' Attack +15% (attacker has no attacker-side widget - solo attack). All baked into panel_pct (panel_is_final=true, widgets_in_panel=true).",
+   "structural_ground_truth": "GOLD per-class facts no rally anchor provides: (1) attacker LANCERS took ZERO casualties across ~19-20 turns -> the infantry wall NEVER fell (2,421 inf survived) -> strict front-to-back absorption held for the ENTIRE battle on the winning side. (2) attacker MARKSMAN lost 66.5% (45,375) while the wall stood -> ALL marksman damage arrived via BYPASS (defender Ambusher procs from 26,917 T11 lancers + any backline skills) -> bypass magnitude is large and sustained. (3) defender fully wiped in ~19-20 turns despite HIGHER panels (+3875 vs +3311 attack) -> count (+25.3%), tier (T12 vs T11 on lancer/marks), T12 stacks (3/1/2 vs 0/0/0), and composition geometry (25% T12 lancers ambushing a 45% marksman-heavy enemy; small 26.9k enemy lancer wall) DOMINATED the panel deficit."
+  },
+  "pvp_t12_report_004.json": {
+   "clock_note": "Both Ligeias' every-2 skill triggered 8x -> ~15-17 turns; Flora row x15; Hervor x13; att Gisela x23 (cadence unclear - OPEN, do not force). Turns gate set [14,18].",
+   "skill_kill_oracle": "PER-SKILL KILLS from the report (both sides - the first clean skill-packet magnitude anchor): attacker Gisela 0 kills (buff rows only, triggers 1/9/8/23); Karol one row 6 triggers 3,267 kills; att Ligeia 8 triggers 6,965 kills (SK2-class) + 4 triggers 3,121 kills. Defender Hervor 0 kills (1/1/1/13); Flora 3 triggers 637 kills (rows x15/x1/x4/x4); def Ligeia 8 triggers 4,723 kills + 7 triggers 3,850 kills. TOTAL skill-attributed kills ~22.6k of 312k casualties = ~7%. ENGINE AT DIAGNOSIS TIME: def Ligeia SK2+SK3 = 99k kills (12x real) - skill packets over-scaled.",
+   "specials_note": "Both sides: +20% troops A/D/L/H items, -20% enemy A/D items, pets +10% A/D/L/H, enemy pet penalties. Defender widgets: Defender Troops' Defense +15%, Lethality +15%, Health +15% (attacker none - solo). All baked into panel_pct.",
+   "structural_ground_truth": "Same wall physics as anchor 3, now vs a marksman-heavy garrison: (1) attacker LANCERS again ZERO casualties (26,197 intact) - her wall held the whole battle (inf 157k->59k survivors). (2) Her MARKSMAN lost only 14% (bypass procs only - enemy lancers just 20k). (3) The defender's tiny 62k wall fell early, exposing 141k marksman which were then wiped - marksman-heavy comps collapse once the wall breaks. (4) DEFENDER PANELS LETH/HEALTH-STACKED (+36% leth, +36% health vs attacker) YET LOST DECISIVELY with a 1.29x count disadvantage - leth/health contribute far less than the engine's beast-fitted exponents (L linear, H^1.45) predict. This is the sharpest anchor for the damage-formula stat weighting."
+  },
+  "pvp_t12_report_005.json": {
+   "skill_kill_oracle": "Per-skill kills: att Gregory 17 triggers 64,253 kills (+rows 1/1/42); att Mia 27 / 23 triggers 32,814 kills / 17; att Blanchette 1 / 8x29,491 / 12x95,815 / 3 / 3x11,967. Def Magnus 1/7/1/37 (0 kills); def Freya 1 / 15 triggers 96,582 kills / 1 / 7 / 6x24,293 / 3; def Blanchette 9x22,553 / 13x41,484 / 3 / 12x47,434. Total skill-attributed: att ~234k of 1.16M dealt (~20%), def ~232k of 1.42M dealt (~16%) - HIGHER share than A4's ~7% (older-gen heroes, longer battle).",
+   "specials_note": "Both sides: +20% troops A/D/L/H items, -20% enemy A/D items. NO pet buffs (older battle, 2025-07). Attacker widgets: Rally Attack +15%, Rally Lethality +15%. Defender widgets: Defender Defense +15%, Defender Health +15%. All in panel_pct.",
+   "structural_ground_truth": "(1) FIRST ATTACKER DEFEAT: near-mirror totals, defender won keeping 18.4% - pins the far side of the knife-edge and proves near-even rally-vs-garrison defenders fight at >= parity (the A1/A2 inference, now with a defender-win witness). (2) DUPLICATE JOINERS REAL DATA: with the CORRECTED comp this battle genuinely constrains duplicate stacking (see item 4); the earlier 'joiners are not the cause' finding applied to the mistranslated comp only. (3) CORRECTED COMP: attacker = inf 744,843 + marksman 676,341, NO lancers (both classes on strong ~+2647% panels). (4) FINAL STATE (flat lock def_k=0.45; the third-pass size-dependent scale was REVERTED as error-induced). The engine ranks the ATTACKER ahead regardless of joiners (0-joiner p_win 1.00, ~65% survivors; 4x-Nora-dedup ~68%) vs the real DEFEAT. The marksman correction made the attacker look STRONGER than the mistranslated lancers would (marksman +2647% panel vs lancer +1719%), so it WIDENED the sim/reality gap. The miss is therefore the BASE matchup, not Nora: a near-mirror battle (counts within 0.04%, panels within ~15-25%) the engine can't call - flagged coin_flip by the +-20% band. Duplicate-joiner DEDUP is implemented (same-hero joiner SK1 applies once; enemy Jessie x2 dedups symmetrically) as the more-correct mechanic, but it is NOT the driver of this defeat. ERROR-INDEPENDENT FINDING worth a clean future re-calibration: anchors 1/2/5 (all real rallies) suggest large multi-player garrison defenders are STRONGER than flat def_k=0.45 implies (A1/A2 deep 3-6% grinds, A5 defender win) - exactly what the reverted size-dependent scale was targeting; it should be re-derived on corrected data if pursued, NOT resurrected from the mistranslated cliff."
+  }
+ },
+ "tests": [
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Karol",
+   "hero_class": "Lancer",
+   "identified_in_file": false,
+   "mapping_note": "report string 'red arrows, likely Ambusher'; identified=false in file",
+   "n": 2,
+   "p_catalog": 0.2,
+   "raw_string": "icon:lancer-troop-skill (red arrows, likely Ambusher)",
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      2,
+      29
+     ],
+     "argmax_N": 9,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.069,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "n": 18,
+   "p_catalog": 0.2,
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      56,
+      87
+     ],
+     "argmax_N": 87,
+     "ci_at_Nhi": [
+      0.1275,
+      0.3071
+     ],
+     "ci_at_Nlo": [
+      0.2029,
+      0.4596
+     ],
+     "max_p": 0.893302,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.2069,
+      0.3214
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      28,
+      87
+     ],
+     "argmax_N": 87,
+     "ci_at_Nhi": [
+      0.1275,
+      0.3071
+     ],
+     "ci_at_Nlo": [
+      0.4407,
+      0.8136
+     ],
+     "max_p": 0.893302,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.2069,
+      0.6429
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      18,
+      29
+     ],
+     "argmax_N": 29,
+     "ci_at_Nhi": [
+      0.4226,
+      0.7931
+     ],
+     "ci_at_Nlo": [
+      0.8147,
+      1.0
+     ],
+     "max_p": 1e-06,
+     "note": "Marksman WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.6207,
+      1.0
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      28,
+      29
+     ],
+     "argmax_N": 29,
+     "ci_at_Nhi": [
+      0.4226,
+      0.7931
+     ],
+     "ci_at_Nlo": [
+      0.4407,
+      0.8136
+     ],
+     "max_p": 1e-06,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.6207,
+      0.6429
+     ],
+     "verdict": "rejected"
+    }
+   },
+   "workbook_unit": [
+    "Strikes"
+   ]
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "identified_in_file": true,
+   "mapping_note": "explicit label in report ('Volley (10% second strike..' / 'Volley (second strike..'); Martin note report_001: the 3-trigger row = Volley",
+   "n": 3,
+   "p_catalog": 0.1,
+   "raw_string": "Volley (10% second strike, direct kills)",
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "Volley",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      3,
+      29
+     ],
+     "argmax_N": 29,
+     "max_p": 1.0,
+     "note": "Marksman WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.1034,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "n": 10,
+   "p_catalog": 0.4,
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      28,
+      87
+     ],
+     "argmax_N": 28,
+     "ci_at_Nhi": [
+      0.0565,
+      0.2012
+     ],
+     "ci_at_Nlo": [
+      0.1864,
+      0.5593
+     ],
+     "max_p": 0.703556,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1149,
+      0.3571
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      56,
+      87
+     ],
+     "argmax_N": 56,
+     "ci_at_Nhi": [
+      0.0565,
+      0.2012
+     ],
+     "ci_at_Nlo": [
+      0.0891,
+      0.304
+     ],
+     "max_p": 0.000542,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1149,
+      0.1786
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      28,
+      29
+     ],
+     "argmax_N": 28,
+     "ci_at_Nhi": [
+      0.1794,
+      0.5433
+     ],
+     "ci_at_Nlo": [
+      0.1864,
+      0.5593
+     ],
+     "max_p": 0.703556,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.3448,
+      0.3571
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      28,
+      29
+     ],
+     "argmax_N": 28,
+     "ci_at_Nhi": [
+      0.1794,
+      0.5433
+     ],
+     "ci_at_Nlo": [
+      0.1864,
+      0.5593
+     ],
+     "max_p": 0.703556,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3448,
+      0.3571
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "identified_in_file": false,
+   "mapping_note": "report string 'red arrows, likely Ambusher'; identified=false in file",
+   "n": 5,
+   "p_catalog": 0.2,
+   "raw_string": "icon:lancer-troop-skill (red arrows, likely Ambusher)",
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      28,
+      29
+     ],
+     "argmax_N": 28,
+     "max_p": 1.0,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.1724,
+      0.1786
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Fred",
+   "hero_class": "Lancer",
+   "identified_in_file": false,
+   "mapping_note": "report string 'red arrows, likely Ambusher'; identified=false in file",
+   "n": 2,
+   "p_catalog": 0.2,
+   "raw_string": "icon:lancer-troop-skill (likely Ambusher)",
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      12,
+      14
+     ],
+     "argmax_N": 12,
+     "max_p": 1.0,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.1429,
+      0.1667
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "n": 6,
+   "p_catalog": 0.2,
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      12,
+      42
+     ],
+     "argmax_N": 29,
+     "ci_at_Nhi": [
+      0.0543,
+      0.2854
+     ],
+     "ci_at_Nlo": [
+      0.2109,
+      0.7891
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1429,
+      0.5
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      36,
+      42
+     ],
+     "argmax_N": 36,
+     "ci_at_Nhi": [
+      0.0543,
+      0.2854
+     ],
+     "ci_at_Nlo": [
+      0.0637,
+      0.3281
+     ],
+     "max_p": 0.834657,
+     "note": "3 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1429,
+      0.1667
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      12,
+      14
+     ],
+     "argmax_N": 14,
+     "ci_at_Nhi": [
+      0.1766,
+      0.7114
+     ],
+     "ci_at_Nlo": [
+      0.2109,
+      0.7891
+     ],
+     "max_p": 0.043854,
+     "note": "Marksman survived -> strikes = T",
+     "rate": [
+      0.4286,
+      0.5
+     ],
+     "verdict": "marginal"
+    },
+    "turns": {
+     "N": [
+      12,
+      14
+     ],
+     "argmax_N": 14,
+     "ci_at_Nhi": [
+      0.1766,
+      0.7114
+     ],
+     "ci_at_Nlo": [
+      0.2109,
+      0.7891
+     ],
+     "max_p": 0.043854,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.4286,
+      0.5
+     ],
+     "verdict": "marginal"
+    }
+   },
+   "workbook_unit": [
+    "Strikes"
+   ]
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "identified_in_file": true,
+   "mapping_note": "explicit label in report ('Volley (10% second strike..' / 'Volley (second strike..'); Martin note report_001: the 3-trigger row = Volley",
+   "n": 3,
+   "p_catalog": 0.1,
+   "raw_string": "Volley (second strike, direct kills)",
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "Volley",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      12,
+      14
+     ],
+     "argmax_N": 14,
+     "max_p": 0.15836,
+     "note": "Marksman survived -> strikes = T",
+     "rate": [
+      0.2143,
+      0.25
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Mia",
+   "hero_class": "Lancer",
+   "identified_in_file": false,
+   "mapping_note": "report string '(Ambusher?)'; tentative ingestion identification",
+   "n": 3,
+   "p_catalog": 0.2,
+   "raw_string": "icon:lancer-troop-skill (Ambusher?)",
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      3,
+      14
+     ],
+     "argmax_N": 14,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.2143,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "n": 3,
+   "p_catalog": 0.2,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      36,
+      42
+     ],
+     "argmax_N": 37,
+     "ci_at_Nhi": [
+      0.015,
+      0.1948
+     ],
+     "ci_at_Nlo": [
+      0.0175,
+      0.2247
+     ],
+     "max_p": 0.096711,
+     "note": "3 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.0714,
+      0.0833
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      12,
+      42
+     ],
+     "argmax_N": 14,
+     "ci_at_Nhi": [
+      0.015,
+      0.1948
+     ],
+     "ci_at_Nlo": [
+      0.0549,
+      0.5719
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.0714,
+      0.25
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      3,
+      14
+     ],
+     "argmax_N": 14,
+     "ci_at_Nhi": [
+      0.0466,
+      0.508
+     ],
+     "ci_at_Nlo": [
+      0.2924,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Marksman WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.2143,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      12,
+      14
+     ],
+     "argmax_N": 14,
+     "ci_at_Nhi": [
+      0.0466,
+      0.508
+     ],
+     "ci_at_Nlo": [
+      0.0549,
+      0.5719
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.2143,
+      0.25
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": [
+    "Strikes"
+   ]
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "n": 6,
+   "p_catalog": 0.4,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      18,
+      60
+     ],
+     "argmax_N": 18,
+     "ci_at_Nhi": [
+      0.0376,
+      0.2051
+     ],
+     "ci_at_Nlo": [
+      0.1334,
+      0.5901
+     ],
+     "max_p": 0.637436,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1,
+      0.3333
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      54,
+      60
+     ],
+     "argmax_N": 54,
+     "ci_at_Nhi": [
+      0.0376,
+      0.2051
+     ],
+     "ci_at_Nlo": [
+      0.0419,
+      0.2263
+     ],
+     "max_p": 5e-06,
+     "note": "3 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1,
+      0.1111
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      18,
+      20
+     ],
+     "argmax_N": 18,
+     "ci_at_Nhi": [
+      0.1189,
+      0.5428
+     ],
+     "ci_at_Nlo": [
+      0.1334,
+      0.5901
+     ],
+     "max_p": 0.637436,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.3,
+      0.3333
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      18,
+      20
+     ],
+     "argmax_N": 18,
+     "ci_at_Nhi": [
+      0.1189,
+      0.5428
+     ],
+     "ci_at_Nlo": [
+      0.1334,
+      0.5901
+     ],
+     "max_p": 0.637436,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3,
+      0.3333
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 5,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      18,
+      20
+     ],
+     "argmax_N": 20,
+     "max_p": 0.576436,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.25,
+      0.2778
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Karol",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 5,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      5,
+      20
+     ],
+     "argmax_N": 20,
+     "max_p": 0.576436,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.25,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 14,
+   "p_catalog": 0.4,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Gisela Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      84,
+      129
+     ],
+     "argmax_N": 84,
+     "ci_at_Nhi": [
+      0.0606,
+      0.1754
+     ],
+     "ci_at_Nlo": [
+      0.0942,
+      0.2638
+     ],
+     "max_p": 6e-06,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1085,
+      0.1667
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      42,
+      129
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.0606,
+      0.1754
+     ],
+     "ci_at_Nlo": [
+      0.1957,
+      0.4955
+     ],
+     "max_p": 0.43303,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1085,
+      0.3333
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      14,
+      43
+     ],
+     "argmax_N": 34,
+     "ci_at_Nhi": [
+      0.1908,
+      0.4854
+     ],
+     "ci_at_Nlo": [
+      0.7684,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Infantry WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.3256,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.1908,
+      0.4854
+     ],
+     "ci_at_Nlo": [
+      0.1957,
+      0.4955
+     ],
+     "max_p": 0.43303,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3256,
+      0.3333
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 23,
+   "p_catalog": 0.4,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Gisela Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      84,
+      129
+     ],
+     "argmax_N": 84,
+     "ci_at_Nhi": [
+      0.1165,
+      0.2554
+     ],
+     "ci_at_Nlo": [
+      0.1821,
+      0.382
+     ],
+     "max_p": 0.01908,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1783,
+      0.2738
+     ],
+     "verdict": "marginal"
+    },
+    "own_attack_events": {
+     "N": [
+      42,
+      129
+     ],
+     "argmax_N": 57,
+     "ci_at_Nhi": [
+      0.1165,
+      0.2554
+     ],
+     "ci_at_Nlo": [
+      0.3867,
+      0.7015
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1783,
+      0.5476
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      23,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.3765,
+      0.6882
+     ],
+     "ci_at_Nlo": [
+      0.8518,
+      1.0
+     ],
+     "max_p": 0.086138,
+     "note": "Infantry WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.5349,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.3765,
+      0.6882
+     ],
+     "ci_at_Nlo": [
+      0.3867,
+      0.7015
+     ],
+     "max_p": 0.086138,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.5349,
+      0.5476
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 6,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      6,
+      43
+     ],
+     "argmax_N": 29,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.1395,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 17,
+   "p_catalog": 0.4,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Gisela Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      42,
+      129
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.0787,
+      0.2026
+     ],
+     "ci_at_Nlo": [
+      0.2563,
+      0.5672
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1318,
+      0.4048
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      84,
+      129
+     ],
+     "argmax_N": 84,
+     "ci_at_Nhi": [
+      0.0787,
+      0.2026
+     ],
+     "ci_at_Nlo": [
+      0.1225,
+      0.3041
+     ],
+     "max_p": 0.000195,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1318,
+      0.2024
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.2498,
+      0.5559
+     ],
+     "ci_at_Nlo": [
+      0.2563,
+      0.5672
+     ],
+     "max_p": 1.0,
+     "note": "Infantry survived -> strikes = T",
+     "rate": [
+      0.3953,
+      0.4048
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.2498,
+      0.5559
+     ],
+     "ci_at_Nlo": [
+      0.2563,
+      0.5672
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3953,
+      0.4048
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 17,
+   "p_catalog": 0.4,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Gisela Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      42,
+      129
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.0787,
+      0.2026
+     ],
+     "ci_at_Nlo": [
+      0.2563,
+      0.5672
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1318,
+      0.4048
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      84,
+      129
+     ],
+     "argmax_N": 84,
+     "ci_at_Nhi": [
+      0.0787,
+      0.2026
+     ],
+     "ci_at_Nlo": [
+      0.1225,
+      0.3041
+     ],
+     "max_p": 0.000195,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1318,
+      0.2024
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.2498,
+      0.5559
+     ],
+     "ci_at_Nlo": [
+      0.2563,
+      0.5672
+     ],
+     "max_p": 1.0,
+     "note": "Infantry survived -> strikes = T",
+     "rate": [
+      0.3953,
+      0.4048
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.2498,
+      0.5559
+     ],
+     "ci_at_Nlo": [
+      0.2563,
+      0.5672
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3953,
+      0.4048
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 6,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      42,
+      43
+     ],
+     "argmax_N": 43,
+     "max_p": 0.444716,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.1395,
+      0.1429
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 16,
+   "p_catalog": 0.4,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Gisela Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      90,
+      141
+     ],
+     "argmax_N": 90,
+     "ci_at_Nhi": [
+      0.0663,
+      0.1777
+     ],
+     "ci_at_Nlo": [
+      0.1052,
+      0.2726
+     ],
+     "max_p": 8e-06,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1135,
+      0.1778
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      45,
+      141
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.0663,
+      0.1777
+     ],
+     "ci_at_Nlo": [
+      0.2187,
+      0.5122
+     ],
+     "max_p": 0.648608,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1135,
+      0.3556
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      16,
+      47
+     ],
+     "argmax_N": 40,
+     "ci_at_Nhi": [
+      0.2086,
+      0.4931
+     ],
+     "ci_at_Nlo": [
+      0.7941,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Infantry WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.3404,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.2086,
+      0.4931
+     ],
+     "ci_at_Nlo": [
+      0.2187,
+      0.5122
+     ],
+     "max_p": 0.648608,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3404,
+      0.3556
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 18,
+   "p_catalog": 0.4,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Gisela Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      90,
+      141
+     ],
+     "argmax_N": 90,
+     "ci_at_Nhi": [
+      0.0774,
+      0.1942
+     ],
+     "ci_at_Nlo": [
+      0.1231,
+      0.2975
+     ],
+     "max_p": 8.6e-05,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1277,
+      0.2
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      45,
+      141
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.0774,
+      0.1942
+     ],
+     "ci_at_Nlo": [
+      0.257,
+      0.5567
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1277,
+      0.4
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      18,
+      47
+     ],
+     "argmax_N": 44,
+     "ci_at_Nhi": [
+      0.2451,
+      0.5362
+     ],
+     "ci_at_Nlo": [
+      0.8147,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Infantry WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.383,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.2451,
+      0.5362
+     ],
+     "ci_at_Nlo": [
+      0.257,
+      0.5567
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.383,
+      0.4
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 9,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      9,
+      47
+     ],
+     "argmax_N": 44,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.1915,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 19,
+   "p_catalog": 0.4,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Gisela Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      45,
+      141
+     ],
+     "argmax_N": 47,
+     "ci_at_Nhi": [
+      0.0831,
+      0.2024
+     ],
+     "ci_at_Nlo": [
+      0.2766,
+      0.5785
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1348,
+      0.4222
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      90,
+      141
+     ],
+     "argmax_N": 90,
+     "ci_at_Nhi": [
+      0.0831,
+      0.2024
+     ],
+     "ci_at_Nlo": [
+      0.1321,
+      0.3099
+     ],
+     "max_p": 0.000213,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1348,
+      0.2111
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 47,
+     "ci_at_Nhi": [
+      0.2637,
+      0.5573
+     ],
+     "ci_at_Nlo": [
+      0.2766,
+      0.5785
+     ],
+     "max_p": 1.0,
+     "note": "Infantry survived -> strikes = T",
+     "rate": [
+      0.4043,
+      0.4222
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 47,
+     "ci_at_Nhi": [
+      0.2637,
+      0.5573
+     ],
+     "ci_at_Nlo": [
+      0.2766,
+      0.5785
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.4043,
+      0.4222
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "n": 16,
+   "p_catalog": 0.4,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Gisela Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      45,
+      141
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.0663,
+      0.1777
+     ],
+     "ci_at_Nlo": [
+      0.2187,
+      0.5122
+     ],
+     "max_p": 0.648608,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1135,
+      0.3556
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      90,
+      141
+     ],
+     "argmax_N": 90,
+     "ci_at_Nhi": [
+      0.0663,
+      0.1777
+     ],
+     "ci_at_Nlo": [
+      0.1052,
+      0.2726
+     ],
+     "max_p": 8e-06,
+     "note": "2 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1135,
+      0.1778
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.2086,
+      0.4931
+     ],
+     "ci_at_Nlo": [
+      0.2187,
+      0.5122
+     ],
+     "max_p": 0.648608,
+     "note": "Infantry survived -> strikes = T",
+     "rate": [
+      0.3404,
+      0.3556
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 45,
+     "ci_at_Nhi": [
+      0.2086,
+      0.4931
+     ],
+     "ci_at_Nlo": [
+      0.2187,
+      0.5122
+     ],
+     "max_p": 0.648608,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3404,
+      0.3556
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 6,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      45,
+      47
+     ],
+     "argmax_N": 45,
+     "max_p": 0.350936,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.1277,
+      0.1333
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "n": 12,
+   "p_catalog": 0.4,
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      32,
+      70
+     ],
+     "argmax_N": 32,
+     "ci_at_Nhi": [
+      0.0918,
+      0.2803
+     ],
+     "ci_at_Nlo": [
+      0.211,
+      0.5631
+     ],
+     "max_p": 0.857947,
+     "note": "0 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1714,
+      0.375
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      64,
+      70
+     ],
+     "argmax_N": 64,
+     "ci_at_Nhi": [
+      0.0918,
+      0.2803
+     ],
+     "ci_at_Nlo": [
+      0.1008,
+      0.3046
+     ],
+     "max_p": 0.000467,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1714,
+      0.1875
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      12,
+      35
+     ],
+     "argmax_N": 29,
+     "ci_at_Nhi": [
+      0.1913,
+      0.5221
+     ],
+     "ci_at_Nlo": [
+      0.7354,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.3429,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      32,
+      35
+     ],
+     "argmax_N": 32,
+     "ci_at_Nhi": [
+      0.1913,
+      0.5221
+     ],
+     "ci_at_Nlo": [
+      0.211,
+      0.5631
+     ],
+     "max_p": 0.857947,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3429,
+      0.375
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "n": 11,
+   "p_catalog": 0.2,
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      32,
+      70
+     ],
+     "argmax_N": 54,
+     "ci_at_Nhi": [
+      0.0811,
+      0.2638
+     ],
+     "ci_at_Nlo": [
+      0.1857,
+      0.5319
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1571,
+      0.3438
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      64,
+      70
+     ],
+     "argmax_N": 66,
+     "ci_at_Nhi": [
+      0.0811,
+      0.2638
+     ],
+     "ci_at_Nlo": [
+      0.089,
+      0.2868
+     ],
+     "max_p": 0.643852,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1571,
+      0.1719
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      32,
+      35
+     ],
+     "argmax_N": 35,
+     "ci_at_Nhi": [
+      0.1685,
+      0.4929
+     ],
+     "ci_at_Nlo": [
+      0.1857,
+      0.5319
+     ],
+     "max_p": 0.093749,
+     "note": "Marksman survived -> strikes = T",
+     "rate": [
+      0.3143,
+      0.3438
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      32,
+      35
+     ],
+     "argmax_N": 35,
+     "ci_at_Nhi": [
+      0.1685,
+      0.4929
+     ],
+     "ci_at_Nlo": [
+      0.1857,
+      0.5319
+     ],
+     "max_p": 0.093749,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3143,
+      0.3438
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": [
+    "Strikes"
+   ]
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "n": 14,
+   "p_catalog": 0.4,
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      64,
+      70
+     ],
+     "argmax_N": 64,
+     "ci_at_Nhi": [
+      0.1139,
+      0.3127
+     ],
+     "ci_at_Nlo": [
+      0.1251,
+      0.3397
+     ],
+     "max_p": 0.003053,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.2,
+      0.2188
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      32,
+      70
+     ],
+     "argmax_N": 34,
+     "ci_at_Nhi": [
+      0.1139,
+      0.3127
+     ],
+     "ci_at_Nlo": [
+      0.2636,
+      0.6234
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.2,
+      0.4375
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      14,
+      35
+     ],
+     "argmax_N": 34,
+     "ci_at_Nhi": [
+      0.2387,
+      0.5789
+     ],
+     "ci_at_Nlo": [
+      0.7684,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.4,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      32,
+      35
+     ],
+     "argmax_N": 34,
+     "ci_at_Nhi": [
+      0.2387,
+      0.5789
+     ],
+     "ci_at_Nlo": [
+      0.2636,
+      0.6234
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.4,
+      0.4375
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 4,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      4,
+      35
+     ],
+     "argmax_N": 19,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.1143,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Gregory",
+   "hero_class": "Infantry",
+   "n": 27,
+   "p_catalog": 0.25,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "Gregory Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      40,
+      129
+     ],
+     "argmax_N": 108,
+     "ci_at_Nhi": [
+      0.1427,
+      0.2897
+     ],
+     "ci_at_Nlo": [
+      0.5087,
+      0.8143
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.2093,
+      0.675
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 86,
+     "ci_at_Nhi": [
+      0.2181,
+      0.423
+     ],
+     "ci_at_Nlo": [
+      0.2355,
+      0.4519
+     ],
+     "max_p": 0.17188,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.314,
+      0.3375
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.4673,
+      0.7702
+     ],
+     "ci_at_Nlo": [
+      0.5087,
+      0.8143
+     ],
+     "max_p": 0.0,
+     "note": "Infantry survived -> strikes = T",
+     "rate": [
+      0.6279,
+      0.675
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.4673,
+      0.7702
+     ],
+     "ci_at_Nlo": [
+      0.5087,
+      0.8143
+     ],
+     "max_p": 0.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.6279,
+      0.675
+     ],
+     "verdict": "rejected"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Freya",
+   "hero_class": "Lancer",
+   "n": 20,
+   "p_catalog": 0.5,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "Freya Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      40,
+      129
+     ],
+     "argmax_N": 40,
+     "ci_at_Nhi": [
+      0.0973,
+      0.2292
+     ],
+     "ci_at_Nlo": [
+      0.338,
+      0.662
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.155,
+      0.5
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 80,
+     "ci_at_Nhi": [
+      0.1482,
+      0.3361
+     ],
+     "ci_at_Nlo": [
+      0.1599,
+      0.3594
+     ],
+     "max_p": 9e-06,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.2326,
+      0.25
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 40,
+     "ci_at_Nhi": [
+      0.3118,
+      0.6235
+     ],
+     "ci_at_Nlo": [
+      0.338,
+      0.662
+     ],
+     "max_p": 1.0,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.4651,
+      0.5
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 40,
+     "ci_at_Nhi": [
+      0.3118,
+      0.6235
+     ],
+     "ci_at_Nlo": [
+      0.338,
+      0.662
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.4651,
+      0.5
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Freya",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 8,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 40,
+     "max_p": 1.0,
+     "note": "Lancer survived -> strikes = T",
+     "rate": [
+      0.186,
+      0.2
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Gregory",
+   "hero_class": "Infantry",
+   "n": 23,
+   "p_catalog": 0.25,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Gregory Skill 2",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 86,
+     "ci_at_Nhi": [
+      0.1777,
+      0.3738
+     ],
+     "ci_at_Nlo": [
+      0.1918,
+      0.3995
+     ],
+     "max_p": 0.709191,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.2674,
+      0.2875
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      40,
+      129
+     ],
+     "argmax_N": 91,
+     "ci_at_Nhi": [
+      0.1165,
+      0.2554
+     ],
+     "ci_at_Nlo": [
+      0.4089,
+      0.7296
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 3 deployed",
+     "rate": [
+      0.1783,
+      0.575
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      23,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.3765,
+      0.6882
+     ],
+     "ci_at_Nlo": [
+      0.8518,
+      1.0
+     ],
+     "max_p": 6.3e-05,
+     "note": "Infantry WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.5349,
+      1.0
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.3765,
+      0.6882
+     ],
+     "ci_at_Nlo": [
+      0.4089,
+      0.7296
+     ],
+     "max_p": 6.3e-05,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.5349,
+      0.575
+     ],
+     "verdict": "rejected"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Fred",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 7,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      7,
+      43
+     ],
+     "argmax_N": 35,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.1628,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "n": 13,
+   "p_catalog": 0.4,
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      40,
+      86
+     ],
+     "argmax_N": 40,
+     "ci_at_Nhi": [
+      0.083,
+      0.2446
+     ],
+     "ci_at_Nlo": [
+      0.1857,
+      0.4913
+     ],
+     "max_p": 0.420089,
+     "note": "0 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1512,
+      0.325
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 80,
+     "ci_at_Nhi": [
+      0.083,
+      0.2446
+     ],
+     "ci_at_Nlo": [
+      0.0895,
+      0.2618
+     ],
+     "max_p": 6e-06,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1512,
+      0.1625
+     ],
+     "verdict": "rejected"
+    },
+    "own_class_strikes": {
+     "N": [
+      13,
+      43
+     ],
+     "argmax_N": 32,
+     "ci_at_Nhi": [
+      0.1718,
+      0.4613
+     ],
+     "ci_at_Nlo": [
+      0.7529,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.3023,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 40,
+     "ci_at_Nhi": [
+      0.1718,
+      0.4613
+     ],
+     "ci_at_Nlo": [
+      0.1857,
+      0.4913
+     ],
+     "max_p": 0.420089,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3023,
+      0.325
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "n": 19,
+   "p_catalog": 0.2,
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "Rufus Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      40,
+      86
+     ],
+     "argmax_N": 86,
+     "ci_at_Nhi": [
+      0.1386,
+      0.3233
+     ],
+     "ci_at_Nlo": [
+      0.3151,
+      0.6387
+     ],
+     "max_p": 0.591636,
+     "note": "0 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.2209,
+      0.475
+     ],
+     "verdict": "consistent"
+    },
+    "own_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 86,
+     "ci_at_Nhi": [
+      0.1386,
+      0.3233
+     ],
+     "ci_at_Nlo": [
+      0.1495,
+      0.3458
+     ],
+     "max_p": 0.591636,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.2209,
+      0.2375
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.2908,
+      0.6012
+     ],
+     "ci_at_Nlo": [
+      0.3151,
+      0.6387
+     ],
+     "max_p": 0.000347,
+     "note": "Marksman survived -> strikes = T",
+     "rate": [
+      0.4419,
+      0.475
+     ],
+     "verdict": "rejected"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 43,
+     "ci_at_Nhi": [
+      0.2908,
+      0.6012
+     ],
+     "ci_at_Nlo": [
+      0.3151,
+      0.6387
+     ],
+     "max_p": 0.000347,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.4419,
+      0.475
+     ],
+     "verdict": "rejected"
+    }
+   },
+   "workbook_unit": [
+    "Strikes"
+   ]
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "n": 17,
+   "p_catalog": 0.4,
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "Lloyd Skill 3",
+   "streams": {
+    "enemy_attack_events": {
+     "N": [
+      80,
+      86
+     ],
+     "argmax_N": 80,
+     "ci_at_Nhi": [
+      0.1196,
+      0.2975
+     ],
+     "ci_at_Nlo": [
+      0.1289,
+      0.3183
+     ],
+     "max_p": 0.000536,
+     "note": "2 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1977,
+      0.2125
+     ],
+     "verdict": "rejected"
+    },
+    "own_attack_events": {
+     "N": [
+      40,
+      86
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.1196,
+      0.2975
+     ],
+     "ci_at_Nlo": [
+      0.2704,
+      0.5911
+     ],
+     "max_p": 1.0,
+     "note": "0 class(es) alive at end, 2 deployed",
+     "rate": [
+      0.1977,
+      0.425
+     ],
+     "verdict": "consistent"
+    },
+    "own_class_strikes": {
+     "N": [
+      17,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.2498,
+      0.5559
+     ],
+     "ci_at_Nlo": [
+      0.8049,
+      1.0
+     ],
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.3953,
+      1.0
+     ],
+     "verdict": "consistent"
+    },
+    "turns": {
+     "N": [
+      40,
+      43
+     ],
+     "argmax_N": 42,
+     "ci_at_Nhi": [
+      0.2498,
+      0.5559
+     ],
+     "ci_at_Nlo": [
+      0.2704,
+      0.5911
+     ],
+     "max_p": 1.0,
+     "note": "1 roll per battle turn",
+     "rate": [
+      0.3953,
+      0.425
+     ],
+     "verdict": "consistent"
+    }
+   },
+   "workbook_unit": []
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "identified_in_file": true,
+   "mapping_note": "explicit ingestion label 'Ambusher (bypass, direct kills)'",
+   "n": 8,
+   "p_catalog": 0.2,
+   "raw_string": "Ambusher (bypass, direct kills)",
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "Ambusher",
+   "streams": {
+    "own_class_strikes": {
+     "N": [
+      8,
+      43
+     ],
+     "argmax_N": 39,
+     "max_p": 1.0,
+     "note": "Lancer WIPED at unknown turn -> N in [n, T_hi]",
+     "rate": [
+      0.186,
+      1.0
+     ],
+     "verdict": "consistent"
+    }
+   }
+  }
+ ],
+ "unidentified": [
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Hervor",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.31,
+     0.482
+    ],
+    "own_attacks": [
+     0.31,
+     0.964
+    ],
+    "per_turn": [
+     0.931,
+     0.964
+    ]
+   },
+   "kills": null,
+   "n": 27,
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Karol",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.103,
+     0.161
+    ],
+    "own_attacks": [
+     0.103,
+     0.321
+    ],
+    "per_turn": [
+     0.31,
+     0.321
+    ]
+   },
+   "kills": null,
+   "n": 9,
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.034,
+     0.054
+    ],
+    "own_attacks": [
+     0.034,
+     0.107
+    ],
+    "per_turn": [
+     0.103,
+     0.107
+    ]
+   },
+   "kills": null,
+   "n": 3,
+   "rid": "RAW_01",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill (proc)"
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Hervor",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.345,
+     1.071
+    ],
+    "own_attacks": [
+     0.345,
+     0.536
+    ],
+    "per_turn": [
+     1.034,
+     1.071
+    ]
+   },
+   "kills": null,
+   "n": 30,
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.092,
+     0.286
+    ],
+    "own_attacks": [
+     0.092,
+     0.143
+    ],
+    "per_turn": [
+     0.276,
+     0.286
+    ]
+   },
+   "kills": null,
+   "n": 8,
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    28,
+    29
+   ],
+   "hero": "Bradley",
+   "hero_class": "Marksman",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.103,
+     0.321
+    ],
+    "own_attacks": [
+     0.103,
+     0.161
+    ],
+    "per_turn": [
+     0.31,
+     0.321
+    ]
+   },
+   "kills": 14703,
+   "n": 9,
+   "rid": "RAW_01",
+   "side": "enemy",
+   "skill": "icon:troop-skill (gun)"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Eleonora",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.524,
+     1.833
+    ],
+    "own_attacks": [
+     0.524,
+     0.611
+    ],
+    "per_turn": [
+     1.571,
+     1.833
+    ]
+   },
+   "kills": null,
+   "n": 22,
+   "rid": "RAW_02",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Eleonora",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.429,
+     0.5
+    ],
+    "own_attacks": [
+     0.429,
+     1.5
+    ],
+    "per_turn": [
+     1.286,
+     1.5
+    ]
+   },
+   "kills": null,
+   "n": 18,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Mia",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.429,
+     0.5
+    ],
+    "own_attacks": [
+     0.429,
+     1.5
+    ],
+    "per_turn": [
+     1.286,
+     1.5
+    ]
+   },
+   "kills": null,
+   "n": 18,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "Mia skill (proc)"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Mia",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.31,
+     0.361
+    ],
+    "own_attacks": [
+     0.31,
+     1.083
+    ],
+    "per_turn": [
+     0.929,
+     1.083
+    ]
+   },
+   "kills": 31506,
+   "n": 13,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:proc with direct kills"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Mia",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.071,
+     0.083
+    ],
+    "own_attacks": [
+     0.071,
+     0.25
+    ],
+    "per_turn": [
+     0.214,
+     0.25
+    ]
+   },
+   "kills": null,
+   "n": 3,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:cropped row"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Mia",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.048,
+     0.056
+    ],
+    "own_attacks": [
+     0.048,
+     0.167
+    ],
+    "per_turn": [
+     0.143,
+     0.167
+    ]
+   },
+   "kills": null,
+   "n": 2,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill"
+  },
+  {
+   "T_band": [
+    12,
+    14
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.071,
+     0.083
+    ],
+    "own_attacks": [
+     0.071,
+     0.25
+    ],
+    "per_turn": [
+     0.214,
+     0.25
+    ]
+   },
+   "kills": null,
+   "n": 3,
+   "rid": "RAW_02",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Hervor",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.517,
+     1.722
+    ],
+    "own_attacks": [
+     0.517,
+     0.574
+    ],
+    "per_turn": [
+     1.55,
+     1.722
+    ]
+   },
+   "kills": null,
+   "n": 31,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.083,
+     0.278
+    ],
+    "own_attacks": [
+     0.083,
+     0.093
+    ],
+    "per_turn": [
+     0.25,
+     0.278
+    ]
+   },
+   "kills": null,
+   "n": 5,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.033,
+     0.111
+    ],
+    "own_attacks": [
+     0.033,
+     0.037
+    ],
+    "per_turn": [
+     0.1,
+     0.111
+    ]
+   },
+   "kills": null,
+   "n": 2,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.117,
+     0.389
+    ],
+    "own_attacks": [
+     0.117,
+     0.13
+    ],
+    "per_turn": [
+     0.35,
+     0.389
+    ]
+   },
+   "kills": 44344,
+   "n": 7,
+   "rid": "RAW_03",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Hervor",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.417,
+     0.463
+    ],
+    "own_attacks": [
+     0.417,
+     1.389
+    ],
+    "per_turn": [
+     1.25,
+     1.389
+    ]
+   },
+   "kills": null,
+   "n": 25,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Karol",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.067,
+     0.074
+    ],
+    "own_attacks": [
+     0.067,
+     0.222
+    ],
+    "per_turn": [
+     0.2,
+     0.222
+    ]
+   },
+   "kills": null,
+   "n": 4,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.033,
+     0.037
+    ],
+    "own_attacks": [
+     0.033,
+     0.111
+    ],
+    "per_turn": [
+     0.1,
+     0.111
+    ]
+   },
+   "kills": null,
+   "n": 2,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    18,
+    20
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.117,
+     0.13
+    ],
+    "own_attacks": [
+     0.117,
+     0.389
+    ],
+    "per_turn": [
+     0.35,
+     0.389
+    ]
+   },
+   "kills": 21469,
+   "n": 7,
+   "rid": "RAW_03",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.512,
+     0.786
+    ],
+    "own_attacks": [
+     0.512,
+     1.571
+    ],
+    "per_turn": [
+     1.535,
+     1.571
+    ]
+   },
+   "kills": null,
+   "n": 66,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.372,
+     0.571
+    ],
+    "own_attacks": [
+     0.372,
+     1.143
+    ],
+    "per_turn": [
+     1.116,
+     1.143
+    ]
+   },
+   "kills": null,
+   "n": 48,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "Flora proc skill"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.07,
+     0.107
+    ],
+    "own_attacks": [
+     0.07,
+     0.214
+    ],
+    "per_turn": [
+     0.209,
+     0.214
+    ]
+   },
+   "kills": null,
+   "n": 9,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.016,
+     0.024
+    ],
+    "own_attacks": [
+     0.016,
+     0.048
+    ],
+    "per_turn": [
+     0.047,
+     0.048
+    ]
+   },
+   "kills": null,
+   "n": 2,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.039,
+     0.06
+    ],
+    "own_attacks": [
+     0.039,
+     0.119
+    ],
+    "per_turn": [
+     0.116,
+     0.119
+    ]
+   },
+   "kills": 12761,
+   "n": 5,
+   "rid": "RAW_04",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.287,
+     0.881
+    ],
+    "own_attacks": [
+     0.287,
+     0.44
+    ],
+    "per_turn": [
+     0.86,
+     0.881
+    ]
+   },
+   "kills": null,
+   "n": 37,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.45,
+     1.381
+    ],
+    "own_attacks": [
+     0.45,
+     0.69
+    ],
+    "per_turn": [
+     1.349,
+     1.381
+    ]
+   },
+   "kills": null,
+   "n": 58,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Flora proc skill"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.062,
+     0.19
+    ],
+    "own_attacks": [
+     0.062,
+     0.095
+    ],
+    "per_turn": [
+     0.186,
+     0.19
+    ]
+   },
+   "kills": null,
+   "n": 8,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Vulcanus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.031,
+     0.095
+    ],
+    "own_attacks": [
+     0.031,
+     0.048
+    ],
+    "per_turn": [
+     0.093,
+     0.095
+    ]
+   },
+   "kills": null,
+   "n": 4,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Vulcanus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.062,
+     0.19
+    ],
+    "own_attacks": [
+     0.062,
+     0.095
+    ],
+    "per_turn": [
+     0.186,
+     0.19
+    ]
+   },
+   "kills": 10621,
+   "n": 8,
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.461,
+     0.722
+    ],
+    "own_attacks": [
+     0.461,
+     1.444
+    ],
+    "per_turn": [
+     1.383,
+     1.444
+    ]
+   },
+   "kills": null,
+   "n": 65,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.326,
+     0.511
+    ],
+    "own_attacks": [
+     0.326,
+     1.022
+    ],
+    "per_turn": [
+     0.979,
+     1.022
+    ]
+   },
+   "kills": null,
+   "n": 46,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "Flora proc skill"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.043,
+     0.067
+    ],
+    "own_attacks": [
+     0.043,
+     0.133
+    ],
+    "per_turn": [
+     0.128,
+     0.133
+    ]
+   },
+   "kills": null,
+   "n": 6,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Ligeia",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.043,
+     0.067
+    ],
+    "own_attacks": [
+     0.043,
+     0.133
+    ],
+    "per_turn": [
+     0.128,
+     0.133
+    ]
+   },
+   "kills": null,
+   "n": 6,
+   "rid": "RAW_05",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Gisela",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.241,
+     0.756
+    ],
+    "own_attacks": [
+     0.241,
+     0.378
+    ],
+    "per_turn": [
+     0.723,
+     0.756
+    ]
+   },
+   "kills": null,
+   "n": 34,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.461,
+     1.444
+    ],
+    "own_attacks": [
+     0.461,
+     0.722
+    ],
+    "per_turn": [
+     1.383,
+     1.444
+    ]
+   },
+   "kills": null,
+   "n": 65,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Flora proc skill"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Flora",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.071,
+     0.222
+    ],
+    "own_attacks": [
+     0.071,
+     0.111
+    ],
+    "per_turn": [
+     0.213,
+     0.222
+    ]
+   },
+   "kills": null,
+   "n": 10,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Vulcanus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.028,
+     0.089
+    ],
+    "own_attacks": [
+     0.028,
+     0.044
+    ],
+    "per_turn": [
+     0.085,
+     0.089
+    ]
+   },
+   "kills": null,
+   "n": 4,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Vulcanus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.092,
+     0.289
+    ],
+    "own_attacks": [
+     0.092,
+     0.144
+    ],
+    "per_turn": [
+     0.277,
+     0.289
+    ]
+   },
+   "kills": 33827,
+   "n": 13,
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill (gun, direct kills)"
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Eleonora",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.386,
+     0.844
+    ],
+    "own_attacks": [
+     0.386,
+     0.422
+    ],
+    "per_turn": [
+     0.771,
+     0.844
+    ]
+   },
+   "kills": null,
+   "n": 27,
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.071,
+     0.156
+    ],
+    "own_attacks": [
+     0.071,
+     0.078
+    ],
+    "per_turn": [
+     0.143,
+     0.156
+    ]
+   },
+   "kills": null,
+   "n": 5,
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.143,
+     0.312
+    ],
+    "own_attacks": [
+     0.143,
+     0.156
+    ],
+    "per_turn": [
+     0.286,
+     0.312
+    ]
+   },
+   "kills": 66372,
+   "n": 10,
+   "rid": "RAW_06",
+   "side": "friendly",
+   "skill": "icon:marksman gun (direct kills)"
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Eleonora",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.671,
+     0.734
+    ],
+    "own_attacks": [
+     0.671,
+     1.469
+    ],
+    "per_turn": [
+     1.343,
+     1.469
+    ]
+   },
+   "kills": null,
+   "n": 47,
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.071,
+     0.078
+    ],
+    "own_attacks": [
+     0.071,
+     0.156
+    ],
+    "per_turn": [
+     0.143,
+     0.156
+    ]
+   },
+   "kills": null,
+   "n": 5,
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    32,
+    35
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.071,
+     0.078
+    ],
+    "own_attacks": [
+     0.071,
+     0.156
+    ],
+    "per_turn": [
+     0.143,
+     0.156
+    ]
+   },
+   "kills": null,
+   "n": 5,
+   "rid": "RAW_06",
+   "side": "enemy",
+   "skill": "icon:lancer troop-skill extra"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Gregory",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.488,
+     1.575
+    ],
+    "own_attacks": [
+     0.733,
+     0.787
+    ],
+    "per_turn": [
+     1.465,
+     1.575
+    ]
+   },
+   "kills": null,
+   "n": 63,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Freya",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.047,
+     0.15
+    ],
+    "own_attacks": [
+     0.07,
+     0.075
+    ],
+    "per_turn": [
+     0.14,
+     0.15
+    ]
+   },
+   "kills": null,
+   "n": 6,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Freya",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.023,
+     0.075
+    ],
+    "own_attacks": [
+     0.035,
+     0.037
+    ],
+    "per_turn": [
+     0.07,
+     0.075
+    ]
+   },
+   "kills": null,
+   "n": 3,
+   "rid": "RAW_07",
+   "side": "friendly",
+   "skill": "icon:lancer troop-skill extra"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Gregory",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.477,
+     0.512
+    ],
+    "own_attacks": [
+     0.318,
+     1.025
+    ],
+    "per_turn": [
+     0.953,
+     1.025
+    ]
+   },
+   "kills": null,
+   "n": 41,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Fred",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.116,
+     0.125
+    ],
+    "own_attacks": [
+     0.078,
+     0.25
+    ],
+    "per_turn": [
+     0.233,
+     0.25
+    ]
+   },
+   "kills": null,
+   "n": 10,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Blanchette",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.035,
+     0.037
+    ],
+    "own_attacks": [
+     0.023,
+     0.075
+    ],
+    "per_turn": [
+     0.07,
+     0.075
+    ]
+   },
+   "kills": null,
+   "n": 3,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Blanchette",
+   "hero_class": "Marksman",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.105,
+     0.113
+    ],
+    "own_attacks": [
+     0.07,
+     0.225
+    ],
+    "per_turn": [
+     0.209,
+     0.225
+    ]
+   },
+   "kills": 21652,
+   "n": 9,
+   "rid": "RAW_07",
+   "side": "enemy",
+   "skill": "icon:marksman gun (direct kills)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Eleonora",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.314,
+     0.675
+    ],
+    "own_attacks": [
+     0.314,
+     0.338
+    ],
+    "per_turn": [
+     0.628,
+     0.675
+    ]
+   },
+   "kills": null,
+   "n": 27,
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "icon_class": "Marksman",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.093,
+     0.2
+    ],
+    "own_attacks": [
+     0.093,
+     0.1
+    ],
+    "per_turn": [
+     0.186,
+     0.2
+    ]
+   },
+   "kills": null,
+   "n": 8,
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "icon:marksman-troop-skill"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Rufus",
+   "hero_class": "Marksman",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.151,
+     0.325
+    ],
+    "own_attacks": [
+     0.151,
+     0.163
+    ],
+    "per_turn": [
+     0.302,
+     0.325
+    ]
+   },
+   "kills": 61884,
+   "n": 13,
+   "rid": "RAW_08",
+   "side": "friendly",
+   "skill": "icon:marksman gun (direct kills)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Eleonora",
+   "hero_class": "Infantry",
+   "icon_class": "Infantry",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.558,
+     0.6
+    ],
+    "own_attacks": [
+     0.558,
+     1.2
+    ],
+    "per_turn": [
+     1.116,
+     1.2
+    ]
+   },
+   "kills": null,
+   "n": 48,
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "icon:infantry-troop-skill (fiery gate)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "icon_class": "Lancer",
+   "implied_rates": {
+    "enemy_attacks": [
+     0.093,
+     0.1
+    ],
+    "own_attacks": [
+     0.093,
+     0.2
+    ],
+    "per_turn": [
+     0.186,
+     0.2
+    ]
+   },
+   "kills": null,
+   "n": 8,
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "icon:lancer-troop-skill (blue blade)"
+  },
+  {
+   "T_band": [
+    40,
+    43
+   ],
+   "hero": "Lloyd",
+   "hero_class": "Lancer",
+   "icon_class": null,
+   "implied_rates": {
+    "enemy_attacks": [
+     0.023,
+     0.025
+    ],
+    "own_attacks": [
+     0.023,
+     0.05
+    ],
+    "per_turn": [
+     0.047,
+     0.05
+    ]
+   },
+   "kills": null,
+   "n": 2,
+   "rid": "RAW_08",
+   "side": "enemy",
+   "skill": "icon:lancer troop-skill extra"
+  }
+ ],
+ "vulcanus_s2": [
+  {
+   "T_band": [
+    42,
+    43
+   ],
+   "hero": "Vulcanus",
+   "n": 19,
+   "pred_single_stack": {
+    "every5_of_stack": [
+     8,
+     8
+    ],
+    "every6_of_stack": [
+     7,
+     7
+    ]
+   },
+   "rid": "RAW_04",
+   "side": "enemy",
+   "skill": "Vulcanus Skill 2",
+   "workbook_ks": [
+    5,
+    6
+   ]
+  },
+  {
+   "T_band": [
+    45,
+    47
+   ],
+   "hero": "Vulcanus",
+   "n": 20,
+   "pred_single_stack": {
+    "every5_of_stack": [
+     9,
+     9
+    ],
+    "every6_of_stack": [
+     7,
+     7
+    ]
+   },
+   "rid": "RAW_05",
+   "side": "enemy",
+   "skill": "Vulcanus Skill 2",
+   "workbook_ks": [
+    5,
+    6
+   ]
+  }
+ ]
+}

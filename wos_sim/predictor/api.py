@@ -7,7 +7,7 @@ API (FastAPI) and the front-end code only ever touch this — never the engine.
 """
 from __future__ import annotations
 
-from . import construct, kernel, summary, validate
+from . import construct, kernel, summary, type1_router, validate
 from .profiles import Matchup, SideProfile
 
 
@@ -15,6 +15,24 @@ def predict(own: SideProfile, enemy: SideProfile, *, n: int = 10_000, seed: int 
             kernel_impl=None, params=None, engine_model_error=None) -> summary.Forecast:
     matchup = Matchup(own, enemy)
     validate.validate_matchup(matchup)              # raises InvalidInput on bad profiles
+
+    # Stage 6.8 Type-1 router: a matchup classifiable into the frozen
+    # deterministic law's validated domain gets the law's EXACT result
+    # instead of the stochastic engine below. Conservative: any doubt in
+    # classification runs the UNCHANGED body that follows. Opt-out (tests/
+    # comparisons only -- server.py never sets this):
+    # params={"deterministic_router": False}.
+    abstain_note = ""
+    if (params or {}).get("deterministic_router") is not False:
+        classifiable, _reason = type1_router._type1_classifiable(matchup)
+        if classifiable:
+            forecast, abstain_note = type1_router._try_deterministic(matchup)
+            if forecast is not None:
+                return forecast
+            # else: the law was classifiable but abstained/raised -- fall
+            # through to the engine below; abstain_note is appended to its
+            # engine_note further down.
+
     turn_engine = bool(params and params.get("engine") == "turn")
     con = construct.build(matchup, apply_legacy_skills=not turn_engine)
     eng_params = dict(con.engine_params)         # profile-derived (T12 a_t12/d_t12, ...)
@@ -52,11 +70,77 @@ def predict(own: SideProfile, enemy: SideProfile, *, n: int = 10_000, seed: int 
                 "Turn-by-turn skill engine; win% reflects the joiner-aware "
                 "strength balance. Read survivor magnitudes as directional.")
 
+    if abstain_note:
+        note = f"{note} {abstain_note}".strip()
+
     return summary.summarize(
         records, own_is_attacker=con.own_is_attacker, engine_model_error=err,
         engine_path=meta.get("path", "general"), engine_note=note,
         stochastic=meta.get("stochastic", True), calibrated=meta.get("calibrated", False),
         near_even=near_even, confidence=confidence, win_prob_override=win_override)
+
+
+def _stage6_tables_meta() -> dict:
+    """Load (and cache) the frozen table manifest stage6_tables.json --
+    the single source of truth the deterministic entry points declare."""
+    global _S6_META
+    try:
+        return _S6_META
+    except NameError:
+        pass
+    import json
+    import os
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "..", "formula_research", "stage6_tables.json")
+    with open(os.path.abspath(path), encoding="utf-8") as fh:
+        j = json.load(fh)
+    _S6_META = {"law_version": j["law_version"], "frozen": j["frozen"],
+                "corpus": j["corpus"], "gatot_kit_status": j["gatot_kit"]["status"]}
+    return _S6_META
+
+
+def predict_deterministic_1v1(dealer: dict, target: dict, *,
+                              offense_mult: float = 1.0) -> dict:
+    """Stage-6 deterministic per-unit law (formula_research), exposed at the
+    seam. Units are plain dicts: {"cls", "tier", "fc"?, "panel"? | "eff"?}.
+    Non-mutating, no RNG. Returns {"turns", "meta"} -- meta carries
+    law_version="stage6" + per-cell provenance statuses (measured /
+    interpolated / bounded / extrapolated / factorized / fallback_infantry)
+    from the class-keyed tables frozen in stage6_tables.json. See
+    wos_sim/formula_research/STAGE6_REPORT.md for the validity domain
+    (incl. the Gatot-kit two-regime scope)."""
+    from wos_sim.formula_research.stage6_tables import predict_turns_1v1
+    turns, meta = predict_turns_1v1(dealer, target, offense_mult=offense_mult)
+    meta["tables"] = _stage6_tables_meta()
+    return {"turns": turns, "meta": meta}
+
+
+def predict_deterministic_battle(att_army: list, def_army: list, **kw) -> dict:
+    """Army-level assembly: the stage5 composition ALGORITHM (unchanged,
+    16/16 anchor-exact) over the stage6 class-keyed per-unit tables, PLUS
+    (Stage 6.5, 2026-07-18) the stage6_gatot two-sided Gatot-kit gate.
+    Armies are lists of unit dicts (see predict_deterministic_1v1). Pass
+    `att_kit`/`def_kit` (each optional
+    {"gatot": None|True|"mueller_s123_l1"|"farseer_s12_l1", "vulcanus": bool})
+    to describe a side's own hero loadout when its front is a Gatot-led
+    Infantry unit and/or a Vulcanus-led dealer -- see
+    stage5_composition.predict_battle's docstring for the full contract.
+    Omitting them (the pre-6.5 call convention) reproduces the plain
+    two-sided race unchanged. Wherever the frozen kit's constants (the two
+    measured budget defenders, the one measured S-curve defender, a
+    measured dealer-class K) don't cover the configuration in play, the
+    result is an honest `winner: "uncertain"` with `meta["gatot_abstain"]`
+    (`{"flag", "detail"}` or `{"flag", "direction", "M_bound_ge"}`) instead
+    of a confident winner -- never a guess.
+    Non-mutating, no RNG; the stochastic `predict()` path and server.py are
+    unaffected."""
+    from wos_sim.formula_research.stage5_composition import predict_battle
+    from wos_sim.formula_research.stage6_tables import law_funcs
+    res = predict_battle(att_army, def_army, law=law_funcs(), **kw)
+    res["meta"] = {**_stage6_tables_meta(), "law_version": "stage6.7"}
+    if res.get("gatot_abstain") is not None:
+        res["meta"]["gatot_abstain"] = res["gatot_abstain"]
+    return res
 
 
 def battle_timeline(own: SideProfile, enemy: SideProfile, *, seed: int = 0,

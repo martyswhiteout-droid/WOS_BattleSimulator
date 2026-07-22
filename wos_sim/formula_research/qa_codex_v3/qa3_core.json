@@ -1,0 +1,520 @@
+{
+  "corpus": {
+    "declared": 243,
+    "actual": 243,
+    "path": "E:\\WOS\\Battle Simulator\\wos_sim\\data\\experiments\\_corpus\\TYPE1_CORPUS.json"
+  },
+  "W1": {
+    "scoreable": 170,
+    "counts": {
+      "CORRECT": 151,
+      "COIN_FLIP": 15,
+      "ABSTAIN": 1,
+      "WRONG": 3
+    },
+    "expected": {
+      "CORRECT": 151,
+      "COIN_FLIP": 15,
+      "ABSTAIN": 1,
+      "WRONG": 3
+    },
+    "scorecard_match": true,
+    "wrong_ids": [
+      "LabRat_1v1_T1LanvT1MM_NoAttackerHero_Gordonlvl1_20260711_213859",
+      "MuellerAlpaca_1v1_T7InfvFC1T1Inf_AttInfA+194.1D+172.2L+122.0H+118.7_DefInfA+514.1D+506.9L+115.0H+114.1_Gatotlvl1_AlpacaFC1T1_NoDefenderHero_20260712_151127",
+      "NanoMart_1v1_T1MMvT1Inf_NoAttackerHero_Vulcanus"
+    ],
+    "abstain_ids": [
+      "MuellerAlpaca_1v1_T7InfvFC1T1Inf_GatotAurad_AlpacaFC1T1Vulcanus_20260719_121104"
+    ],
+    "law_versions": [
+      "stage6.6"
+    ],
+    "mutated_inputs": [],
+    "arithmetic_status": {
+      "ABSTAIN_OUTPUT": 1,
+      "CLOCK_DIFFERENCE": 4,
+      "GATOT_SPECIAL_REGIME": 85,
+      "MATCH": 52,
+      "WINNER_ONLY_MULTICOUNT": 28
+    },
+    "arithmetic_differences": [
+      {
+        "id": "MuellerAlpaca_1v1_T6InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+176.2D+169.0L+109.7H+109.3_NoAttackerHero_AlpacaFC1T1VulcanusNoGatot_20260718_161706",
+        "status": "CLOCK_DIFFERENCE",
+        "v2_t_att_dead": 965,
+        "v2_t_def_dead": 78,
+        "seam_t_att_dead": 1133,
+        "seam_t_def_dead": 75,
+        "att_offense_mult": 1.0,
+        "def_offense_mult": 1.0
+      },
+      {
+        "id": "MuellerAlpaca_1v1_T7InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+176.2D+169.0L+109.7H+109.3_NoAttackerHero_AlpacaFC1T1Vulcanus_20260718_235302",
+        "status": "CLOCK_DIFFERENCE",
+        "v2_t_att_dead": 1141,
+        "v2_t_def_dead": 76,
+        "seam_t_att_dead": 1340,
+        "seam_t_def_dead": 73,
+        "att_offense_mult": 1.0,
+        "def_offense_mult": 1.0
+      },
+      {
+        "id": "MuellerAlpaca_1v1_T7InfvFC1T1Inf_Gordonlvl51_AlpacaFC1T1Vulcanus_20260719_121239",
+        "status": "CLOCK_DIFFERENCE",
+        "v2_t_att_dead": 1141,
+        "v2_t_def_dead": 76,
+        "seam_t_att_dead": 1340,
+        "seam_t_def_dead": 73,
+        "att_offense_mult": 1.0,
+        "def_offense_mult": 1.0
+      },
+      {
+        "id": "MuellerMiniMart_1v1_T6InfvT1Inf_NoAttackerHero_Vulcanus_20260719_121806",
+        "status": "CLOCK_DIFFERENCE",
+        "v2_t_att_dead": 5479,
+        "v2_t_def_dead": 14,
+        "seam_t_att_dead": 6434,
+        "seam_t_def_dead": 14,
+        "att_offense_mult": 1.0,
+        "def_offense_mult": 1.0
+      }
+    ]
+  },
+  "W2": {
+    "probes": 24,
+    "passed": 17,
+    "failed": 7,
+    "failures": [
+      {
+        "id": "vulcanus_led_n3_unvalidated_flag",
+        "class": "SEAM_BUG",
+        "details": "The S-curve flag exists, but V3 requires the n>1 extrapolation to be called out explicitly."
+      },
+      {
+        "id": "count_zero",
+        "class": "SEAM_BUG",
+        "details": "{\"crashed\": true, \"exception\": \"IndexError: list index out of range\"}"
+      },
+      {
+        "id": "empty_attacker_army",
+        "class": "SEAM_BUG",
+        "details": "{\"crashed\": true, \"exception\": \"IndexError: list index out of range\"}"
+      },
+      {
+        "id": "empty_defender_army",
+        "class": "SEAM_BUG",
+        "details": "{\"crashed\": true, \"exception\": \"IndexError: list index out of range\"}"
+      },
+      {
+        "id": "zero_effective_attack",
+        "class": "SEAM_BUG",
+        "details": "{\"crashed\": true, \"exception\": \"ZeroDivisionError: float division by zero\"}"
+      },
+      {
+        "id": "alpaca_lancer_edge_205",
+        "class": "SEAM_BUG",
+        "details": "{\"winner\": \"attacker\", \"turns\": 648, \"att_dead_clock\": 56488, \"def_dead_clock\": 648, \"flags\": [\"G_l(Lan T6) fallback_infantry\", \"K(Lan->Inf) edge_implied (shield-model-conditional)\", \"budget_alpaca_aurad\", \"gatot_budget\", \"gatot_k_laninf_T6_edge\", \"gatot_kit_target\", \"gatot_state_detected_aurad_alpaca\", \"non-Inf dealer: G_w hypothesis + proc-gating risk\"], \"gatot_abstain\": null, \"meta\": {\"law_version\": \"stage6.6\", \"frozen\": \"2026-07-19\", \"corpus\": {\"path\": \"wos_sim/data/experiments/_corpus/TYPE1_CORPUS.json\", \"row_count\": 238}, \"gatot_kit_status\": \"two-regime (measured-defender models; NOT a general law)\"}}"
+      },
+      {
+        "id": "gatot_target_count_2",
+        "class": "SEAM_BUG",
+        "details": "A live schema-valid count>1 Gatot target bypasses the kit gate when the seam requires target count == 1."
+      }
+    ]
+  },
+  "W3": {
+    "predict_calls": [
+      {
+        "case": "even",
+        "keys": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "Infantry",
+          "Lancer",
+          "Marksman",
+          "army_losses",
+          "calibrated",
+          "class_losses",
+          "confidence",
+          "counts",
+          "edges",
+          "enemy",
+          "engine_model_error",
+          "engine_note",
+          "engine_path",
+          "loss",
+          "mean",
+          "median",
+          "n",
+          "near_even",
+          "outcome_quality",
+          "own",
+          "p",
+          "p5",
+          "p95",
+          "p_loss",
+          "p_loss_effective",
+          "p_mutual",
+          "p_win",
+          "p_win_effective",
+          "rounds",
+          "se",
+          "severe_fraction",
+          "skill_telemetry",
+          "stochastic",
+          "timeline",
+          "win"
+        ],
+        "leaked_keys": [],
+        "output_sha256": "30b492f7943e721d240869c6df557f8a74fe97050ad8af158f6b61c0142fb31d"
+      },
+      {
+        "case": "own_strong",
+        "keys": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "Infantry",
+          "Lancer",
+          "Marksman",
+          "army_losses",
+          "calibrated",
+          "class_losses",
+          "confidence",
+          "counts",
+          "edges",
+          "enemy",
+          "engine_model_error",
+          "engine_note",
+          "engine_path",
+          "loss",
+          "mean",
+          "median",
+          "n",
+          "near_even",
+          "outcome_quality",
+          "own",
+          "p",
+          "p5",
+          "p95",
+          "p_loss",
+          "p_loss_effective",
+          "p_mutual",
+          "p_win",
+          "p_win_effective",
+          "rounds",
+          "se",
+          "severe_fraction",
+          "skill_telemetry",
+          "stochastic",
+          "timeline",
+          "win"
+        ],
+        "leaked_keys": [],
+        "output_sha256": "907d089c9dbf34ef9888ae258f2112b38b69fc85e0878d58e3b13e2edc9ea8dc"
+      },
+      {
+        "case": "enemy_strong",
+        "keys": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "Infantry",
+          "Lancer",
+          "Marksman",
+          "army_losses",
+          "calibrated",
+          "class_losses",
+          "confidence",
+          "counts",
+          "edges",
+          "enemy",
+          "engine_model_error",
+          "engine_note",
+          "engine_path",
+          "loss",
+          "mean",
+          "median",
+          "n",
+          "near_even",
+          "outcome_quality",
+          "own",
+          "p",
+          "p5",
+          "p95",
+          "p_loss",
+          "p_loss_effective",
+          "p_mutual",
+          "p_win",
+          "p_win_effective",
+          "rounds",
+          "se",
+          "severe_fraction",
+          "skill_telemetry",
+          "stochastic",
+          "timeline",
+          "win"
+        ],
+        "leaked_keys": [],
+        "output_sha256": "9e16e5264b88674dce38d92b74c8064c509145d9b6c02cb9b17d5cfd18ccdcb1"
+      },
+      {
+        "case": "joiners",
+        "keys": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "Infantry",
+          "Lancer",
+          "Marksman",
+          "army_losses",
+          "calibrated",
+          "class_losses",
+          "confidence",
+          "counts",
+          "edges",
+          "enemy",
+          "engine_model_error",
+          "engine_note",
+          "engine_path",
+          "loss",
+          "mean",
+          "median",
+          "n",
+          "near_even",
+          "outcome_quality",
+          "own",
+          "p",
+          "p5",
+          "p95",
+          "p_loss",
+          "p_loss_effective",
+          "p_mutual",
+          "p_win",
+          "p_win_effective",
+          "rounds",
+          "se",
+          "severe_fraction",
+          "skill_telemetry",
+          "stochastic",
+          "timeline",
+          "win"
+        ],
+        "leaked_keys": [],
+        "output_sha256": "78938accc209c775812c5a9a780def3d245f71f8feafdf3e4c0ffcb135ad3fc5"
+      }
+    ],
+    "predict_call_count": 4,
+    "meta_leaks": [],
+    "deterministic_seam_monkeypatch_not_called": true,
+    "import_stage6_file_opens": [],
+    "predict_source_identical_to_HEAD": true,
+    "predict_source_current_sha256": "427abdc88398b4d7f9df060c80ed5a3d129135d91aaa736e468ec2c11eccf719",
+    "predict_source_head_sha256": "427abdc88398b4d7f9df060c80ed5a3d129135d91aaa736e468ec2c11eccf719",
+    "git_show_error": "",
+    "server_routes": [
+      "@app.exception_handler(InvalidInput)",
+      "@app.get(\"/api/health\")",
+      "@app.post(\"/api/predict\")",
+      "@app.post(\"/api/battle\")"
+    ],
+    "server_mentions_deterministic_seam": false
+  },
+  "W5": {
+    "current_sha256": "6dee5dd40fe741329321c0e8d3c6378c7adf2eecfcbe6291e4ec1e10ac431c62",
+    "emit1_sha256": "d43bb666c7af89cf619bc1fe3e0d1f094438a8f1e443b9f37a08d3f1a8059935",
+    "emit2_sha256": "d43bb666c7af89cf619bc1fe3e0d1f094438a8f1e443b9f37a08d3f1a8059935",
+    "two_emits_byte_identical": true,
+    "current_byte_identical_to_emit": false,
+    "json_differences": [
+      {
+        "path": "corpus.row_count",
+        "current": 238,
+        "emitted": 243
+      }
+    ],
+    "current_law_version": "stage6.6",
+    "emitted_law_version": "stage6.6",
+    "current_row_count": 238,
+    "emitted_row_count": 243,
+    "actual_row_count": 243,
+    "b_alpaca_checks": [
+      {
+        "branch": "edge",
+        "K": 90.38,
+        "G_w": 1.625,
+        "AL": 630.29153,
+        "pool": 304.858008,
+        "B_calculated": 879.2407870182905,
+        "B_frozen": 879.3,
+        "matches_0p1_precision": true,
+        "cap_204": true,
+        "forward_205": 574.9999999999422
+      },
+      {
+        "branch": "factorized",
+        "K": 83.66,
+        "G_w": 1.625,
+        "AL": 630.29153,
+        "pool": 304.858008,
+        "B_calculated": 949.9085009920858,
+        "B_frozen": 949.9,
+        "matches_0p1_precision": true,
+        "cap_204": true,
+        "forward_205": 574.9999999999422
+      }
+    ],
+    "aura_checks": [
+      {
+        "copy": "mueller",
+        "baseline_row": "MuellerAlpaca_v5_R04_1v1_T6InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+537.1D+529.9L+119.7H+119.3_NoAttackerHero_Gatotlvl1_20260713_012651",
+        "aura_row": "MuellerAlpaca_1v1_T1InfvFC1T6MM_AttInfA+481.0D+481.7L+112.0H+108.7_DefMMA+1049.5D+1039.3L+247.2H+150.6_Gatot_Vulcanus_20260718_164811",
+        "baseline_panel_A": 179.1,
+        "aura_panel_A": 481.0,
+        "panel_delta": 301.9,
+        "expedition_pp": 301.93,
+        "difference_pp": -0.03000000000002956,
+        "matches_0p1pp": true
+      },
+      {
+        "copy": "alpaca",
+        "baseline_row": "MuellerAlpaca_1v1_T6InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+176.2D+169.0L+109.7H+109.3_NoAttackerHero_AlpacaFC1T1VulcanusNoGatot_20260718_161706",
+        "aura_row": "MuellerAlpaca_204v1_T6LanvFC1T1Inf_AttLanA+179.1D+169.2L+105.3H+102.6_DefInfA+514.1D+506.9L+109.7H+109.3_NoAttackerHero_AlpacaGatotAurad_20260719_004328",
+        "baseline_panel_A": 176.2,
+        "aura_panel_A": 514.1,
+        "panel_delta": 337.90000000000003,
+        "expedition_pp": 337.85,
+        "difference_pp": 0.05000000000001137,
+        "matches_0p1pp": true
+      },
+      {
+        "copy": "farseer",
+        "baseline_row": "LabRat_1v1_T1InfvT1Inf_NoAttackerHero_Gordonlvl1_20260711_214025",
+        "aura_row": "FarSeer_1v1_T1InfvT1Inf_AttInfA+188.6_Gatotlvl1_NoDefenderHero_20260712_083001",
+        "baseline_panel_A": 0.0,
+        "aura_panel_A": 188.6,
+        "panel_delta": 188.6,
+        "expedition_pp": 186.45,
+        "difference_pp": 2.1500000000000057,
+        "matches_0p1pp": false
+      }
+    ],
+    "hero_state_current_equals_emitted": true
+  },
+  "W6": {
+    "nano_verdict_changes_without_caller_folds": [
+      {
+        "id": "NanoMart_1v1_T1MMvT1Lan_NoAttackerHero_Vulcanus",
+        "without_folds": "COIN_FLIP",
+        "with_folds": "CORRECT",
+        "winner_without_folds": "defender",
+        "gap_without_folds": 8.0,
+        "t_att": 25.0,
+        "t_def": 27.0
+      },
+      {
+        "id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+10D+10H_SeoYoonlvl3_Vulcanus",
+        "without_folds": "COIN_FLIP",
+        "with_folds": "CORRECT",
+        "winner_without_folds": "defender",
+        "gap_without_folds": 9.66542750929368,
+        "t_att": 269.0,
+        "t_def": 295.0
+      },
+      {
+        "id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus",
+        "without_folds": "COIN_FLIP",
+        "with_folds": "CORRECT",
+        "winner_without_folds": "defender",
+        "gap_without_folds": 9.45945945945946,
+        "t_att": 296.0,
+        "t_def": 324.0
+      },
+      {
+        "id": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10D_SeoYoonlvl3_Vulcanus",
+        "without_folds": "COIN_FLIP",
+        "with_folds": "CORRECT",
+        "winner_without_folds": "defender",
+        "gap_without_folds": 9.45945945945946,
+        "t_att": 296.0,
+        "t_def": 324.0
+      },
+      {
+        "id": "NanoMart_SetB_1v1_T1InfvT1Inf_NoAttackerHero_Vulcanus",
+        "without_folds": "COIN_FLIP",
+        "with_folds": "CORRECT",
+        "winner_without_folds": "attacker",
+        "gap_without_folds": 0.3389830508474576,
+        "t_att": 296.0,
+        "t_def": 295.0
+      },
+      {
+        "id": "NanoMart_SetB_1v1_T1LanvT1Lan_NoAttackerHero_Vulcanus",
+        "without_folds": "COIN_FLIP",
+        "with_folds": "CORRECT",
+        "winner_without_folds": "attacker",
+        "gap_without_folds": 0.0,
+        "t_att": 30.0,
+        "t_def": 30.0
+      }
+    ],
+    "confident_wrong_without_caller_folds": [
+      "NanoMart_1v1_T1MMvT1Inf_NoAttackerHero_Vulcanus"
+    ],
+    "new_w1_wrong_beyond_known_three": [],
+    "unexpected_w1_abstentions_beyond_E3a": [],
+    "target_count_2_probe_failed_honesty": true,
+    "adversarial_vulcanus_kit_only_reversal": {
+      "input": {
+        "attacker_AL": 1.11,
+        "defender_AL": 1.0,
+        "def_kit": {
+          "vulcanus": true
+        }
+      },
+      "seam_kit_only": {
+        "winner": "attacker",
+        "t_att": 301,
+        "t_def": 271,
+        "gap_pct": 11.07011070110701,
+        "flags": []
+      },
+      "independent_documented_folds": {
+        "winner": "defender",
+        "t_att": 256,
+        "t_def": 283,
+        "gap_pct": 10.546875,
+        "flags": [],
+        "att_offense_mult": 0.96,
+        "def_offense_mult": 1.1742424242424243
+      },
+      "confident_winner_reversal": true
+    },
+    "verdict": "WIRING_FINDING"
+  },
+  "artifacts": {
+    "qa3_results_sha256": "430d8dc2e9dadb1f4b73fc970f272b151edd12ce840c3446dffccbda2a07e4f1"
+  }
+}

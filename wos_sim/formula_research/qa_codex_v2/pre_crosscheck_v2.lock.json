@@ -1,0 +1,14 @@
+{
+  "locked_before_stage6_validate": true,
+  "qa2_results_sha256": "b4af0f7a645c0d00315e7d20ecf38507b3892f5bcd4cf5e55f2205e58f7458e8",
+  "scoring_at_lock": "nearest observed-band edge",
+  "winner_classifications": {
+    "CORRECT": 171,
+    "COIN_FLIP": 16,
+    "ABSTAIN": 39,
+    "WRONG": 10
+  },
+  "in_domain_failures": 5,
+  "adversarial_counterexamples": 0,
+  "note": "This immutable snapshot records the independent result supplied to the one permitted stage6_validate cross-check. The final report restores the unchanged V1 midpoint percentage-error convention and also retains a separate band-edge residual, as explained in the cross-check section. No model constants or predictions changed."
+}

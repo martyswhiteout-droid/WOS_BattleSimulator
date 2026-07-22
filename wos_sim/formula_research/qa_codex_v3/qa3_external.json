@@ -1,0 +1,84 @@
+{
+  "backtest": {
+    "command": [
+      "E:\\WOS\\Battle Simulator\\.venv\\Scripts\\python.exe",
+      "-m",
+      "wos_sim.backtest"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 11.050100803375244,
+    "last_lines": [
+      "    winners correct: 7/13   (baseline 7)",
+      "",
+      "[2] COMPOSITION MAGNITUDES - controlled experiments (winner already OK)",
+      "    matchup                engine surv%  real surv%",
+      "    mirror (inf v inf)            58.4%       24.0%",
+      "    inf > lancer                  49.9%       45.4%",
+      "    inf < marksman                58.3%        4.9%",
+      "    lancer > marksman             72.0%       42.0%",
+      "",
+      "================================================================",
+      " VERDICT: PASS - no locked battle regressed, no new silent miss.",
+      "================================================================"
+    ],
+    "log": "E:\\WOS\\Battle Simulator\\wos_sim\\formula_research\\qa_codex_v3\\w3_backtest.log"
+  },
+  "predictor_pytest": {
+    "command": [
+      "C:\\Users\\Martin\\OneDrive\\Documents\\New project\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "wos_sim/predictor/tests/",
+      "-q",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 20.06183171272278,
+    "last_lines": [
+      "......................................................... [ 45%]",
+      ".....................xx......................................... [ 96%]",
+      "....                                                                     [100%]",
+      "============================== warnings summary ===============================",
+      ".venv\\Lib\\site-packages\\fastapi\\testclient.py:1",
+      "  E:\\WOS\\Battle Simulator\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.",
+      "    from starlette.testclient import TestClient as TestClient  # noqa",
+      "",
+      "-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+      "123 passed, 2 xfailed, 1 warning, 23 subtests passed in 17.80s"
+    ],
+    "log": "E:\\WOS\\Battle Simulator\\wos_sim\\formula_research\\qa_codex_v3\\w4_predictor_pytest.log",
+    "counts": {
+      "passed": 123,
+      "skipped": 0,
+      "xfailed": 2,
+      "failed": 0,
+      "errors": 0
+    }
+  },
+  "formula_pytest": {
+    "command": [
+      "C:\\Users\\Martin\\OneDrive\\Documents\\New project\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "wos_sim/formula_research/",
+      "-q",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.7787141799926758,
+    "last_lines": [
+      "........................                                                 [100%]",
+      "24 passed in 1.01s"
+    ],
+    "log": "E:\\WOS\\Battle Simulator\\wos_sim\\formula_research\\qa_codex_v3\\w4_formula_pytest.log",
+    "counts": {
+      "passed": 24,
+      "skipped": 0,
+      "xfailed": 0,
+      "failed": 0,
+      "errors": 0
+    }
+  }
+}

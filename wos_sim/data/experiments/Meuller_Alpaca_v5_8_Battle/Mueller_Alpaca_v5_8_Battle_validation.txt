@@ -1,0 +1,8 @@
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_2v2_T1Inf+T1LanvT1Inf+T1MM_Gatot_Gatot+Vulcanus_20260714_004535.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_11v2_T1Inf+10T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260714_004004.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_6v2_T1Inf+5T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260714_003939.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_4v2_T1Inf+3T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260714_003911.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_2v2_T1Inf+T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260714_003822.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_1v2_T1InfvT1Inf+T1MM_Gatot_Gatot+Vulcanus_20260714_003803.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_5v2_T1Inf+4T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260714_004940.json
+[PASS] /mnt/data/Mueller_Alpaca_v5_8_Battle_JSON/ColonelMuller_3v2_T1Inf+2T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260714_003848.json

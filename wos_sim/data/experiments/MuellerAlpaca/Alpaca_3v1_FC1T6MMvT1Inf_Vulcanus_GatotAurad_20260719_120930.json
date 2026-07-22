@@ -1,0 +1,243 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_count",
+  "type": 1,
+  "battle_date": "2026-07-19 12:09:30",
+  "recommended_filename": "Alpaca_3v1_FC1T6MMvT1Inf_Vulcanus_GatotAurad_20260719_120930.json",
+  "setup": "E2 (pooling-order discriminator): Alpaca's 3x Vulcanus-led FC1 T6 Marksmen attack Mueller's AURA'D Gatot T1 Infantry; kill at turn 4 = the per-dealer-suppression-then-sqrt(N) prediction (pooled-then-suppress predicted 3).",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": {
+    "turns": 4,
+    "turns_range": [
+      4,
+      4
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "once per attack (triggers == rounds, exact)",
+    "trigger_count": 4,
+    "assumptions": [
+      "Gatot S2 triggers == battle rounds",
+      "Vulcanus S3=1 at T=4 (floor(4/3)=1) -- phase-3 confirmed AGAIN; phase-1 (ceil=2) refuted (Martin's annotation)",
+      "Vulcanus S2=0 at T=4 with 3 units: per-unit model 3 x floor(4/6) = 0 EXACT (the side-event model predicted 2)"
+    ]
+  },
+  "attacker": {
+    "name": "沃草泥的馬",
+    "state": null,
+    "alliance": null,
+    "coords": "X:764 Y:485",
+    "role": "attacker",
+    "power_loss": 0,
+    "troops": 3,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 3,
+    "kills": 1,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 6.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 176.2,
+        "Defense": 169.0,
+        "Lethality": 109.7,
+        "Health": 109.3
+      },
+      "Lancer": {
+        "Attack": 182.7,
+        "Defense": 163.0,
+        "Lethality": 135.5,
+        "Health": 134.1
+      },
+      "Marksman": {
+        "Attack": 1049.5,
+        "Defense": 1039.3,
+        "Lethality": 247.2,
+        "Health": 150.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "MM panels Vulcanus-aura'd (1049.5 loadout)"
+    },
+    "lead_heroes": {
+      "Marksman": {
+        "name": "Vulcanus",
+        "level": null,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 1",
+        "name": "Vulcanus Skill 1",
+        "level": null,
+        "effect": "-4% enemy Troops Attack once at start (level not shown)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 2",
+        "name": "Vulcanus Skill 2",
+        "level": null,
+        "effect": "every 6th attack of EACH Vulcanus-side unit, +20% (per-unit counter model, 2026-07-19)",
+        "triggers": 0,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 3",
+        "name": "True Strike",
+        "level": null,
+        "effect": "turns 3,6,9,...: -12% enemy Inf/Lan Def 3 turns AND +12% own MM Attack 1 turn",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Infantry"
+      },
+      {
+        "class": "Marksman",
+        "skill": "Crystal Gunpowder II",
+        "unlock": "FC5",
+        "effect": "30% chance of +50% damage",
+        "applies_in_this_battle": false,
+        "reason": "FC1 - not unlocked"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Colonel Müller",
+    "state": null,
+    "alliance": null,
+    "coords": "X:763 Y:482",
+    "role": "defender",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 481.0,
+        "Defense": 481.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": 118.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Infantry panels Gatot-aura'd (+481)"
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": null,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Gatot Skill 1",
+        "level": null,
+        "effect": "own Infantry Defense buff (level unconfirmed)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 2,
+        "effect": "fires once per attack; shield = Attack x 12% for 1 turn (Mueller copy S2 = L2, Martin 2026-07-19)",
+        "triggers": 4,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "Royal Legion",
+        "level": 2,
+        "effect": "instills fear: -10% enemy Attack, once at battle start (L2)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "attacker fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "POOLING ORDER SETTLED: 3 Vulcanus-led dealers kill at turn 4 = ceil(3.85) from per-dealer S(d) suppression then sqrt(N) pooling; the pooled-then-suppress alternative predicted 3. The frozen seam order is CONFIRMED by this blind battle.",
+    "VULCANUS S2 COUNTER MODEL CORRECTED (2026-07-19): S2 triggered 0 times here (3 units x 4 turns = 12 side-events; the side-event model predicted 2). Per-UNIT model (each unit's own every-6th attack, summed) predicts 3 x floor(4/6) = 0 EXACT -- and retro-fits every prior anomaly: 2u@T=3 -> 0, 2u@T=35 -> 10 (side model said 11), 2u@T=78 -> 26, 2u@T=90 -> 30, 2u@T=6 -> 2.",
+    "Vulcanus S3=1 at T=4: phase-3 confirmed; 1,4,7 refuted (would be 2) -- Martin's annotation on the report.",
+    "kills cross-check: attacker kills 1 == defender losses+injured 1; defender kills 0 == attacker casualties 0."
+  ],
+  "source_images": [
+    "battle_overview",
+    "stat_bonuses",
+    "battle_details_skill_panel (WOS_BattleReports_719.pdf)"
+  ],
+  "_extraction": {
+    "extracted_by": "claude",
+    "timestamp": "2026-07-19",
+    "ocr_confidence": "high",
+    "manual_overrides": []
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

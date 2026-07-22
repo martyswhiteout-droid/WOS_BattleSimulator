@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_count",
+  "type": 1,
+  "battle_date": "2026-07-19 00:43:28",
+  "recommended_filename": "MuellerAlpaca_204v1_T6LanvFC1T1Inf_AttLanA+179.1D+169.2L+105.3H+102.6_DefInfA+514.1D+506.9L+109.7H+109.3_NoAttackerHero_AlpacaGatotAurad_20260719_004328.json",
+  "setup": "B_Alpaca knife-edge, capped side: 204 Lv 6.0 Lancers (no hero) vs Alpaca's AURA'D Gatot-led FC1 T1 Infantry - one below the threshold; the Infantry survives the full 1500-turn cap untouched. Pairs with the 205v1 battle (kill at 575).",
+  "outcome": {"winner": "defender", "attacker_result": "defeat", "defender_result": "victory"},
+  "turn_inference": {
+    "turns": 1500,
+    "turns_range": [1500, 1500],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "once per attack (triggers == rounds, exact); 1500 = the global battle cap",
+    "trigger_count": 1500,
+    "assumptions": ["Gatot S2 King's Bestowal triggers == battle rounds (Stage-4 verified)",
+                    "battle reached the global 1500-round cap; attacker repelled with the defender alive"]
+  },
+  "attacker": {
+    "name": "Colonel Müller",
+    "state": null,
+    "alliance": null,
+    "coords": "X:763 Y:482",
+    "role": "attacker",
+    "power_loss": -80,
+    "troops": 204,
+    "losses": 0,
+    "injured": 4,
+    "lightly_injured": 6,
+    "survivors": 194,
+    "kills": 0,
+    "deployed_class": "Lancer",
+    "tier_display": "Lv 6.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {"Attack": 179.1, "Defense": 179.7, "Lethality": 112.0, "Health": 108.7},
+      "Lancer":   {"Attack": 179.1, "Defense": 169.2, "Lethality": 105.3, "Health": 102.6},
+      "Marksman": {"Attack": 179.1, "Defense": 174.2, "Lethality": 121.2, "Health": 118.6}
+    },
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible",
+                      "notes": "identical loadout to the paired 205v1 battle"},
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {"class": "Lancer", "skill": "Charge", "unlock": "T1",
+       "effect": "+10% attack damage to Marksmen",
+       "applies_in_this_battle": false, "reason": "defender deploys no Marksmen"},
+      {"class": "Lancer", "skill": "Crystal Lance I", "unlock": "FC3",
+       "effect": "10% chance to deal double damage",
+       "applies_in_this_battle": false, "reason": "Lancers are ordinary/FC<3 - not unlocked; battle stays Type 1"}
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "沃草泥的馬",
+    "state": null,
+    "alliance": null,
+    "coords": "X:766 Y:476",
+    "role": "defender",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 4,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {"Attack": 514.1, "Defense": 506.9, "Lethality": 109.7, "Health": 109.3},
+      "Lancer":   {"Attack": 182.7, "Defense": 163.0, "Lethality": 135.5, "Health": 134.1},
+      "Marksman": {"Attack": 176.2, "Defense": 166.0, "Lethality": 129.1, "Health": 129.0}
+    },
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible",
+                      "notes": "Infantry panels AURA'D: 514.1 = 176.2 baseline + 337.9 ~= Gatot Expedition +337.85 (hero-screen-consistent, no alliance delta)"},
+    "lead_heroes": {"Infantry": {"name": "Gatot", "level": null, "stars": null}},
+    "hero_skills": [
+      {"hero": "Gatot", "slot": "Skill 1", "name": "Gatot Skill 1", "level": 2,
+       "effect": "+12% own Infantry Defense (L2, per Martin 2026-07-18)",
+       "triggers": 1, "kills": 0, "status": "identified"},
+      {"hero": "Gatot", "slot": "Skill 2", "name": "King's Bestowal", "level": 2,
+       "effect": "fires once per attack; shield with protection = Attack x 12% for 1 turn (L2)",
+       "triggers": 1500, "kills": 0, "status": "identified"},
+      {"hero": "Gatot", "slot": "Skill 3", "name": "Royal Legion", "level": 3,
+       "effect": "instills fear: -15% enemy Attack, once at battle start (L3)",
+       "triggers": 1, "kills": 0, "status": "identified"}
+    ],
+    "troop_passives_active": [
+      {"class": "Infantry", "skill": "Master Brawler", "unlock": "T1",
+       "effect": "+10% attack damage to Lancers",
+       "applies_in_this_battle": true, "reason": "attacker fields Lancers"}
+    ],
+    "specials": []
+  },
+  "notes": [
+    "B_ALPACA KNIFE-EDGE PAIR (with 205v1_..._004208): 204 Lancers' pooled damage sits fully inside Alpaca's shield budget - the Gatot Infantry takes ZERO casualties across all 1500 rounds; adding ONE Lancer (205) breaks through and kills at 575.",
+    "Martin's framing (verbatim intent): 204 Lancers cannot kill the single Infantry WITHIN 1500 TURNS - the cap, not immortality, defines the defeat.",
+    "Defender counter-clock data: the aura'd Gatot Infantry scored 4 kills + 6 lightly-injured against T6 Lancers over 1500 rounds (~1 kill / 375 rounds) - a rare G_l(Lancer, T6) datapoint, unmeasured cell.",
+    "kills cross-check: defender kills 4 == attacker losses+injured 4 (lightly-injured excluded per convention); attacker kills 0 == defender casualties 0."
+  ],
+  "source_images": ["battle_overview", "stat_bonuses", "battle_details_skill_panel"],
+  "_extraction": {"extracted_by": "claude", "timestamp": "2026-07-19", "ocr_confidence": "high", "manual_overrides": []},
+  "_validation": {"arithmetic_checks": "pass", "missing": ["defender.lead_heroes.Infantry.level", "attacker FC badge (ordinary vs FC1; base identical by convention, both proc-free)"], "suspicions": []}
+}

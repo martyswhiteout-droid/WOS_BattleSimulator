@@ -1,0 +1,45 @@
+{
+  "_type": "nanomart_nohero_ladder",
+  "type": 1,
+  "setup": "NanoMart farm ladder: 200 T6 Infantry attacker vs 200 T6 Infantry defender. No heroes, no buffs, deterministic.",
+  "timestamp": "2026-07-09 21:32:10",
+  "outcome": "ATTACKER VICTORY",
+  "attacker": {
+    "name": "nanomart",
+    "coords": "X:556 Y:25",
+    "deployed_class": "Infantry",
+    "troops": 200,
+    "power_loss": -1380,
+    "losses": 0,
+    "injured": 69,
+    "lightly_injured": 127,
+    "survivors": 4,
+    "stats_pct_visible": {
+      "Infantry": {"Attack": 2.2, "Defense": 0.2},
+      "Lancer": {"Attack": 2.2, "Defense": 0.2},
+      "Marksman": {"Attack": 2.2, "Defense": 0.2}
+    }
+  },
+  "defender": {
+    "name": "minimart",
+    "coords": "X:556 Y:27",
+    "deployed_class": "Infantry",
+    "troops": 200,
+    "power_loss": -1400,
+    "losses": 0,
+    "injured": 70,
+    "lightly_injured": 130,
+    "survivors": 0,
+    "stats_pct_visible": {
+      "Infantry": {"Attack": 2.0, "Defense": 0.0},
+      "Lancer": {"Attack": 2.0, "Defense": 0.0},
+      "Marksman": {"Attack": 2.0, "Defense": 0.0}
+    }
+  },
+  "stats_capture": {
+    "complete_12_stat_panel": false,
+    "missing_stats": ["Infantry Lethality", "Infantry Health", "Lancer Lethality", "Lancer Health", "Marksman Lethality", "Marksman Health"],
+    "probe_assumption": "Missing stat-panel rows treated as 0% in the quick replay probe."
+  },
+  "_extraction": "Captured from Martin screenshot 2026-07-09."
+}

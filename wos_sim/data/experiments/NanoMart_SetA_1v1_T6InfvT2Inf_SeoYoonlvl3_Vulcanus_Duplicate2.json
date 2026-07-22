@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-07-10 18:09:12",
+  "recommended_filename": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus_Duplicate2.json",
+  "setup": "1 Lv 6.0 Infantry attacker versus 1 Lv 2.0 Infantry defender.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": {
+    "turns": 102,
+    "turns_range": [
+      100,
+      102
+    ],
+    "method": "vulcanus_proc_count",
+    "clock_hero": "Vulcanus",
+    "cadence": "turn 1, then every 3rd turn",
+    "trigger_count": 34,
+    "assumptions": [
+      "Vulcanus Skill 3 triggers on turns 1, 4, 7, ...; k triggers imply turns in [3k-2, 3k].",
+      "Vulcanus Skill 2 trigger count is cross-checked against attack events 6, 12, 18, ... where present.",
+      "Vulcanus is on the defender side."
+    ]
+  },
+  "attacker": {
+    "name": "nanomart",
+    "state": null,
+    "alliance": null,
+    "coords": "X:556 Y:25",
+    "role": "attacker",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 6.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 2.2,
+        "Defense": 0.2
+      },
+      "Lancer": {
+        "Attack": 2.2,
+        "Defense": 0.2
+      },
+      "Marksman": {
+        "Attack": 46.7,
+        "Defense": 44.7
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "The PDF shows Attack and Defense rows only; Lethality and Health are not displayed and are omitted."
+    },
+    "lead_heroes": {
+      "Marksman": {
+        "name": "Seo-yoon",
+        "level": null,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Seo-yoon",
+        "slot": "Skill 1",
+        "name": "Troops Attack",
+        "level": 3,
+        "effect": "+15% Troops Attack",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "minimart",
+    "state": null,
+    "alliance": null,
+    "coords": "X:556 Y:27",
+    "role": "defender",
+    "power_loss": -4,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 2.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 2.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 2.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 517.2,
+        "Defense": 515.2
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "The PDF shows Attack and Defense rows only; Lethality and Health are not displayed and are omitted."
+    },
+    "lead_heroes": {
+      "Marksman": {
+        "name": "Vulcanus",
+        "level": null,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 1",
+        "name": "Enemy Troops Attack reduction",
+        "level": 1,
+        "effect": "-4% enemy Troops Attack",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 2",
+        "name": "Periodic empowered damage",
+        "level": 1,
+        "effect": "Periodic empowered damage; trigger cadence interpreted as attack events 6, 12, 18, ...",
+        "triggers": 17,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 3",
+        "name": "Infantry/Lancer Defense reduction",
+        "level": 1,
+        "effect": "-12% enemy Infantry/Lancer Defense; triggers on turns 1, 4, 7, ...",
+        "triggers": 34,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "The printed heading says 'T6 inf vs T1 Inf', but the battle panel shows Lv 6.0 Infantry versus Lv 2.0 Infantry.",
+    "This screenshot has the same timestamp, casualties, stats, and skill-trigger counts as the adjacent T6-vs-T2 report; it is retained as a separate source image and marked Duplicate2 to avoid a filename collision.",
+    "Source heading: T6 inf vs T1 Inf."
+  ],
+  "source_images": [
+    "pdf_page_1"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-10",
+    "ocr_confidence": "high",
+    "manual_overrides": []
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": [
+      "Exact duplicate battle data appears twice on PDF page 1 under different headings."
+    ]
+  }
+}

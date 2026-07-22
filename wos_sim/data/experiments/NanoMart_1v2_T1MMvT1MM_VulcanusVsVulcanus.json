@@ -1,0 +1,160 @@
+{
+  "_type": "nanomart_exp2_count_scaling_report",
+  "type": 1,
+  "source_pdf": "E:\\WOS\\WOS_BattleReports_NanoMart_Exp_2.pdf",
+  "source_crop": "E:/WOS/Battle Simulator/ENGINE_REBUILD/nanomart_exp2_pages/crops/p1_1v2_T1MM_T1MM_wide.png",
+  "source_heading": "1v2 T1 MM vs T1 MM",
+  "timestamp": "2026-07-10 15:48:15",
+  "outcome": "ATTACKER DEFEAT",
+  "attacker": {
+    "name": "nanomart",
+    "coords": "X:556 Y:25",
+    "deployed_class": "Marksman",
+    "tier": 1,
+    "troops": 1,
+    "power_loss": -3,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "lead_hero": "Vulcanus",
+    "lead_hero_slot": "Marksman",
+    "skill_levels": {
+      "Skill 1": 1,
+      "Skill 2": 1,
+      "Skill 3": "not displayed"
+    },
+    "stats_pct_visible": {
+      "Infantry": {
+        "Attack": 2.2,
+        "Defense": 0.2
+      },
+      "Lancer": {
+        "Attack": 2.2,
+        "Defense": 0.2
+      },
+      "Marksman": {
+        "Attack": 336.1,
+        "Defense": 334.1
+      }
+    }
+  },
+  "defender": {
+    "name": "minimart",
+    "coords": "X:556 Y:27",
+    "deployed_class": "Marksman",
+    "tier": 1,
+    "troops": 2,
+    "power_loss": 0,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 2,
+    "lead_hero": "Vulcanus",
+    "lead_hero_slot": "Marksman",
+    "skill_levels": {
+      "Skill 1": 1,
+      "Skill 2": 1,
+      "Skill 3": 1
+    },
+    "stats_pct_visible": {
+      "Infantry": {
+        "Attack": 2.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 2.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 517.2,
+        "Defense": 515.2
+      }
+    }
+  },
+  "skill_details": {
+    "Attacker Vulcanus Skill 1": {
+      "triggered": 1,
+      "kills": 0,
+      "effect": "Enemy Troops Attack -4% at level 1"
+    },
+    "Attacker Vulcanus Skill 2": {
+      "triggered": 1,
+      "kills": 0,
+      "effect": "Level 1 periodic empowered damage; interpreted as attack events 6,12,18,..."
+    },
+    "Attacker Vulcanus Skill 3": {
+      "triggered": null,
+      "kills": 0,
+      "note": "attacker S3 row was blank/not displayed when null"
+    },
+    "Defender Vulcanus Skill 1": {
+      "triggered": 1,
+      "kills": 0,
+      "effect": "Enemy Troops Attack -4% at level 1"
+    },
+    "Defender Vulcanus Skill 2": {
+      "triggered": 1,
+      "kills": 0,
+      "effect": "Level 1 periodic empowered damage; interpreted as attack events 6,12,18,..."
+    },
+    "Defender Vulcanus Skill 3": {
+      "triggered": 3,
+      "kills": 0,
+      "effect": "Level 1 enemy Infantry/Lancer Defense -12%; turns 1,4,7,..."
+    }
+  },
+  "procs": [],
+  "turn_inference": {
+    "skill_2_schedule_assumption": "Vulcanus S2 counter increments on attack events 6,12,18,... when present.",
+    "skill_3_schedule_assumption": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+    "from_skill_2": [
+      6,
+      11
+    ],
+    "from_skill_3": [
+      7,
+      9
+    ],
+    "intersection": [
+      7,
+      9
+    ],
+    "representative_turns": 8
+  },
+  "stats_capture": {
+    "complete_12_stat_panel": false,
+    "visible_stats": [
+      "Attack",
+      "Defense"
+    ],
+    "missing_stats": [
+      "Lethality",
+      "Health"
+    ],
+    "note": "Only visible Attack/Defense panel rows are captured from the PDF screenshots; Lethality/Health panel rows were not visible."
+  },
+  "normalization_notes": {
+    "base_troop_stats_required": true,
+    "visible_panel_stats_are_percent_modifiers_on_base_troop_stats": true,
+    "seo_yoon_s1_level_3_attack_factor": null,
+    "vulcanus_s1_level_1_enemy_attack_factor": 0.96,
+    "attacker_damage_attack_factor_when_seoyoon_vs_vulcanus": null,
+    "warning": "Do not derive base formula directly from observed turns without backing out battle skills and missing Lethality/Health panel rows.",
+    "troop_passives_must_be_applied_in_formula": true,
+    "troop_passive_rule": "Infantry->Lancer Master Brawler +10% DD; Lancer->Marksman Charge +10% DD; Marksman->Infantry Ranged Strike +10% DD. Directional by attacker class and target class."
+  },
+  "notes": [
+    "Vulcanus vs Vulcanus; attacker S3 row is blank/not displayed. Heavy Marksman hero-stat contamination."
+  ],
+  "_extraction": "Extracted by Codex from PDF render on 2026-07-10.",
+  "troop_passives": {
+    "rule_source": "GAME_RULES.md troop skills / wos_sim.troop_catalog",
+    "attacker": [],
+    "defender": [],
+    "notes": [
+      "T1 troop passives are deterministic Damage Dealt modifiers keyed to target class.",
+      "They affect formula normalization for cross-class rows; same-class rows usually have no active T1 target passive."
+    ]
+  }
+}

@@ -1,0 +1,4048 @@
+[
+ {
+  "name": "NanoMart_100_NoHero",
+  "att": {
+   "force": {
+    "count": 100,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -700,
+    "loss": 0,
+    "inj": 35,
+    "light": 65,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -360,
+    "loss": 0,
+    "inj": 18,
+    "light": 33,
+    "surv": 149,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_100_SeoYoonlvl1",
+  "att": {
+   "force": {
+    "count": 100,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 1
+   },
+   "out": {
+    "power": -700,
+    "loss": 0,
+    "inj": 35,
+    "light": 65,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -380,
+    "loss": 0,
+    "inj": 19,
+    "light": 34,
+    "surv": 147,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_100_SeoYoonlvl2",
+  "att": {
+   "force": {
+    "count": 100,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 2
+   },
+   "out": {
+    "power": -700,
+    "loss": 0,
+    "inj": 35,
+    "light": 65,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -400,
+    "loss": 0,
+    "inj": 20,
+    "light": 36,
+    "surv": 144,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_100_SeoYoonlvl3",
+  "att": {
+   "force": {
+    "count": 100,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -700,
+    "loss": 0,
+    "inj": 35,
+    "light": 65,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -420,
+    "loss": 0,
+    "inj": 21,
+    "light": 38,
+    "surv": 141,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_100_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 100,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -700,
+    "loss": 0,
+    "inj": 35,
+    "light": 65,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 35,
+    "vulc_s2_K": 1,
+    "vulc_s3_T": 70,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -360,
+    "loss": 0,
+    "inj": 19,
+    "light": 33,
+    "surv": 148,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 210,
+  "turns_hi": 210
+ },
+ {
+  "name": "NanoMart_100_Vulcanus",
+  "att": {
+   "force": {
+    "count": 100,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -700,
+    "loss": 0,
+    "inj": 35,
+    "light": 65,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 34,
+    "vulc_s2_K": 1,
+    "vulc_s3_T": 69,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -320,
+    "loss": 0,
+    "inj": 16,
+    "light": 28,
+    "surv": 156,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 205,
+  "turns_hi": 207
+ },
+ {
+  "name": "NanoMart_1v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 88,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 264,
+  "turns_hi": 264
+ },
+ {
+  "name": "NanoMart_1v1_T1InfvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": null,
+    "vulc_s2_T": 13,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 27,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 79,
+  "turns_hi": 81
+ },
+ {
+  "name": "NanoMart_1v1_T1InfvT1MM_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 30.86,
+    "D": 6.152,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 1,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 3,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 7,
+  "turns_hi": 9
+ },
+ {
+  "name": "NanoMart_1v1_T1InfvT6Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 11,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 23,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 67,
+  "turns_hi": 69
+ },
+ {
+  "name": "NanoMart_1v1_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 5,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 10,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 30,
+  "turns_hi": 30
+ },
+ {
+  "name": "NanoMart_1v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 30.86,
+    "D": 6.152,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 13,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 27,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 79,
+  "turns_hi": 81
+ },
+ {
+  "name": "NanoMart_1v1_T1MMvT1Inf_NoAttackerHero_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 5.11,
+    "D": 1.002,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {},
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 11,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 23,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 67,
+  "turns_hi": 69
+ },
+ {
+  "name": "NanoMart_1v1_T1MMvT1Lan_NoAttackerHero_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 5.11,
+    "D": 1.002,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 3,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 7,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 19,
+  "turns_hi": 21
+ },
+ {
+  "name": "NanoMart_1v1_T1MMvT1MM_VulcanusVsVulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 21.805,
+    "D": 4.341,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 2,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": null,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 30.86,
+    "D": 6.152,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 2,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 4,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 12,
+  "turns_hi": 12
+ },
+ {
+  "name": "NanoMart_1v1_T2InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.044,
+    "D": 5.01,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 29,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 59,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 175,
+  "turns_hi": 177
+ },
+ {
+  "name": "NanoMart_1v1_T2InfvT2Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.044,
+    "D": 5.01,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.04,
+    "D": 5.0,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 89,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -4,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 265,
+  "turns_hi": 267
+ },
+ {
+  "name": "NanoMart_1v1_T3InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 3
+   },
+   "stats": {
+    "A": 3.066,
+    "D": 6.012,
+    "L": 3.0,
+    "H": 8.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": null,
+    "vulc_s2_T": 21,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 42,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 126,
+  "turns_hi": 126
+ },
+ {
+  "name": "NanoMart_1v1_T3InfvT3Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 3
+   },
+   "stats": {
+    "A": 3.066,
+    "D": 6.012,
+    "L": 3.0,
+    "H": 8.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 3
+   },
+   "stats": {
+    "A": 3.06,
+    "D": 6.0,
+    "L": 3.0,
+    "H": 8.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 89,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -6,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 265,
+  "turns_hi": 267
+ },
+ {
+  "name": "NanoMart_1v1_T4InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 4
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 7.014,
+    "L": 4.0,
+    "H": 9.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 16,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 32,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 96,
+  "turns_hi": 96
+ },
+ {
+  "name": "NanoMart_1v1_T5InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 5
+   },
+   "stats": {
+    "A": 5.11,
+    "D": 8.016,
+    "L": 5.0,
+    "H": 10.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 13,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 27,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 79,
+  "turns_hi": 81
+ },
+ {
+  "name": "NanoMart_1v1_T6InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 4
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 7.014,
+    "L": 4.0,
+    "H": 9.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 16,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 32,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 96,
+  "turns_hi": 96
+ },
+ {
+  "name": "NanoMart_1v1_T6InfvT6Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 88,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -20,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 264,
+  "turns_hi": 264
+ },
+ {
+  "name": "NanoMart_1v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 32,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 64,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 192,
+  "turns_hi": 192
+ },
+ {
+  "name": "NanoMart_1v2_T1InfvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 10,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 21,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 61,
+  "turns_hi": 63
+ },
+ {
+  "name": "NanoMart_1v2_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 9,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 19,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 55,
+  "turns_hi": 57
+ },
+ {
+  "name": "NanoMart_1v2_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 3,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 7,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 19,
+  "turns_hi": 21
+ },
+ {
+  "name": "NanoMart_1v2_T1MMvT1MM_VulcanusVsVulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 21.805,
+    "D": 4.341,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 1,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": null,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 30.86,
+    "D": 6.152,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 1,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 3,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 7,
+  "turns_hi": 9
+ },
+ {
+  "name": "NanoMart_200_NoHero",
+  "att": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1380,
+    "loss": 0,
+    "inj": 69,
+    "light": 127,
+    "surv": 4,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_200_SeoYoonlvl3",
+  "att": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -1040,
+    "loss": 0,
+    "inj": 52,
+    "light": 96,
+    "surv": 52,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_200_Vulcanus",
+  "att": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 63,
+    "vulc_s2_K": 1,
+    "vulc_s3_T": 127,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -1080,
+    "loss": 0,
+    "inj": 54,
+    "light": 100,
+    "surv": 46,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 379,
+  "turns_hi": 381
+ },
+ {
+  "name": "NanoMart_250_NoHero",
+  "att": {
+   "force": {
+    "count": 250,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -980,
+    "loss": 0,
+    "inj": 50,
+    "light": 91,
+    "surv": 109,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_250_SeoYoonlvl3",
+  "att": {
+   "force": {
+    "count": 250,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -840,
+    "loss": 0,
+    "inj": 42,
+    "light": 77,
+    "surv": 131,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_250_Vulcanus",
+  "att": {
+   "force": {
+    "count": 250,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1160,
+    "loss": 0,
+    "inj": 59,
+    "light": 107,
+    "surv": 84,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 59,
+    "vulc_s2_K": 2,
+    "vulc_s3_T": 119,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 355,
+  "turns_hi": 357
+ },
+ {
+  "name": "NanoMart_2v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 31,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 62,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 186,
+  "turns_hi": 186
+ },
+ {
+  "name": "NanoMart_2v1_T1InfvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 9,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 19,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 55,
+  "turns_hi": 57
+ },
+ {
+  "name": "NanoMart_2v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 10,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 21,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 61,
+  "turns_hi": 63
+ },
+ {
+  "name": "NanoMart_2v1_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 2,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 3,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 7,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 19,
+  "turns_hi": 21
+ },
+ {
+  "name": "NanoMart_2v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 1,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 30.86,
+    "D": 6.152,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 1,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 2,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 6,
+  "turns_hi": 6
+ },
+ {
+  "name": "NanoMart_2v1_T1MMvT1MM_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 7.335,
+    "D": 1.447,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 1,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Marksman",
+    "tier": 1
+   },
+   "stats": {
+    "A": 30.86,
+    "D": 6.152,
+    "L": 5.0,
+    "H": 1.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 1,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 3,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER DEFEAT",
+  "turns_lo": 7,
+  "turns_hi": 9
+ },
+ {
+  "name": "NanoMart_300_NoHero",
+  "att": {
+   "force": {
+    "count": 300,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -860,
+    "loss": 0,
+    "inj": 43,
+    "light": 79,
+    "surv": 178,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_300_SeoYoonlvl3",
+  "att": {
+   "force": {
+    "count": 300,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -740,
+    "loss": 0,
+    "inj": 37,
+    "light": 67,
+    "surv": 196,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": null,
+  "turns_hi": null
+ },
+ {
+  "name": "NanoMart_300_Vulcanus",
+  "att": {
+   "force": {
+    "count": 300,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -1000,
+    "loss": 0,
+    "inj": 50,
+    "light": 91,
+    "surv": 159,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 200,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 49,
+    "vulc_s2_K": 1,
+    "vulc_s3_T": 99,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -1400,
+    "loss": 0,
+    "inj": 70,
+    "light": 130,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 295,
+  "turns_hi": 297
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+10D+10H_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.124,
+    "D": 4.008,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.4,
+    "L": 1.1,
+    "H": 6.6
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 41,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 82,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 244,
+  "turns_hi": 246
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+20D+10H_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.124,
+    "D": 4.008,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.134,
+    "D": 4.9,
+    "L": 1.0,
+    "H": 6.6
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 40,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 81,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 241,
+  "turns_hi": 243
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10A+20D_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.135,
+    "D": 4.46,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.134,
+    "D": 4.9,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 89,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 265,
+  "turns_hi": 267
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10A+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.124,
+    "D": 4.008,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.4,
+    "L": 1.0,
+    "H": 6.6
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 88,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 262,
+  "turns_hi": 264
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10A+20D_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.134,
+    "D": 4.9,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 40,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 81,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 241,
+  "turns_hi": 243
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D+10H_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.4,
+    "L": 1.0,
+    "H": 6.6
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 45,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 90,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 268,
+  "turns_hi": 270
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Att+10L_Def+10D_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.1,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.4,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 88,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 262,
+  "turns_hi": 264
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+10D_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.134,
+    "D": 4.456,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 40,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 81,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 241,
+  "turns_hi": 243
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+20D+10H_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.134,
+    "D": 4.9,
+    "L": 1.0,
+    "H": 6.606
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 40,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 81,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 241,
+  "turns_hi": 243
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10A+20D_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.134,
+    "D": 4.9,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 40,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 81,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 241,
+  "turns_hi": 243
+ },
+ {
+  "name": "NanoMart_Exp4_1v1_T1InfvT1Inf_Def+10D_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.4,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 45,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 90,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 268,
+  "turns_hi": 270
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 88,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 262,
+  "turns_hi": 264
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T3InfvT2Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 3
+   },
+   "stats": {
+    "A": 3.066,
+    "D": 6.012,
+    "L": 3.0,
+    "H": 8.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.04,
+    "D": 5.0,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 31,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 63,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -4,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 187,
+  "turns_hi": 189
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T4InfvT2Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 4
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 7.014,
+    "L": 4.0,
+    "H": 9.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.04,
+    "D": 5.0,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 24,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 48,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -4,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 142,
+  "turns_hi": 144
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T5InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 5
+   },
+   "stats": {
+    "A": 5.11,
+    "D": 8.016,
+    "L": 5.0,
+    "H": 10.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 13,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 27,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 79,
+  "turns_hi": 81
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T5InfvT2Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 5
+   },
+   "stats": {
+    "A": 5.11,
+    "D": 8.016,
+    "L": 5.0,
+    "H": 10.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.04,
+    "D": 5.0,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 20,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 40,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -4,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 118,
+  "turns_hi": 120
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.04,
+    "D": 5.0,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 17,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 34,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -4,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 100,
+  "turns_hi": 102
+ },
+ {
+  "name": "NanoMart_SetA_1v1_T6InfvT2Inf_SeoYoonlvl3_Vulcanus_Duplicate2",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 2
+   },
+   "stats": {
+    "A": 2.04,
+    "D": 5.0,
+    "L": 2.0,
+    "H": 7.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 17,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 34,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -4,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 100,
+  "turns_hi": 102
+ },
+ {
+  "name": "NanoMart_SetB_1v1_T1InfvT1Inf_NoAttackerHero_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 45,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 90,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 268,
+  "turns_hi": 270
+ },
+ {
+  "name": "NanoMart_SetB_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 44,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 88,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 262,
+  "turns_hi": 264
+ },
+ {
+  "name": "NanoMart_SetB_1v1_T1LanvT1Lan_NoAttackerHero_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {},
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 5,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 10,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 28,
+  "turns_hi": 30
+ },
+ {
+  "name": "NanoMart_SetC_1v3_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 3,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 26,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 52,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 3,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 154,
+  "turns_hi": 156
+ },
+ {
+  "name": "NanoMart_SetC_1v5_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "def": {
+   "force": {
+    "count": 5,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 20,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 40,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 5,
+    "kills": 1
+   }
+  },
+  "winner": "defender",
+  "turns_lo": 118,
+  "turns_hi": 120
+ },
+ {
+  "name": "NanoMart_SetC_2v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 53,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 106,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 1,
+    "surv": 0,
+    "kills": 1
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 316,
+  "turns_hi": 318
+ },
+ {
+  "name": "NanoMart_SetC_2v2_T1LanvT1Lan_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.088,
+    "D": 2.004,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 1,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 2,
+    "cls": "Lancer",
+    "tier": 1
+   },
+   "stats": {
+    "A": 4.08,
+    "D": 2.0,
+    "L": 5.0,
+    "H": 2.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 6,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 12,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 1,
+    "surv": 0,
+    "kills": 1
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 34,
+  "turns_hi": 36
+ },
+ {
+  "name": "NanoMart_SetC_3v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 3,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.022,
+    "D": 4.008,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": 0,
+    "loss": 0,
+    "inj": 0,
+    "light": 0,
+    "surv": 3,
+    "kills": 1
+   }
+  },
+  "def": {
+   "force": {
+    "count": 1,
+    "cls": "Infantry",
+    "tier": 1
+   },
+   "stats": {
+    "A": 1.02,
+    "D": 4.0,
+    "L": 1.0,
+    "H": 6.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": 0,
+    "vulc_s2_T": 25,
+    "vulc_s2_K": 0,
+    "vulc_s3_T": 51,
+    "vulc_s3_K": 0
+   },
+   "out": {
+    "power": -3,
+    "loss": 0,
+    "inj": 1,
+    "light": 0,
+    "surv": 0,
+    "kills": 0
+   }
+  },
+  "winner": "attacker",
+  "turns_lo": 151,
+  "turns_hi": 153
+ },
+ {
+  "name": "NanoMart_10v10_SeoYoonlvl3_Vulcanus",
+  "att": {
+   "force": {
+    "count": 10,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.132,
+    "D": 9.018,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "seoyoon_s1": 3
+   },
+   "out": {
+    "power": -80,
+    "loss": 0,
+    "inj": 4,
+    "light": 5,
+    "surv": 1,
+    "kills": null
+   }
+  },
+  "def": {
+   "force": {
+    "count": 10,
+    "cls": "Infantry",
+    "tier": 6
+   },
+   "stats": {
+    "A": 6.12,
+    "D": 9.0,
+    "L": 6.0,
+    "H": 11.0
+   },
+   "heroes": {
+    "vulc_s1_T": 1,
+    "vulc_s1_K": null,
+    "vulc_s2_T": 67,
+    "vulc_s2_K": null,
+    "vulc_s3_T": 134,
+    "vulc_s3_K": null
+   },
+   "out": {
+    "power": -80,
+    "loss": 0,
+    "inj": 4,
+    "light": 6,
+    "surv": 0,
+    "kills": null
+   }
+  },
+  "winner": "ATTACKER VICTORY",
+  "turns_lo": 400,
+  "turns_hi": 402
+ }
+]

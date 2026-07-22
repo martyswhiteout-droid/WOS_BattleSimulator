@@ -1,0 +1,165 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-07-12 01:37:10",
+  "recommended_filename": "FarSeer_1v1_T1InfvT1Inf_Ursarlvl2_NoDefenderHero_20260712_013710.json",
+  "setup": "1 Lv 1.0 Infantry attacker with Ursar versus 1 Lv 1.0 Infantry defender with the Lancer hero slot vacant.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": null,
+  "attacker": {
+    "name": "Far Seer",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1052 Y:405",
+    "role": "attacker",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      },
+      "Lancer": {
+        "Attack": 511.3,
+        "Defense": 509.3,
+        "Lethality": 18.5,
+        "Health": 4.8
+      },
+      "Marksman": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Attack and Defense are visible for all classes. Lancer Lethality and Health are also visible. Infantry and Marksman Lethality/Health are not displayed."
+    },
+    "lead_heroes": {
+      "Lancer": {
+        "name": "Ursar",
+        "level": 54,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Ursar",
+        "slot": "Skill 1",
+        "name": "Forest Spores",
+        "level": 2,
+        "effect": "Ursar is not above using the hallucinogenic spores of the underground to bewilder opponents, reducing enemy troops' Attack by 10%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Ursar",
+        "slot": "Skill 2",
+        "name": "Horn of the Ancients",
+        "level": 2,
+        "effect": "The horn of the elders encourages friends and terrifies foes, increasing Lancer and Marksman Lethality by 12% for 2 turns and reducing enemy troops' Defense by 12% for 1 turn.",
+        "triggers": 139,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Lab Rat",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1055 Y:405",
+    "role": "defender",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed."
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Ursar Skill 1 triggered 1 time and Skill 2 triggered 139 times.",
+    "The report does not show a cadence that would convert Ursar's trigger counts into a battle-turn count, so no turn inference was made.",
+    "Skill kills are displayed as dashes and recorded as zero.",
+    "The defender's Lancer hero slot is explicitly shown as vacant.",
+    "Only values visible in the four supplied screenshots were recorded."
+  ],
+  "source_images": [
+    "image(27).png",
+    "image(28).png",
+    "image(29).png",
+    "image(30).png"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-12",
+    "ocr_confidence": "high",
+    "manual_overrides": []
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

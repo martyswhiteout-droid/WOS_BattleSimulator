@@ -1,0 +1,2231 @@
+{
+ "family": "difference law c*(A - k*D + K)*L^Lpow / HP",
+ "solve_rows": [
+  17,
+  34,
+  29
+ ],
+ "note": "solved from 3 clean Infantry rows' band midpoints, then blind-predicted every clean row against exact bands.",
+ "variants": [
+  {
+   "HP": "H",
+   "Lpow": 0,
+   "target": "INF_CLEAN",
+   "c": 0.011096033698587403,
+   "k": 0.7862666812621902,
+   "K": 4.068906637475619,
+   "n_pass": 4,
+   "n_rows": 24,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.013714166155132303,
+     "rel_err_mid": -0.04456532879859909,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.005881667023302005,
+     "rel_err_mid": 0.03215715660202356,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.08604543356212657,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.002717122572306808,
+     "rel_err_mid": -0.2786269835150197,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003110637272164557,
+     "rel_err_mid": -0.18035003005339845,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.19225290539108664,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003213450638925924,
+     "rel_err_mid": -0.1532588054576669,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.19225290539108664,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.005583583174023152,
+     "rel_err_mid": 0.04685484213125268,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007372086269696264,
+     "rel_err_mid": 0.05788153634554338,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.009160589365369376,
+     "rel_err_mid": 0.09467126474874221,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.010949092461042488,
+     "rel_err_mid": 0.11130591658778033,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.19225290539108664,
+     "pass": false
+    }
+   ]
+  },
+  {
+   "HP": "H",
+   "Lpow": 0,
+   "target": "FULL_CLEAN",
+   "c": 0.011096033698587403,
+   "k": 0.7862666812621902,
+   "K": 4.068906637475619,
+   "n_pass": 4,
+   "n_rows": 35,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 18,
+     "matchup": "T1Inf vs T1Lan",
+     "obs_lo": 0.012345679012345678,
+     "obs_hi": 0.01282051282051282,
+     "pred": 0.020735657909897454,
+     "rel_err_mid": 0.6478979455941147,
+     "pass": false
+    },
+    {
+     "ledger_line": 19,
+     "matchup": "T1Inf vs T1Mar",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.06517387177128114,
+     "rel_err_mid": -0.517205500541055,
+     "pass": false
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.013714166155132303,
+     "rel_err_mid": -0.04456532879859909,
+     "pass": false
+    },
+    {
+     "ledger_line": 21,
+     "matchup": "T1Lan vs T1Inf",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.021106373870226118,
+     "rel_err_mid": -0.8436483681093899,
+     "pass": false
+    },
+    {
+     "ledger_line": 22,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03333333333333333,
+     "obs_hi": 0.034482758620689655,
+     "pred": 0.03888896433097954,
+     "rel_err_mid": 0.14689488026956599,
+     "pass": false
+    },
+    {
+     "ledger_line": 23,
+     "matchup": "T1Lan vs T1Mar",
+     "obs_lo": 0.011961722488038277,
+     "obs_hi": 0.01240694789081886,
+     "pred": 0.1860932989345222,
+     "rel_err_mid": 14.273159843466994,
+     "pass": false
+    },
+    {
+     "ledger_line": 24,
+     "matchup": "T1Mar vs T1Inf",
+     "obs_lo": 0.014492753623188406,
+     "obs_hi": 0.015151515151515152,
+     "pred": 0.011687822000559643,
+     "rel_err_mid": -0.21146160902890943,
+     "pass": false
+    },
+    {
+     "ledger_line": 25,
+     "matchup": "T1Mar vs T1Lan",
+     "obs_lo": 0.046296296296296294,
+     "obs_hi": 0.053763440860215055,
+     "pred": 0.08620583393055123,
+     "rel_err_mid": 0.7230873552208092,
+     "pass": false
+    },
+    {
+     "ledger_line": 26,
+     "matchup": "T1Mar vs T1Mar",
+     "obs_lo": 0.08064516129032258,
+     "obs_hi": 0.08928571428571429,
+     "pred": 0.33600258015860507,
+     "rel_err_mid": 2.9545795196972096,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.005881667023302005,
+     "rel_err_mid": 0.03215715660202356,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 31,
+     "matchup": "T4Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.010054840913205932,
+     "rel_err_mid": -0.03978901436190474,
+     "pass": false
+    },
+    {
+     "ledger_line": 33,
+     "matchup": "T6Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.01422801480310986,
+     "rel_err_mid": 0.3587381675849417,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.08604543356212657,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.002717122572306808,
+     "rel_err_mid": -0.2786269835150197,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003110637272164557,
+     "rel_err_mid": -0.18035003005339845,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.19225290539108664,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003213450638925924,
+     "rel_err_mid": -0.1532588054576669,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.00449336215160617,
+     "rel_err_mid": 0.12105333552377107,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.19225290539108664,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.005583583174023152,
+     "rel_err_mid": 0.04685484213125268,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007372086269696264,
+     "rel_err_mid": 0.05788153634554338,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.009160589365369376,
+     "rel_err_mid": 0.09467126474874221,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.010949092461042488,
+     "rel_err_mid": 0.11130591658778033,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.00428253751133301,
+     "rel_err_mid": 0.19225290539108664,
+     "pass": false
+    },
+    {
+     "ledger_line": 75,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03225806451612903,
+     "obs_hi": 0.03355704697986577,
+     "pred": 0.037517407710436886,
+     "rel_err_mid": 0.1400849093059735,
+     "pass": false
+    }
+   ]
+  },
+  {
+   "HP": "H",
+   "Lpow": 1,
+   "target": "INF_CLEAN",
+   "c": -0.003028469917960798,
+   "k": 0.08400926597583563,
+   "K": -8.31105782107064,
+   "n_pass": 4,
+   "n_rows": 24,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.007532900575779432,
+     "rel_err_mid": -0.47520000097714776,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.006451164734434697,
+     "rel_err_mid": 0.13209670365310422,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.005602261068040536,
+     "rel_err_mid": 0.48735283677605,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.006167005127318816,
+     "rel_err_mid": 0.6372875985478292,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004212651145519575,
+     "rel_err_mid": 0.06832235039961443,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.004147302568245614,
+     "rel_err_mid": 0.10107368523727622,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003755203057252271,
+     "rel_err_mid": -0.010507557225276298,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.0038296828595632505,
+     "rel_err_mid": 0.0661787559262974,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.004193245518739815,
+     "rel_err_mid": 0.10491621577663324,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.0038296828595632505,
+     "rel_err_mid": 0.0661787559262974,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.006938968916291024,
+     "rel_err_mid": 0.30097340417757157,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007299394974028326,
+     "rel_err_mid": 0.04745046205708214,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.00668353924125244,
+     "rel_err_mid": -0.20133104297000126,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.005091401717963369,
+     "rel_err_mid": -0.4832352660250382,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.0038296828595632505,
+     "rel_err_mid": 0.0661787559262974,
+     "pass": false
+    }
+   ]
+  },
+  {
+   "HP": "H",
+   "Lpow": 1,
+   "target": "FULL_CLEAN",
+   "c": -0.003028469917960798,
+   "k": 0.08400926597583563,
+   "K": -8.31105782107064,
+   "n_pass": 5,
+   "n_rows": 35,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 18,
+     "matchup": "T1Inf vs T1Lan",
+     "obs_lo": 0.012345679012345678,
+     "obs_hi": 0.01282051282051282,
+     "pred": 0.010959971386872528,
+     "rel_err_mid": -0.12899246261307384,
+     "pass": false
+    },
+    {
+     "ledger_line": 19,
+     "matchup": "T1Inf vs T1Mar",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": -0.06394775280116477,
+     "rel_err_mid": -1.4737116649062907,
+     "pass": false
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.007532900575779432,
+     "rel_err_mid": -0.47520000097714776,
+     "pass": false
+    },
+    {
+     "ledger_line": 21,
+     "matchup": "T1Lan vs T1Inf",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.011110259643835184,
+     "rel_err_mid": -0.9176975051838495,
+     "pass": false
+    },
+    {
+     "ledger_line": 22,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03333333333333333,
+     "obs_hi": 0.034482758620689655,
+     "pred": 0.03002670650009053,
+     "rel_err_mid": -0.11446662186173695,
+     "pass": false
+    },
+    {
+     "ledger_line": 23,
+     "matchup": "T1Lan vs T1Mar",
+     "obs_lo": 0.011961722488038277,
+     "obs_hi": 0.01240694789081886,
+     "pred": -0.1696002978316196,
+     "rel_err_mid": -14.919536453557928,
+     "pass": false
+    },
+    {
+     "ledger_line": 24,
+     "matchup": "T1Mar vs T1Inf",
+     "obs_lo": 0.014492753623188406,
+     "obs_hi": 0.015151515151515152,
+     "pred": 0.008204465420327546,
+     "rel_err_mid": -0.4464720663085683,
+     "pass": false
+    },
+    {
+     "ledger_line": 25,
+     "matchup": "T1Mar vs T1Lan",
+     "obs_lo": 0.046296296296296294,
+     "obs_hi": 0.053763440860215055,
+     "pred": 0.05916471989822326,
+     "rel_err_mid": 0.18258795354777013,
+     "pass": false
+    },
+    {
+     "ledger_line": 26,
+     "matchup": "T1Mar vs T1Mar",
+     "obs_lo": 0.08064516129032258,
+     "obs_hi": 0.08928571428571429,
+     "pred": -0.31723007301631667,
+     "rel_err_mid": -4.73363665597509,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.006451164734434697,
+     "rel_err_mid": 0.13209670365310422,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.005602261068040536,
+     "rel_err_mid": 0.48735283677605,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.006167005127318816,
+     "rel_err_mid": 0.6372875985478292,
+     "pass": false
+    },
+    {
+     "ledger_line": 31,
+     "matchup": "T4Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.008346347779807856,
+     "rel_err_mid": -0.20294563610630734,
+     "pass": false
+    },
+    {
+     "ledger_line": 33,
+     "matchup": "T6Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.005685549136119478,
+     "rel_err_mid": -0.45704494113707184,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004212651145519575,
+     "rel_err_mid": 0.06832235039961443,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.004147302568245614,
+     "rel_err_mid": 0.10107368523727622,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003755203057252271,
+     "rel_err_mid": -0.010507557225276298,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.0038296828595632505,
+     "rel_err_mid": 0.0661787559262974,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.004193245518739815,
+     "rel_err_mid": 0.10491621577663324,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003772141931121995,
+     "rel_err_mid": -0.05888460549706631,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.0038296828595632505,
+     "rel_err_mid": 0.0661787559262974,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.006938968916291024,
+     "rel_err_mid": 0.30097340417757157,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007299394974028326,
+     "rel_err_mid": 0.04745046205708214,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.00668353924125244,
+     "rel_err_mid": -0.20133104297000126,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.005091401717963369,
+     "rel_err_mid": -0.4832352660250382,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.0038296828595632505,
+     "rel_err_mid": 0.0661787559262974,
+     "pass": false
+    },
+    {
+     "ledger_line": 75,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03225806451612903,
+     "obs_hi": 0.03355704697986577,
+     "pred": 0.03315576317585582,
+     "rel_err_mid": 0.007542566508408122,
+     "pass": true
+    }
+   ]
+  },
+  {
+   "HP": "DpH",
+   "Lpow": 0,
+   "target": "INF_CLEAN",
+   "c": 0.01849338949764567,
+   "k": 0.7178624175146283,
+   "K": 3.795289582485372,
+   "n_pass": 5,
+   "n_rows": 24,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.01433219074620283,
+     "rel_err_mid": -0.0015089653796047653,
+     "pass": true
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.005881667023302005,
+     "rel_err_mid": 0.03215715660202356,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.12403480236355402,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.0025972247473920267,
+     "rel_err_mid": -0.31045883994663215,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003156638242811224,
+     "rel_err_mid": -0.16822881793218625,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.23395736261523692,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.0031385112563819787,
+     "rel_err_mid": -0.1730052616580131,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.23395736261523692,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.005533902532476677,
+     "rel_err_mid": 0.03754031800898705,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007272724986603313,
+     "rel_err_mid": 0.043623365324985564,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.00901154744072995,
+     "rel_err_mid": 0.07686106655752045,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.010750369894856587,
+     "rel_err_mid": 0.09113606558436005,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.23395736261523692,
+     "pass": false
+    }
+   ]
+  },
+  {
+   "HP": "DpH",
+   "Lpow": 0,
+   "target": "FULL_CLEAN",
+   "c": 0.01849338949764567,
+   "k": 0.7178624175146283,
+   "K": 3.795289582485372,
+   "n_pass": 6,
+   "n_rows": 35,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 18,
+     "matchup": "T1Inf vs T1Lan",
+     "obs_lo": 0.012345679012345678,
+     "obs_hi": 0.01282051282051282,
+     "pred": 0.016647201578522872,
+     "rel_err_mid": 0.32298137827808193,
+     "pass": false
+    },
+    {
+     "ledger_line": 19,
+     "matchup": "T1Inf vs T1Mar",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.0683465599691187,
+     "rel_err_mid": -0.49370288563135967,
+     "pass": false
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.01433219074620283,
+     "rel_err_mid": -0.0015089653796047653,
+     "pass": true
+    },
+    {
+     "ledger_line": 21,
+     "matchup": "T1Lan vs T1Inf",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.017942078870191815,
+     "rel_err_mid": -0.8670888079537998,
+     "pass": false
+    },
+    {
+     "ledger_line": 22,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03333333333333333,
+     "obs_hi": 0.034482758620689655,
+     "pred": 0.03177495692942461,
+     "rel_err_mid": -0.06290804987798626,
+     "pass": false
+    },
+    {
+     "ledger_line": 23,
+     "matchup": "T1Lan vs T1Mar",
+     "obs_lo": 0.011961722488038277,
+     "obs_hi": 0.01240694789081886,
+     "pred": 0.1640702824883437,
+     "rel_err_mid": 12.465673747279636,
+     "pass": false
+    },
+    {
+     "ledger_line": 24,
+     "matchup": "T1Mar vs T1Inf",
+     "obs_lo": 0.014492753623188406,
+     "obs_hi": 0.015151515151515152,
+     "pred": 0.011687822000559643,
+     "rel_err_mid": -0.21146160902890943,
+     "pass": false
+    },
+    {
+     "ledger_line": 25,
+     "matchup": "T1Mar vs T1Lan",
+     "obs_lo": 0.046296296296296294,
+     "obs_hi": 0.053763440860215055,
+     "pred": 0.06987204788176203,
+     "rel_err_mid": 0.39660666452620474,
+     "pass": false
+    },
+    {
+     "ledger_line": 26,
+     "matchup": "T1Mar vs T1Mar",
+     "obs_lo": 0.08064516129032258,
+     "obs_hi": 0.08928571428571429,
+     "pred": 0.10493085084564331,
+     "rel_err_mid": 0.2349827597833003,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.005881667023302005,
+     "rel_err_mid": 0.03215715660202356,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.007561599106356454,
+     "pass": false
+    },
+    {
+     "ledger_line": 31,
+     "matchup": "T4Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.010054840913205932,
+     "rel_err_mid": -0.03978901436190474,
+     "pass": false
+    },
+    {
+     "ledger_line": 33,
+     "matchup": "T6Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.01422801480310986,
+     "rel_err_mid": 0.3587381675849417,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.12403480236355402,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.0025972247473920267,
+     "rel_err_mid": -0.31045883994663215,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003156638242811224,
+     "rel_err_mid": -0.16822881793218625,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.23395736261523692,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.0031385112563819787,
+     "rel_err_mid": -0.1730052616580131,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.004653629510471552,
+     "rel_err_mid": 0.1610385962638603,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.23395736261523692,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.005533902532476677,
+     "rel_err_mid": 0.03754031800898705,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007272724986603313,
+     "rel_err_mid": 0.043623365324985564,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.00901154744072995,
+     "rel_err_mid": 0.07686106655752045,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.010750369894856587,
+     "rel_err_mid": 0.09113606558436005,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004432338700027636,
+     "rel_err_mid": 0.23395736261523692,
+     "pass": false
+    },
+    {
+     "ledger_line": 75,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03225806451612903,
+     "obs_hi": 0.03355704697986577,
+     "pred": 0.032477260331705476,
+     "rel_err_mid": -0.013075885051660685,
+     "pass": true
+    }
+   ]
+  },
+  {
+   "HP": "DpH",
+   "Lpow": 1,
+   "target": "INF_CLEAN",
+   "c": -0.005047449863267997,
+   "k": 0.1257804153368022,
+   "K": -8.143973223626775,
+   "n_pass": 4,
+   "n_rows": 24,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.007844062660928842,
+     "rel_err_mid": -0.4535220483293443,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.006451164734434697,
+     "rel_err_mid": 0.13209670365310422,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.005481782335394503,
+     "rel_err_mid": 0.45536675426473705,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.0059636972659786345,
+     "rel_err_mid": 0.5833110843099885,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004410270328876087,
+     "rel_err_mid": 0.11843829476686207,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.003824014228143614,
+     "rel_err_mid": 0.015243370671890855,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.0037636365685374935,
+     "rel_err_mid": -0.008285335003054062,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004009336662614625,
+     "rel_err_mid": 0.11619414238484782,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.004040886904955346,
+     "rel_err_mid": 0.06476986559719022,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004009336662614625,
+     "rel_err_mid": 0.11619414238484782,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.006798929225260024,
+     "rel_err_mid": 0.2747176425855513,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007166913263237725,
+     "rel_err_mid": 0.028439567363005125,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.006585734449327605,
+     "rel_err_mid": -0.2130185109924837,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.005055392783529665,
+     "rel_err_mid": -0.4868900841781024,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004009336662614625,
+     "rel_err_mid": 0.11619414238484782,
+     "pass": false
+    }
+   ]
+  },
+  {
+   "HP": "DpH",
+   "Lpow": 1,
+   "target": "FULL_CLEAN",
+   "c": -0.005047449863267997,
+   "k": 0.1257804153368022,
+   "K": -8.143973223626775,
+   "n_pass": 5,
+   "n_rows": 35,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 18,
+     "matchup": "T1Inf vs T1Lan",
+     "obs_lo": 0.012345679012345678,
+     "obs_hi": 0.01282051282051282,
+     "pred": 0.00902789059799516,
+     "rel_err_mid": -0.28253820379706385,
+     "pass": false
+    },
+    {
+     "ledger_line": 19,
+     "matchup": "T1Inf vs T1Mar",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": -0.06717470664538304,
+     "rel_err_mid": -1.4976162684483958,
+     "pass": false
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.007844062660928842,
+     "rel_err_mid": -0.4535220483293443,
+     "pass": false
+    },
+    {
+     "ledger_line": 21,
+     "matchup": "T1Lan vs T1Inf",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.009715017943256472,
+     "rel_err_mid": -0.9280331657813832,
+     "pass": false
+    },
+    {
+     "ledger_line": 22,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03333333333333333,
+     "obs_hi": 0.034482758620689655,
+     "pred": 0.024495160961415713,
+     "rel_err_mid": -0.277600337748079,
+     "pass": false
+    },
+    {
+     "ledger_line": 23,
+     "matchup": "T1Lan vs T1Mar",
+     "obs_lo": 0.011961722488038277,
+     "obs_hi": 0.01240694789081886,
+     "pred": -0.15084070192806082,
+     "rel_err_mid": -13.379887747912086,
+     "pass": false
+    },
+    {
+     "ledger_line": 24,
+     "matchup": "T1Mar vs T1Inf",
+     "obs_lo": 0.014492753623188406,
+     "obs_hi": 0.015151515151515152,
+     "pred": 0.008204465420327546,
+     "rel_err_mid": -0.4464720663085683,
+     "pass": false
+    },
+    {
+     "ledger_line": 25,
+     "matchup": "T1Mar vs T1Lan",
+     "obs_lo": 0.046296296296296294,
+     "obs_hi": 0.053763440860215055,
+     "pred": 0.04767602804340745,
+     "rel_err_mid": -0.047048705138339475,
+     "pass": true
+    },
+    {
+     "ledger_line": 26,
+     "matchup": "T1Mar vs T1Mar",
+     "obs_lo": 0.08064516129032258,
+     "obs_hi": 0.08928571428571429,
+     "pred": -0.09892479122673567,
+     "rel_err_mid": -2.164294491997377,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.006451164734434697,
+     "rel_err_mid": 0.13209670365310422,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.005481782335394503,
+     "rel_err_mid": 0.45536675426473705,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.007968253968253968,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.0059636972659786345,
+     "rel_err_mid": 0.5833110843099885,
+     "pass": false
+    },
+    {
+     "ledger_line": 31,
+     "matchup": "T4Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.008346347779807856,
+     "rel_err_mid": -0.20294563610630734,
+     "pass": false
+    },
+    {
+     "ledger_line": 33,
+     "matchup": "T6Inf vs T1Inf",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.005685549136119478,
+     "rel_err_mid": -0.45704494113707184,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004410270328876087,
+     "rel_err_mid": 0.11843829476686207,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.003824014228143614,
+     "rel_err_mid": 0.015243370671890855,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.0037636365685374935,
+     "rel_err_mid": -0.008285335003054062,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004009336662614625,
+     "rel_err_mid": 0.11619414238484782,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.004040886904955346,
+     "rel_err_mid": 0.06476986559719022,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.003948939174579248,
+     "rel_err_mid": -0.014775287618400634,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004009336662614625,
+     "rel_err_mid": 0.11619414238484782,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.00379508007835004,
+     "rel_err_mid": 0.0,
+     "pass": true
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.006798929225260024,
+     "rel_err_mid": 0.2747176425855513,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.007166913263237725,
+     "rel_err_mid": 0.028439567363005125,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.006585734449327605,
+     "rel_err_mid": -0.2130185109924837,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.005055392783529665,
+     "rel_err_mid": -0.4868900841781024,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004009336662614625,
+     "rel_err_mid": 0.11619414238484782,
+     "pass": false
+    },
+    {
+     "ledger_line": 75,
+     "matchup": "T1Lan vs T1Lan",
+     "obs_lo": 0.03225806451612903,
+     "obs_hi": 0.03355704697986577,
+     "pred": 0.02873946150712347,
+     "rel_err_mid": -0.12666070591182044,
+     "pass": false
+    }
+   ]
+  }
+ ]
+}

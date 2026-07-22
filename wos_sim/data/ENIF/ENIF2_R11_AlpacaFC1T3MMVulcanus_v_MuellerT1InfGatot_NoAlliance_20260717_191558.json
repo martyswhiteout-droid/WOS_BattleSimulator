@@ -1,0 +1,326 @@
+{
+  "schema_version": 2,
+  "_type": "enif_controlled_experiment",
+  "type": 1,
+  "experiment_category": "E-NIF2",
+  "experiment_focus": "Marksman FC1 tier curve with Vulcanus attacker: FC1 T3/T6 Marksman into ordinary T1 Infantry with Gatot",
+  "battle_date": "2026-07-17 19:15:58",
+  "battle_context": "controlled_test_enif_manual_screenshot",
+  "battle_tile": "X:768 Y:477",
+  "recommended_filename": "ENIF2_R11_AlpacaFC1T3MMVulcanus_v_MuellerT1InfGatot_NoAlliance_20260717_191558.json",
+  "setup": "1 FC1 Lv.3.0 Marksman attacker Alpaca/Far Seer with Vulcanus vs 1 ordinary Lv.1.0 Infantry defender Colonel Mueller with Gatot; no alliance tag visible on either side.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat",
+    "confidence": "visible"
+  },
+  "turn_inference": {
+    "turns": 21,
+    "turns_range": [
+      21,
+      21
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "trigger_count": 21,
+    "observed_triggers": {
+      "Gatot Skill 1": 1,
+      "Gatot King's Bestowal": 21,
+      "Gatot Skill 3": 1,
+      "Vulcanus Skill 1": 1,
+      "Vulcanus Skill 2": 3,
+      "Vulcanus Skill 3": 7
+    },
+    "assumptions": [
+      "For these controlled Gatot Infantry tests, King's Bestowal trigger count is treated as the battle-round count."
+    ]
+  },
+  "attacker": {
+    "name": "Alpaca/Far Seer",
+    "display_name": "?????",
+    "alliance": null,
+    "state": null,
+    "coords": "X:766 Y:476",
+    "role": "attacker",
+    "side_label": "left_red",
+    "result": "victory",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Marksman",
+    "tier_display": "FC1 Lv.3.0",
+    "tier_code": "T3",
+    "fire_crystal_level": "FC1",
+    "fc_code": "FC1",
+    "is_fire_crystal": true,
+    "base_troop_stats": {
+      "Attack": 8,
+      "Defense": 3,
+      "Lethality": 9,
+      "Health": 3
+    },
+    "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Marksman T3 FC1",
+    "observed_power_per_injured_unit": null,
+    "composition": [
+      {
+        "class": "Marksman",
+        "tier_display": "FC1 Lv.3.0",
+        "tier_code": "T3",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "fc_code": "FC1",
+        "is_fire_crystal": true,
+        "base_troop_stats": {
+          "Attack": 8,
+          "Defense": 3,
+          "Lethality": 9,
+          "Health": 3
+        },
+        "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Marksman T3 FC1"
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 176.2,
+        "Defense": 169.0,
+        "Lethality": 109.7,
+        "Health": 109.3
+      },
+      "Lancer": {
+        "Attack": 182.7,
+        "Defense": 163.0,
+        "Lethality": 135.5,
+        "Health": 134.1
+      },
+      "Marksman": {
+        "Attack": 1049.5,
+        "Defense": 1039.3,
+        "Lethality": 247.2,
+        "Health": 150.6
+      }
+    },
+    "stats_capture": {
+      "source": "visible pasted screenshot stat panel",
+      "missing_visible_rows": [],
+      "notes": "All twelve visible stat rows were supplied in the pasted stat screenshot."
+    },
+    "lead_heroes": {
+      "Infantry": null,
+      "Marksman": {
+        "name": "Vulcanus",
+        "level": 73,
+        "stars": null,
+        "skill_levels": null,
+        "deployed_with_class": "Marksman"
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 1",
+        "name": "visible Vulcanus skill 1",
+        "level": null,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 2",
+        "name": "visible Vulcanus skill 2",
+        "level": null,
+        "effect": null,
+        "triggers": 3,
+        "kills": 0,
+        "status": "visible_unidentified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 3",
+        "name": "visible Vulcanus skill 3",
+        "level": null,
+        "effect": null,
+        "triggers": 7,
+        "kills": 0,
+        "status": "visible_unidentified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "counter_target": "Infantry",
+        "applies_in_this_battle": true
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Colonel Mueller",
+    "display_name": "Colonel M?ller",
+    "alliance": null,
+    "state": null,
+    "coords": "X:769 Y:476",
+    "role": "defender",
+    "side_label": "right_blue",
+    "result": "defeat",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv.1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": null,
+    "fc_code": null,
+    "is_fire_crystal": false,
+    "base_troop_stats": {
+      "Attack": 1,
+      "Defense": 4,
+      "Lethality": 1,
+      "Health": 6
+    },
+    "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T1, no Fire Crystal",
+    "observed_power_per_injured_unit": 3,
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "Lv.1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": null,
+        "fc_code": null,
+        "is_fire_crystal": false,
+        "base_troop_stats": {
+          "Attack": 1,
+          "Defense": 4,
+          "Lethality": 1,
+          "Health": 6
+        },
+        "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T1, no Fire Crystal",
+        "observed_power_per_injured_unit": 3
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 481.0,
+        "Defense": 481.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": 118.6
+      }
+    },
+    "stats_capture": {
+      "source": "visible pasted screenshot stat panel",
+      "missing_visible_rows": [],
+      "notes": "All twelve visible stat rows were supplied in the pasted stat screenshot."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 51,
+        "stars": null,
+        "skill_levels": [
+          1,
+          1,
+          1
+        ],
+        "deployed_with_class": "Infantry"
+      },
+      "Marksman": null
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Increases Gatot's Infantry Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified_from_prior_local_reference"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "Gatot's Infantry gains a shield equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 21,
+        "kills": 0,
+        "status": "identified_from_prior_local_reference"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "visible third Gatot skill",
+        "level": 1,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "counter_target": "Lancer",
+        "applies_in_this_battle": false
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Pasted screenshot set: FC1 T3 Marksman attacker with Vulcanus into ordinary T1 Infantry defender with Gatot.",
+    "No alliance tag is visible for either side; alliance fields are recorded as null.",
+    "Attacker Marksman stats are much higher than the earlier no-attacker-hero ENIF2 files, so this is saved as a separate Vulcanus variant instead of overwriting prior samples.",
+    "Gatot skill rows show triggers 1 / 21 / 1 with skill kills displayed as dashes and recorded as zero.",
+    "Vulcanus skill rows show triggers 1 / 3 / 7; skill names/effects were not inferred from the icon art."
+  ],
+  "source_images": [
+    "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-6d54a202-7317-45f3-bc07-dbdfb5a1ce14.png",
+    "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-678c64a4-f2ee-4dd9-a950-5abe528edddd.png",
+    "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-ae8dcd4f-2ba0-4aad-b0b6-46f060d8e5e7.png"
+  ],
+  "_extraction": {
+    "extracted_by": "Codex local visual transcription from pasted screenshots",
+    "timestamp": "2026-07-17",
+    "ocr_confidence": "manual_visual_high_for_visible rows",
+    "manual_overrides": [
+      "Martin specified these are FC1 T3 Marksman and FC1 T6 Marksman against T1 Infantry with Gatot.",
+      "Martin specified no alliance."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "issues": []
+  }
+}

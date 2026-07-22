@@ -1,0 +1,389 @@
+{
+  "schema_version": 2,
+  "_type": "controlled_2v2_mixed_hero_experiment",
+  "type": 1,
+  "battle_date": "2026-07-13 11:26:52",
+  "battle_context": "controlled_test_2v2_gatot_vulcanus_marksman_support",
+  "recommended_filename": "MuellerAlpaca_2v2_2T1InfvFC1T1Inf_FC1T1MM_GatotvGatot_Vulcanus_20260713_112652.json",
+  "setup": "2 ordinary Lv 1.0 Infantry attacker Colonel Mueller with Gatot versus 1 FC1 Lv 1.0 Infantry plus 1 FC1 Lv 1.0 Marksman defender Alpaca with Gatot and Vulcanus.",
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory",
+    "confidence": "visible"
+  },
+  "battle_tile": "X:746 Y:475",
+  "turn_inference": {
+    "turns": 90,
+    "turns_range": [
+      90,
+      90
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal triggers each time Gatot's Infantry attacks",
+    "trigger_count": 90,
+    "assumptions": [
+      "Both sides' Gatot King's Bestowal rows show 90 triggers.",
+      "For these controlled Gatot Infantry tests, Martin treats King's Bestowal's trigger count as the exact battle-round count."
+    ]
+  },
+  "attacker": {
+    "name": "Colonel Mueller",
+    "display_name": "Colonel Mueller",
+    "state": null,
+    "alliance": null,
+    "coords": "X:745 Y:473",
+    "role": "attacker",
+    "screenshot_side": "left/red",
+    "power_loss": -3,
+    "troops": 2,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 1,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": null,
+    "fc_code": null,
+    "is_fire_crystal": false,
+    "base_troop_stats": {
+      "Attack": 1,
+      "Defense": 4,
+      "Lethality": 1,
+      "Health": 6
+    },
+    "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T1, no Fire Crystal",
+    "observed_power_per_injured_unit": 3,
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "Lv 1.0",
+        "tier_code": "T1",
+        "count": 2,
+        "fire_crystal_level": null,
+        "fc_code": null,
+        "is_fire_crystal": false,
+        "base_troop_stats": {
+          "Attack": 1,
+          "Defense": 4,
+          "Lethality": 1,
+          "Health": 6
+        },
+        "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T1, no Fire Crystal"
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 481.0,
+        "Defense": 481.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": null
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "partially_visible",
+      "notes": "Marksman Health row is cropped out of the pasted stat screenshot and is left null. Other visible stat rows were transcribed from the stat panel."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 51,
+        "stars": null,
+        "level_confidence": "visible_but_small",
+        "skill_levels": [
+          1,
+          1,
+          1
+        ]
+      },
+      "Marksman": null
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Gatot commands his troops with imperial guard tactics, increasing his Infantry's Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "The great kings blesses Gatot's Infantry, granting Infantry a Shield with protection equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 90,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "visible third Gatot skill",
+        "level": 1,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields Infantry and Marksman, not Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Alpaca",
+    "display_name": "[RFJ] Alpaca",
+    "state": null,
+    "alliance": "RFJ",
+    "coords": "X:747 Y:475",
+    "role": "defender",
+    "screenshot_side": "right/blue",
+    "power_loss": 0,
+    "troops": 2,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 2,
+    "kills": 2,
+    "kills_inference": "inferred from attacker injured + lightly injured because defender participant kills are not visible in the pasted crop",
+    "deployed_class": "mixed",
+    "tier_display": "FC1 Lv 1.0 Infantry + FC1 Lv 1.0 Marksman",
+    "tier_code": "T1 mixed",
+    "fire_crystal_level": "FC1",
+    "fc_code": "FC1",
+    "is_fire_crystal": true,
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "FC1 Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "fc_code": "FC1",
+        "is_fire_crystal": true,
+        "base_troop_stats": {
+          "Attack": 1,
+          "Defense": 4,
+          "Lethality": 1,
+          "Health": 6
+        },
+        "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Infantry T1 FC1"
+      },
+      {
+        "class": "Marksman",
+        "tier_display": "FC1 Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "fc_code": "FC1",
+        "is_fire_crystal": true,
+        "base_troop_stats": {
+          "Attack": 5,
+          "Defense": 1,
+          "Lethality": 6,
+          "Health": 1
+        },
+        "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Marksman T1 FC1"
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 537.1,
+        "Defense": 529.9,
+        "Lethality": 119.7,
+        "Health": 119.3
+      },
+      "Lancer": {
+        "Attack": 205.7,
+        "Defense": 186.0,
+        "Lethality": 145.5,
+        "Health": 144.1
+      },
+      "Marksman": {
+        "Attack": 1072.5,
+        "Defense": 1062.3,
+        "Lethality": 257.2,
+        "Health": null
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "partially_visible",
+      "notes": "Marksman Health row is cropped out of the pasted stat screenshot and is left null. Right-side unit cards show both Infantry and Marksman as FC1 Lv 1.0."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 51,
+        "stars": null,
+        "level_confidence": "visible_but_small",
+        "skill_levels": [
+          1,
+          1,
+          1
+        ]
+      },
+      "Marksman": {
+        "name": "Vulcanus",
+        "level": null,
+        "stars": null,
+        "level_confidence": "visible_but_small",
+        "skill_levels": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Gatot commands his troops with imperial guard tactics, increasing his Infantry's Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "The great kings blesses Gatot's Infantry, granting Infantry a Shield with protection equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 90,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "visible third Gatot skill",
+        "level": 1,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 1",
+        "name": "visible Vulcanus skill 1",
+        "level": null,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 2",
+        "name": "visible Vulcanus skill 2",
+        "level": null,
+        "effect": null,
+        "triggers": 30,
+        "kills": 0,
+        "status": "visible_unidentified"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 3",
+        "name": "visible Vulcanus skill 3",
+        "level": null,
+        "effect": null,
+        "triggers": 30,
+        "kills": 0,
+        "status": "visible_unidentified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields Infantry, not Lancers"
+      },
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Source screenshots were pasted directly into the Codex thread: overview, stat bonuses, and battle details.",
+    "Battle tile shown at top of overview: X:746 Y:475.",
+    "Left/red side attacker is Colonel Mueller at X:745 Y:473.",
+    "Right/blue side defender is Alpaca at X:747 Y:475.",
+    "Mueller fields 2 ordinary Lv 1.0 Infantry, not Fire Crystal.",
+    "Defender fields 1 FC1 Lv 1.0 Infantry and 1 FC1 Lv 1.0 Marksman; both right-side troop cards show the FC1 badge.",
+    "Both sides' Gatot King's Bestowal rows show 90 triggers.",
+    "Defender Vulcanus Marksman skill rows show 1, 30, and 30 triggers.",
+    "Skill kills are displayed as dashes and recorded as zero for visible skill rows.",
+    "Marksman Health stat row is not visible in the pasted stat screenshot and is intentionally stored as null for both sides."
+  ],
+  "source_images": [
+    "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-d1f57475-512a-4b29-ac12-357999154e8f.png",
+    "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-390a59e1-4c87-48ee-81ca-4280ffdf73ff.png",
+    "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-63e3bd39-f5ef-4e2f-ab74-dc6cf9c07f1f.png"
+  ],
+  "_extraction": {
+    "extracted_by": "Codex local visual transcription with OCR-style structured capture",
+    "timestamp": "2026-07-13",
+    "ocr_confidence": "manual_visual_high_for_visible_rows; cropped_for_missing_marksman_health",
+    "manual_overrides": [
+      "Right-side defender normalized to Alpaca from the prior RFJ Alpaca reports.",
+      "Right-side Infantry and Marksman manually tagged as FC1 T1 because both visible troop cards show the red FC1 badge.",
+      "Vulcanus skill names not guessed; visible trigger counts are preserved with unidentified skill labels."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass_with_missing_stat_row",
+    "checks": [
+      "attacker troops 2 = injured 1 + lightly injured 1 + survivors 0 + losses 0",
+      "defender troops 2 = injured 0 + lightly injured 0 + survivors 2 + losses 0",
+      "attacker power loss -3 is consistent with one ordinary T1 Infantry severe injury and one ordinary T1 Infantry light injury not counted in power loss",
+      "defender has no power loss and no injured/lost troops"
+    ],
+    "missing": [
+      "attacker Marksman Health stat row cropped out",
+      "defender Marksman Health stat row cropped out",
+      "defender participant kills not visible; inferred as 2"
+    ],
+    "suspicions": []
+  },
+  "_stat_base_reference": "STAT BASE REFERENCE: Right-side Alpaca troops are Fire-Crystal (FC) troops in this report. Use docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json for FC1 T1 Infantry and FC1 T1 Marksman, not ordinary T1 assumptions. Mueller attacker Infantry is ordinary/no-FC T1 from wos_sim/troop_catalog.py::_TIER_ROWS."
+}

@@ -1,0 +1,60 @@
+{
+  "_type": "nanomart_vulcanus_ladder",
+  "type": 1,
+  "setup": "NanoMart farm ladder: 300 T6 Infantry attacker vs 200 T6 Infantry defender. Defender has Vulcanus with level-1 Expedition skills. Deterministic; no chance procs.",
+  "timestamp": "2026-07-09 20:49:27",
+  "outcome": "ATTACKER VICTORY",
+  "attacker": {
+    "name": "nanomart",
+    "coords": "X:556 Y:25",
+    "deployed_class": "Infantry",
+    "troops": 300,
+    "power_loss": -1000,
+    "losses": 0,
+    "injured": 50,
+    "lightly_injured": 91,
+    "survivors": 159,
+    "stats_pct_visible": {
+      "Infantry": {"Attack": 2.2, "Defense": 0.2},
+      "Lancer": {"Attack": 2.2, "Defense": 0.2},
+      "Marksman": {"Attack": 2.2, "Defense": 0.2}
+    }
+  },
+  "defender": {
+    "name": "minimart",
+    "coords": "X:556 Y:27",
+    "deployed_class": "Infantry",
+    "troops": 200,
+    "power_loss": -1400,
+    "losses": 0,
+    "injured": 70,
+    "lightly_injured": 130,
+    "survivors": 0,
+    "lead_hero": "Vulcanus",
+    "lead_hero_slot": "Marksman",
+    "skill_levels": {"Skill 1": 1, "Skill 2": 1, "Skill 3": 1},
+    "stats_pct_visible": {
+      "Infantry": {"Attack": 2.0, "Defense": 0.0},
+      "Lancer": {"Attack": 2.0, "Defense": 0.0},
+      "Marksman": {"Attack": 517.2, "Defense": 515.2}
+    }
+  },
+  "skill_details": {
+    "Vulcanus Skill 1": {"triggered": 1, "kills": 0},
+    "Vulcanus Skill 2": {"triggered": 49, "kills": 1},
+    "Vulcanus Skill 3": {"triggered": 99, "kills": 0}
+  },
+  "turn_inference": {
+    "skill_2_schedule": "level-1 Skill 2 appears to trigger on attacks 6,12,18,...: after five normal attacks, the next attack is empowered.",
+    "skill_3_schedule": "level-1 Skill 3 triggers on turns 1,4,7,...",
+    "from_skill_2": [294, 299],
+    "from_skill_3": [295, 297],
+    "intersection": [295, 297]
+  },
+  "stats_capture": {
+    "complete_12_stat_panel": false,
+    "missing_stats": ["Infantry Lethality", "Infantry Health", "Lancer Lethality", "Lancer Health", "Marksman Lethality", "Marksman Health"],
+    "probe_assumption": "Missing stat-panel rows treated as 0% in the quick replay probe."
+  },
+  "_extraction": "Captured from Martin screenshot 2026-07-09."
+}

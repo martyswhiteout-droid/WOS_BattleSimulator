@@ -1,0 +1,73 @@
+{
+  "_type": "counter_with_deterministic_hero_cadence",
+  "type": 1,
+  "setup": "exp4c: 10k INFANTRY attacker vs 10k LANCER defender, Lv 6.0. Attacker brings Gordon. Gordon S1/S3 have no practical effect on this pure Infantry-vs-Lancer matchup; Gordon S2 level 2 reduces enemy Damage Dealt by 12% for 1 turn every 3 turns.",
+  "counter": "Infantry > Lancer (favorable for attacker)",
+  "outcome": "INFANTRY (attacker) WON",
+  "attacker": {
+    "name": "[Rfj] ...",
+    "deployed_class": "Infantry",
+    "troops": 10000,
+    "losses": 0,
+    "injured": 1914,
+    "lightly_injured": 3553,
+    "survivors": 4533,
+    "surv_frac": 0.4533,
+    "lead_hero": {
+      "name": "Gordon",
+      "observed_skill_levels": {
+        "Skill 2": 2
+      }
+    },
+    "stats_pct": {
+      "Infantry": {"Attack": 199.2, "Defense": 192.0, "Lethality": 119.7, "Health": 119.3},
+      "Lancer": {"Attack": 457.3, "Defense": 437.6, "Lethality": 145.5, "Health": 144.1},
+      "Marksman": {"Attack": 199.2, "Defense": 189.0, "Lethality": 139.1, "Health": 139.0}
+    }
+  },
+  "defender": {
+    "name": "[Rfj] Colonel Muller",
+    "deployed_class": "Lancer",
+    "troops": 10000,
+    "losses": 0,
+    "injured": 3500,
+    "lightly_injured": 6500,
+    "survivors": 0,
+    "surv_frac": 0.0,
+    "stats_pct": {
+      "Infantry": {"Attack": 194.1, "Defense": 172.2, "Lethality": 122.0, "Health": 118.7},
+      "Lancer": {"Attack": 194.1, "Defense": 165.7, "Lethality": 115.3, "Health": 112.6},
+      "Marksman": {"Attack": 194.1, "Defense": 170.7, "Lethality": 131.2, "Health": 128.6}
+    }
+  },
+  "combat_stats": "Attacker deploys INFANTRY (Atk199.2/Def192.0/Leth119.7/HP119.3) vs Defender LANCER (Atk194.1/Def165.7/Leth115.3/HP112.6). Gordon's high Lancer stats are visible on the panel but irrelevant because no attacker Lancers are deployed.",
+  "gordon_runtime_override": {
+    "source": "Martin screenshot and interpretation, 2026-07-09",
+    "skill_2": {
+      "description": "Enemy Damage Dealt -12% for 1 turn every 3 turns.",
+      "affected_side": "defender",
+      "affected_troops": ["Infantry", "Lancer", "Marksman"],
+      "attribute": "Damage Dealt",
+      "amount": -0.12,
+      "duration_turns": 1,
+      "frequency": 3,
+      "trigger_unit": "Turns",
+      "trigger_turns": "3, 6, 9, ..."
+    },
+    "skill_3": {
+      "description": "Observed trigger counter only; no practical effect in this pure Infantry-vs-Lancer matchup.",
+      "frequency": 4,
+      "trigger_unit": "Turns"
+    }
+  },
+  "clock": {
+    "deterministic": true,
+    "observed_triggers": {
+      "Gordon Skill 2": 31,
+      "Gordon Skill 3": 23
+    },
+    "inferred_turn_window": [93, 95],
+    "notes": "If S2 triggers on turns 3,6,... then 31 triggers require final turn >=93 and <96. If S3 triggers every 4 turns then 23 triggers require final turn >=92 and <96. Intersection: 93-95 turns."
+  },
+  "_extraction": "Captured from Martin screenshot 2026-07-09, attachment 2, exp4c."
+}

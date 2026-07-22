@@ -15,7 +15,8 @@ Battle reports are exactly TWO kinds:
 
 **The rules:**
 1. **If every Type 1 report fits, NO fudge factor may exist.** A fudge (a
-   non-physical knob like an attacker-bias `def_k`) is an admission that a real
+   non-physical knob like an attacker-bias `def_k`, or a global clock scalar like
+   `rate` that has not been derived from the battle rules) is an admission that a real
    mechanic is missing or wrong. FIX THE MECHANIC — never paper over it with a
    knob. Every knob must map to a real, stat-derived mechanic or be deleted.
 2. **NEVER regression-fit / calibrate to a Type 2 report.** Treat it as a signal:

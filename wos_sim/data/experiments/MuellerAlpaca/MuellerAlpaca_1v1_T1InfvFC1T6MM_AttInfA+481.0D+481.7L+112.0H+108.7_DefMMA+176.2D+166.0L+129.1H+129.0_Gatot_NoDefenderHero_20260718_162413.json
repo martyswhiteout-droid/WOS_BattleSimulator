@@ -1,0 +1,210 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-07-18 16:24:13",
+  "recommended_filename": "MuellerAlpaca_1v1_T1InfvFC1T6MM_AttInfA+481.0D+481.7L+112.0H+108.7_DefMMA+176.2D+166.0L+129.1H+129.0_Gatot_NoDefenderHero_20260718_162413.json",
+  "setup": "Hero-aura regime pair, battle 1 of 2: 1 Lv 1.0 Infantry attacker led by Gatot (aura-boosted A/D +481) vs 1 FC1 T6 Marksman defender with ALL hero slots vacant (no Vulcanus aura - MM panels at base loadout). Same troops as the 16:48:11 battle, which differs only by Vulcanus on the defender.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": {
+    "turns": 150,
+    "turns_range": [
+      150,
+      150
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "once per attack (triggers == rounds, exact)",
+    "trigger_count": 150,
+    "assumptions": [
+      "Gatot S2 King's Bestowal triggers == battle rounds (Stage-4 verified)"
+    ]
+  },
+  "attacker": {
+    "name": "Colonel Müller",
+    "state": null,
+    "alliance": null,
+    "coords": "X:769 Y:476",
+    "role": "attacker",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 481.0,
+        "Defense": 481.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": 118.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Infantry A/D include Gatot's aura: +301.9/+302.0pp over the same-day no-hero loadout (179.1/179.7); L/H unchanged by the aura"
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": null,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Gatot Skill 1",
+        "level": null,
+        "effect": "own Infantry Defense buff (Mueller copy level unconfirmed; Alpaca L2 = +12%)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": null,
+        "effect": "fires once per attack; grants Infantry a shield with protection = Attack x pct for 1 turn (Alpaca L2 = 12%)",
+        "triggers": 150,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "Royal Legion",
+        "level": 2,
+        "effect": "instills fear: -10% enemy Attack, once at battle start (Royal Legion Lv.2 tooltip, Martin 2026-07-18)",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "defender fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "沃草泥的馬",
+    "state": null,
+    "alliance": null,
+    "coords": "X:766 Y:476",
+    "role": "defender",
+    "power_loss": -21,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 6.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 176.2,
+        "Defense": 169.0,
+        "Lethality": 109.7,
+        "Health": 109.3
+      },
+      "Lancer": {
+        "Attack": 182.7,
+        "Defense": 163.0,
+        "Lethality": 135.5,
+        "Health": 134.1
+      },
+      "Marksman": {
+        "Attack": 176.2,
+        "Defense": 166.0,
+        "Lethality": 129.1,
+        "Health": 129.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "MM panels at NO-Vulcanus base loadout; the 16:48 battle's MM panels (1049.5/1039.3/247.2/150.6) minus these = Vulcanus aura +873.3/+873.3/+118.1/+21.6"
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "attacker fields Infantry"
+      },
+      {
+        "class": "Marksman",
+        "skill": "Crystal Gunpowder II",
+        "unlock": "FC5",
+        "effect": "30% chance of +50% damage",
+        "applies_in_this_battle": false,
+        "reason": "defender is FC1 - not unlocked (FC5 gate)"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "REGIME PAIR battle 1/2 (with 20260718_164811): identical troops both sides; only difference is Vulcanus present on the defender MM in battle 2. Outcome flips from attacker victory @150 turns (here) to attacker DEFEAT @6 turns (battle 2).",
+    "DEFENDER UNIT CONFIRMED by Martin 2026-07-18: naked FC1 T6 Marksman (Alpaca had no heroes assigned in this battle).",
+    "Replicates the E-NIF2 pattern: Gatot-led Infantry kills an FC1 T6 MM in 150 turns (E-NIF2: 150 turns exactly, the G_l^MM(T6)=0.0846 source).",
+    "Hero-less T6 MM dealt no visible damage to the Gatot Infantry across 150 turns (attacker injured 0) - consistent with the budget-absorb gate (single naked-MM rate << B).",
+    "This battle is Martin's Gatot-analog illustration of pressure-test battle B: a T1 Infantry (Gordon-led there, Gatot-led here) beating the naked T6 MM at ~150 turns.",
+    "kills read from Battle Details rows (attacker 1 / defender 0), cross-checked by the casualty identity."
+  ],
+  "source_images": [
+    "battle_overview",
+    "stat_bonuses",
+    "battle_details_skill_panel"
+  ],
+  "_extraction": {
+    "extracted_by": "claude",
+    "timestamp": "2026-07-18",
+    "ocr_confidence": "high",
+    "manual_overrides": []
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [
+      "attacker.lead_heroes.Infantry.level",
+      "attacker.state",
+      "attacker.alliance"
+    ],
+    "suspicions": []
+  }
+}

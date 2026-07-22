@@ -1,3 +1,9 @@
+> **STATUS BANNER (2026-07-11): the headline "Step 1 landed: km 1.206 → 2.41" was REVERTED.**
+> Commit `036e4ed` (2026-07-10, "Phase 1: remove km fudge") removed the km coefficient under the
+> no-fudge rule (`ENGINE_CHANGE_CHECKLIST.md`, 07-09). The EVIDENCE in this doc (def_k overload,
+> counter-triangle data, "winner ~2× too healthy") remains valid and feeds the first-principles
+> derivation (`DEEPSEEK_FORMULA_DERIVATION_BRIEF.md`) — only the scalar-fix conclusion is superseded.
+
 # Controlled experiments (Martin, 2026-07-08) — root-cause of the near-even misses
 
 Martin ran controlled in-game experiments (minimal/no skills, deterministic, no

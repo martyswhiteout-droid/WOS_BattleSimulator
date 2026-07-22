@@ -1,0 +1,195 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-07-11 21:38:29",
+  "recommended_filename": "FarSeer_1v1_T1MMvT1MM_Gordonlvl1_NoDefenderHero_20260711_213829.json",
+  "setup": "1 Lv 1.0 Marksman attacker versus 1 Lv 1.0 Marksman defender; Far Seer fields Gordon with all three skills at level 1.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": {
+    "turns": null,
+    "turns_range": [
+      18,
+      19
+    ],
+    "method": "gordon_cadence_intersection",
+    "clock_hero": "Gordon",
+    "cadence": "Skill 2 every 3 turns; Skill 3 every 4 turns",
+    "trigger_count": {
+      "skill_2": 6,
+      "skill_3": 4
+    },
+    "assumptions": [
+      "Skill 2 count 6 implies turns in [18, 20].",
+      "Skill 3 count 4 implies turns in [16, 19].",
+      "The intersection is [18, 19].",
+      "No exact turn within the intersection was selected because the screenshots do not identify it."
+    ]
+  },
+  "attacker": {
+    "name": "Far Seer",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1052 Y:405",
+    "role": "attacker",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      },
+      "Lancer": {
+        "Attack": 208.8,
+        "Defense": 206.8
+      },
+      "Marksman": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed in the supplied stat panel."
+    },
+    "lead_heroes": {
+      "Lancer": {
+        "name": "Gordon",
+        "level": 23,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gordon",
+        "slot": "Skill 1",
+        "name": "Venom Infusion",
+        "level": 1,
+        "effect": "Every 2 attacks, Lancers deal 20% extra damage and poison the target for 1 turn; poisoned enemies deal 4% less damage.",
+        "triggers": 0,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gordon",
+        "slot": "Skill 2",
+        "name": "Chemical Terror",
+        "level": 1,
+        "effect": "Increases Lancer Damage Dealt by 30% and reduces Damage Dealt by 6% for all enemy troops for 1 turn every 3 turns.",
+        "triggers": 6,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gordon",
+        "slot": "Skill 3",
+        "name": "Toxic Release",
+        "level": 1,
+        "effect": "Increases enemy frontline Infantry Damage Taken by 6% and reduces enemy Marksman Damage Dealt by 6% for 2 turns every 4 turns.",
+        "triggers": 4,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Lab Rat",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1055 Y:405",
+    "role": "defender",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed in the supplied stat panel."
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "The non-Gordon side's Lancer hero slot is explicitly shown as vacant.",
+    "Gordon Skill 1 displayed no trigger; Gordon's side did not deploy Lancers.",
+    "Gordon Skill 2 triggered. Its enemy Damage Dealt reduction applies; its own Lancer Damage Dealt increase is inert because Gordon's side did not deploy Lancers.",
+    "Gordon Skill 3 triggered; the enemy frontline Infantry component is inert; the enemy Marksman Damage Dealt reduction applies.",
+    "Gordon is shown at hero level 23; the user previously confirmed all Gordon skill levels are level 1.",
+    "Only values visible in the supplied screenshots or previously supplied Gordon skill descriptions were recorded."
+  ],
+  "source_images": [
+    "image(10).png",
+    "image(11).png",
+    "image(12).png"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-11",
+    "ocr_confidence": "high",
+    "manual_overrides": [
+      "The 18 images were grouped sequentially into six battles, three images per battle.",
+      "Gordon Skills 1, 2 and 3 were recorded at level 1 based on the user's prior explicit confirmation."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

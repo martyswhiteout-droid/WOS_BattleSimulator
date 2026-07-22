@@ -1,0 +1,105 @@
+{
+ "version": 1,
+ "corrections": [
+  {
+   "match_basename_prefix": "MuellerAlpaca_1v1_T2InfvFC1T1Inf_AttInfA+194.1D+221.4L+122.0H+118.7_DefInfA+514.1D+506.9L+109.7H+109.3_Gatotlvl1_AlpacaFC1T1_NoDefenderHero_20260712_154739",
+   "set": {
+    "attacker_true_class": "Lancer",
+    "attacker_true_tier": 2
+   },
+   "reason": "OCR mislabel: attacker was a T2 LANCER not Infantry. Martin verified vs screenshot 2026-07-13. deployed_class already edited in-file; setup text and filename still say Inf; use stats_pct.Lancer.",
+   "verified_by": "Martin 2026-07-13"
+  },
+  {
+   "match_basename_prefix": "MuellerAlpaca_1v1_T2InfvFC1T1Inf_AttInfA+194.1D+221.4L+122.0H+118.7_DefInfA+514.1D+506.9L+109.7H+109.3_Gatotlvl1_AlpacaFC1T1_NoDefenderHero_20260712_154928",
+   "set": {
+    "attacker_true_class": "Lancer",
+    "attacker_true_tier": 2
+   },
+   "reason": "Same OCR mislabel as 154739 (second run).",
+   "verified_by": "Martin 2026-07-13"
+  },
+  {
+   "match_basename_prefix": "ColonelMuller_1v2_T1MMvT1Inf+T1MM_NoHeroes_Gatot+Vulcanus_20260713_112003",
+   "set": {
+    "attacker_true_class": "Infantry",
+    "attacker_naked": true
+   },
+   "reason": "OCR mislabel: attacker was a NAKED INFANTRY (6 turns), not a Marksman. The real 1-named-MM battle took 3 turns at 11:19:36 and has NO JSON (see manual rows). Martin 2026-07-13.",
+   "verified_by": "Martin 2026-07-13"
+  },
+  {
+   "match_basename_prefix": "NanoMart_1v1_T1LanvT1Inf_SeoYoonlvl3_Vulcanus",
+   "match_kind": "nanomart_ledger",
+   "set": {
+    "attacker_true_class": "Infantry",
+    "attacker_stats_pct": {
+     "Infantry": {
+      "Attack": 2.2,
+      "Defense": 0.2
+     }
+    },
+    "defender_true_class": "Marksman",
+    "defender_stats_pct": {
+     "Marksman": {
+      "Attack": 517.2,
+      "Defense": 515.2
+     }
+    }
+   },
+   "reason": "OCR/filename mislabels (Stage-5 flagged record anomaly, resolved): the battle is nanomart's NAKED T1 INFANTRY attacker vs minimart's PANELED T1 MARKSMAN defender (MM +517.2A/+515.2D), defender wins in [7,9] -- the PDF heading 'T1 Inf vs T1 MM' was right all along; the filename and ledger carried the wrong classes. Source JSON corrected in-file by Martin; the ledger md/dataset are NOT regenerated -- this registry entry overrides the ledger-derived corpus row. L/H panel rows not visible in the report (base assumed).",
+   "verified_by": "Martin 2026-07-14 (screenshot re-check)",
+   "status": "INERT (Stage-6 housekeeping 2026-07-17): ledger_dataset.json meanwhile carries the corrected battle directly under its new id (NanoMart_1v1_T1InfvT1MM_SeoYoonlvl3_Vulcanus, corrections_applied=[]), so this matcher targets the retired id and matches 0 rows -- build_corpus's '0 rows' warning for this prefix is EXPECTED. Kept for the audit trail; removing it changes nothing. (The sibling T1LanvT1MM entry still matches and is ACTIVE.)"
+  },
+  {
+   "match_basename_prefix": "NanoMart_1v1_T1LanvT1MM_SeoYoonlvl3_Vulcanus",
+   "match_kind": "nanomart_ledger",
+   "set": {
+    "attacker_stats_pct": {
+     "Lancer": {
+      "Attack": 2.2,
+      "Defense": 0.2
+     }
+    },
+    "defender_true_class": "Infantry",
+    "defender_stats_pct": {
+     "Infantry": {
+      "Attack": 2.0,
+      "Defense": 0.0
+     }
+    }
+   },
+   "reason": "OCR mislabel (Stage-5 flagged record anomaly, resolved): the DEFENDER is minimart's near-naked T1 INFANTRY (+2.0A/+0.0D), not a Marksman; attacker stays nanomart's naked T1 Lancer; defender wins in [79,81] (Vulcanus S2=13/S3=27). Source JSON corrected in-file by Martin; ledger not regenerated -- registry overrides. With the correction the row fits the frozen law at -6% (the known Vulcanus-dealer fold offset). L/H panel rows not visible (base assumed).",
+   "verified_by": "Martin 2026-07-14 (screenshot re-check)"
+  }
+ ],
+ "suspect_flags": [],
+ "resolved_history": [
+  {
+   "date": "2026-07-14",
+   "item": "L32/L69 hard_conflict",
+   "resolution": "DISSOLVED - L69's Vulcanus S2/S3 counters were a copy-paste error (11/23 -> true 13/27, same as L32). Both T5vT1 runs = 79-81 turns. Determinism reconfirmed. Martin screenshot-verified."
+  },
+  {
+   "date": "2026-07-14",
+   "item": "L33 suspected_misrecord (T6vT1=96)",
+   "resolution": "CONFIRMED OCR tier misread: attacker was T4, not T6. Second T4vT1=96 run, replicating L31. Raw JSON+ledger corrected; filename retained. NOTE: the T6vT1 cell now has NO observation."
+  },
+  {
+   "date": "2026-07-14",
+   "item": "L21 (NanoMart_1v1_T1LanvT1Inf)",
+   "resolution": "Duplicate capture of the L19 battle (one battle, 14:29:22; misread Lan-v-Inf, later corrected to Inf-v-MM by Martin). Excluded from ledger parsing via DUP-EXCLUDED prefix; L19 kept canonical (correct filename).",
+   "status": "DOCUMENTARY-ONLY (Stage-6 housekeeping 2026-07-17): intentionally matches zero corpus rows -- the exclusion lives in the DUP-EXCLUDED ledger prefix, not in an active correction; kept for the audit trail. Known side-effect: the ledger dropped 71 -> 70 rows, which is why the frozen stage2-era tests (test_stage2_backsolve coverage=71, cadence-B refutation, test_constraints T5-clock audit) now fail -- pre-existing data evolution, not an engine change."
+  },
+  {
+   "date": "2026-07-14",
+   "item": "MuellerAlpaca T7 row (ocr_unverified_tier)",
+   "resolution": "CROSS-VALIDATED, flag removed without screenshot: two independent T7 captures (batch-1 2026-07-12 15:11:27, 599 turns, att D+172.2 vs v5 R06 2026-07-13 01:27:16, 554 turns, att D+179.7) imply G_l(7)=0.7420 IDENTICALLY to 4 decimals. A tier misread would require both to be wrong in exactly compensating ways."
+  },
+  {
+   "date": "2026-07-14",
+   "item": "'2 named MM = 3 turns' (suspect_equals_single)",
+   "resolution": "GENUINE, Martin screenshot-verified: 1-MM battle 2026-07-13 11:19:36 AND 2-MM battle 11:55:21 both last exactly 3 turns (Gatot S2=3). Wound states (1 injured + 1 lightly injured) show both marksmen took damage concurrently. Both battles now JSON-ingested (..._111936 / ..._115521). NO open suspect flags remain."
+  }
+ ]
+}

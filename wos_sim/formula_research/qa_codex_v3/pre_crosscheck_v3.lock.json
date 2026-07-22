@@ -1,0 +1,30 @@
+{
+  "locked_before_stage6_validate": true,
+  "qa3_results_sha256": "430d8dc2e9dadb1f4b73fc970f272b151edd12ce840c3446dffccbda2a07e4f1",
+  "qa3_core_sha256": "95479220fd90444386514a03cf3129ce98ea85015ff4c8ea9c57c27356602057",
+  "qa3_external_sha256": "eef392f6f7439cbcd363990ea04dad079122ad5e9cf3f652b1c9397cb7553601",
+  "w1": {
+    "scoreable": 170,
+    "CORRECT": 151,
+    "COIN_FLIP": 15,
+    "ABSTAIN": 1,
+    "WRONG": 3,
+    "matches_expected": true
+  },
+  "w2_failed_probe_ids": [
+    "vulcanus_led_n3_unvalidated_flag",
+    "count_zero",
+    "empty_attacker_army",
+    "empty_defender_army",
+    "zero_effective_attack",
+    "alpaca_lancer_edge_205",
+    "gatot_target_count_2"
+  ],
+  "w5": {
+    "two_emits_byte_identical": true,
+    "current_byte_identical_to_emit": false,
+    "current_row_count": 238,
+    "emitted_and_actual_row_count": 243
+  },
+  "note": "All replay, fuzz, production-isolation, test-suite, and constants checks were completed before the one permitted validator cross-check."
+}

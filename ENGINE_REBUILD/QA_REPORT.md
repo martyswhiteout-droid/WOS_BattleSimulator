@@ -1,3 +1,9 @@
+> **STATUS BANNER (2026-07-11):** the top entry (07-08 fourth pass, CONDITIONAL) is still the latest
+> certification verdict, with two caveats: (1) its "Kept: duplicate-joiner DEDUP" statement was
+> REVERSED the next day — dedup was removed (`ENGINE_HANDOFF_joiner_stacking.md`, commit `8e816f2`);
+> (2) the fitted TURN_PARAMS it locks are now subject to the no-fudge rule (`ENGINE_CHANGE_CHECKLIST.md`,
+> 07-09) and the km fudge was removed at HEAD (`036e4ed`) — current param ground truth is the CODE, not this doc.
+
 # QA Report
 
 Date: 2026-07-08, fourth pass (supersedes the earlier reports below)

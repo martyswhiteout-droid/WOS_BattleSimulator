@@ -1,0 +1,303 @@
+{
+  "schema_version": 2,
+  "_type": "controlled_mixed_troop_experiment",
+  "type": 1,
+  "battle_date": "2026-07-14 00:45:35",
+  "recommended_filename": "ColonelMuller_2v2_T1Inf+T1LanvT1Inf+T1MM_Gatot_Gatot+Vulcanus_20260714_004535.json",
+  "setup": "Colonel Müller attacks with 1 T1 Infantry + 1 T1 Lancer against Alpaca's 1 T1 Infantry + 1 T1 Marksman.",
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory"
+  },
+  "turn_inference": null,
+  "attacker": {
+    "name": "Colonel Müller",
+    "state": null,
+    "alliance": null,
+    "coords": "X:745 Y:473",
+    "role": "attacker",
+    "power_loss": -6,
+    "troops": 2,
+    "losses": 0,
+    "injured": 2,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Mixed",
+    "tier_display": "1 x Lv 1.0 Infantry + 1 x Lv 1.0 Lancer",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 481.0,
+        "Defense": 481.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": 118.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible_with_cross_reference",
+      "notes": "All displayed rows were transcribed from the PDF. Marksman Health is cut off by the PDF crop and is carried forward from the immediately preceding verified Alpaca/Müller panel, whose other rows match exactly."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 51,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": null,
+        "effect": "Increases Gatot's Infantry Defense; the exact magnitude is not recorded because this player's skill level is not shown.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified_skill_level_not_visible"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": null,
+        "effect": "Grants Gatot's Infantry a shield when they attack; the exact magnitude is not recorded because this player's skill level is not shown.",
+        "triggers": 33,
+        "kills": 0,
+        "status": "identified_skill_level_not_visible"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "Gatot Skill 3",
+        "level": null,
+        "effect": "The skill description and level are not shown in the supplied PDF crops.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "trigger_observed_description_not_shown"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      },
+      {
+        "class": "Lancer",
+        "skill": "Charge",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Marksmen",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Marksmen"
+      }
+    ],
+    "specials": [
+      {
+        "type": "troop_composition",
+        "units": [
+          {
+            "class": "Infantry",
+            "tier_display": "Lv 1.0",
+            "count": 1
+          },
+          {
+            "class": "Lancer",
+            "tier_display": "Lv 1.0",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "type": "hero_slot_visibility",
+        "class": "Lancer",
+        "status": "not_visible_in_supplied_crop",
+        "notes": "The attacker fields a T1 Lancer, but the Lancer hero panel is not shown; no Lancer hero assignment was inferred."
+      }
+    ]
+  },
+  "defender": {
+    "name": "Alpaca",
+    "state": null,
+    "alliance": "RFJ",
+    "coords": "X:747 Y:475",
+    "role": "defender",
+    "power_loss": 0,
+    "troops": 2,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 2,
+    "kills": 2,
+    "deployed_class": "Mixed",
+    "tier_display": "1 x Lv 1.0 Infantry + 1 x Lv 1.0 Marksman",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 537.1,
+        "Defense": 529.9,
+        "Lethality": 119.7,
+        "Health": 119.3
+      },
+      "Lancer": {
+        "Attack": 205.7,
+        "Defense": 186.0,
+        "Lethality": 145.5,
+        "Health": 144.1
+      },
+      "Marksman": {
+        "Attack": 1072.5,
+        "Defense": 1062.3,
+        "Lethality": 257.2,
+        "Health": 160.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible_with_cross_reference",
+      "notes": "All displayed rows were transcribed from the PDF. Marksman Health is cut off by the PDF crop and is carried forward from the immediately preceding verified Alpaca/Müller panel, whose other rows match exactly."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 64,
+        "stars": null
+      },
+      "Marksman": {
+        "name": "Vulcanus",
+        "level": 73,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": null,
+        "effect": "Increases Gatot's Infantry Defense; the exact magnitude is not recorded because this player's skill level is not shown.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified_skill_level_not_visible"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": null,
+        "effect": "Grants Gatot's Infantry a shield when they attack; the exact magnitude is not recorded because this player's skill level is not shown.",
+        "triggers": 36,
+        "kills": 0,
+        "status": "identified_skill_level_not_visible"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "Gatot Skill 3",
+        "level": null,
+        "effect": "The skill description and level are not shown in the supplied PDF crops.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "trigger_observed_description_not_shown"
+      },
+      {
+        "hero": "Vulcanus",
+        "slot": "Skill 1",
+        "name": "Vulcanus Skill 1",
+        "level": null,
+        "effect": "The skill description and level are not shown in the supplied PDF crops.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "trigger_observed_description_not_shown"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Lancers"
+      },
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Infantry"
+      }
+    ],
+    "specials": [
+      {
+        "type": "troop_composition",
+        "units": [
+          {
+            "class": "Infantry",
+            "tier_display": "Lv 1.0",
+            "count": 1
+          },
+          {
+            "class": "Marksman",
+            "tier_display": "Lv 1.0",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "type": "partial_skill_panel",
+        "hero": "Vulcanus",
+        "notes": "Only Vulcanus Skill 1's trigger count is visible. Skills 2 and 3 are outside the supplied crop and were not inferred."
+      }
+    ]
+  },
+  "notes": [
+    "T1 icon mapping applied exactly as supplied by Martin: green cap = Infantry, blue steel helmet = Lancer, brown hood = Marksman.",
+    "Attacker composition: 1 T1 Infantry, 1 T1 Lancer.",
+    "Defender composition: exactly 1 T1 Infantry and 1 T1 Marksman.",
+    "Attacker Gatot Skill 2 triggered 33 times; defender Gatot Skill 2 triggered 36 times.",
+    "The two Gatot Skill 2 counts differ, so no exact common round count was forced.",
+    "The attacker fields a Lancer, but the Lancer hero panel is not shown, so its hero assignment remains unknown.",
+    "Only Vulcanus Skill 1 = 1 trigger is visible; the lower Vulcanus skill rows were not guessed.",
+    "Source location: PDF page 1, report 1 from left."
+  ],
+  "source_images": [
+    "WOS_BattleReports_Gatot_v5.pdf",
+    "page001_img001.png",
+    "page001_img002.png",
+    "page001_img003.png"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-14",
+    "ocr_confidence": "high",
+    "manual_overrides": [
+      "Defender display name recorded as Alpaca based on Martin's prior clarification.",
+      "The user-supplied T1 icon mapping was applied to distinguish Infantry, Lancer, and Marksman.",
+      "Marksman Health values were cross-referenced from the prior verified identical Alpaca/Müller stat panel because the current PDF crops cut off that final row."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

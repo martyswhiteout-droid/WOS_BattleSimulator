@@ -1,3 +1,8 @@
+> **STATUS BANNER (2026-07-11): the engine track in this roadmap is SUPERSEDED.** The plan below predates
+> the `ENGINE_REBUILD/` turn-by-turn engine (built, now the default) and the 07-09 no-fudge pivot.
+> Keep this doc only for the E-0…E-11 task numbering still cited elsewhere and the app-track history.
+> Current direction: `ENGINE_REBUILD/DEEPSEEK_FORMULA_DERIVATION_BRIEF.md` (07-10).
+
 # ROADMAP - Finalize the engine + build the web app (2026-07-04)
 
 Synthesis of a 3-agent scoping pass (engine architect / app lead / data

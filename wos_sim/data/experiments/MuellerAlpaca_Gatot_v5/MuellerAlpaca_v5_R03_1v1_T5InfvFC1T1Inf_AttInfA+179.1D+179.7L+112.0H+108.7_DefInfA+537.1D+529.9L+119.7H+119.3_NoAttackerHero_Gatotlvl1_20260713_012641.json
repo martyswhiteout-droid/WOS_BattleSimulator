@@ -1,0 +1,306 @@
+{
+  "schema_version": 2,
+  "_type": "controlled_tier_ladder_experiment",
+  "type": 1,
+  "battle_date": "2026-07-13 01:26:41",
+  "battle_context": "controlled_test_infantry_tier_ladder",
+  "recommended_filename": "MuellerAlpaca_v5_R03_1v1_T5InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+537.1D+529.9L+119.7H+119.3_NoAttackerHero_Gatotlvl1_20260713_012641.json",
+  "setup": "1 ordinary Lv 5.0 Infantry attacker Colonel Mueller with Infantry Hero vacant versus 1 FC1 Lv 1.0 Infantry defender Alpaca with Gatot.",
+  "tier_ladder": {
+    "tested_attacker_class": "Infantry",
+    "tested_attacker_tier": "T5",
+    "tested_attacker_tier_display": "Lv 5.0",
+    "defender_target": "FC1 T1 Infantry with Gatot",
+    "visible_icon_tier": "Lv 5.0",
+    "observed_power_loss": -13,
+    "expected_power_per_injured_unit": 13,
+    "power_loss_matches_visible_tier": true
+  },
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory",
+    "confidence": "visible"
+  },
+  "turn_inference": {
+    "turns": 398,
+    "turns_range": [
+      398,
+      398
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal triggers each time Gatot's Infantry attacks",
+    "trigger_count": 398,
+    "assumptions": [
+      "King's Bestowal shows 398 triggers.",
+      "For these controlled Gatot Infantry tests, Martin treats King's Bestowal's trigger count as the exact battle-round count."
+    ]
+  },
+  "attacker": {
+    "name": "Colonel Mueller",
+    "display_name": "Colonel Mueller",
+    "state": null,
+    "alliance": null,
+    "coords": "X:745 Y:473",
+    "role": "attacker",
+    "screenshot_side": "left/red",
+    "power_loss": -13,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 5.0",
+    "tier_code": "T5",
+    "fire_crystal_level": null,
+    "fc_code": null,
+    "is_fire_crystal": false,
+    "base_troop_stats": {
+      "Attack": 5,
+      "Defense": 8,
+      "Lethality": 5,
+      "Health": 10
+    },
+    "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T5, no Fire Crystal",
+    "observed_power_per_injured_unit": 13,
+    "expected_power_per_unit": 13,
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "Lv 5.0",
+        "tier_code": "T5",
+        "count": 1,
+        "fire_crystal_level": null,
+        "fc_code": null,
+        "is_fire_crystal": false,
+        "base_troop_stats": {
+          "Attack": 5,
+          "Defense": 8,
+          "Lethality": 5,
+          "Health": 10
+        },
+        "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T5, no Fire Crystal"
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 179.1,
+        "Defense": 179.7,
+        "Lethality": 112.0,
+        "Health": 108.7
+      },
+      "Lancer": {
+        "Attack": 179.1,
+        "Defense": 169.2,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 179.1,
+        "Defense": 174.2,
+        "Lethality": 121.2,
+        "Health": 118.6
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "All three troop classes and all four stat rows are visible in the report Stat Bonuses panel. Mueller attacker troop is ordinary/no-FC Infantry at the tier shown on the troop icon."
+    },
+    "lead_heroes": {
+      "Infantry": null
+    },
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields Infantry, not Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Alpaca",
+    "display_name": "Alpaca",
+    "state": null,
+    "alliance": "RFJ",
+    "coords": "X:747 Y:475",
+    "role": "defender",
+    "screenshot_side": "right/blue",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "FC1 Lv 1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": "FC1",
+    "fc_code": "FC1",
+    "is_fire_crystal": true,
+    "base_troop_stats": {
+      "Attack": 1,
+      "Defense": 4,
+      "Lethality": 1,
+      "Health": 6
+    },
+    "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Infantry T1 FC1",
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "FC1 Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "fc_code": "FC1",
+        "is_fire_crystal": true,
+        "base_troop_stats": {
+          "Attack": 1,
+          "Defense": 4,
+          "Lethality": 1,
+          "Health": 6
+        },
+        "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Infantry T1 FC1"
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 537.1,
+        "Defense": 529.9,
+        "Lethality": 119.7,
+        "Health": 119.3
+      },
+      "Lancer": {
+        "Attack": 205.7,
+        "Defense": 186.0,
+        "Lethality": 145.5,
+        "Health": 144.1
+      },
+      "Marksman": {
+        "Attack": 199.2,
+        "Defense": 189.0,
+        "Lethality": 139.1,
+        "Health": 139.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "All three troop classes and all four stat rows are visible in the report Stat Bonuses panel. Alpaca's right-side Infantry is FC1 T1, not normal T1."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": null,
+        "stars": null,
+        "level_confidence": "hero_card_visible_but_not_reliably_transcribed",
+        "skill_levels": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Gatot commands his troops with imperial guard tactics, increasing his Infantry's Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "The great kings blesses Gatot's Infantry, granting Infantry a Shield with protection equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 398,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "visible third Gatot skill",
+        "level": 1,
+        "effect": null,
+        "triggers": 1,
+        "kills": 0,
+        "status": "visible_unidentified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields Infantry, not Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Source location: WOS_BattleReports_Gatotv5.pdf, PDF page 1, report 3 on page.",
+    "Actual source file was found at E:/WOS/Screeenshots/WOS_BattleReports_Gatotv5.pdf.",
+    "Left/red side attacker is Colonel Mueller at X:745 Y:473.",
+    "Right/blue side defender is Alpaca at X:747 Y:475.",
+    "Colonel Mueller fields 1 ordinary Lv 5.0 Infantry; the attacker troop is not Fire Crystal.",
+    "Alpaca's right-side Infantry is FC1 T1 Rookie Infantry, not normal T1 Infantry.",
+    "FC1 T1 Infantry base stats from WOS_Troop_Stats_FC1-FC10_T1-T10.json are Attack 1, Defense 4, Lethality 1, Health 6.",
+    "Battle overview shows Colonel Mueller/left side has 1 injured troop and 0 survivors; Alpaca/right side has 1 survivor and no injured troop.",
+    "Gatot Golden Guard triggered 1 time; King's Bestowal triggered 398 times; visible third Gatot skill triggered 1 time.",
+    "Skill kills are displayed as dashes and recorded as zero for Gatot skill rows.",
+    "Gatot is on Alpaca/right-side defender Infantry; attacker Infantry Hero slot is vacant.",
+    "This v5 PDF includes a visible T2 Infantry report even though the requested ladder note mentioned T3-T10."
+  ],
+  "source_images": [
+    "E:/WOS/Screeenshots/WOS_BattleReports_Gatotv5.pdf",
+    "pdf_page_1_report_3",
+    "battle_overview",
+    "stat_bonuses",
+    "battle_details"
+  ],
+  "_extraction": {
+    "extracted_by": "Codex local OCR-assisted visual transcription",
+    "timestamp": "2026-07-13",
+    "ocr_confidence": "manual_visual_high_for_visible_stat_rows_troop_tiers_and_trigger_counts",
+    "manual_overrides": [
+      "Mueller attacker troop tier was identified from the visible Infantry troop icon and cross-checked against the one-injured-unit power loss.",
+      "Alpaca's defender Infantry manually tagged as FC1 T1 per visible FC1 badge and prior Martin instruction for this Alpaca/Gatot set.",
+      "Gatot hero card level is not recorded because the tiny card text is not reliably transcribed in this PDF render.",
+      "Gatot skill names/descriptions use Martin's previously supplied fixed Gatot reference."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "checks": [
+      "attacker troops 1 = injured 1 + survivors 0 + losses 0 + lightly injured 0",
+      "defender troops 1 = injured 0 + survivors 1 + losses 0 + lightly injured 0",
+      "defender kills 1 matches attacker injured count in this controlled 1v1 report convention",
+      "attacker power loss -13 matches one ordinary T5 Infantry injured using tier power 13",
+      "Alpaca defender troop is tagged FC1 T1 in every file"
+    ],
+    "missing": [
+      "Gatot hero card level not reliably transcribed"
+    ],
+    "suspicions": []
+  },
+  "_stat_base_reference": "STAT BASE REFERENCE: Alpaca deploys Fire-Crystal (FC) Infantry. Use the FC-adjusted base troop stats in docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json, NOT a normal-T1 assumption. For Infantry T1 at FC1, Attack=1, Defense=4, Lethality=1, Health=6. Mueller attacker Infantry is ordinary/no-FC and uses wos_sim/troop_catalog.py::_TIER_ROWS for the visible tier."
+}

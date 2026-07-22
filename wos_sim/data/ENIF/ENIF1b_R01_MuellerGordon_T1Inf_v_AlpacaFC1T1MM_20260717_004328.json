@@ -1,0 +1,300 @@
+{
+  "schema_version": 2,
+  "_type": "enif_controlled_experiment",
+  "type": 1,
+  "experiment_category": "E-NIF1b",
+  "experiment_focus": "Gordon control: FC1 T1 Marksman into ordinary T1 Infantry with Gordon",
+  "battle_date": "2026-07-17 00:43:28",
+  "battle_context": "controlled_test_enif",
+  "battle_tile": "X:768 Y:477",
+  "recommended_filename": "ENIF1b_R01_MuellerGordon_T1Inf_v_AlpacaFC1T1MM_20260717_004328.json",
+  "setup": "1 ordinary Lv.1.0 Infantry attacker Colonel Mueller with Gordon vs 1 FC1 Lv.1.0 Marksman defender Alpaca/Far Seer, no Marksman hero.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat",
+    "confidence": "visible"
+  },
+  "turn_inference": {
+    "turns": null,
+    "turns_range": [
+      69,
+      71
+    ],
+    "method": "gordon_skill_2_3_cadence_intersection",
+    "clock_hero": "Gordon",
+    "observed_triggers": {
+      "Gordon Skill 2": 23,
+      "Gordon Skill 3": 17
+    },
+    "cadence": {
+      "Gordon Skill 2": "every 3 turns",
+      "Gordon Skill 3": "every 4 turns"
+    },
+    "assumptions": [
+      "Skill 2 trigger count n implies final turn in [3n, 3n+2].",
+      "Skill 3 trigger count m implies final turn in [4m, 4m+3].",
+      "The overlap is recorded as the inferred turn window; no exact single turn is forced."
+    ]
+  },
+  "attacker": {
+    "name": "Colonel Mueller",
+    "display_name": "[RFJ]Colonel Mueller",
+    "alliance": "RFJ",
+    "state": null,
+    "coords": "X:769 Y:476",
+    "role": "attacker",
+    "side_label": "left_red",
+    "result": "victory",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv.1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": null,
+    "fc_code": null,
+    "is_fire_crystal": false,
+    "base_troop_stats": {
+      "Attack": 1,
+      "Defense": 4,
+      "Lethality": 1,
+      "Health": 6
+    },
+    "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T1, no Fire Crystal",
+    "observed_power_per_injured_unit": null,
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "Lv.1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": null,
+        "fc_code": null,
+        "is_fire_crystal": false,
+        "base_troop_stats": {
+          "Attack": 1,
+          "Defense": 4,
+          "Lethality": 1,
+          "Health": 6
+        },
+        "troop_stat_reference": "wos_sim/troop_catalog.py::_TIER_ROWS :: ordinary Infantry T1, no Fire Crystal"
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 202.1,
+        "Defense": 202.7,
+        "Lethality": 122.0,
+        "Health": 118.7
+      },
+      "Lancer": {
+        "Attack": 438.7,
+        "Defense": 428.9,
+        "Lethality": 120.6,
+        "Health": 116.9
+      },
+      "Marksman": {
+        "Attack": 202.1,
+        "Defense": 197.2,
+        "Lethality": 131.2,
+        "Health": 128.6
+      }
+    },
+    "stats_capture": {
+      "source": "visible PDF stat panel for R01",
+      "missing_visible_rows": [],
+      "notes": "R01/R03/R04 show [RFJ]Colonel Mueller and the higher Gordon/Mueller stat block visible in their source panels.",
+      "manual_fill": [
+        "Marksman Health was cut off in the source panel and filled from Martin instruction on 2026-07-17."
+      ]
+    },
+    "lead_heroes": {
+      "Lancer": {
+        "name": "Gordon",
+        "level": null,
+        "skill_levels": [
+          2,
+          2,
+          3
+        ],
+        "deployed_with_class": "Infantry"
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gordon",
+        "slot": "Skill 1",
+        "name": "Gordon Skill 1",
+        "level": 2,
+        "effect": null,
+        "triggers": null,
+        "kills": 0,
+        "status": "visible_dash_or_not_triggered"
+      },
+      {
+        "hero": "Gordon",
+        "slot": "Skill 2",
+        "name": "Gordon Skill 2",
+        "level": 2,
+        "effect": "Enemy Damage Dealt reduction for 1 turn every 3 turns per local Gordon reference.",
+        "triggers": 23,
+        "kills": 0,
+        "status": "identified_from_prior_local_reference"
+      },
+      {
+        "hero": "Gordon",
+        "slot": "Skill 3",
+        "name": "Gordon Skill 3",
+        "level": 3,
+        "effect": "Visible trigger-counter row; modeled with 4-turn cadence per local Gordon reference.",
+        "triggers": 17,
+        "kills": 0,
+        "status": "visible_trigger_count"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "counter_target": "Lancer"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Alpaca/Far Seer",
+    "display_name": "Alpaca/Far Seer",
+    "alliance": null,
+    "state": null,
+    "coords": "X:766 Y:476",
+    "role": "defender",
+    "side_label": "right_blue",
+    "result": "defeat",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Marksman",
+    "tier_display": "FC1 Lv.1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": "FC1",
+    "fc_code": "FC1",
+    "is_fire_crystal": true,
+    "base_troop_stats": {
+      "Attack": 5,
+      "Defense": 1,
+      "Lethality": 6,
+      "Health": 1
+    },
+    "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Marksman T1 FC1",
+    "observed_power_per_injured_unit": 3,
+    "composition": [
+      {
+        "class": "Marksman",
+        "tier_display": "FC1 Lv.1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": "FC1",
+        "fc_code": "FC1",
+        "is_fire_crystal": true,
+        "base_troop_stats": {
+          "Attack": 5,
+          "Defense": 1,
+          "Lethality": 6,
+          "Health": 1
+        },
+        "troop_stat_reference": "docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json :: Marksman T1 FC1",
+        "observed_power_per_injured_unit": 3
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 176.2,
+        "Defense": 169.0,
+        "Lethality": 109.7,
+        "Health": 109.3
+      },
+      "Lancer": {
+        "Attack": 182.7,
+        "Defense": 163.0,
+        "Lethality": 135.5,
+        "Health": 134.1
+      },
+      "Marksman": {
+        "Attack": 176.2,
+        "Defense": 166.0,
+        "Lethality": 129.1,
+        "Health": 129.0
+      }
+    },
+    "stats_capture": {
+      "source": "visible PDF stat panel for this ENIF batch",
+      "missing_visible_rows": [],
+      "notes": "Marksman Health is recorded as null where the Battle Details overlay cropped or covered the final stat row.",
+      "manual_fill": [
+        "Marksman Health was cut off in the source panel and filled from Martin instruction on 2026-07-17."
+      ]
+    },
+    "lead_heroes": {
+      "Marksman": null
+    },
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "counter_target": "Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "E-NIF1b Gordon-control sample: Gordon replaces Gatot on the Mueller T1 Infantry side.",
+    "Alpaca/Far Seer fields FC1 T1 Marksman; this is not ordinary non-FC T1 Marksman.",
+    "Gordon skill levels recorded per Martin instruction as [2, 2, 3].",
+    "Gordon Skill 2 and Skill 3 visible trigger counts are used to infer a turn window instead of a single exact turn.",
+    "Marksman Health stat row is not visible in the PDF crop and is recorded as null rather than guessed.",
+    "Correction 2026-07-17: source panel confirms [RFJ]Colonel Mueller with higher Gordon/Mueller stat block: Infantry 202.1/202.7/122.0/118.7, Lancer 438.7/428.9/120.6/116.9, Marksman 202.1/197.2/131.2/null.",
+    "Correction 2026-07-17: Marksman Health values manually filled per Martin instruction: Alpaca/Far Seer 129.0%; Colonel Mueller 118.6% except E-NIF1b R01 Colonel Mueller 128.6%."
+  ],
+  "source_images": [
+    "E:\\WOS\\BattleReport Reader\\tmp_enif_crops\\report_01_p1_s1.png"
+  ],
+  "source_pdf": "E:\\WOS\\Screeenshots\\WOS_BattleReports_E-NIF.pdf",
+  "_extraction": {
+    "extracted_by": "Codex local OCR/visual transcription from rendered PDF battle-report panels",
+    "timestamp": "2026-07-17",
+    "source_pdf_page": 1,
+    "source_crop": "report_01_p1_s1.png",
+    "ocr_confidence": "manual_visual_high_for_visible battle overview, unit card, and skill rows; medium for cropped final stat rows",
+    "manual_overrides": [
+      "Martin specified Gordon skill levels are 2, 2, and 3 respectively.",
+      "Martin specified the ENIF categories and emphasized troop class/tier distinctions.",
+      "FC1 base troop stats were taken from docs/TroopStats/WOS_Troop_Stats_FC1-FC10_T1-T10.json.",
+      "Correction pass: R01/R03/R04 were rechecked and confirmed as [RFJ]Colonel Mueller with the higher stat block.",
+      "Martin supplied cut-off Marksman Health values: Alpaca/Far Seer 129.0%; Colonel Mueller 118.6%, except E-NIF1b R01 Colonel Mueller 128.6%."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "kill_incap_checks": "pass",
+    "missing": [],
+    "issues": []
+  }
+}

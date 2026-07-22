@@ -1,0 +1,193 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-07-12 01:39:54",
+  "recommended_filename": "LabRat_1v1_T1InfvT1Inf_NoAttackerHero_Eliflvl1_20260712_013954.json",
+  "setup": "1 Lv 1.0 Infantry attacker with the Infantry hero slot vacant versus 1 Lv 1.0 Infantry defender with Elif.",
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory"
+  },
+  "turn_inference": {
+    "turns": 44,
+    "turns_range": [
+      44,
+      44
+    ],
+    "method": "user_interpretation_from_elif_skill_3_trigger_count",
+    "clock_hero": "Elif",
+    "cadence": "Enchanting Tapestry triggers when Elif's Infantry attacks",
+    "trigger_count": 44,
+    "assumptions": [
+      "Elif Skill 3 shows 44 triggers.",
+      "The user interprets the 44 Skill 3 triggers as 44 battle rounds.",
+      "The report does not separately display a round counter."
+    ]
+  },
+  "attacker": {
+    "name": "Lab Rat",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1055 Y:405",
+    "role": "attacker",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed."
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Far Seer",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1052 Y:405",
+    "role": "defender",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 571.3,
+        "Defense": 569.3
+      },
+      "Lancer": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      },
+      "Marksman": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Elif",
+        "level": 21,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Elif",
+        "slot": "Skill 1",
+        "name": "Shackling Veil",
+        "level": 1,
+        "effect": "Elif entangles enemy weapons with her veil, reducing all enemy Troops' Attack by 5%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Elif",
+        "slot": "Skill 2",
+        "name": "Slash Formation",
+        "level": 1,
+        "effect": "Elif applies an exotic formation on the tundra, increasing Troops' Attack by 3% and Troops' Defense by 2%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Elif",
+        "slot": "Skill 3",
+        "name": "Enchanting Tapestry",
+        "level": 1,
+        "effect": "Elif weaves ribbons into a curtain when her Infantry attacks, granting them a Shield with protection equal to Attack*6% for 1 turn.",
+        "triggers": 44,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Elif Skill 1 triggered 1 time, Skill 2 triggered 1 time, and Skill 3 triggered 44 times.",
+    "The 44-round value is recorded as a user interpretation of the Skill 3 trigger count, not as a separately displayed report field.",
+    "Skill kills are displayed as dashes and recorded as zero.",
+    "The attacker's Infantry hero slot is explicitly shown as vacant.",
+    "Only values visible in the five supplied screenshots were recorded."
+  ],
+  "source_images": [
+    "image(31).png",
+    "image(32).png",
+    "image(33).png",
+    "image(34).png",
+    "image(35).png"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-12",
+    "ocr_confidence": "high",
+    "manual_overrides": [
+      "The user interpreted Elif Skill 3's 44 triggers as 44 rounds."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": [
+      "The exact one-trigger-per-round relationship for Elif Skill 3 is user-supplied rather than separately displayed."
+    ]
+  }
+}

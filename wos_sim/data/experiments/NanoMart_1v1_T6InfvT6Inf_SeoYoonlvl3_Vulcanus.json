@@ -1,0 +1,148 @@
+{
+  "_type": "nanomart_exp1_1v1_report",
+  "type": 1,
+  "source_pdf": null,
+  "source_crop": "C:/Users/Martin/AppData/Local/Temp/codex-clipboard-b37ac054-6c0d-4851-99fb-90a1c4c40a88.png",
+  "source_heading": "T6 Infantry vs T6 Infantry",
+  "user_requested_label": "T6 Inf vs T6 inf",
+  "timestamp": "2026-07-10",
+  "outcome": "ATTACKER VICTORY",
+  "attacker": {
+    "name": "nanomart",
+    "coords": "X:556 Y:25",
+    "deployed_class": "Infantry",
+    "tier": 6,
+    "troops": 1,
+    "power_loss": 0,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "lead_hero": "Seo-yoon",
+    "lead_hero_slot": "Marksman",
+    "skill_levels": {
+      "Skill 1": 3
+    },
+    "stats_pct_visible": {
+      "Infantry": {
+        "Attack": 2.2,
+        "Defense": 0.2
+      },
+      "Lancer": {
+        "Attack": 2.2,
+        "Defense": 0.2
+      },
+      "Marksman": {
+        "Attack": 46.7,
+        "Defense": 44.7
+      }
+    }
+  },
+  "defender": {
+    "name": "minimart",
+    "coords": "X:556 Y:27",
+    "deployed_class": "Infantry",
+    "tier": 6,
+    "troops": 1,
+    "power_loss": -20,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "lead_hero": "Vulcanus",
+    "lead_hero_slot": "Marksman",
+    "skill_levels": {
+      "Skill 1": 1,
+      "Skill 2": 1,
+      "Skill 3": 1
+    },
+    "stats_pct_visible": {
+      "Infantry": {
+        "Attack": 2.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 2.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 517.2,
+        "Defense": 515.2
+      }
+    }
+  },
+  "skill_details": {
+    "Seo-yoon Skill 1": {
+      "triggered": 1,
+      "kills": 0,
+      "effect": "Troops Attack +15% at level 3"
+    },
+    "Vulcanus Skill 1": {
+      "triggered": 1,
+      "kills": 0,
+      "effect": "Enemy Troops Attack -4% at level 1"
+    },
+    "Vulcanus Skill 2": {
+      "triggered": 44,
+      "kills": 0,
+      "effect": "Level 1 periodic empowered damage; interpreted as attack events 6,12,18,..."
+    },
+    "Vulcanus Skill 3": {
+      "triggered": 88,
+      "kills": 0,
+      "effect": "Level 1 enemy Infantry/Lancer Defense -12%; turns 1,4,7,..."
+    }
+  },
+  "procs": [],
+  "turn_inference": {
+    "skill_2_schedule_assumption": "Vulcanus S2 counter increments on attack events 6,12,18,... when present.",
+    "skill_3_schedule_assumption": "Vulcanus S3 counter increments on turns 1,4,7,... when present.",
+    "from_skill_2": [
+      264,
+      269
+    ],
+    "from_skill_3": [
+      262,
+      264
+    ],
+    "intersection": [
+      264,
+      264
+    ],
+    "representative_turns": 264
+  },
+  "stats_capture": {
+    "complete_12_stat_panel": false,
+    "visible_stats": [
+      "Attack",
+      "Defense"
+    ],
+    "missing_stats": [
+      "Lethality",
+      "Health"
+    ],
+    "note": "Converted from earlier ENGINE_REBUILD Markdown note; Lethality/Health battle panel rows were not visible."
+  },
+  "normalization_notes": {
+    "seo_yoon_s1_level_3_attack_factor": 1.15,
+    "vulcanus_s1_level_1_enemy_attack_factor": 0.96,
+    "attacker_damage_attack_factor_when_seoyoon_vs_vulcanus": 1.104,
+    "vulcanus_s3_level_1_enemy_infantry_lancer_defense_factor_when_active": 0.88,
+    "warning": "Do not derive base formula directly from observed turns without backing out battle skills and missing Lethality/Health panel rows.",
+    "troop_passives_must_be_applied_in_formula": true,
+    "troop_passive_rule": "Infantry->Lancer Master Brawler +10% DD; Lancer->Marksman Charge +10% DD; Marksman->Infantry Ranged Strike +10% DD. Directional by attacker class and target class."
+  },
+  "notes": [
+    "This row was not found in WOS_BattleReports_NanoMart_Exp_1.pdf; it was preserved from the prior screenshot/note."
+  ],
+  "_extraction": "Extracted by Codex from earlier Markdown note on 2026-07-10.",
+  "troop_passives": {
+    "rule_source": "GAME_RULES.md troop skills / wos_sim.troop_catalog",
+    "attacker": [],
+    "defender": [],
+    "notes": [
+      "T1 troop passives are deterministic Damage Dealt modifiers keyed to target class.",
+      "They affect formula normalization for cross-class rows; same-class rows usually have no active T1 target passive."
+    ]
+  }
+}

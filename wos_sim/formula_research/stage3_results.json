@@ -1,0 +1,798 @@
+{
+ "stage": 3,
+ "generated_by": "wos_sim/formula_research/stage3_run.py",
+ "input": "stage2_constraints.json (Stage 2 ACCEPTED)",
+ "guardrail_statement": "ACCEPT/REJECT is the exact-band interval-intersection gate (delta=0). Structural constants enumerated over simple rationals; global scale solved as a feasible interval, not regressed. 'closest shape' / 'min-slack' figures are DIAGNOSTIC only.",
+ "family_counts": {
+  "ratio_monomials": 486,
+  "named_forms": 19,
+  "difference_forms": 20,
+  "two_factor_forms": 15,
+  "total": 540
+ },
+ "subset_sizes": {
+  "INF_MIRROR": 17,
+  "INF_CLEAN": 24,
+  "INF_ALL": 26,
+  "FULL_CLEAN": 35
+ },
+ "elimination": {
+  "INF_MIRROR": {
+   "n_rows": 17,
+   "n_survivors": 0,
+   "survivors": []
+  },
+  "INF_CLEAN": {
+   "n_rows": 24,
+   "n_survivors": 0,
+   "survivors": []
+  },
+  "INF_ALL": {
+   "n_rows": 26,
+   "n_survivors": 0,
+   "survivors": []
+  },
+  "FULL_CLEAN": {
+   "n_rows": 35,
+   "n_survivors": 0,
+   "survivors": []
+  }
+ },
+ "count_law_model_free": {
+  "note": "g(N)/g(1) computed model-free as ratio of observed winner-rate intervals for the SAME matchup (T1InfvT1Inf); no damage formula assumed.",
+  "def_stacking": [
+   {
+    "N": 1,
+    "name": "NanoMart_SetA_1v1_T1InfvT1Inf_Vulcanus_SeoYoonlvl3",
+    "gN_over_g1_lo": 1.0,
+    "gN_over_g1_hi": 1.0,
+    "gN_over_g1_mid": 1.0,
+    "sqrtN": 1.0,
+    "sqrtN_inside_band": true,
+    "gN_over_sqrtN_mid": 1.0,
+    "implied_exponent_mid": null
+   },
+   {
+    "N": 2,
+    "name": "NanoMart_1v2_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+    "gN_over_g1_lo": 1.3256048387096775,
+    "gN_over_g1_hi": 1.3387423935091278,
+    "gN_over_g1_mid": 1.3321736161094027,
+    "sqrtN": 1.4142135623730951,
+    "sqrtN_inside_band": false,
+    "gN_over_sqrtN_mid": 0.9419889976687631,
+    "implied_exponent_mid": 0.41378211452457003
+   },
+   {
+    "N": 3,
+    "name": "NanoMart_SetC_1v3_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+    "gN_over_g1_lo": 1.63151364764268,
+    "gN_over_g1_hi": 1.65,
+    "gN_over_g1_mid": 1.64075682382134,
+    "sqrtN": 1.7320508075688772,
+    "sqrtN_inside_band": false,
+    "gN_over_sqrtN_mid": 0.947291393907966,
+    "implied_exponent_mid": 0.4507118830138433
+   },
+   {
+    "N": 5,
+    "name": "NanoMart_SetC_1v5_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+    "gN_over_g1_lo": 2.120967741935484,
+    "gN_over_g1_hi": 2.1498371335504887,
+    "gN_over_g1_mid": 2.1354024377429863,
+    "sqrtN": 2.23606797749979,
+    "sqrtN_inside_band": false,
+    "gN_over_sqrtN_mid": 0.954981002022416,
+    "implied_exponent_mid": 0.4713789320397846
+   }
+  ],
+  "att_stacking": [
+   {
+    "N": 1,
+    "name": "NanoMart_1v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+    "gN_over_g1_lo": 1.0,
+    "gN_over_g1_hi": 1.0,
+    "gN_over_g1_mid": 1.0,
+    "sqrtN": 1.0,
+    "sqrtN_inside_band": true,
+    "gN_over_sqrtN_mid": 1.0,
+    "implied_exponent_mid": null
+   },
+   {
+    "N": 2,
+    "name": "NanoMart_2v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+    "gN_over_g1_lo": 1.413978494623656,
+    "gN_over_g1_hi": 1.427027027027027,
+    "gN_over_g1_mid": 1.4205027608253415,
+    "sqrtN": 1.4142135623730951,
+    "sqrtN_inside_band": true,
+    "gN_over_sqrtN_mid": 1.0044471348738113,
+    "implied_exponent_mid": 0.506401635487439
+   },
+   {
+    "N": 3,
+    "name": "NanoMart_SetC_3v1_T1InfvT1Inf_SeoYoonlvl3_Vulcanus",
+    "gN_over_g1_lo": 1.7189542483660132,
+    "gN_over_g1_hi": 1.76,
+    "gN_over_g1_mid": 1.7394771241830065,
+    "sqrtN": 1.7320508075688772,
+    "sqrtN_inside_band": true,
+    "gN_over_sqrtN_mid": 1.004287585896255,
+    "implied_exponent_mid": 0.5038943860661643
+   }
+  ]
+ },
+ "data_conflicts": {
+  "hard_identical_input_conflict": {
+   "rows": [
+    "L32 NanoMart_1v1_T5InfvT1Inf",
+    "L69 NanoMart_SetA_1v1_T5InfvT1Inf"
+   ],
+   "identical_inputs": {
+    "A_w": "5.64144",
+    "L_w": "5",
+    "D_l": "4",
+    "H_l": "6"
+   },
+   "L32_rate": [
+    0.012345679012345678,
+    0.01282051282051282
+   ],
+   "L69_rate": [
+    0.014492753623188406,
+    0.015151515151515152
+   ],
+   "L32_tset": [
+    79,
+    80,
+    81
+   ],
+   "L69_tset": [
+    67,
+    68,
+    69
+   ],
+   "verdict": "identical deployed stats, disjoint rate bands -> no captured-variable deterministic formula can satisfy both; an uncaptured variable exists."
+  },
+  "non_monotonic_vs_T1_block": {
+   "rows": {
+    "T4vT1_L31": {
+     "A_w": "4.513152",
+     "rate_mid": 0.010471491228070175,
+     "t_set": [
+      96
+     ]
+    },
+    "T5vT1_L32": {
+     "A_w": "5.64144",
+     "rate_mid": 0.01258309591642925,
+     "t_set": [
+      79,
+      80,
+      81
+     ]
+    },
+    "T6vT1_L33": {
+     "A_w": "6.769728",
+     "rate_mid": 0.010471491228070175,
+     "t_set": [
+      96
+     ]
+    }
+   },
+   "verdict": "T4vT1 and T6vT1 both last exactly 96 turns despite A_w differing 4.51 vs 6.77, while T5vT1 (between) is faster -> rate non-monotonic in attack; no monotone damage form can fit the block."
+  }
+ },
+ "closest_shape_diagnostic": {
+  "INF_CLEAN": {
+   "family": "mem_A_over_ApD_DpH",
+   "desc": "oA/((oA+dD)*(dD+dH))  [memory candidate]",
+   "C_spread_max_over_min": 1.4830530592868096,
+   "n_pass_exact_band": 1,
+   "n_rows": 24,
+   "C_star": 0.1770071098448602,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003894379526903279,
+     "rel_err_vs_mid": 0.02616531048177806,
+     "pass": false
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "winner": "def",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.01178664125404146,
+     "rel_err_vs_mid": -0.17885159157783814,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.006384162773780343,
+     "rel_err_vs_mid": 0.12033871855776068,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.004586988821188708,
+     "rel_err_vs_mid": 0.2178066592389818,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.008113148649154717,
+     "rel_err_vs_mid": 0.018183993818221333,
+     "pass": false
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "winner": "att",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00456011626698596,
+     "rel_err_vs_mid": 0.21067222383166206,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.0037993362590522358,
+     "rel_err_vs_mid": 0.0011214995769064373,
+     "pass": true
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.004167773600825596,
+     "rel_err_vs_mid": 0.05694146877151507,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0045202551220160985,
+     "rel_err_vs_mid": 0.12776288911927103,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.003307039708394514,
+     "rel_err_vs_mid": -0.12200898318149722,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.0035398537359707595,
+     "rel_err_vs_mid": -0.06725189906671047,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0045202551220160985,
+     "rel_err_vs_mid": 0.12776288911927103,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004167773600825596,
+     "rel_err_vs_mid": 0.16030278110743112,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003473654988262843,
+     "rel_err_vs_mid": -0.08469520628058547,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0045202551220160985,
+     "rel_err_vs_mid": 0.12776288911927103,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0045202551220160985,
+     "rel_err_vs_mid": 0.12776288911927103,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0045202551220160985,
+     "rel_err_vs_mid": 0.12776288911927103,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004167773600825596,
+     "rel_err_vs_mid": 0.16030278110743112,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.003894379526903279,
+     "rel_err_vs_mid": 0.02616531048177806,
+     "pass": false
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.0059546284218992,
+     "rel_err_vs_mid": 0.11642137356503701,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.006997855808906716,
+     "rel_err_vs_mid": 0.004180117191687094,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.007819861078976687,
+     "rel_err_vs_mid": -0.0655429606042921,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.00848426564966657,
+     "rel_err_vs_mid": -0.13886793376487683,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.004167773600825596,
+     "rel_err_vs_mid": 0.16030278110743112,
+     "pass": false
+    }
+   ]
+  },
+  "FULL_CLEAN": {
+   "family": "mem_A_over_ApD_DpH",
+   "desc": "oA/((oA+dD)*(dD+dH))  [memory candidate]",
+   "C_spread_max_over_min": 26.874749253475738,
+   "n_pass_exact_band": 0,
+   "n_rows": 35,
+   "C_star": 0.25130618276296257,
+   "predicted_vs_observed": [
+    {
+     "ledger_line": 17,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.005529052782083563,
+     "rel_err_vs_mid": 0.4569001622983908,
+     "pass": false
+    },
+    {
+     "ledger_line": 18,
+     "matchup": "T1Inf vs T1Lan",
+     "winner": "att",
+     "obs_lo": 0.012345679012345678,
+     "obs_hi": 0.01282051282051282,
+     "pred": 0.024925800099845605,
+     "rel_err_vs_mid": 0.9808956607650885,
+     "pass": false
+    },
+    {
+     "ledger_line": 19,
+     "matchup": "T1Inf vs T1Mar",
+     "winner": "def",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.026039881160086546,
+     "rel_err_vs_mid": -0.8071019712504758,
+     "pass": false
+    },
+    {
+     "ledger_line": 20,
+     "matchup": "T1Inf vs T6Inf",
+     "winner": "def",
+     "obs_lo": 0.014044943820224719,
+     "obs_hi": 0.01466275659824047,
+     "pred": 0.016734106464682368,
+     "rel_err_vs_mid": 0.16582702346432177,
+     "pass": false
+    },
+    {
+     "ledger_line": 21,
+     "matchup": "T1Lan vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.10869565217391304,
+     "obs_hi": 0.16129032258064516,
+     "pred": 0.026915810125578917,
+     "rel_err_vs_mid": -0.8006132714853219,
+     "pass": false
+    },
+    {
+     "ledger_line": 22,
+     "matchup": "T1Lan vs T1Lan",
+     "winner": "att",
+     "obs_lo": 0.03333333333333333,
+     "obs_hi": 0.034482758620689655,
+     "pred": 0.04353433642225109,
+     "rel_err_vs_mid": 0.2838939894019812,
+     "pass": false
+    },
+    {
+     "ledger_line": 23,
+     "matchup": "T1Lan vs T1Mar",
+     "winner": "def",
+     "obs_lo": 0.011961722488038277,
+     "obs_hi": 0.01240694789081886,
+     "pred": 0.06316464335283477,
+     "rel_err_vs_mid": 4.184086154133217,
+     "pass": false
+    },
+    {
+     "ledger_line": 24,
+     "matchup": "T1Mar vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.014492753623188406,
+     "obs_hi": 0.015151515151515152,
+     "pred": 0.015227366726309156,
+     "rel_err_vs_mid": 0.027339675134991026,
+     "pass": false
+    },
+    {
+     "ledger_line": 25,
+     "matchup": "T1Mar vs T1Lan",
+     "winner": "def",
+     "obs_lo": 0.046296296296296294,
+     "obs_hi": 0.053763440860215055,
+     "pred": 0.11085551090391073,
+     "rel_err_vs_mid": 1.215786570186825,
+     "pass": false
+    },
+    {
+     "ledger_line": 26,
+     "matchup": "T1Mar vs T1Mar",
+     "winner": "def",
+     "obs_lo": 0.08064516129032258,
+     "obs_hi": 0.08928571428571429,
+     "pred": 0.04103889639617608,
+     "rel_err_vs_mid": -0.5169930566524632,
+     "pass": false
+    },
+    {
+     "ledger_line": 27,
+     "matchup": "T2Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.005649717514124294,
+     "obs_hi": 0.005747126436781609,
+     "pred": 0.009063927309034766,
+     "rel_err_vs_mid": 0.5906030385393317,
+     "pass": false
+    },
+    {
+     "ledger_line": 28,
+     "matchup": "T2Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.0065123861523960595,
+     "rel_err_vs_mid": 0.7289833337479978,
+     "pass": false
+    },
+    {
+     "ledger_line": 29,
+     "matchup": "T3Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.007936507936507936,
+     "obs_hi": 0.008,
+     "pred": 0.011518658312621229,
+     "rel_err_vs_mid": 0.445568672699477,
+     "pass": false
+    },
+    {
+     "ledger_line": 30,
+     "matchup": "T3Inf vs T3Inf",
+     "winner": "att",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00647423379216769,
+     "rel_err_vs_mid": 0.7188542054324525,
+     "pass": false
+    },
+    {
+     "ledger_line": 31,
+     "matchup": "T4Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.013322715268669348,
+     "rel_err_vs_mid": 0.272284431939942,
+     "pass": false
+    },
+    {
+     "ledger_line": 33,
+     "matchup": "T6Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.010416666666666666,
+     "obs_hi": 0.010526315789473684,
+     "pred": 0.015796819585634336,
+     "rel_err_vs_mid": 0.5085549174972268,
+     "pass": false
+    },
+    {
+     "ledger_line": 34,
+     "matchup": "T6Inf vs T6Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.005394114920763203,
+     "rel_err_vs_mid": 0.42134416386501217,
+     "pass": false
+    },
+    {
+     "ledger_line": 55,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.003933910306845004,
+     "obs_hi": 0.003952569169960474,
+     "pred": 0.005917204541454419,
+     "rel_err_vs_mid": 0.5005946718956682,
+     "pass": false
+    },
+    {
+     "ledger_line": 56,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0064176408553544935,
+     "rel_err_vs_mid": 0.6011435188942145,
+     "pass": false
+    },
+    {
+     "ledger_line": 57,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003745318352059925,
+     "obs_hi": 0.003787878787878788,
+     "pred": 0.00469517595135345,
+     "rel_err_vs_mid": 0.24652942545763445,
+     "pass": false
+    },
+    {
+     "ledger_line": 58,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.005025714112307194,
+     "rel_err_vs_mid": 0.3242709003632376,
+     "pass": false
+    },
+    {
+     "ledger_line": 59,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0064176408553544935,
+     "rel_err_vs_mid": 0.6011435188942145,
+     "pass": false
+    },
+    {
+     "ledger_line": 60,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.005917204541454419,
+     "rel_err_vs_mid": 0.6473420927833136,
+     "pass": false
+    },
+    {
+     "ledger_line": 61,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "att",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.004931728313630825,
+     "rel_err_vs_mid": 0.2995057315826013,
+     "pass": false
+    },
+    {
+     "ledger_line": 62,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0064176408553544935,
+     "rel_err_vs_mid": 0.6011435188942145,
+     "pass": false
+    },
+    {
+     "ledger_line": 63,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0064176408553544935,
+     "rel_err_vs_mid": 0.6011435188942145,
+     "pass": false
+    },
+    {
+     "ledger_line": 64,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.00398406374501992,
+     "obs_hi": 0.004032258064516129,
+     "pred": 0.0064176408553544935,
+     "rel_err_vs_mid": 0.6011435188942145,
+     "pass": false
+    },
+    {
+     "ledger_line": 65,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.005917204541454419,
+     "rel_err_vs_mid": 0.6473420927833136,
+     "pass": false
+    },
+    {
+     "ledger_line": 66,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.003787878787878788,
+     "obs_hi": 0.0038022813688212928,
+     "pred": 0.005529052782083563,
+     "rel_err_vs_mid": 0.4569001622983908,
+     "pass": false
+    },
+    {
+     "ledger_line": 67,
+     "matchup": "T3Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.005291005291005291,
+     "obs_hi": 0.005376344086021506,
+     "pred": 0.008454095091383042,
+     "rel_err_vs_mid": 0.5850413804932237,
+     "pass": false
+    },
+    {
+     "ledger_line": 68,
+     "matchup": "T4Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.006944444444444444,
+     "obs_hi": 0.006993006993006993,
+     "pred": 0.009935219169463409,
+     "rel_err_vs_mid": 0.4256866420738017,
+     "pass": false
+    },
+    {
+     "ledger_line": 70,
+     "matchup": "T5Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.008333333333333333,
+     "obs_hi": 0.008403361344537815,
+     "pred": 0.011102262723891124,
+     "rel_err_vs_mid": 0.3266971690139351,
+     "pass": false
+    },
+    {
+     "ledger_line": 71,
+     "matchup": "T6Inf vs T2Inf",
+     "winner": "att",
+     "obs_lo": 0.00980392156862745,
+     "obs_hi": 0.009900990099009901,
+     "pred": 0.012045552383931792,
+     "rel_err_vs_mid": 0.2225938981208404,
+     "pass": false
+    },
+    {
+     "ledger_line": 73,
+     "matchup": "T1Inf vs T1Inf",
+     "winner": "def",
+     "obs_lo": 0.0035842293906810036,
+     "obs_hi": 0.003599712023038157,
+     "pred": 0.005917204541454419,
+     "rel_err_vs_mid": 0.6473420927833136,
+     "pass": false
+    },
+    {
+     "ledger_line": 75,
+     "matchup": "T1Lan vs T1Lan",
+     "winner": "def",
+     "obs_lo": 0.03225806451612903,
+     "obs_hi": 0.03355704697986577,
+     "pred": 0.04662239434808373,
+     "rel_err_vs_mid": 0.41676868088025487,
+     "pass": false
+    }
+   ]
+  }
+ }
+}

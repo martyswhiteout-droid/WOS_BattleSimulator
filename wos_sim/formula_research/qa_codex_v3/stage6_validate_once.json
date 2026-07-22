@@ -1,0 +1,11 @@
+{
+  "command": [
+    "E:\\WOS\\Battle Simulator\\.venv\\Scripts\\python.exe",
+    "-m",
+    "wos_sim.formula_research.stage6_validate"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 0.5869550704956055,
+  "stdout_sha256": "dd4cc7240cca84d1cc31fe8e28f9fd3df039fa845e6434f7e1371d87cab42d43",
+  "log": "E:\\WOS\\Battle Simulator\\wos_sim\\formula_research\\qa_codex_v3\\stage6_validate_once.log"
+}

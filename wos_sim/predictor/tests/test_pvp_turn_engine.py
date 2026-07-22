@@ -389,6 +389,50 @@ class TestCatalogCoverage(unittest.TestCase):
         self.assertGreater(casualties[TroopType.LANCER], 0.0)
         self.assertGreater(casualties[TroopType.MARKSMAN], 0.0)
 
+    def test_t1_troop_damage_passives_are_target_class_scoped(self):
+        astat = {A: 100.0, D: 100.0, L: 100.0, H: 100.0}
+        params = dict(pvp_turn_engine.BEST_PARAMS)
+        params.update({"mod_gamma": 1.0, "stat_floor": 0.0})
+
+        cases = [
+            ("Master Brawler", TroopType.INFANTRY, TroopType.LANCER,
+             TroopType.MARKSMAN),
+            ("Charge", TroopType.LANCER, TroopType.MARKSMAN,
+             TroopType.INFANTRY),
+            ("Ranged Strike", TroopType.MARKSMAN, TroopType.INFANTRY,
+             TroopType.LANCER),
+        ]
+        for skill_name, source, target, non_target in cases:
+            with self.subTest(skill=skill_name):
+                skill = _make_troop_skill(_troop_skill(skill_name), "attacker", 0)
+                mods = pvp_turn_engine._passive_mods([skill], {}, {})
+                self.assertNotIn(("attacker", source), mods.normal_dd)
+                self.assertAlmostEqual(
+                    mods.normal_dd_target[("attacker", source, target)],
+                    0.10,
+                )
+
+                src = TypeStack(source, 1, 100.0, 100.0, dict(astat), 100.0)
+                target_stack = TypeStack(target, 1, 100.0, 100.0,
+                                         dict(astat), 100.0)
+                other_stack = TypeStack(non_target, 1, 100.0, 100.0,
+                                        dict(astat), 100.0)
+                base_target = pvp_turn_engine._damage_for(
+                    src, target_stack, src, "attacker", "defender",
+                    pvp_turn_engine._Mods(), params, 1.0)
+                buffed_target = pvp_turn_engine._damage_for(
+                    src, target_stack, src, "attacker", "defender",
+                    mods, params, 1.0)
+                base_other = pvp_turn_engine._damage_for(
+                    src, other_stack, src, "attacker", "defender",
+                    pvp_turn_engine._Mods(), params, 1.0)
+                buffed_other = pvp_turn_engine._damage_for(
+                    src, other_stack, src, "attacker", "defender",
+                    mods, params, 1.0)
+
+                self.assertAlmostEqual(buffed_target / base_target, 1.10)
+                self.assertAlmostEqual(buffed_other / base_other, 1.0)
+
     def test_all_troop_attack_chance_rolls_independently_per_attack(self):
         class SeqRng:
             def __init__(self, values):
@@ -933,6 +977,20 @@ class TestCatalogCoverage(unittest.TestCase):
             no_target_skill, [TroopType.MARKSMAN], own, enemy,
             pvp_turn_engine._Mods(), params, 1.0, 1.0, 1.0, 1.0)[0].magnitude
         self.assertAlmostEqual(with_target / without_target, 1.15, places=6)
+
+    def test_captain_skill_can_trigger_when_slot_troop_is_absent(self):
+        rows = tuple(row for row in load_skill_book().for_hero("Vulcanus")
+                     if row.source == SkillSource.SKILL_3)
+        skill = _make_hero_skill("Vulcanus", SkillSource.SKILL_3, rows,
+                                 "defender", "captain", TroopType.MARKSMAN, 0)
+        astat = {A: 100.0, D: 100.0, L: 100.0, H: 100.0}
+        stacks = {
+            TroopType.INFANTRY: TypeStack(
+                TroopType.INFANTRY, 6, 200, 200, dict(astat), 100),
+        }
+        triggers = _trigger_count_for_skill(
+            skill, 1, stacks, 0, random.Random(0), {})
+        self.assertTrue(triggers)
 
 
 class TestPacketConservation(unittest.TestCase):

@@ -198,6 +198,8 @@ class _Mods:
     normal_dt: dict[tuple[str, TroopType], float] = field(default_factory=dict)
     skill_dd: dict[tuple[str, TroopType], float] = field(default_factory=dict)
     skill_dt: dict[tuple[str, TroopType], float] = field(default_factory=dict)
+    normal_dd_target: dict[tuple[str, TroopType, TroopType], float] = field(default_factory=dict)
+    skill_dd_target: dict[tuple[str, TroopType, TroopType], float] = field(default_factory=dict)
 
     def add_stat(self, side: str, troop: TroopType, stat: StatType, value: float):
         self.stat[(side, troop, stat)] = self.stat.get((side, troop, stat), 0.0) + value
@@ -207,13 +209,22 @@ class _Mods:
         self.stat[key] = (1.0 + self.stat.get(key, 0.0)) * (1.0 + value) - 1.0
 
     def add_dd(self, side: str, troop: TroopType, value: float,
-               category: DamageCategory = DamageCategory.BOTH):
+               category: DamageCategory = DamageCategory.BOTH,
+               target_troop: TroopType | None = None):
         if category in (DamageCategory.BOTH, DamageCategory.NORMAL):
-            key = (side, troop)
-            self.normal_dd[key] = self.normal_dd.get(key, 0.0) + value
+            if target_troop is None:
+                key = (side, troop)
+                self.normal_dd[key] = self.normal_dd.get(key, 0.0) + value
+            else:
+                key = (side, troop, target_troop)
+                self.normal_dd_target[key] = self.normal_dd_target.get(key, 0.0) + value
         if category in (DamageCategory.BOTH, DamageCategory.SKILLS):
-            key = (side, troop)
-            self.skill_dd[key] = self.skill_dd.get(key, 0.0) + value
+            if target_troop is None:
+                key = (side, troop)
+                self.skill_dd[key] = self.skill_dd.get(key, 0.0) + value
+            else:
+                key = (side, troop, target_troop)
+                self.skill_dd_target[key] = self.skill_dd_target.get(key, 0.0) + value
 
     def add_dt(self, side: str, troop: TroopType, value: float,
                category: DamageCategory = DamageCategory.BOTH):
@@ -793,7 +804,8 @@ def _enemy_stacks(side: str, a, d):
 
 def _stack_view(stack: TypeStack, side: str, mods: _Mods,
                 channel: DamageCategory = DamageCategory.NORMAL,
-                stat_floor: float = 0.25, mod_gamma: float = 1.0) -> TypeStack:
+                stat_floor: float = 0.25, mod_gamma: float = 1.0,
+                target_troop: TroopType | None = None) -> TypeStack:
     """Stack with skill modifiers applied.
 
     ``mod_gamma`` compresses every composed modifier multiplier toward 1
@@ -810,9 +822,13 @@ def _stack_view(stack: TypeStack, side: str, mods: _Mods,
     if channel == DamageCategory.SKILLS:
         dd = mods.skill_dd.get((side, stack.troop), 0.0)
         dt = mods.skill_dt.get((side, stack.troop), 0.0)
+        if target_troop is not None:
+            dd += mods.skill_dd_target.get((side, stack.troop, target_troop), 0.0)
     else:
         dd = mods.normal_dd.get((side, stack.troop), 0.0)
         dt = mods.normal_dt.get((side, stack.troop), 0.0)
+        if target_troop is not None:
+            dd += mods.normal_dd_target.get((side, stack.troop, target_troop), 0.0)
     dd_total = max(stack.dd + dd, -1.0)
     dt_total = max(stack.dt + dt, -1.0)
     if mod_gamma != 1.0:
@@ -879,7 +895,8 @@ def _apply_troop_skill_to_mods(mods: _Mods, skill: SkillDef, active: list[TroopS
     if amount is None:
         return
     side = skill.side
-    targets = list(ORDER) if ts.against == "All" else [TROOP_BY_NAME.get(ts.against)]
+    target = None if ts.against == "All" else TROOP_BY_NAME.get(ts.against)
+    targets = list(ORDER) if target is None else [target]
     if ts.attribute in (SkillAttribute.DAMAGE_DEALT, SkillAttribute.ATTACK):
         receivers = [ts.troop_type]
     else:
@@ -888,7 +905,7 @@ def _apply_troop_skill_to_mods(mods: _Mods, skill: SkillDef, active: list[TroopS
         if ts.attribute in STAT_ATTRS:
             mods.add_stat(side, troop, STAT_ATTRS[ts.attribute], amount)
         elif ts.attribute == SkillAttribute.DAMAGE_DEALT:
-            mods.add_dd(side, troop, amount)
+            mods.add_dd(side, troop, amount, target_troop=target)
         elif ts.attribute == SkillAttribute.DAMAGE_TAKEN:
             mods.add_dt(side, troop, amount)
 
@@ -910,7 +927,8 @@ def _apply_active_troop_skill_to_mods(mods: _Mods, skill: SkillDef):
     elif ts.attribute == SkillAttribute.DAMAGE_TAKEN:
         mods.add_dt(side, troop, amount)
     elif ts.attribute == SkillAttribute.DAMAGE_DEALT:
-        mods.add_dd(side, troop, amount)
+        target = None if ts.against == "All" else TROOP_BY_NAME.get(ts.against)
+        mods.add_dd(side, troop, amount, target_troop=target)
 
 
 def _troop_dependents(skills: list[SkillDef]) -> dict[tuple[str, TroopType], list[SkillDef]]:
@@ -1011,6 +1029,8 @@ def _passive_mods(skills: list[SkillDef], a, d) -> _Mods:
 
 
 def _skill_is_alive(skill: SkillDef, stacks: dict[TroopType, TypeStack]) -> bool:
+    if skill.role in ("captain", "joiner"):
+        return any(st.n > EPS for st in stacks.values())
     if skill.troop is None:
         return any(st.n > EPS for st in stacks.values())
     st = stacks.get(skill.troop)
@@ -1108,6 +1128,8 @@ def _build_mods(base: _Mods, active: list[_ActiveEffect], turn: int, a, d,
         dict(base.normal_dt),
         dict(base.skill_dd),
         dict(base.skill_dt),
+        dict(base.normal_dd_target),
+        dict(base.skill_dd_target),
     )
     dependents = dependents or {}
     for effect in active:
@@ -1157,7 +1179,8 @@ def _damage_for(src: TypeStack, target: TypeStack, own_front: TypeStack | None,
                 channel: DamageCategory = DamageCategory.NORMAL) -> float:
     floor = float(p.get("stat_floor", 0.25))
     gamma = float(p.get("mod_gamma", 1.0))
-    src_v = _stack_view(src, src_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
+    src_v = _stack_view(src, src_side, mods, channel, stat_floor=floor, mod_gamma=gamma,
+                        target_troop=target.troop)
     tgt_v = _stack_view(target, target_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
     # Firing strength blend between LIVE (n = current count, Lanchester taper)
     # and START (n = starting count, constant casualty rate). fire_blend in

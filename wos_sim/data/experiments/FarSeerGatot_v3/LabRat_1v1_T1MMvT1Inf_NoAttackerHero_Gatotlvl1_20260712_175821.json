@@ -1,0 +1,275 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1_stat_modifier",
+  "type": 1,
+  "battle_date": "2026-07-12 17:58:21",
+  "recommended_filename": "LabRat_1v1_T1MMvT1Inf_NoAttackerHero_Gatotlvl1_20260712_175821.json",
+  "setup": "1 Lv 1.0 Marksman attacker Lab Rat versus 1 Lv 1.0 ordinary Infantry defender Far Seer with Gatot visible on the Infantry hero slot.",
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory"
+  },
+  "turn_inference": {
+    "turns": 19,
+    "turns_range": [
+      19,
+      19
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal triggers each time Gatot's Infantry attacks",
+    "trigger_count": 19,
+    "assumptions": [
+      "King's Bestowal shows 19 triggers.",
+      "For these controlled Gatot Infantry tests, Martin treats King's Bestowal's trigger count as the exact battle-round count."
+    ]
+  },
+  "attacker": {
+    "name": "Lab Rat",
+    "display_name": "Lab Rat",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1055 Y:405",
+    "role": "attacker",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Marksman",
+    "deployed_classes": [
+      "Marksman"
+    ],
+    "tier_display": "Lv 1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": null,
+    "fc_code": null,
+    "is_fire_crystal": false,
+    "base_troop_stats": {
+      "Attack": 5,
+      "Defense": 1,
+      "Lethality": 5,
+      "Health": 1
+    },
+    "base_troop_stats_reference": "wos_sim/troop_catalog.py::_TIER_ROWS ordinary base tier",
+    "composition": [
+      {
+        "class": "Marksman",
+        "tier_display": "Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": null,
+        "fc_code": null,
+        "is_fire_crystal": false,
+        "base_troop_stats": {
+          "Attack": 5,
+          "Defense": 1,
+          "Lethality": 5,
+          "Health": 1
+        },
+        "base_troop_stats_reference": "wos_sim/troop_catalog.py::_TIER_ROWS ordinary base tier",
+        "power_per_unit": 3
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 4.0,
+        "Defense": 5.0,
+        "Lethality": 1.8,
+        "Health": 5.5
+      },
+      "Lancer": {
+        "Attack": 2.8,
+        "Defense": 2.3,
+        "Lethality": 0.5,
+        "Health": 1.5
+      },
+      "Marksman": {
+        "Attack": 2.8,
+        "Defense": 2.3,
+        "Lethality": 0.5,
+        "Health": 1.5
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "All three troop classes and all four stat rows were visible in the report Stat Bonuses panel."
+    },
+    "lead_heroes": {
+      "Infantry": null
+    },
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Far Seer",
+    "display_name": "[FCE]Far Seer",
+    "state": null,
+    "alliance": "FCE",
+    "coords": "X:1052 Y:405",
+    "role": "defender",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "deployed_classes": [
+      "Infantry"
+    ],
+    "tier_display": "Lv 1.0",
+    "tier_code": "T1",
+    "fire_crystal_level": null,
+    "fc_code": null,
+    "is_fire_crystal": false,
+    "base_troop_stats": {
+      "Attack": 1,
+      "Defense": 4,
+      "Lethality": 1,
+      "Health": 6
+    },
+    "base_troop_stats_reference": "wos_sim/troop_catalog.py::_TIER_ROWS ordinary base tier",
+    "composition": [
+      {
+        "class": "Infantry",
+        "tier_display": "Lv 1.0",
+        "tier_code": "T1",
+        "count": 1,
+        "fire_crystal_level": null,
+        "fc_code": null,
+        "is_fire_crystal": false,
+        "base_troop_stats": {
+          "Attack": 1,
+          "Defense": 4,
+          "Lethality": 1,
+          "Health": 6
+        },
+        "base_troop_stats_reference": "wos_sim/troop_catalog.py::_TIER_ROWS ordinary base tier",
+        "power_per_unit": 3
+      }
+    ],
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 272.1,
+        "Defense": 202.1,
+        "Lethality": 10.0,
+        "Health": 10.0
+      },
+      "Lancer": {
+        "Attack": 43.5,
+        "Defense": 15.6,
+        "Lethality": 10.0,
+        "Health": 10.0
+      },
+      "Marksman": {
+        "Attack": 43.5,
+        "Defense": 15.6,
+        "Lethality": 10.0,
+        "Health": 10.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "All three troop classes and all four stat rows were visible. Far Seer displays FCE alliance tag in this report."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 46,
+        "stars": null,
+        "skill_levels": [
+          1,
+          1
+        ],
+        "level_confidence": "visible_but_small"
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Gatot commands his troops with imperial guard tactics, increasing his Infantry's Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "The great kings blesses Gatot's Infantry, granting Infantry a Shield with protection equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 19,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields Marksman, not Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Source location: WOS_BattleReports_Gatot_v3.pdf, PDF page 1, report 2 from left.",
+    "Battle tile shown at top of report: X:1054 Y:405.",
+    "Attacker is Lab Rat on the red/left side; defender is Far Seer on the blue/right side.",
+    "Attacker composition recorded as 1 Lv 1.0 Marksman.",
+    "Far Seer defender troop is ordinary non-Fire-Crystal T1 Infantry; this is not FC1 T1 Infantry.",
+    "Class mapping for the attacker icons: blue helmet/goggles = Lancer, hat = Marksman, brown helmet/shield = Infantry; the mixed report labels Lancer and Marksman directly.",
+    "Gatot Golden Guard triggered 1 time; King's Bestowal triggered 19 times.",
+    "Skill kills are displayed as dashes and recorded as zero.",
+    "The attacker Infantry hero slot is shown as vacant; Far Seer has Gatot in the Infantry hero slot."
+  ],
+  "source_images": [
+    "WOS_BattleReports_Gatot_v3.pdf",
+    "pdf_page_1_report_2",
+    "battle_overview",
+    "troop_comparison",
+    "stat_bonuses",
+    "battle_details",
+    "E:/WOS/WOS_BattleReports_Gatot_v3.pdf"
+  ],
+  "_extraction": {
+    "extracted_by": "Codex local visual transcription from rendered PDF pages",
+    "timestamp": "2026-07-12",
+    "ocr_confidence": "manual_visual_high_for_visible_rows",
+    "manual_overrides": [
+      "Far Seer right-side/blue defender Infantry is ordinary non-FC per Martin instruction.",
+      "Class mapping for Lancer/Marksman/Infantry was anchored by the mixed report labels and checked against local troop_catalog class names.",
+      "Gatot skill names, descriptions, and level-1 settings use Martin previously supplied fixed Gatot reference."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

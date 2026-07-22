@@ -1,0 +1,3 @@
+[PASS] /mnt/data/Mueller_Alpaca_3_Battle_JSON/ColonelMuller_2v2_T1Inf+T1MMvT1Inf+T1MM_Gatot+NoMMHero_Gatot+Vulcanus_20260713_112159.json
+[PASS] /mnt/data/Mueller_Alpaca_3_Battle_JSON/ColonelMuller_1v2_T1InfvT1Inf+T1MM_Gatot_Gatot+Vulcanus_20260713_112033.json
+[PASS] /mnt/data/Mueller_Alpaca_3_Battle_JSON/ColonelMuller_1v2_T1MMvT1Inf+T1MM_NoHeroes_Gatot+Vulcanus_20260713_112003.json

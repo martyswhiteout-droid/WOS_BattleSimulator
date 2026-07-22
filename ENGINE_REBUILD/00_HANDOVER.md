@@ -1,8 +1,14 @@
+> **STATUS BANNER (2026-07-11): the "SPEC ONLY" line below is HISTORICAL — do not trust it.**
+> The turn engine described here has since been BUILT and is the DEFAULT API path
+> (`wos_sim/pvp_turn_engine.py`, 47 dedicated tests, `engine="turn"` hardcoded in `server.py`).
+> This doc remains valuable for the rebuild mission and the exact anchor definitions (report_001/002).
+> For current certification status see `QA_REPORT.md` (top entry); for binding change rules see `ENGINE_CHANGE_CHECKLIST.md`.
+
 # Engine Rebuild — Handover to Codex
 
 **Author:** predictor/engine track (Claude), 2026-07-05
 **Audience:** Codex (builder) + a QA agent (validator)
-**Status:** SPEC ONLY. No engine code has been written for this rebuild. Build it.
+**Status:** SPEC ONLY. No engine code has been written for this rebuild. Build it. *(superseded — see banner above)*
 
 ---
 

@@ -1,0 +1,35 @@
+[PASS] /mnt/data/Gordon_6_Battle_JSON/LabRat_1v1_T1MMvT1Inf_NoAttackerHero_Gordonlvl1_20260711_213754.json
+  WARNING: defender: stats_pct[Infantry][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Infantry][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+
+[PASS] /mnt/data/Gordon_6_Battle_JSON/FarSeer_1v1_T1MMvT1MM_Gordonlvl1_NoDefenderHero_20260711_213829.json
+  WARNING: attacker: stats_pct[Infantry][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: attacker: stats_pct[Infantry][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: attacker: stats_pct[Marksman][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: attacker: stats_pct[Marksman][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+
+[PASS] /mnt/data/Gordon_6_Battle_JSON/LabRat_1v1_T1LanvT1MM_NoAttackerHero_Gordonlvl1_20260711_213859.json
+  WARNING: defender: stats_pct[Infantry][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Infantry][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+
+[PASS] /mnt/data/Gordon_6_Battle_JSON/LabRat_1v1_T1InfvT1Inf_NoAttackerHero_Gordonlvl1_20260711_214025.json
+  WARNING: defender: stats_pct[Infantry][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Infantry][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+
+[PASS] /mnt/data/Gordon_6_Battle_JSON/LabRat_1v1_T1LanvT1Inf_NoAttackerHero_Gordonlvl1_20260711_214053.json
+  WARNING: defender: stats_pct[Infantry][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Infantry][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+
+[PASS] /mnt/data/Gordon_6_Battle_JSON/LabRat_1v1_T1MMvT1Inf_NoAttackerHero_Gordonlvl1_20260711_214115.json
+  WARNING: defender: stats_pct[Infantry][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Infantry][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Attack]=2.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)
+  WARNING: defender: stats_pct[Marksman][Defense]=0.1 looks like a fraction, not a displayed percent (expect e.g. 176.2)

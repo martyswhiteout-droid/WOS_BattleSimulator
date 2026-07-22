@@ -5,7 +5,7 @@
   "seed": 4471,
   "own": {
     "role": "garrison",
-    "troops_total": 1500000,
+    "troops_total": 1000000,
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5,
@@ -13,9 +13,9 @@
       "Marksman": 0.3
     },
     "formation_counts": {
-      "Infantry": 750000,
-      "Lancer": 300000,
-      "Marksman": 450000
+      "Infantry": 500000,
+      "Lancer": 200000,
+      "Marksman": 300000
     },
     "quality": {
       "Infantry": {
@@ -58,8 +58,8 @@
       "Marksman": "Cara"
     },
     "joiners": [
-      "Renee",
-      "Gordon",
+      "Ling Xue",
+      "Gatot",
       "Ahmose",
       "Wu Ming"
     ],
@@ -82,7 +82,8 @@
         10
       ]
     },
-    "_ui_max_buff": true,
+    "_ui_max_item": true,
+    "_ui_max_pet": true,
     "_ui_input_panel": {
       "Infantry|Attack": 13,
       "Infantry|Defense": 13,
@@ -106,7 +107,7 @@
   },
   "enemy": {
     "role": "rally",
-    "troops_total": 1500000,
+    "troops_total": 1000000,
     "stats_mode": "scouted",
     "formation": {
       "Infantry": 0.5,
@@ -114,9 +115,9 @@
       "Marksman": 0.3
     },
     "formation_counts": {
-      "Infantry": 750000,
-      "Lancer": 300000,
-      "Marksman": 450000
+      "Infantry": 500000,
+      "Lancer": 200000,
+      "Marksman": 300000
     },
     "quality": {
       "Infantry": {
@@ -162,7 +163,7 @@
       "Mia",
       "Jessie",
       "Blanchette",
-      "Wayne"
+      "Hendrik"
     ],
     "_ui_buffs": {
       "item": [
@@ -183,7 +184,8 @@
         10
       ]
     },
-    "_ui_max_buff": true,
+    "_ui_max_item": true,
+    "_ui_max_pet": true,
     "_ui_input_panel": {
       "Infantry|Attack": 13,
       "Infantry|Defense": 13,

@@ -1,0 +1,190 @@
+{
+  "schema_version": 2,
+  "_type": "controlled_count_experiment",
+  "type": 1,
+  "battle_date": "2026-07-12 21:38:49",
+  "recommended_filename": "LabRat_33v1_T3MMvT1Inf_NoAttackerHero_Gatotlvl1_20260712_213849.json",
+  "setup": "33 Lv 3.0 Marksman attackers with the matching hero slot vacant versus 1 Lv 1.0 Infantry defender with Gatot. Gatot Skills 1 and 2 are level 1.",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": {
+    "turns": 186,
+    "turns_range": [
+      186,
+      186
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal triggers each time Gatot's Infantry attacks",
+    "trigger_count": 186,
+    "assumptions": [
+      "King's Bestowal shows 186 triggers.",
+      "Martin's established controlled-test convention treats Gatot Skill 2's trigger count as the exact round count."
+    ]
+  },
+  "attacker": {
+    "name": "Lab Rat",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1055 Y:405",
+    "role": "attacker",
+    "power_loss": -12,
+    "troops": 33,
+    "losses": 0,
+    "injured": 2,
+    "lightly_injured": 1,
+    "survivors": 30,
+    "kills": 1,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 3.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 4.0,
+        "Defense": 5.0,
+        "Lethality": 1.8,
+        "Health": 5.5
+      },
+      "Lancer": {
+        "Attack": 2.8,
+        "Defense": 2.3,
+        "Lethality": 0.5,
+        "Health": 1.5
+      },
+      "Marksman": {
+        "Attack": 15.2,
+        "Defense": 14.7,
+        "Lethality": 0.5,
+        "Health": 1.5
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Attack, Defense, Lethality, and Health are visible for all three troop classes."
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Marksman",
+        "skill": "Ranged Strike",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Infantry",
+        "applies_in_this_battle": true,
+        "reason": "opponent fields Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Far Seer",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1052 Y:405",
+    "role": "defender",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 2,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 200.1,
+        "Defense": 192.1,
+        "Lethality": 0.0,
+        "Health": 0.0
+      },
+      "Lancer": {
+        "Attack": 9.6,
+        "Defense": 5.6,
+        "Lethality": 0.0,
+        "Health": 0.0
+      },
+      "Marksman": {
+        "Attack": 9.6,
+        "Defense": 5.6,
+        "Lethality": 0.0,
+        "Health": 0.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Attack, Defense, Lethality, and Health are visible for all three troop classes."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 46,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Gatot commands his troops with imperial guard tactics, increasing his Infantry's Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "The great kings blesses Gatot's Infantry, granting Infantry a Shield with protection equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 186,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "The attacker troop icon is Lv 3.0 Marksman; the filename therefore uses T3MM.",
+    "The defender troop icon is Lv 1.0 Infantry.",
+    "Gatot Golden Guard triggered 1 time; King's Bestowal triggered 186 times.",
+    "Gatot's hero card displays level 46; both recorded skill levels remain level 1.",
+    "Skill kills are displayed as dashes and recorded as zero."
+  ],
+  "source_images": [
+    "image(113).png",
+    "image(114).png",
+    "image(115).png"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-12",
+    "ocr_confidence": "high",
+    "manual_overrides": [
+      "Troop classes were identified from both the troop icons and the class-specific stat pattern: Marksman in the first two reports and Lancer in the final two."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

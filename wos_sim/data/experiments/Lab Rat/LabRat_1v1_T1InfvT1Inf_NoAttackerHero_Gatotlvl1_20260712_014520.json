@@ -1,0 +1,181 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-07-12 01:45:20",
+  "recommended_filename": "LabRat_1v1_T1InfvT1Inf_NoAttackerHero_Gatotlvl1_20260712_014520.json",
+  "setup": "1 Lv 1.0 Infantry attacker with the Infantry hero slot vacant versus 1 Lv 1.0 Infantry defender with Gatot level 1.",
+  "outcome": {
+    "winner": "defender",
+    "attacker_result": "defeat",
+    "defender_result": "victory"
+  },
+  "turn_inference": {
+    "turns": 104,
+    "turns_range": [
+      104,
+      104
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal triggers each time Gatot's Infantry attacks",
+    "trigger_count": 104,
+    "assumptions": [
+      "King's Bestowal shows 104 triggers.",
+      "The user confirms this controlled battle lasted exactly 104 rounds.",
+      "The trigger count is therefore recorded as the exact round count."
+    ]
+  },
+  "attacker": {
+    "name": "Lab Rat",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1055 Y:405",
+    "role": "attacker",
+    "power_loss": -3,
+    "troops": 1,
+    "losses": 0,
+    "injured": 1,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Lancer": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      },
+      "Marksman": {
+        "Attack": 0.0,
+        "Defense": 0.0
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed in the supplied stat panel."
+    },
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "Far Seer",
+    "state": null,
+    "alliance": null,
+    "coords": "X:1052 Y:405",
+    "role": "defender",
+    "power_loss": 0,
+    "troops": 1,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 1,
+    "kills": 1,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 188.6,
+        "Defense": 186.6
+      },
+      "Lancer": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      },
+      "Marksman": {
+        "Attack": 2.1,
+        "Defense": 0.1
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "missing",
+      "notes": "Only Attack and Defense rows are displayed in the supplied stat panel."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 1,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": 1,
+        "effect": "Gatot commands his troops with imperial guard tactics, increasing his Infantry's Defense by 6%.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": 1,
+        "effect": "The great kings blesses Gatot's Infantry, granting Infantry a Shield with protection equal to Attack*6% each time they attack, for 1 turn.",
+        "triggers": 104,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "opponent fields no Lancers"
+      }
+    ],
+    "specials": []
+  },
+  "notes": [
+    "Gatot Skill 1 triggered 1 time.",
+    "Gatot Skill 2 triggered 104 times.",
+    "The user confirms the battle lasted exactly 104 rounds.",
+    "The attacker's Infantry hero slot is explicitly shown as vacant.",
+    "Skill kills are displayed as dashes and recorded as zero.",
+    "Only values visible in the four supplied screenshots were recorded."
+  ],
+  "source_images": [
+    "image(36).png",
+    "image(37).png",
+    "image(38).png",
+    "image(39).png"
+  ],
+  "_extraction": {
+    "extracted_by": "OpenAI GPT-5.6 Thinking",
+    "timestamp": "2026-07-12",
+    "ocr_confidence": "high",
+    "manual_overrides": [
+      "The user confirmed King's Bestowal's 104 triggers equal exactly 104 rounds."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [],
+    "suspicions": []
+  }
+}

@@ -1,0 +1,548 @@
+{
+ "law_version": "stage6.6",
+ "frozen": "2026-07-19",
+ "corpus": {
+  "path": "wos_sim/data/experiments/_corpus/TYPE1_CORPUS.json",
+  "row_count": 243
+ },
+ "law": "turns = K(dealer,target) * D_t*H_t/(A_d*L_d) * G_w(dealer_cls,tier_d) * G_l(target_cls,tier_t) / sqrt(N); HP = D*H; cap 1500; point prediction = ceil(turns)",
+ "K": {
+  "Infantry->Infantry": {
+   "value": 12.524,
+   "status": "measured",
+   "sources": [
+    "39 clean within-tier rows (stage5, +-3%)"
+   ]
+  },
+  "Infantry->Lancer": {
+   "value": 22.43,
+   "status": "measured",
+   "sources": [
+    "9 T1-target rows (v4 + FarSeer, stage5)"
+   ]
+  },
+  "Infantry->Marksman": {
+   "value": 73.16,
+   "status": "measured",
+   "sources": [
+    "10 rows (v4 + FarSeer, stage5)",
+    "ENIF1b_R01/R04 replicate at 77.15 (+5.5%)",
+    "ENIF2_R05 replicates at 76.84 (+5.0%)"
+   ]
+  },
+  "Marksman->Infantry": {
+   "value": 90.11,
+   "status": "measured",
+   "sources": [
+    "ENIF1b_R02 (90.11, band [66,67]) -- FROZEN (alliance-corrected, tightest band)",
+    "LabRat Gordon pair 91.16 x2 (band [72,74])",
+    "ENIF1b_R03 1v2 /sqrt(2) 88.71 (band [52,53])"
+   ],
+   "band": [
+    88.71,
+    91.16
+   ],
+   "note": "vs GORDON-led Infantry; vs GATOT-led Infantry the kit suppression applies instead (stage6_gatot). The R03 sqrt(2)-fold band [87.9,89.6] misses the LabRat band [89.9,92.4] by 0.4 (-1.6%) -- instrument spread, recorded."
+  },
+  "Marksman->Marksman": {
+   "value": 566.66,
+   "status": "measured",
+   "sources": [
+    "Gordon battery, band [18,19] (stage5)",
+    "confirmed at +1072% panels 07-14 (panels multiply in full)"
+   ]
+  },
+  "Lancer->Marksman": {
+   "value": 488.71,
+   "status": "measured",
+   "sources": [
+    "ENIF3_R08 full-panel exact-band [21,23] (488.71) -- FROZEN",
+    "Gordon battery band [24,26] (499.50, +2.2%)"
+   ],
+   "band": [
+    466.5,
+    510.9
+   ],
+   "note": "frozen from the tighter full-panel E-NIF3 row; Gordon kept as the second source"
+  },
+  "Lancer->Infantry": {
+   "value": 90.38,
+   "status": "edge_implied",
+   "sources": [
+    "40/41 T6-FC1-Lancer count edge vs Mueller-Gatot with the INDEPENDENT B_Mueller=201.95 (21/22 MM edge): K*G_w^Lan(6) = AL*40.5/B = 146.87 -> K = 90.38",
+    "win-turn solve (41x kill @286t) -> 91.04 (band)",
+    "204/205 B_Alpaca knife-edge self-consistency at 10x scale (cap check + 575-kill forward check, stage6_hero_state D3)"
+   ],
+   "band": [
+    90.38,
+    91.04
+   ],
+   "note": "SHIELD-MODEL-CONDITIONAL (measured through the budget gate, not on a clean kill clock). The T3-ordinary 66/67 edge vs B_FarSeer implies 111.29 (+23%) -- ordinary-vs-FC1 base / tier-transfer OPEN; the old factorization f*g = 83.66 is SUPERSEDED at T6 but carried as a branch tag (B_Alpaca inherits it). Gate verdicts at tiers other than 6/3 must be invariant across [83.66, 111.29] or the seam abstains."
+  }
+ },
+ "K_factorization": {
+  "f": {
+   "Infantry": 1.0,
+   "Lancer": 6.680016402405686,
+   "Marksman": 7.47023748301566
+  },
+  "g": {
+   "Infantry": 12.524,
+   "Lancer": 22.43,
+   "Marksman": 73.16
+  },
+  "status": "factorized (+-10-15%, stage5 verdict) -- now covers only Lan->Lan and MM->Lan; the Lan->Inf cell is frozen edge-implied (stage 6.6, K table) and supersedes its factorized 83.66 at T6 (carried as a branch tag)"
+ },
+ "G_w": {
+  "Infantry": {
+   "T1": {
+    "value": 1.0,
+    "status": "measured",
+    "sources": [
+     "definition"
+    ]
+   },
+   "T2": {
+    "value": 2.68,
+    "status": "measured",
+    "sources": [
+     "FarSeer-v3 + beasts"
+    ]
+   },
+   "T3": {
+    "value": 4.323,
+    "status": "measured",
+    "sources": [
+     "FarSeer-v3 + beasts + Gatot T3 set"
+    ]
+   },
+   "T4": {
+    "value": 5.884,
+    "status": "measured",
+    "sources": [
+     "FarSeer-v3 + beasts"
+    ]
+   },
+   "T5": {
+    "value": 9.791,
+    "status": "measured",
+    "sources": [
+     "FarSeer-v3"
+    ]
+   },
+   "T6": {
+    "value": 10.889,
+    "status": "measured",
+    "sources": [
+     "FarSeer-v3 x2 + beasts (<=6% spread)"
+    ]
+   },
+   "T7": {
+    "value": 14.285,
+    "status": "measured",
+    "sources": [
+     "T7 discriminator MuellerAlpaca_1v1_T7InfvFC1T1Inf_..._AlpacaFC1T1Vulcanus_20260718_235302, t in [75,77], Vulcanus S1 x0.96 the only fold"
+    ],
+    "band": [
+     14.097,
+     14.473
+    ],
+    "note": "MEASURED ON THE MuellerAlpaca/Vulcanus-target instrument. The same-instrument T6 twin (..._161706, t in [90,92]) implies G_w(6) = 12.69-12.97 vs the frozen 10.889 (FarSeer-v3 instrument) -- a x1.17-1.19 CROSS-INSTRUMENT TENSION (the open 'Inf-dealer residual', 6.5 scorecard), RECORDED not corrected. Cube-root interpolant (T6 anchor) predicted 13.19 = -8% under this cell."
+   }
+  },
+  "Lancer": {
+   "T1": {
+    "value": 1.0,
+    "status": "measured",
+    "sources": [
+     "ENIF3_R08 (definition rung)"
+    ]
+   },
+   "T3": {
+    "value": 1.0909,
+    "status": "measured",
+    "sources": [
+     "ENIF3_R09/R08"
+    ],
+    "band": [
+     0.9391,
+     1.2571
+    ]
+   },
+   "T6": {
+    "value": 1.625,
+    "status": "measured",
+    "sources": [
+     "ENIF3_R10/R08"
+    ],
+    "band": [
+     1.4348,
+     1.8333
+    ]
+   },
+   "T2": {
+    "value": 1.0444615837837214,
+    "status": "interpolated",
+    "sources": [
+     "geometric T1..T3"
+    ]
+   },
+   "T4": {
+    "value": 1.245874842234194,
+    "status": "interpolated",
+    "sources": [
+     "geometric T3..T6"
+    ]
+   },
+   "T5": {
+    "value": 1.4228656361830394,
+    "status": "interpolated",
+    "sources": [
+     "geometric T3..T6"
+    ]
+   }
+  },
+  "Marksman": {
+   "T1": {
+    "value": 1.0,
+    "status": "measured",
+    "sources": [
+     "K-cell definition rung"
+    ]
+   }
+  }
+ },
+ "G_w_marksman_band": [
+  1.0,
+  1.17
+ ],
+ "G_w_extrapolation": {
+  "Infantry": "T7 now MEASURED (14.285, band [14.097,14.473]); T8-T10 keep the cube-root interpolant ANCHORED AT T6 (the T7 cell's instrument carries a x1.17-1.19 cross-instrument tension -- see its note; chaining T8-T10 to it would propagate the possible offset). T7-anchored alternates for reference: T8=16.89, T9=19.60, T10=22.41",
+  "Lancer": "geometric ratio 1.1421/tier beyond T6",
+  "Marksman": "1.0 within stated band"
+ },
+ "G_l": {
+  "Infantry": {
+   "T1": {
+    "value": 1.0,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T2": {
+    "value": 0.996,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T3": {
+    "value": 0.904,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T4": {
+    "value": 0.795,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T5": {
+    "value": 0.77,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T6": {
+    "value": 0.748,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T7": {
+    "value": 0.742,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T8": {
+    "value": 0.744,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T9": {
+    "value": 0.757,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   },
+   "T10": {
+    "value": 0.777,
+    "status": "measured",
+    "sources": [
+     "v5 ladder (stage5)"
+    ]
+   }
+  },
+  "Lancer": {
+   "T1": {
+    "value": 1.0,
+    "status": "measured",
+    "sources": [
+     "definition"
+    ]
+   },
+   "T2": {
+    "value": 0.654,
+    "status": "measured",
+    "sources": [
+     "2 corrected T2-Lancer rows, both 0.654 (stage5)"
+    ]
+   }
+  },
+  "Marksman": {
+   "T1": {
+    "value": 1.0,
+    "status": "measured",
+    "sources": [
+     "K-cell definition; ENIF2_R05 re-measures the cell at 76.84 (+5.0% instrument spread)"
+    ]
+   },
+   "T3": {
+    "value": 0.2488,
+    "status": "measured",
+    "sources": [
+     "ENIF2_R06"
+    ]
+   },
+   "T6": {
+    "value": 0.0846,
+    "status": "measured",
+    "sources": [
+     "ENIF2_R07"
+    ]
+   },
+   "T2": {
+    "value": 0.498798556533597,
+    "status": "interpolated",
+    "sources": [
+     "geometric T1..T3"
+    ]
+   },
+   "T4": {
+    "value": 0.17365623129731794,
+    "status": "interpolated",
+    "sources": [
+     "geometric T3..T6"
+    ]
+   },
+   "T5": {
+    "value": 0.12120774384400156,
+    "status": "interpolated",
+    "sources": [
+     "geometric T3..T6"
+    ]
+   }
+  }
+ },
+ "G_l_fallback": "unmeasured class cells fall back to the Infantry column, status=fallback_infantry",
+ "count_law": {
+  "default": "sqrt(N) (Stage-3; reconfirmed by ENIF1b R03 1v2 at -1.6%)",
+  "gatot_shield_regime": "LINEAR volley pooling vs the Gatot budget absorb -- see gatot_kit"
+ },
+ "alliance_policy": "panels are PER-BATTLE inputs from the report (RFJ instance +23pp A/D, +10pp L/H is documentary, never a constant)",
+ "base_stat_policy": "corpus eff stats only (docs/TroopStats table); troop_catalog.py is the LEGACY engine's snapshot and DIVERGES -- never use or silently edit it",
+ "type2_boundary": "Vulcanus/Seo-yoon folds deterministic-cadence only; -6.5% Vulcanus-dealer systematic is a documented band, not a fit; FC procs untouched",
+ "gatot_kit": {
+  "status": "two-regime (measured-defender models; NOT a general law)",
+  "scope": "non-Infantry dealers vs a GATOT-led Infantry target; Infantry dealers are the clean law (no gate)",
+  "regime_split": "attacker HERO PRESENCE: hero-less mobs face the budget gate; Vulcanus-led dealers penetrate on the saturating curve. Irreducible to one smooth mechanism (see STAGE6_REPORT).",
+  "no_hero_budget_gate": {
+   "model": "net = max(0, N*r1 - B); LINEAR volley pooling (sqrt(N) REFUTED in this regime); capped iff net*1500 < pool",
+   "B_hp_units_per_turn": {
+    "Mueller_Gatot_S123_L1": 201.95,
+    "FarSeer_Gatot_S12_L1": 30.15
+   },
+   "defender_anchoring": "OPEN -- two defenders differ in stats and S3 presence; no clean scaling (candidates printed by stage6_gatot); elsewhere flag gatot_gate_unmodeled",
+   "checks": [
+    [
+     "M_MM_21 capped",
+     true
+    ],
+    [
+     "M_Lan pair consistent bracket",
+     true
+    ],
+    [
+     "F_MM_32 capped",
+     true
+    ],
+    [
+     "F_Lan pair consistent bracket",
+     true
+    ],
+    [
+     "R05 no-hero single MM gated",
+     true
+    ]
+   ],
+   "K_LanInf_implied": {
+    "at_T6": 91.0,
+    "at_T3": 111.3,
+    "note": "shield-model-conditional measurements; T3 carries the ordinary-vs-FC1 base caveat"
+   }
+  },
+  "hero_led_suppression": {
+   "model": "turns = ceil-solve of (d/S(d))*g_vulc(T) >= 0.88*pool; d = A*L/K(MM->Inf) per-volley clean rate",
+   "surviving_families_folded": [
+    {
+     "family": "exp_decay S=1+a*exp(-d/d0)",
+     "params": [
+      10.7274,
+      16.8932
+     ],
+     "solved_from": [
+      "T1_102",
+      "T3_R11"
+     ],
+     "n_passing_solves": 1
+    }
+   ],
+   "surviving_families_raw": [],
+   "points": {
+    "T1_102": {
+     "d": 13.94,
+     "S_band": [
+      5.667,
+      5.732
+     ]
+    },
+    "T3_R11": {
+     "d": 31.89,
+     "S_band": [
+      2.562,
+      2.686
+     ]
+    },
+    "T6_R12": {
+     "d": 58.46,
+     "S_band": [
+      1.14,
+      1.414
+     ]
+    },
+    "T6_RFJ": {
+     "d": 61.35,
+     "S_band": [
+      1.196,
+      1.484
+     ]
+    }
+   },
+   "entangled": "G_w^Marksman in [1, 1.17] cannot be split from S without the splitter battle",
+   "status": "candidate (2-param families solved on 2 points, blind on the other 2) -- NOT frozen as law"
+  },
+  "discriminating_experiments": [
+   "3x Vulcanus-led T6-MM (R12 loadout) vs Mueller-Gatot: budget gate predicts CAPPED (3*56.7 < B~202); per-volley S predicts a kill in <= 4 turns",
+   "T6-MM vs the GORDON-Mueller Infantry: K_eff = 90.1*G_w^MM(6) with no Gatot in the loop -- splits G_w^MM from S_gatot"
+  ]
+ },
+ "hero_state": {
+  "frozen": "2026-07-19",
+  "registry": {
+   "mueller": {
+    "expedition_inf_A_pp": 301.93,
+    "baseline_inf_A_pp": 179.1,
+    "baseline_source": {
+     "row": "MuellerAlpaca_v5_R04_1v1_T6InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+537.1D+529.9L+119.7H+119.3_NoAttackerHero_Gatotlvl1_20260713_012651",
+     "side": "attacker"
+    },
+    "provenance": "Expedition: hero sheet screenshots 2026-07-18/19 (docs/HERO_KITS.md); baseline: named corpus capture"
+   },
+   "alpaca": {
+    "expedition_inf_A_pp": 337.85,
+    "baseline_inf_A_pp": 176.2,
+    "baseline_source": {
+     "row": "MuellerAlpaca_1v1_T6InfvFC1T1Inf_AttInfA+179.1D+179.7L+112.0H+108.7_DefInfA+176.2D+169.0L+109.7H+109.3_NoAttackerHero_AlpacaFC1T1VulcanusNoGatot_20260718_161706",
+     "side": "defender"
+    },
+    "provenance": "Expedition: hero sheet screenshots 2026-07-18/19 (docs/HERO_KITS.md); baseline: named corpus capture"
+   },
+   "farseer": {
+    "expedition_inf_A_pp": 186.45,
+    "baseline_inf_A_pp": 0.0,
+    "baseline_source": {
+     "row": "LabRat_1v1_T1InfvT1Inf_NoAttackerHero_Gordonlvl1_20260711_214025",
+     "side": "attacker"
+    },
+    "provenance": "Expedition: hero sheet screenshots 2026-07-18/19 (docs/HERO_KITS.md); baseline: named corpus capture"
+   }
+  },
+  "detection": {
+   "rule": "aura'd iff the unit's Infantry Attack-panel is nearer (baseline + Expedition%) than baseline; nearest-neighbour with a x2 margin guard, else 'ambiguous' (seam abstains). Corpus audit: every Gatot-led side classifies at >= x3 margin (printout).",
+   "margin_min": 2.0
+  },
+  "B_by_copy_state": {
+   "mueller.aurad": {
+    "value": 201.95,
+    "status": "measured",
+    "sources": [
+     "21/22 T6-MM edge (stage6_gatot)"
+    ]
+   },
+   "farseer.aurad": {
+    "value": 30.15,
+    "status": "measured",
+    "sources": [
+     "32/33 T3-MM edge (stage6_gatot)"
+    ]
+   },
+   "alpaca.aurad": {
+    "value": 879.3,
+    "status": "measured",
+    "branch_k_laninf_edge": 879.3,
+    "branch_k_laninf_factorized": 949.9,
+    "branch_note": "B inherits the K(Lan->Inf) branch (the measuring dealers were Lancers); primary = the edge-implied K=90.4 branch; the 204-cap and 575-kill checks pass on BOTH branches",
+    "sources": [
+     "MuellerAlpaca_204v1_T6LanvFC1T1Inf_AttLanA+179.1D+169.2L+105.3H+102.6_DefInfA+514.1D+506.9L+109.7H+109.3_NoAttackerHero_AlpacaGatotAurad_20260719_004328",
+     "MuellerAlpaca_205v1_T6LanvFC1T1Inf_AttLanA+179.1D+169.2L+105.3H+102.6_DefInfA+514.1D+506.9L+109.7H+109.3_NoAttackerHero_AlpacaGatotAurad_20260719_004208 (kill @575)"
+    ]
+   },
+   "any.inert": {
+    "value": 0.0,
+    "status": "measured",
+    "sources": [
+     "12 MuellerAlpaca_1v1_T1InfvFC1T1Inf_* rows fit the plain law, max |err| 3.2% (D4)"
+    ]
+   }
+  },
+  "scurve_by_copy_state": {
+   "mueller.aurad": "gatot_kit.hero_led_suppression (exp_decay; solved/blind on the four Mueller-target singles)"
+  },
+  "K_LanInf_for_gate": {
+   "T6": 90.38,
+   "T6_winturn_variant": 91.04,
+   "T3_ordinary": 111.29,
+   "factorized_branch": 83.66,
+   "robustness_span": [
+    83.66,
+    111.29
+   ],
+   "note": "per-edge, shield-model-conditional; T6 primary; the T3-ordinary edge disagrees +23% (ordinary-vs-FC1 / tier-transfer OPEN); gate verdicts for other tiers must be invariant across the robustness span or the seam abstains"
+  },
+  "gatot_led_dealer_policy": {
+   "vs_aurad_target": "plain law (the Lab-Rat Gatot-mirror battery -- the K(Inf->Inf) source rows -- IS this configuration and resolves on the clean law)",
+   "caveat": "the Gatot-DEALER slowdown (151127, ~4x) remains open physics; where the Gatot-led dealer's naive clock is the LOSING one the verdict is slowdown-robust (slowdown only lengthens it)"
+  }
+ }
+}

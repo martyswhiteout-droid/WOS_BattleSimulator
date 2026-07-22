@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from . import api, serialize
+from . import api, gate, serialize
 from .validate import InvalidInput
 
 app = FastAPI(title="WoS Battle Predictor", version="0.1")
@@ -26,6 +26,13 @@ MAX_RUNS = 100_000        # hard ceiling — only a guard against a hang/DoS on 
 # the only path that emits skill telemetry. engine_meta labels near-even
 # matchups "coin_flip" (a +-2% strength shift flips them - as in reality).
 DEFAULT_ENGINE_PARAMS = {"engine": "turn"}
+
+
+@app.exception_handler(gate.GateReject)
+async def _gate_reject(request: Request, exc: gate.GateReject):
+    """Deployment gate (Vercel only; see gate.py) -> clean 400/429, never a 500."""
+    return JSONResponse(status_code=exc.status,
+                        content={"error": exc.error, "message": exc.message})
 
 
 @app.exception_handler(InvalidInput)
@@ -47,7 +54,8 @@ def health():
 
 
 @app.post("/api/predict")
-def predict(req: PredictRequest):
+def predict(req: PredictRequest, request: Request):
+    gate.check_gate(request, req.own, req.enemy)     # Vercel-only; no-op locally
     if req.n < 1 or req.n > MAX_RUNS:
         raise InvalidInput([f"n must be between 1 and {MAX_RUNS:,}"])
     own = serialize.profile_from_dict(req.own)
@@ -65,9 +73,10 @@ class BattleRequest(BaseModel):
 
 
 @app.post("/api/battle")
-def battle(req: BattleRequest):
+def battle(req: BattleRequest, request: Request):
     """One battle's per-turn timeline, reproduced on demand (same seed+index as the
     forecast, so it matches the averaged run exactly)."""
+    gate.check_gate(request, req.own, req.enemy)     # Vercel-only; no-op locally
     if req.index < 0 or req.index >= MAX_RUNS:
         raise InvalidInput([f"battle index must be between 0 and {MAX_RUNS - 1:,}"])
     own = serialize.profile_from_dict(req.own)

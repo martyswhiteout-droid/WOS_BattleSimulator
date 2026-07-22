@@ -1,4 +1,11 @@
-# Project Status / Session Handoff (updated 2026-07-02, evening)
+> **STATUS BANNER (2026-07-11): the header date below is MISLEADING.** This file is append-only and
+> its content actually runs 2026-07-02 → 2026-07-08 (§18–§23 are the newest). Read the HIGHEST-numbered
+> sections first; early sections describe abandoned fit states. Two claims herein are superseded:
+> (1) §22 "duplicate-joiner dedup kept" — REVERSED by `ENGINE_HANDOFF_joiner_stacking.md` (07-09, commit `8e816f2`);
+> (2) all parameter-fitting narratives — overridden by the no-fudge rule (`ENGINE_REBUILD/ENGINE_CHANGE_CHECKLIST.md`, 07-09).
+> Newer work (07-09 onward) is NOT logged here; see `ENGINE_REBUILD/DEEPSEEK_FORMULA_DERIVATION_BRIEF.md` and git log.
+
+# Project Status / Session Handoff (updated 2026-07-02, evening — see banner: content runs to 07-08)
 
 Read GAME_RULES.md FIRST - it is the source of truth for all confirmed
 mechanics, discoveries, fit results, and open questions. This file is the
