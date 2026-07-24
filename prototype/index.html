@@ -1893,7 +1893,7 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
   <div class="brand"><h1>Whiteout Tactics</h1><p>Battle Predictor</p></div>
   <div class="top-actions">
     <div class="mini-field"><label>Runs</label>
-      <select class="val" id="runsSel" title="Monte-Carlo runs per forecast"><option selected>100</option><option>500</option><option>1000</option></select></div>
+      <select class="val" id="runsSel" title="Monte-Carlo runs per forecast"><option selected>10</option><option>50</option><option>100</option></select></div>
     <button class="run" id="runBtn">Run forecast</button>
     <button class="run-status" id="runStatus" type="button" hidden></button>
     <div class="bar-note">Live engine · local</div>
@@ -3046,7 +3046,7 @@ function initInteractions(){
   const my=$('#myTroops'),foe=$('#foeTroops'),eq=$('#eqTroops');
   const sync=()=>{ if(eq.checked){foe.value=my.value; foe.disabled=true;} else foe.disabled=false; };
   eq.addEventListener('change',sync); my.addEventListener('input',()=>{if(eq.checked)foe.value=my.value;}); sync();
-  const fmtTotal=inp=>{ const v=numParse(inp.value); inp.value=Number.isNaN(v)?'':numFmt(v); };
+  const fmtTotal=inp=>{ const v=numParse(inp.value); inp.value=Number.isNaN(v)?'':numFmt(Math.max(1000,v)); };   // product floor: 1,000 troops minimum
   my.addEventListener('blur',()=>{ fmtTotal(my); if(eq.checked)foe.value=my.value; });
   foe.addEventListener('blur',()=>fmtTotal(foe));
   // stats type: two mutually-exclusive checkboxes (Base default). Exactly one is always checked.
@@ -3320,8 +3320,8 @@ function applyGearControls(which,g){ if(!g)return;
 function buildProfile(which){   // 'me' | 'foe'
   const role=sideRole(which).toLowerCase();
   const leadMap=leadHeroMap(which);
-  const _t=numParse((which==='me'?$('#myTroops'):$('#foeTroops')).value);   // 0 stays 0 -> server rejects, not silently defaulted
-  const troops=Number.isNaN(_t)?1000000:_t;
+  const _t=numParse((which==='me'?$('#myTroops'):$('#foeTroops')).value);
+  const troops=Number.isNaN(_t)?1000000:Math.max(1000,_t);   // product floor: 1,000 troops minimum (blur clamps the field to match)
   const joiners=readHeroes(which==='me'?'#joinMe':'#joinFoe');
   return { role, troops_total:troops, stats_mode:'scouted',
     formation:readFormation(which==='me'?'#formMe':'#formFoe'),
@@ -3333,7 +3333,7 @@ function buildProfile(which){   // 'me' | 'foe'
 /* ---------- save / load config (a config = both side profiles as JSON) ---------- */
 function activeTabName(){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); return t?t.textContent.trim():'Scenario 1'; }
 function renameActiveTab(name){ const t=document.querySelector('#tabs .tab[aria-selected="true"] .tname'); if(t)t.textContent=name; }
-function currentRuns(){ return parseInt(($('#runsSel').value||'1000').replace(/[^0-9]/g,''))||1000; }
+function currentRuns(){ return parseInt(($('#runsSel').value||'10').replace(/[^0-9]/g,''))||10; }
 function activeTab(){ return document.querySelector('#tabs .tab[aria-selected="true"]'); }
 function setTabSelected(tab,on){ tab.setAttribute('aria-selected',String(on)); tab.tabIndex=on?0:-1; }
 function updateTabAddState(){

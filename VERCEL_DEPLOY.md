@@ -18,9 +18,10 @@ npx vercel login
 npx vercel deploy --prod
 ```
 
-The Hobby demo is capped at 1,000 simulations per `/api/predict` request. The
-front-end only offers 1,000 runs, and the API rejects direct requests above that
-limit with a clean 400.
+The Hobby demo is capped at 1,000 simulations per `/api/predict` request at the
+API level (direct requests above that get a clean 400). The front-end offers
+only 10 / 50 / 100 runs (default 10), and enforces a 1,000-troop minimum in
+both Total-troops fields.
 
 ## Files
 
