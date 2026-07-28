@@ -1,0 +1,121 @@
+{
+  "_type": "mixed_composition_20k",
+  "type": 2,
+  "setup": "20,000 v 20,000 MIXED composition, alliance-free encampment. ATTACKER 5,000 Infantry + 15,000 Lancer vs DEFENDER 5,000 Infantry + 15,000 Marksman, troops Lv 10.0. Heroes present but SKILL-LESS (Martin 2026-07-25: Charlie / Cloris are blue heroes with no expedition skills) -- the ONLY skills that fired are TROOP skills: Ambusher (attacker Lancers) and Volley (defender Marksmen). Run 2 of 2 identical setups.",
+  "timestamp": "2026-07-08 22:00:48",
+  "report_coords": "X:766 Y:486",
+  "troop_tier_display": "Lv 10.0 (formation icons, both sides)",
+  "outcome": "ATTACKER DEFEAT (0 survivors); MARKSMAN/Infantry DEFENDER won with 4963 survivors",
+  "determinism_note": "TYPE-2 / STOCHASTIC -- NOT an exact-fit target. The two runs of this IDENTICAL setup gave DIFFERENT outcomes (defender survivors 8,302 vs 4,963) because the troop-skill proc counts differed (Charlie-side triggers 6 vs 12; Cloris-side 6 vs 4). Validate by DISTRIBUTION only.",
+  "attacker": {
+    "name": "沃草泥的馬",
+    "coords": "X:766 Y:484",
+    "role": "Attacker",
+    "power_loss": -497000,
+    "troops": 20000,
+    "losses": 0,
+    "injured": 7000,
+    "lightly_injured": 13000,
+    "survivors": 0,
+    "surv_frac": 0.0,
+    "kills": 5263,
+    "formation": [
+      {
+        "cls": "Infantry",
+        "count": 5000,
+        "tier_display": "Lv 10.0"
+      },
+      {
+        "cls": "Lancer",
+        "count": 15000,
+        "tier_display": "Lv 10.0"
+      }
+    ],
+    "heroes": [
+      {
+        "hero": "Charlie",
+        "role": "Lancer hero",
+        "level_display": "Lv 1",
+        "expedition_skills": false,
+        "triggered": 12,
+        "note": "skill-less blue hero; the trigger count is the TROOP skill (Ambusher)"
+      }
+    ],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 238.7,
+        "Defense": 231.5,
+        "Lethality": 109.7,
+        "Health": 109.3
+      },
+      "Lancer": {
+        "Attack": 245.2,
+        "Defense": 225.5,
+        "Lethality": 135.5,
+        "Health": 134.1
+      },
+      "Marksman": {
+        "Attack": 238.7,
+        "Defense": 228.5,
+        "Lethality": 129.1,
+        "Health": 129.0
+      }
+    }
+  },
+  "defender": {
+    "name": "Colonel Müller",
+    "coords": "X:767 Y:486",
+    "role": "Defender",
+    "power_loss": -347358,
+    "troops": 20000,
+    "losses": 0,
+    "injured": 5263,
+    "lightly_injured": 9774,
+    "survivors": 4963,
+    "surv_frac": 0.24815,
+    "kills": 7000,
+    "formation": [
+      {
+        "cls": "Infantry",
+        "count": 5000,
+        "tier_display": "Lv 10.0"
+      },
+      {
+        "cls": "Marksman",
+        "count": 15000,
+        "tier_display": "Lv 10.0"
+      }
+    ],
+    "heroes": [
+      {
+        "hero": "Cloris",
+        "role": "Marksman hero",
+        "level_display": "Lv.28",
+        "expedition_skills": false,
+        "triggered": 4,
+        "note": "skill-less blue hero; the trigger count is the TROOP skill (Volley)"
+      }
+    ],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 231.5,
+        "Defense": 210.2,
+        "Lethality": 116.4,
+        "Health": 113.6
+      },
+      "Lancer": {
+        "Attack": 232.9,
+        "Defense": 205.0,
+        "Lethality": 105.3,
+        "Health": 102.6
+      },
+      "Marksman": {
+        "Attack": 235.8,
+        "Defense": 212.9,
+        "Lethality": 126.0,
+        "Health": 122.9
+      }
+    }
+  },
+  "_extraction": "OCR'd from Martin's screenshots 2026-07-25 (labelled A1 / B1). Recovers the battle whose record was OVERWRITTEN in exp3a_lancer.json. Hero skill-less status + class-per-side confirmed by Martin."
+}

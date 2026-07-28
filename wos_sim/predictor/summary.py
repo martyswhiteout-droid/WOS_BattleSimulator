@@ -404,11 +404,24 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
     # replaces the reported p_win (and its effective, mutual-adjusted form).
     p_win_prop = _prop(wins, n)
     p_win_eff = eff_win / n if n else 0.0
+    p_mutual_prop = _prop(mutual, n)
+    p_loss_prop = _prop(losses, n)
+    p_loss_eff = eff_loss / n if n else 0.0
     if win_prob_override is not None:
         ov = max(0.0, min(1.0, win_prob_override))
         p_win_prop = Proportion(ov, p_win_prop.se)
         mutual_bonus = (mutual / n) if (own_is_attacker and n) else 0.0
         p_win_eff = min(1.0, ov + mutual_bonus)
+        # NORMALIZE THE DISTRIBUTION (QA 2026-07-25). The raw Monte-Carlo p_loss
+        # belongs to the PRE-override simulation, so pairing it with an overridden
+        # p_win left the serialized mass short: a near-deterministic own-win with
+        # p_win=0.55 emitted 0.55 + 0 (mutual) + 0 (loss) = 0.55, i.e. an invalid
+        # probability distribution for every direct API consumer. (The front-end
+        # never showed it because it derives loss as the complement itself.)
+        # Mutual is a genuinely distinct outcome, so it is preserved and loss takes
+        # the remainder.
+        p_loss_prop = Proportion(max(0.0, 1.0 - ov - p_mutual_prop.p), p_loss_prop.se)
+        p_loss_eff = max(0.0, 1.0 - p_win_eff)
 
     buckets = {i: 0 for i in range(1, 9)}
     for r in records:
@@ -431,9 +444,9 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
 
     return Forecast(
         n=n,
-        p_win=p_win_prop, p_mutual=_prop(mutual, n), p_loss=_prop(losses, n),
+        p_win=p_win_prop, p_mutual=p_mutual_prop, p_loss=p_loss_prop,
         p_win_effective=p_win_eff,
-        p_loss_effective=eff_loss / n if n else 0.0,
+        p_loss_effective=p_loss_eff,
         outcome_quality=buckets, army_losses=army_losses,
         class_losses=class_losses, rounds=rounds,
         skill_telemetry=_skill_telemetry(records, own_is_attacker),

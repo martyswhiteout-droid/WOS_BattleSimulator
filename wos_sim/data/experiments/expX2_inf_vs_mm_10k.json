@@ -1,0 +1,93 @@
+{
+  "_type": "cross_class_army_Inf_vs_MM",
+  "type": 1,
+  "setup": "10,000 INFANTRY (attacker) vs 10,000 MARKSMAN (defender), Lv 6.0, NO heroes, deterministic. Captured 2026-07-28 as experiment X2: the same class pair as exp5 but DELIBERATELY FAR FROM PARITY (the defender 'minimart' is a near-zero-stat account: +2.0% Attack, 0% everything else). This escapes exp5's hypersensitivity and gives the first clean INDEPENDENT check of R(Infantry,Marksman).",
+  "timestamp": "2026-07-28 12:44:56",
+  "report_coords": "X:768 Y:484",
+  "troop_tier_display": "Lv 6.0 (formation icons, both sides)",
+  "outcome": "ATTACKER (Infantry) VICTORY, 9,841 survivors (98.41%); defender wiped",
+  "attacker": {
+    "name": "沃草泥的馬",
+    "coords": "X:764 Y:485",
+    "role": "Attacker",
+    "deployed_class": "Infantry",
+    "power_loss": -1176,
+    "troops": 10000,
+    "losses": 0,
+    "injured": 56,
+    "lightly_injured": 103,
+    "survivors": 9841,
+    "surv_frac": 0.9841,
+    "formation": [
+      {
+        "cls": "Infantry",
+        "count": 10000,
+        "tier_display": "Lv 6.0"
+      }
+    ],
+    "heroes": [],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 176.2,
+        "Defense": 169.0,
+        "Lethality": 109.7,
+        "Health": 109.3
+      },
+      "Lancer": {
+        "Attack": 182.7,
+        "Defense": 163.0,
+        "Lethality": 135.5,
+        "Health": 134.1
+      },
+      "Marksman": {
+        "Attack": 176.2,
+        "Defense": 166.0,
+        "Lethality": 129.1,
+        "Health": 129.0
+      }
+    }
+  },
+  "defender": {
+    "name": "minimart",
+    "coords": "X:766 Y:484",
+    "role": "Defender",
+    "deployed_class": "Marksman",
+    "power_loss": -70000,
+    "troops": 10000,
+    "losses": 1779,
+    "injured": 1721,
+    "lightly_injured": 6500,
+    "survivors": 0,
+    "surv_frac": 0.0,
+    "formation": [
+      {
+        "cls": "Marksman",
+        "count": 10000,
+        "tier_display": "Lv 6.0"
+      }
+    ],
+    "heroes": [],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 2.0,
+        "Defense": 0.0,
+        "Lethality": 0.0,
+        "Health": 0.0
+      },
+      "Lancer": {
+        "Attack": 2.0,
+        "Defense": 0.0,
+        "Lethality": 0.0,
+        "Health": 0.0
+      },
+      "Marksman": {
+        "Attack": 2.0,
+        "Defense": 0.0,
+        "Lethality": 0.0,
+        "Health": 0.0
+      }
+    }
+  },
+  "_extraction": "OCR'd from Martin's screenshots 2026-07-28 (experiment X2).",
+  "KEY_FINDING": "Independent check of R(Infantry,Marksman): 0.7859 here vs 0.8060 from exp5 -> agree to 2.49%. Predicting THIS battle's survivor fraction from exp5's R alone gives 0.9837 vs observed 0.9841 -- a 0.04% BLIND prediction, because a far-from-parity battle does not amplify model error. NOTE the defender records real LOSSES (1,779) rather than only injuries -- the first anchor where outright deaths appear, worth checking against the severity-split convention."
+}

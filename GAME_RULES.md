@@ -191,6 +191,11 @@ ATTACKER class (Bands of Steel: when attacked by Lancers).
   reduction. Foe = debuff on enemy troops.
 - "The target" of per-attack procs is materialized as the front line
   (enemy Infantry), or Inf+Marks for Lancer attackers (Ambusher leak).
+  - **CORRECTION (Martin 2026-07-25):** "the target" means only the UNIT(S)
+    ACTUALLY STRUCK, scaled by attacker count — 1 Lancer hitting 100 Infantry
+    debuffs 1, not the whole class. This is §3's "Received" semantics. The old
+    "materialized as the whole front line" shorthand OVER-COUNTS class-wide; the
+    struck-unit reading supersedes it (Stage-8 hero layer uses `Target.TARGET`).
 - Widget rows are the ±15% Rally/Garrison stat skill only (the widget's
   other skill is exploration-only).
 

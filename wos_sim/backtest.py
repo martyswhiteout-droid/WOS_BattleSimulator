@@ -27,7 +27,14 @@ from wos_sim.eval_reports import evaluate, golden_regression
 # attacker-survivor% for magnitude tracking. Winners are all correct already;
 # these track how close the MAGNITUDE is (the open calibration target).
 COMPOSITION_ANCHORS = {
-    "mirror (inf v inf)":        24.0,
+    # 2026-07-25 CORRECTION (Stage 8.1): this row was MIS-PAIRED. Its profiles are
+    # built from AP/DP below (Inf 199.2/192.0/119.7/119.3 vs 189.1/167.2/122.0/118.7)
+    # -- those are the panels of exp7_alliance_garrison_mirror_20k.json, whose REAL
+    # observed attacker survival is 30.2%. The old 24.0% target came from a DIFFERENT
+    # battle (exp1_mirror_20k, panels 176.2/169.0/109.7/109.3). Stats and target
+    # belonged to two different mirrors, so this line was unmeetable by construction.
+    # (Report-only line: the PASS/FAIL gate is the winner lock above, not this table.)
+    "mirror (inf v inf)":        30.2,
     "inf > lancer":              45.4,
     "inf < marksman":             4.9,
     "lancer > marksman":         42.0,

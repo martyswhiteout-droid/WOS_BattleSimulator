@@ -29,6 +29,30 @@ def predict(own: SideProfile, enemy: SideProfile, *, n: int = 10_000, seed: int 
             forecast, abstain_note = type1_router._try_deterministic(matchup)
             if forecast is not None:
                 return forecast
+
+    # Stage 8.1 ARMY router -- OPT-IN ONLY (default OFF).
+    #
+    # DISABLED FOR THE LIVE PATH 2026-07-25 after independent QA returned "do not
+    # approve" with four P1 defects (STAGE8_1_QA_PROMPT.md / the QA response):
+    #   * the 1500-turn cap fabricated a winner, contradicting GAME_RULES.md s.424
+    #     ("every battle ends in a wipe of at least one side - no turn cap");
+    #   * unequal FC leaked into the law (FC1-v-FC2 reversed the winner) because the
+    #     research base table varies with FC below T10 while the production catalog
+    #     does not;
+    #   * the +-10% band and the 0.10 coin threshold are not calibrated from enough
+    #     independent configurations (two, both Infantry, one missing by 8.9%);
+    #   * the 999/1000 threshold produced a 34-point survivor discontinuity.
+    # The backbone stays available for research and for the fixes below, but a user
+    # prediction must not depend on it until the band is calibrated.
+    # Enable explicitly with params={"army_router": True}.
+    if (params or {}).get("army_router") is True:
+        from . import army_router
+        army_ok, _army_reason = army_router.army_classifiable(matchup)
+        if army_ok:
+            forecast, army_note = army_router.try_army(matchup)
+            if forecast is not None:
+                return forecast
+            abstain_note = f"{abstain_note} {army_note}".strip()
             # else: the law was classifiable but abstained/raised -- fall
             # through to the engine below; abstain_note is appended to its
             # engine_note further down.

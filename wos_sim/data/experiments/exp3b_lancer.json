@@ -14,5 +14,6 @@
   "engine": {
     "winner": "ATTACKER (lancer) - WRONG"
   },
-  "_extraction": "CONFIRMED by Martin 2026-07-08"
+  "_extraction": "CONFIRMED by Martin 2026-07-08",
+  "_SUPERSEDED": "MISLABELLED. Martin's screenshot (2026-07-25, 'B1') shows this record's battle is NOT a Lancer-vs-Marksman repeat: it is the 20k MIXED composition battle (attacker 5,000 Inf + 15,000 Lancer vs defender 5,000 Inf + 15,000 Marksman, Lv 10.0, skill-less heroes Charlie/Cloris, 2026-07-08 22:00:48) -- the SECOND run of the exp6a setup. Full corrected record: exp6b_mixed_20k_run2.json. Do not use this file for the Lan-v-MM class pair; use exp3a_lancer.json. The 'same as 3a (repeat)' setup text and the resulting 'opposite winners' puzzle are both artefacts of this mislabelling."
 }

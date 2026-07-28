@@ -12,3 +12,6 @@ Thumbs.db
 
 # Local scratch
 *.log
+
+.vercel
+.env*

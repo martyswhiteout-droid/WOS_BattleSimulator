@@ -1,0 +1,93 @@
+{
+  "_type": "mirror_ALLIANCE_GARRISON",
+  "type": 1,
+  "setup": "20,000 v 20,000 single-class mirror inside an ALLIANCE GARRISON (contrast with exp1/exp2 which were alliance-free encampments), troops Lv 1.0. NO HEROES on either side (Martin-confirmed 2026-07-25) => fully DETERMINISTIC, exact-fit Type-1 target. This is the battle recorded in ENGINE_REBUILD/07_CONTROLLED_EXPERIMENTS.md as the 'alliance-garrison infantry mirror (attacker +10pt) -> 30.2%'.",
+  "timestamp": "2026-07-08 23:27:15",
+  "report_coords": "X:741 Y:424",
+  "troop_tier_display": "Lv 1.0 (formation icons, both sides; single stack each)",
+  "outcome": "ATTACKER VICTORY, 6,043 survivors (30.215%); defender wiped",
+  "attacker": {
+    "name": "[RFJ]沃草泥的馬",
+    "coords": "X:741 Y:422",
+    "role": "Attacker",
+    "power_loss": -14655,
+    "troops": 20000,
+    "losses": 0,
+    "injured": 4885,
+    "lightly_injured": 9072,
+    "survivors": 6043,
+    "surv_frac": 0.30215,
+    "kills": 7000,
+    "formation": [
+      {
+        "cls": "Infantry",
+        "count": 20000,
+        "tier_display": "Lv 1.0"
+      }
+    ],
+    "heroes": [],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 199.2,
+        "Defense": 192.0,
+        "Lethality": 119.7,
+        "Health": 119.3
+      },
+      "Lancer": {
+        "Attack": 205.7,
+        "Defense": 186.0,
+        "Lethality": 145.5,
+        "Health": 144.1
+      },
+      "Marksman": {
+        "Attack": 199.2,
+        "Defense": 189.0,
+        "Lethality": 139.1,
+        "Health": 139.0
+      }
+    }
+  },
+  "defender": {
+    "name": "[Rfj]Colonel Müller",
+    "coords": "X:742 Y:424",
+    "role": "Defender",
+    "power_loss": -21000,
+    "troops": 20000,
+    "losses": 0,
+    "injured": 7000,
+    "lightly_injured": 13000,
+    "survivors": 0,
+    "surv_frac": 0.0,
+    "kills": 4885,
+    "formation": [
+      {
+        "cls": "Infantry",
+        "count": 20000,
+        "tier_display": "Lv 1.0"
+      }
+    ],
+    "heroes": [],
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 189.1,
+        "Defense": 167.2,
+        "Lethality": 122.0,
+        "Health": 118.7
+      },
+      "Lancer": {
+        "Attack": 189.1,
+        "Defense": 160.7,
+        "Lethality": 115.3,
+        "Health": 112.6
+      },
+      "Marksman": {
+        "Attack": 189.1,
+        "Defense": 165.7,
+        "Lethality": 131.2,
+        "Health": 128.6
+      }
+    }
+  },
+  "_extraction": "OCR'd from Martin's screenshot 2026-07-25 (labelled A2). No heroes confirmed by Martin. Deployed class recorded as Infantry per the ENGINE_REBUILD/07 label 'infantry mirror' and the +10pt Infantry-Attack gap (199.2 vs 189.1) it cites; the formation icon's class glyph was not textually legible -- FLAG if wrong.",
+  "KEY_FINDING": "Second same-class mirror, DIFFERENT stat gap from exp1 -> an independent blind test of the army-scale square law. Attacker +10.1pt Inf Attack, +24.8pt Inf Defense; defender +2.3pt Lethality."
+}
