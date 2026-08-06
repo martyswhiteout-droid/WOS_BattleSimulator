@@ -1,0 +1,106 @@
+{
+  "accounts": {
+    "A": {
+      "label": "main [RFJ]Marty 191, Gen-15 trio, pets, experts maxed, defender home-territory",
+      "bo_troops": {"Attack": 748.49, "Defense": 775.42, "Lethality": 238.84, "Health": 219.86},
+      "bo_class": {
+        "Infantry": {"Attack": 658.25, "Defense": 666.25, "Lethality": 1197.36, "Health": 1223.08},
+        "Lancer":   {"Attack": 649.25, "Defense": 616.25, "Lethality": 1190.39, "Health": 1154.28},
+        "Marksman": {"Attack": 626.25, "Defense": 616.25, "Lethality": 1153.24, "Health": 1146.45}},
+      "scout": {
+        "Infantry": {"Attack": 4491.6, "Defense": 3979.1, "Lethality": 2794.3, "Health": 3197.4},
+        "Lancer":   {"Attack": 4480.4, "Defense": 3924.1, "Lethality": 2786.7, "Health": 3111.4},
+        "Marksman": {"Attack": 4451.6, "Defense": 3924.1, "Lethality": 2745.8, "Health": 3101.6}},
+      "battle_left": {
+        "Infantry": {"Attack": 4859.0, "Defense": 4098.0, "Lethality": 2683.0, "Health": 3040.4},
+        "Lancer":   {"Attack": 4846.8, "Defense": 4041.4, "Lethality": 2675.6, "Health": 2958.5},
+        "Marksman": {"Attack": 4815.8, "Defense": 4041.4, "Lethality": 2636.3, "Health": 2949.2}},
+      "battle_right": {
+        "Infantry": {"Attack": 694.3, "Defense": 545.6, "Lethality": 495.7, "Health": 416.4},
+        "Lancer":   {"Attack": 740.5, "Defense": 574.7, "Lethality": 533.5, "Health": 442.8},
+        "Marksman": {"Attack": 800.6, "Defense": 626.6, "Lethality": 587.1, "Health": 499.0}},
+      "specials_own": [
+        {"label": "Defender Troops' Attack", "value": 15.0}, {"label": "Defender Troops' Health", "value": 15.0},
+        {"label": "Enemy Defense Penalty (Pet Skill)", "value": -10.0},
+        {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -5.0},
+        {"label": "Enemy Health Penalty (Pet Skill)", "value": -5.0},
+        {"label": "Attack Bonus (Pet Skill)", "value": 10.0}, {"label": "Defense Bonus (Pet Skill)", "value": 10.0},
+        {"label": "Lethality Bonus (Pet Skill)", "value": 10.0}, {"label": "Health Bonus (Pet Skill)", "value": 10.0},
+        {"label": "Territory Defender Attack", "value": 10.0}, {"label": "Territory Defender Defense", "value": 10.0},
+        {"label": "Defender Troops Attack When Defending Own City", "value": 5.0},
+        {"label": "Defender Troops Defense When Defending Own City", "value": 5.0},
+        {"label": "Enemy Lethality Penalty (Expert Skill)", "value": -0.75}],
+      "specials_enemy": [
+        {"label": "Enemy Defense Penalty (Pet Skill)", "value": -6.0},
+        {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -4.0},
+        {"label": "Enemy Health Penalty (Pet Skill)", "value": -5.0},
+        {"label": "Attack Bonus (Pet Skill)", "value": 8.0}, {"label": "Defense Bonus (Pet Skill)", "value": 6.0},
+        {"label": "Lethality Bonus (Pet Skill)", "value": 7.0}, {"label": "Health Bonus (Pet Skill)", "value": 5.0}],
+      "S_scout":  {"Attack": 0.25, "Defense": 0.10, "Lethality": 0.10, "Health": 0.25},
+      "S_battle": {"Attack": 0.35, "Defense": 0.20, "Lethality": 0.10, "Health": 0.25},
+      "P_enemy":  {"Attack": 0.00, "Defense": 0.06, "Lethality": 0.04, "Health": 0.05},
+      "U": {"Attack": 2166.55, "Defense": 2166.60, "Lethality": 1095.01, "Health": 1094.98},
+      "hero_generation": 15
+    },
+    "B": {
+      "label": "[LnS]MaTiX, Gen-13 trio, NO pets, experts not maxed, defender home-territory, enemy zero specials",
+      "bo_troops": {"Attack": 723.50, "Defense": 748.47, "Lethality": 208.86, "Health": 184.37},
+      "bo_class": {
+        "Infantry": {"Attack": 617.25, "Defense": 620.25, "Lethality": 1104.96, "Health": 1110.03},
+        "Lancer":   {"Attack": 617.25, "Defense": 616.25, "Lethality": 1103.60, "Health": 1107.63},
+        "Marksman": {"Attack": 666.25, "Defense": 663.25, "Lethality": 1158.52, "Health": 1154.88}},
+      "scout": {
+        "Infantry": {"Attack": 3668.6, "Defense": 3205.0, "Lethality": 2333.8, "Health": 2676.6},
+        "Lancer":   {"Attack": 3668.6, "Defense": 3201.0, "Lethality": 2332.5, "Health": 2673.8},
+        "Marksman": {"Attack": 3724.9, "Defense": 3248.0, "Lethality": 2387.4, "Health": 2728.1}},
+      "battle_left": {
+        "Infantry": {"Attack": 3996.3, "Defense": 3535.5, "Lethality": 2333.8, "Health": 2676.6},
+        "Lancer":   {"Attack": 3996.3, "Defense": 3531.1, "Lethality": 2332.5, "Health": 2673.8},
+        "Marksman": {"Attack": 4057.6, "Defense": 3582.8, "Lethality": 2387.4, "Health": 2728.1}},
+      "battle_right": {
+        "Infantry": {"Attack": 862.3, "Defense": 913.6, "Lethality": 623.7, "Health": 610.8},
+        "Lancer":   {"Attack": 847.9, "Defense": 886.2, "Lethality": 620.0, "Health": 615.8},
+        "Marksman": {"Attack": 886.3, "Defense": 918.6, "Lethality": 656.3, "Health": 649.7}},
+      "specials_own": [
+        {"label": "Defender Troops' Attack", "value": 15.0}, {"label": "Defender Troops' Health", "value": 15.0},
+        {"label": "Territory Defender Attack", "value": 10.0}, {"label": "Territory Defender Defense", "value": 10.0},
+        {"label": "Defender Troops Attack When Defending Own City", "value": 5.0},
+        {"label": "Defender Troops Defense When Defending Own City", "value": 5.0}],
+      "specials_enemy": [],
+      "S_scout":  {"Attack": 0.15, "Defense": 0.00, "Lethality": 0.00, "Health": 0.15},
+      "S_battle": {"Attack": 0.25, "Defense": 0.10, "Lethality": 0.00, "Health": 0.15},
+      "P_enemy":  {"Attack": 0.00, "Defense": 0.00, "Lethality": 0.00, "Health": 0.00},
+      "U": {"Attack": 1836.28, "Defense": 1836.28, "Lethality": 1020.01, "Health": 1020.00},
+      "hero_generation": 13
+    }
+  },
+  "value_grammar_cases": [
+    {"raw": "748.49%", "value": 748.49, "unit": "pct", "signed": false},
+    {"raw": "+4491.6%", "value": 4491.6, "unit": "pct", "signed": true},
+    {"raw": "-10.0%", "value": -10.0, "unit": "pct", "signed": true},
+    {"raw": "+0.00%", "value": 0.0, "unit": "pct", "signed": true},
+    {"raw": "1223.08%", "value": 1223.08, "unit": "pct", "signed": false},
+    {"raw": "188,900", "value": 188900, "unit": "int", "signed": false},
+    {"raw": "1,581", "value": 1581, "unit": "int", "signed": false},
+    {"raw": "295.20%", "value": 295.20, "unit": "pct", "signed": false},
+    {"raw": "-0.75%", "value": -0.75, "unit": "pct", "signed": true},
+    {"raw": "4,491.6%", "value": 4491.6, "unit": "pct", "signed": false},
+    {"raw": "garbage", "value": null}, {"raw": "12.", "value": null}, {"raw": "", "value": null},
+    {"raw": "+4491.6", "value": 4491.6, "unit": "pct_missing_sign_ok", "signed": true}
+  ],
+  "label_cases": [
+    {"raw": "Troops' Attack", "canonical": "Troops|Attack"},
+    {"raw": "Troops’ Attack", "canonical": "Troops|Attack"},
+    {"raw": "Troops\" Attack", "canonical": "Troops|Attack"},
+    {"raw": "Infantry Attack", "canonical": "Infantry|Attack"},
+    {"raw": "lnfantry Attack", "canonical": "Infantry|Attack"},
+    {"raw": "Marksman Lethality", "canonical": "Marksman|Lethality"},
+    {"raw": "Enemy Defense Penalty (Pet Skill)", "canonical": "special:Enemy Defense Penalty (Pet Skill)"},
+    {"raw": "Defender Troops Attack When Defending Own City", "canonical": "special:Defender Troops Attack When Defending Own City"},
+    {"raw": "Deployment Capacity", "canonical": "meta:Deployment Capacity"},
+    {"raw": "March Speed Up", "canonical": "meta:March Speed Up"},
+    {"raw": "Bonus Overview", "canonical": "header:Bonus Overview"},
+    {"raw": "Stat Bonuses", "canonical": "header:Stat Bonuses"},
+    {"raw": "Utterly Unknown Row", "canonical": null}
+  ]
+}
