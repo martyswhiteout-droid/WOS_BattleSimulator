@@ -213,6 +213,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     except ImportError:
         pass
 
+    try:
+        from shell.app.ocr.panel_router import router as _ocr_panel_router
+        app.include_router(_ocr_panel_router)
+    except ImportError:
+        pass
+
     # ---- mount the untouched prototype app LAST (so /shell/* wins) -------
     sim_mounted = False
     try:
