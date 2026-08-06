@@ -7,7 +7,7 @@
 
 | Layer | Runner | What it proves |
 |---|---|---|
-| L1 Unit (per TDD plan Tasks 0–11) | `py -m pytest shell/tests -q` + `node --test shell/app/ocr/client/tests/` | parser/converter/flow logic, both languages, same golden vectors |
+| L1 Unit (per TDD plan Tasks 0–11) | `py -m pytest shell/tests -q` + `node --test shell/app/ocr/client/tests/panel_parser.test.mjs shell/app/ocr/client/tests/flow_state.test.mjs` (explicit files — a bare directory arg breaks on Windows Node) | parser/converter/flow logic, both languages, same golden vectors |
 | L2 Real-image benchmark (Task 12, gated on owner PNGs) | `py -m pytest -m benchmark` | engine accuracy ≥99% digits, ZERO false-confident |
 | L3 API contract & abuse | pytest against the shell app | gate/caps/sniff/quota/no-persist |
 | L4 Flow/UI (mock now, real overlay later) | browser walkthrough protocol (below) | no dead ends, honesty surfaces, both widths |

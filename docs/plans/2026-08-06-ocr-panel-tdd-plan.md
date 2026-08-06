@@ -17,7 +17,7 @@
 - **Do not modify** `prototype/index.html`, `wos_sim/` engine code, or anything in `WOSTests.com`.
 - **Reference docs:** flow = `docs/OCR_UX_FLOW_SPEC.md`; math = `docs/STAT_PANELS_FORMULA.md` (§2 law, §8 recipes, §9 second account); architecture = `docs/OCR_SERVICE_PLAN.md`.
 - Commit after every green test, message prefix `ocr:`.
-- Run Python tests: `py -m pytest shell/tests/<file> -q` (from repo root `E:\WOS\Battle Simulator`). Run JS tests: `node --test shell/app/ocr/client/tests/`.
+- Run Python tests: `py -m pytest shell/tests/<file> -q` (from repo root `E:\WOS\Battle Simulator`). Run JS tests with EXPLICIT file paths — on Windows, Node treats a bare directory argument as a module and fails with MODULE_NOT_FOUND (verified Node v24.14.1, 2026-08-07): `node --test shell/app/ocr/client/tests/panel_parser.test.mjs shell/app/ocr/client/tests/flow_state.test.mjs` (list only the files that exist yet).
 
 ## File structure (locked)
 
@@ -969,7 +969,7 @@ for (const acct of ['A', 'B']) {
 }
 ```
 
-- [ ] **Step 2: Run `node --test shell/app/ocr/client/tests/` — FAIL.**
+- [ ] **Step 2: Run `node --test shell/app/ocr/client/tests/panel_parser.test.mjs` — FAIL** with `ERR_MODULE_NOT_FOUND: Cannot find module '…panel_parser.mjs'` (the module under test doesn't exist yet). Do NOT pass the bare tests/ directory — Windows Node resolves it as a module and fails for the wrong reason.
 - [ ] **Step 3: Implement** `panel_parser.mjs` by PORTING Tasks 2–8 line-for-line (same regexes, same skeleton/edit-distance fuzzy match, same thresholds `LOW_CONF=0.90`, same fold rules incl. own-city exclusion). No new behavior; where JS lacks a Python feature (namedtuple), use plain objects `{value, unit, signed}`.
 - [ ] **Step 4: PASS.**  **Step 5: Commit** `ocr: client parser mirror, verified against the same golden vectors`.
 

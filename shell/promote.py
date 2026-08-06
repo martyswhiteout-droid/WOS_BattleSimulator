@@ -397,6 +397,11 @@ def _iter_text_files(bundle: Path):
 def gate_debug_endpoints(bundle: Path) -> list[str]:
     findings = []
     for p in _iter_text_files(bundle):
+        # Documentation may legitimately DISCUSS debug patterns (e.g. the eval
+        # report that flagged F5 quotes them); the D4 gate hunts live endpoints
+        # in CODE/config only. Secrets gate still scans .md.
+        if p.suffix.lower() == ".md":
+            continue
         try:
             text = p.read_text(encoding="utf-8", errors="ignore")
         except OSError:
