@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Infantry class emblem">
+  <!-- ORIGINAL code-drawn emblem (WoS Battle Simulator shell). Generic heraldic
+       shield + frost chevron, ice/survival theme. Not derived from any
+       Century Games artwork. Palette: prototype/DESIGN_SYSTEM.md tokens. -->
+  <defs>
+    <linearGradient id="inf-face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#164A72"/>
+      <stop offset="0.55" stop-color="#123B59"/>
+      <stop offset="1" stop-color="#0B273D"/>
+    </linearGradient>
+    <linearGradient id="inf-chev" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#55BFFF"/>
+      <stop offset="1" stop-color="#1682D8"/>
+    </linearGradient>
+  </defs>
+  <!-- heater shield -->
+  <path d="M32 4 L54 10 V30 C54 45 45 55 32 60 C19 55 10 45 10 30 V10 Z"
+        fill="url(#inf-face)" stroke="#5AAEF3" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M32 8.5 L50 13.5 V30 C50 42.5 42.5 51.3 32 55.6 C21.5 51.3 14 42.5 14 30 V13.5 Z"
+        fill="none" stroke="#B9D2E5" stroke-opacity="0.35" stroke-width="1.2"/>
+  <!-- frost chevron -->
+  <path d="M32 20 L46 32 L41 32 L32 24.5 L23 32 L18 32 Z" fill="url(#inf-chev)"/>
+  <path d="M32 30 L44 40.5 L39.5 40.5 L32 34.4 L24.5 40.5 L20 40.5 Z"
+        fill="url(#inf-chev)" opacity="0.75"/>
+  <!-- ice stud -->
+  <path d="M32 42 L35.4 46.5 L32 51 L28.6 46.5 Z" fill="#EAF6FF"/>
+</svg>

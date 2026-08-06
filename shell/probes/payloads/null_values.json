@@ -1,0 +1,47 @@
+{
+  "name": "null_values",
+  "description": "Nulls for required sub-objects (quality/formation) and n=null",
+  "method": "POST",
+  "path": "/api/predict",
+  "content_type": "application/json",
+  "body": {
+    "own": {
+      "label": null,
+      "role": null,
+      "troops_total": null,
+      "formation": null,
+      "quality": null
+    },
+    "enemy": {
+      "label": "adv-garrison",
+      "role": "garrison",
+      "troops_total": 10000,
+      "formation": {
+        "Infantry": 0.5,
+        "Lancer": 0.2,
+        "Marksman": 0.3
+      },
+      "quality": {
+        "Infantry": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        },
+        "Lancer": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        },
+        "Marksman": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        }
+      }
+    },
+    "n": null,
+    "seed": null
+  },
+  "expected_status_min": 400,
+  "expected_status_max": 422
+}

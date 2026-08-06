@@ -1,3 +1,9 @@
+> **STATUS BANNER (2026-08-04, COMPASS D5): PARTIALLY SUPERSEDED.** This BRD describes a single-user
+> tool for Martin alone; the product direction is now a paid multi-tenant SaaS (see `COMPASS.md` for
+> direction and `PRODUCTION_PLAN.md` v1.1 for the commercial architecture). Still AUTHORITATIVE for:
+> the profile JSON contract (§9), functional requirements M1–M7, and objective modes. Its accuracy
+> framing ("~10-15%") is optimistic — see COMPASS §3 for the honest engine state.
+
 # BRD - WoS Battle Predictor & Counter-Optimizer
 
 Business Requirements Document. Owner: Martin. Drafted 2026-07-04.

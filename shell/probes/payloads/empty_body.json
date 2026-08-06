@@ -1,0 +1,10 @@
+{
+  "name": "empty_body",
+  "description": "Empty JSON object {} \u2014 missing all required keys",
+  "method": "POST",
+  "path": "/api/predict",
+  "content_type": "application/json",
+  "body": {},
+  "expected_status_min": 400,
+  "expected_status_max": 422
+}

@@ -1,0 +1,176 @@
+/* shell/app/overlay/overlay.css — status chip styling (Agent A).
+ * Palette: prototype/DESIGN_SYSTEM.md navy-world tokens ONLY (panel #0B273D,
+ * raised #123f66, lit #164A72, text #EAF6FF/#B9D2E5/#8FB0C9, ice #2EA1F2,
+ * CTA ramp #8ED0FF→#5AAEF3→#3E97E8 with ledge #235f9c, inset well
+ * rgba(6,20,34,.38)). Self-contained: no CDNs, no external fonts — the
+ * font-family stacks resolve to the page's LOCAL faces, falling back to
+ * system fonts on non-prototype pages. Reduced-motion kill-switch included. */
+
+#wos-shell-overlay {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 2147483000;
+  min-width: 200px;
+  max-width: 264px;
+  font-family: 'Inter', system-ui, 'Segoe UI', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #EAF6FF;
+  background: linear-gradient(180deg, #123f66 0%, #0B273D 100%);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10),
+              0 10px 24px -12px rgba(0, 0, 0, .65);
+  user-select: none;
+}
+
+#wos-shell-overlay .wos-sc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, .07);
+}
+
+#wos-shell-overlay .wos-sc-eyebrow {
+  font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #8FB0C9;
+}
+
+#wos-shell-overlay .wos-sc-toggle {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 5px;
+  background: rgba(6, 20, 34, .38);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .45),
+              inset 0 -1px 0 rgba(255, 255, 255, .07);
+  color: #B9D2E5;
+  font: 700 11px/1 'Chakra Petch', 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#wos-shell-overlay .wos-sc-toggle:focus-visible,
+#wos-shell-overlay .wos-sc-btn:focus-visible {
+  outline: 2px solid #5AAEF3;
+  outline-offset: 1px;
+}
+
+#wos-shell-overlay.wos-collapsed .wos-sc-body { display: none; }
+
+#wos-shell-overlay .wos-sc-body { padding: 8px 10px 10px; }
+
+#wos-shell-overlay .wos-sc-user {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+  color: #EAF6FF;
+}
+
+#wos-shell-overlay .wos-sc-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+  font-weight: 600;
+}
+
+#wos-shell-overlay .wos-sc-plan {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border: 1px solid rgba(185, 210, 229, .45);
+  border-radius: 999px;
+  font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: #B9D2E5;
+}
+
+#wos-shell-overlay .wos-sc-plan-pro {
+  border-color: #1682D8;
+  background: rgba(46, 161, 242, .14);
+  color: #55BFFF;
+}
+
+#wos-shell-overlay .wos-sc-quota {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(6, 20, 34, .38);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .45),
+              inset 0 -1px 0 rgba(255, 255, 255, .07);
+}
+
+#wos-shell-overlay .wos-sc-quota-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#wos-shell-overlay .wos-sc-quota-label { color: #cfe3f4; }
+
+#wos-shell-overlay .wos-sc-quota-val {
+  font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  font-weight: 600;
+  color: #55BFFF;
+}
+
+#wos-shell-overlay .wos-sc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#wos-shell-overlay .wos-sc-btn {
+  display: inline-block;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 10px;
+  font: 700 11px/1.2 'Chakra Petch', 'Inter', system-ui, sans-serif;
+  letter-spacing: .02em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter .12s ease, transform .12s ease;
+}
+
+#wos-shell-overlay .wos-sc-cta {
+  background: linear-gradient(180deg, #8ED0FF 0%, #5AAEF3 46%, #3E97E8 100%);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(10, 52, 96, .55);
+  box-shadow: inset 0 2px 1px rgba(255, 255, 255, .65),
+              inset 0 -2px 1px rgba(20, 96, 170, .45),
+              0 2px 0 #235f9c,
+              0 3px 5px -2px rgba(4, 22, 44, .7);
+}
+
+#wos-shell-overlay .wos-sc-cta:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+#wos-shell-overlay .wos-sc-cta:active:not(:disabled) { transform: translateY(1px); }
+
+#wos-shell-overlay .wos-sc-cta:disabled { cursor: default; filter: saturate(.4); }
+
+#wos-shell-overlay .wos-sc-ghost {
+  background: transparent;
+  border: 1px solid rgba(185, 210, 229, .30);
+  color: #8FB0C9;
+}
+
+#wos-shell-overlay .wos-sc-ghost:hover { color: #B9D2E5; border-color: rgba(185, 210, 229, .55); }
+
+#wos-shell-overlay .wos-sc-muted { color: #8FB0C9; }
+
+@media (prefers-reduced-motion: reduce) {
+  #wos-shell-overlay, #wos-shell-overlay * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

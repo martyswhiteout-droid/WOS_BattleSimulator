@@ -168,15 +168,65 @@ def test_solver_limit_abstains_through_the_seam():
     when the backbone returns 'uncertain'."""
     from wos_sim.formula_research import stage8_army
     m = mirror()
-    real = stage8_army.predict_army_same_class
+    real = stage8_army.predict_army_cross_class
 
     def fake(*a, **kw):
         r = real(*a, **kw)
-        return {**r, "winner": "uncertain", "capped": True}
+        return {**r, "winner": "uncertain", "reason": "forced for the test"}
 
-    stage8_army.predict_army_same_class = fake
+    stage8_army.predict_army_cross_class = fake
     try:
         fc, note = army_router.try_army(m)
         assert fc is None and "abstained" in note, (fc, note)
     finally:
-        stage8_army.predict_army_same_class = real
+        stage8_army.predict_army_cross_class = real
+
+
+# ---- cross-class (2026-07-28): R measured with two battles per pair ---------
+def x_pair(att_cls, att_panel, def_cls, def_panel, n=10000):
+    return Matchup(prof("rally", att_cls, n, att_panel, tier=6, fc=1),
+                   prof("garrison", def_cls, n, def_panel, tier=6, fc=1))
+
+
+INF_A = {"Attack": 199.2, "Defense": 192.0, "Lethality": 119.7, "Health": 119.3}
+LAN_D = {"Attack": 189.1, "Defense": 160.7, "Lethality": 115.3, "Health": 112.6}
+
+
+def test_cross_class_now_classifies_at_the_measured_tier():
+    ok, reason = army_router.army_classifiable(
+        x_pair("Infantry", INF_A, "Lancer", LAN_D))
+    assert ok, reason
+
+
+def test_cross_class_rejected_off_the_measured_tier():
+    """R is measured only at tier 6; other tiers must not extrapolate."""
+    m = Matchup(prof("rally", "Infantry", 10000, INF_A, tier=1, fc=1),
+                prof("garrison", "Lancer", 10000, LAN_D, tier=1, fc=1))
+    ok, reason = army_router.army_classifiable(m)
+    assert not ok and reason.startswith("cross_class_tier"), reason
+
+
+def test_cross_class_reproduces_its_anchor():
+    """exp4: 10k Infantry vs 10k Lancer, observed attacker 0.4536."""
+    m = x_pair("Infantry", INF_A, "Lancer", LAN_D)
+    fc = api.predict(m.own, m.enemy, n=5, seed=0, params=ARMY_ON)
+    d = serialize.forecast_to_dict(fc)
+    assert d["engine"]["path"] == "army_law"
+    assert abs(own_surv(fc) - 0.4536) / 0.4536 < 0.05
+
+
+def test_near_parity_cross_class_abstains():
+    """exp5 sits 0.24% from parity: a 2.5% R error becomes a 149% survivor error,
+    so the evidence cannot call it. The router must fall through, not guess."""
+    mm_def = {"Attack": 189.1, "Defense": 165.7, "Lethality": 131.2, "Health": 128.6}
+    m = x_pair("Infantry", INF_A, "Marksman", mm_def)
+    fc, note = army_router.try_army(m)
+    assert fc is None and "abstained" in note, (fc, note)
+
+
+def test_R_table_reciprocal_and_identity():
+    from wos_sim.formula_research.stage8_army import class_pair_R
+    fwd, _ = class_pair_R("Infantry", "Lancer")
+    rev, _ = class_pair_R("Lancer", "Infantry")
+    assert abs(fwd * rev - 1.0) < 1e-9          # reverse is the reciprocal
+    assert class_pair_R("Lancer", "Lancer") == (1.0, 0.0)   # same class is exact

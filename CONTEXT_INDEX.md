@@ -4,7 +4,7 @@ Purpose: this repo has too many docs to read wholesale. Look up your question he
 
 Currency legend: **CURRENT** (trust it) · **PARTIAL** (trust with the noted caveat) · **HISTORICAL** (background/rationale only) · **STALE-TRAP** (contains statements now known false).
 
-Last audited: 2026-07-11.
+Last audited: 2026-08-05.
 
 ---
 
@@ -14,6 +14,8 @@ Last audited: 2026-07-11.
 |---|---|
 | What is this product supposed to do? Profile JSON schema? | `BRD.md` (§9 for schema) |
 | What is the confirmed formula for game mechanic X? | `GAME_RULES.md` (find the section; prefer later dated corrections) |
+| Why do Bonus Overview / scouted / battle-report stats differ? How do I convert one panel into another (OCR mapping)? | `docs/STAT_PANELS_FORMULA.md` (CONFIRMED 2026-08-05 law) + `GAME_RULES.md` §6s |
+| What do Experts (Romulus, Gareth-3, Valeria, Fabian) buff, and by how much per level? | `docs/EXPERTS_RULES.md` |
 | What is the engine ⇄ app data contract? | `ENGINE_INTERFACE.md` |
 | What are the binding rules before I change the engine? | `ENGINE_REBUILD/ENGINE_CHANGE_CHECKLIST.md` ← **most current policy** |
 | What is the current strategic direction? | `ENGINE_REBUILD/DEEPSEEK_FORMULA_DERIVATION_BRIEF.md` (newest doc, 07-10) |
@@ -24,6 +26,13 @@ Last audited: 2026-07-11.
 | What must pass before something ships to WOSTests.com? | `PRODUCTION_CRITERIA.md` |
 | How do we turn the prototype into the paid SaaS? (shell, Supabase, Stripe, OCR, gate pipeline) | `PRODUCTION_PLAN.md` (Stage-2 DRAFT — not yet red-teamed or approved for execution) |
 | How do I ingest a battle report screenshot? | `.claude/skills/wos-battlereport-ingestion/SKILL.md` |
+| How will users OCR their stat-panel screenshots (architecture, engines, costs)? | `docs/OCR_SERVICE_PLAN.md` (proposal 2026-08-05, awaiting Martin) |
+| Where is the clickable OCR-flow UX mock (screenshot → scan → review → fill)? | `prototype/mocks/ocr_flow_mock.html` — self-contained; serve `prototype/` statically (e.g. `py -m http.server 8790 --directory prototype`) → `/mocks/ocr_flow_mock.html`; evaluator-approved 2026-08-06, NOT wired to the API |
+| What are the BINDING owner decisions for the OCR feature's flow (per-side OCR, S5 layout, hero defaulting, tiering)? | `docs/OCR_UX_FLOW_SPEC.md` (build spec / PRD, 2026-08-06) |
+| How do I BUILD the OCR feature (executor-ready TDD tasks with code + golden vectors)? | `docs/plans/2026-08-06-ocr-panel-tdd-plan.md` (Tasks 0–12; Task 12 gated on owner PNGs) |
+| What do I paste into Codex to execute the OCR build plan? | `docs/plans/2026-08-07-codex-ocr-build-prompt.md` (verbatim prompt + owner pre-flight) |
+| How do I QA the OCR feature to production standard (edge cases, unhappy paths, release gate)? | `docs/OCR_QA_PLAN.md` |
+| Can we run OCR free on Google's Gemini API (1,500/day), and how do we set it up? | `docs/OCR_GEMINI_FREE_TIER.md` (verified 2026-08-06; setup walkthrough + caveats) |
 | Where is the FULL set of Type-1 deterministic battle data? (check here BEFORE asking Martin) | `wos_sim/data/experiments/_corpus/` — `TYPE1_CORPUS.md` (human table + coverage matrices), `TYPE1_CORPUS.json` + `corpus.py` (query CLI); OCR corrections pre-applied (`corrections.json`); rebuild with `build_corpus.py` after new ingestion |
 | What's the current formula-derivation state / how do I continue it? | `.claude/skills/run-stage/SKILL.md` + `wos_sim/formula_research/STAGE5_SPEC.md` (+ `STAGE5_PREFLIGHT_REVIEW.md` audit) |
 | I'm editing the front-end — what must I not break? | `UX_BACKLOG.md` (§0 encoding rules + "already done" list) |
@@ -50,6 +59,9 @@ Last audited: 2026-07-11.
 | `UX_BACKLOG.md` | Front-end backlog from Nielsen critique; §0 UTF-8 encoding discipline; shipped-do-not-regress list (mobile) | 14 KB, medium | CURRENT |
 | `prototype/DESIGN_SYSTEM.md` | **Binding visual contract** for `prototype/index.html`: palette tokens, material recipes (glossy buttons, game tiles, glass sliders, parchment cards), motion grammar, append-only style "rounds", verification steps. Palette/self-containment enforced by `test_ui_style_guard.py` + `prototype/style_baseline.json` | 8 KB, short | CURRENT (2026-07-11) |
 | `docs/plans/2026-07-07-ux-backlog.md` | Task-by-task implementation plan for the UX backlog (NOT a duplicate of UX_BACKLOG.md) | 14 KB, medium | CURRENT |
+| `docs/STAT_PANELS_FORMULA.md` | The three stat panels (Bonus Overview ⇄ scouted ⇄ battle report) mapped by one deterministic law: multiplicative special fold, enemy-penalty divisors, U hero block, OCR conversion recipes | 10 KB, short | **CURRENT (2026-08-05)** — CONFIRMED zero-fudge on same-state captures; open items §7 inside |
+| `docs/EXPERTS_RULES.md` | Expert system rules + per-level skill tables (full: Romulus, Gareth-3, Valeria, Fabian; brief: all 10 as of Aug 2026); worked buff totals for Martin's expert levels | 18 KB, medium | **CURRENT (2026-08-05)** — wiki-sourced, UNKNOWNs flagged inline, never-fabricate honored |
+| `docs/OCR_SERVICE_PLAN.md` | Stat-panel OCR architecture: client-side tesseract.js primary ($0/scan) → VPS RapidOCR fallback; vision-LLM tier DEFERRED to a future build; **D1 decided: free tier = NO OCR, manual input only** (both owner 2026-08-06); deterministic parser + reconciliation vs the panel law; phased rollout, costs, risks | 30 KB, medium | **PROPOSAL (2026-08-05, owner-amended 08-06)** — complements (does not replace) shell's battle-report LLM OCR |
 | `VERCEL_DEPLOY.md` | Deploy steps; demo capped at 1,000 sims/request | 0.6 KB, trivial | CURRENT |
 | `PRODUCTION_PLAN.md` | SaaS productionization plan: shell architecture, Supabase data model, Stripe, OCR service, IP-safe asset pack, `promote.py` gate pipeline, phases 0–5 | 11 KB, medium | **DRAFT (2026-07-11)** — Stage 2 of architectural review; pending red-team + Martin approval before execution |
 

@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 3,
+  "battle_date": "2026-01-01 12:00:00",
+  "recommended_filename": "SYNTHETIC_invalid_extraction.json",
+  "setup": "SYNTHETIC TEST FIXTURE - not a real battle. Deliberately broken mock vision-LLM output: bad type, broken casualty identity, undeclared missing stats. The validator must REJECT this.",
+  "outcome": {"winner": "nobody"},
+  "turn_inference": null,
+  "attacker": {
+    "name": "[SYN]BrokenAttacker",
+    "role": "attacker",
+    "troops": 100,
+    "losses": 10,
+    "injured": 10,
+    "lightly_injured": 10,
+    "survivors": 10,
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible", "notes": ""}
+  },
+  "defender": {
+    "name": "[SYN]BrokenDefender",
+    "role": "defender",
+    "troops": 100,
+    "losses": 50,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 50,
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible", "notes": ""}
+  },
+  "notes": [
+    "SYNTHETIC fixture for shell OCR plumbing tests (Agent C). Not real battle data.",
+    "Intentional errors: type=3, outcome.winner invalid, attacker casualty sum 40 != troops 100, stats_pct absent but stats_capture claims visible."
+  ],
+  "source_images": ["battle_overview"],
+  "_extraction": {"extracted_by": "mock_vision", "timestamp": "2026-08-04", "ocr_confidence": "low", "manual_overrides": []},
+  "_validation": {"arithmetic_checks": "pass", "missing": [], "suspicions": []}
+}

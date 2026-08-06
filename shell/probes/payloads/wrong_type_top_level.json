@@ -1,0 +1,14 @@
+{
+  "name": "wrong_type_top_level",
+  "description": "JSON list where an object is required",
+  "method": "POST",
+  "path": "/api/predict",
+  "content_type": "application/json",
+  "body": [
+    1,
+    2,
+    3
+  ],
+  "expected_status_min": 400,
+  "expected_status_max": 422
+}

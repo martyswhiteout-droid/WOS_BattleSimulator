@@ -1,0 +1,16 @@
+# shell/requirements.txt — pinned base list from shell/ARCHITECTURE.md (Agent A).
+# Other agents ADD ONLY, never remove.
+fastapi
+uvicorn
+pydantic>=2
+pydantic-settings
+PyJWT[crypto]
+httpx
+stripe
+asyncpg
+anthropic
+pillow
+imagehash
+python-multipart
+pytest
+pytest-asyncio

@@ -1,0 +1,35 @@
+# shell/docker-compose.yml — app + Caddy TLS front (Agent A).
+# Run from shell/:  docker compose up -d --build
+# Put real keys in shell/.env (copy .env.example). Staging runs the same file
+# as a second stack with its own .env (ENV=staging) per PRODUCTION_PLAN §2.1.
+services:
+  app:
+    build:
+      context: ..                 # repo root — Dockerfile copies wos_sim/ + prototype/ + shell/
+      dockerfile: shell/Dockerfile
+    env_file: .env
+    restart: unless-stopped
+    expose:
+      - "8200"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8200/shell/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data          # auto-TLS certificates persist here
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:

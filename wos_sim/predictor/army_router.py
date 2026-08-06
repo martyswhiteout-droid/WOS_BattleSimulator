@@ -15,10 +15,15 @@ WHY THIS EXISTS
   ratio alone. The backbone reproduces that with ZERO fitted constants.
 
 DOMAIN (deliberately narrow -- see STAGE8_1_FINDINGS.md)
-  * BOTH sides deploy exactly ONE class and it is the SAME class, at the SAME tier
-    (the base stats then cancel in beta/alpha -- the regime that is validated).
-    Cross-class army battles are NOT covered: the lab K-table and tier damping do
-    not transfer to army scale (Finding 5), so mixed matchups keep the old path.
+  * BOTH sides deploy exactly ONE class, at the SAME tier and SAME FC.
+    - SAME class: any tier <= 6 (base stats cancel in beta/alpha).
+    - CROSS class (2026-07-28): only at TIER 6 and only for a pair whose ratio R is
+      MEASURED (stage8_army.R_TABLE; each entry carries two independent battles at
+      different stat gaps). Off-tier or unmeasured pairs fall through -- the lab
+      K-table does not transfer to army scale and R's tier dependence is unmeasured.
+    - Near parity the router ABSTAINS: if beta/alpha sits inside the measured R
+      spread of 1.0 the evidence cannot name a winner (the exp5 lesson -- 0.24% from
+      parity turned a 2.5% R error into a 149% survivor error).
   * Proc-free: tier <= 6 and fc < 3 (Ambusher/Volley unlock at T7, Crystal* at FC3+).
   * No heroes, no joiners, no buffs/debuffs.
   * Both sides >= ARMY_MIN_TROOPS -- below that the small-N composition regime
@@ -90,8 +95,18 @@ def army_classifiable(matchup: Matchup):
         seen.append((cls, int(q.tier), int(q.fc), n))
     (c0, t0, f0, _n0), (c1, t1, f1, _n1) = seen
     if c0 != c1:
-        return False, (f"cross_class: own={c0} vs enemy={c1} -- the army backbone is "
-                       f"validated for SAME-class only (K-table does not transfer)")
+        # CROSS-CLASS (2026-07-28): allowed only where the class-pair ratio R is
+        # MEASURED -- tier 6, and a pair that appears in stage8_army.R_TABLE (each
+        # entry carries two independent battles). Everything else still falls
+        # through: the lab K-table does not transfer to army scale, and tier
+        # dependence of R is unmeasured.
+        from wos_sim.formula_research.stage8_army import class_pair_R, R_MEASURED_TIER
+        if t0 != R_MEASURED_TIER or t1 != R_MEASURED_TIER:
+            return False, (f"cross_class_tier: {c0} vs {c1} at T{t0}/T{t1} -- the "
+                           f"class-pair ratio R is measured only at tier "
+                           f"{R_MEASURED_TIER}")
+        if class_pair_R(c0, c1)[0] is None:
+            return False, (f"cross_class_unmeasured: no measured R for {c0}->{c1}")
     if t0 != t1:
         return False, (f"cross_tier: own T{t0} vs enemy T{t1} -- base stats only cancel "
                        f"at equal tier")
@@ -125,19 +140,22 @@ def try_army(matchup: Matchup):
     """(Forecast|None, note_suffix). Never raises: any failure falls back to the
     caller's existing path, so a bug here can only ever restore pre-8.1 behavior."""
     try:
-        from wos_sim.formula_research.stage8_army import (
-            predict_army_same_class, law_rate_scale)
+        from wos_sim.formula_research.stage8_army import predict_army_cross_class
 
         own_cls = _deployed(matchup.own)[0]
+        enemy_cls = _deployed(matchup.enemy)[0]
         tier = int((matchup.own.quality.get(own_cls) or ClassQuality()).tier)
         own_n = construct.class_counts(matchup.own)[own_cls]
-        enemy_n = construct.class_counts(matchup.enemy)[own_cls]
-        own_eff, enemy_eff = _eff(matchup.own, own_cls, tier), _eff(matchup.enemy, own_cls, tier)
+        enemy_n = construct.class_counts(matchup.enemy)[enemy_cls]
+        own_eff = _eff(matchup.own, own_cls, tier)
+        enemy_eff = _eff(matchup.enemy, enemy_cls, tier)
 
         if matchup.own_is_attacker:
             att_eff, def_eff, att_n, def_n = own_eff, enemy_eff, own_n, enemy_n
+            att_cls, def_cls = own_cls, enemy_cls
         else:
             att_eff, def_eff, att_n, def_n = enemy_eff, own_eff, enemy_n, own_n
+            att_cls, def_cls = enemy_cls, own_cls
 
         # CONTINUUM, not discrete (QA 2026-07-25, P2 x2). The discrete mode needs an
         # absolute rate `c = 1/(K*G_w*G_l)` whose transfer from the 1-6-unit lab to
@@ -148,30 +166,33 @@ def try_army(matchup: Matchup):
         # moved much more. The continuum result depends ONLY on beta/alpha, where
         # the base product cancels exactly -- so it is the honest estimator until an
         # army-scale clock is measured. Consequence: no turn count is reported.
-        res = predict_army_same_class(
-            att_eff, def_eff, n_att=att_n, n_def=def_n, discrete=False)
+        res = predict_army_cross_class(
+            att_eff, def_eff, att_cls=att_cls, def_cls=def_cls,
+            n_att=att_n, n_def=def_n, tier=tier)
 
-        frac = res["winner_fraction"]
         winner = res["winner"]
+        frac = res.get("winner_fraction", 0.0)
         if winner == "uncertain":
-            # solver hit its numerical limit with both sides alive -- no winner may
-            # be inferred (QA P1 #1 / GAME_RULES s.424). Fall back to the old path.
-            return None, "(army law abstained: unresolved at the solver limit)"
+            # No winner may be inferred. Two causes, both principled: the solver hit
+            # its numerical limit with both sides alive (QA P1 #1 / GAME_RULES s.424),
+            # or beta/alpha sits inside the MEASURED R uncertainty so the evidence
+            # cannot distinguish the outcomes (the exp5 near-parity lesson).
+            return None, f"(army law abstained: {res.get('reason', 'unresolved')})"
         if winner == "mutual" or frac < COIN_FLIP_FRACTION:
             coin_flip, winner = True, (winner if winner != "mutual" else "attacker")
         else:
             coin_flip = False
 
-        att_surv = res["att_survivors"] if winner == "attacker" else 0.0
-        def_surv = res["def_survivors"] if winner == "defender" else 0.0
+        att_surv = res["survivors"] if winner == "attacker" else 0.0
+        def_surv = res["survivors"] if winner == "defender" else 0.0
         record = RunRecord(
             # continuum mode reports no clock (QA P2: the army turn-count is unvalidated);
             # 0 is the schema's "no timeline" value, not a claim of a 0-turn battle.
             winner=("A" if winner == "attacker" else "D"), turns=0,
-            attacker_start={_TROOP_ENUM[own_cls]: att_n},
-            defender_start={_TROOP_ENUM[own_cls]: def_n},
-            attacker_incap={_TROOP_ENUM[own_cls]: max(0.0, att_n - att_surv)},
-            defender_incap={_TROOP_ENUM[own_cls]: max(0.0, def_n - def_surv)})
+            attacker_start={_TROOP_ENUM[att_cls]: att_n},
+            defender_start={_TROOP_ENUM[def_cls]: def_n},
+            attacker_incap={_TROOP_ENUM[att_cls]: max(0.0, att_n - att_surv)},
+            defender_incap={_TROOP_ENUM[def_cls]: max(0.0, def_n - def_surv)})
 
         note = (f"EXPERIMENTAL army-scale attrition law (stage8.1, opt-in): same-class "
                 f"pooled race, {winner} keeps {frac:.1%}. Derived from only TWO measured "

@@ -1,0 +1,1435 @@
+{
+ "version": 1,
+ "algorithm": "phash",
+ "hash_bits": 64,
+ "built": "2026-08-04",
+ "roots": [
+  "prototype/avatars",
+  "prototype/assets",
+  "wos_sim/data/avatars"
+ ],
+ "image_count": 355,
+ "unreadable": [],
+ "entries": [
+  {
+   "hash": "e9a123fd82daa24e",
+   "source": "avatars/Ahmose.jpg"
+  },
+  {
+   "hash": "e9a123fd82daa24e",
+   "source": "avatars/Ahmose.png"
+  },
+  {
+   "hash": "adea4e24bcdd2232",
+   "source": "avatars/Alonso.png"
+  },
+  {
+   "hash": "f0056d7ba647d322",
+   "source": "avatars/Bahiti.jpg"
+  },
+  {
+   "hash": "f0056d7ba647d322",
+   "source": "avatars/Bahiti.png"
+  },
+  {
+   "hash": "b8d4a5d36f84d246",
+   "source": "avatars/Blanchette.jpg"
+  },
+  {
+   "hash": "e1e5dc93d68a18c3",
+   "source": "avatars/Bradley.jpg"
+  },
+  {
+   "hash": "9ea8928bf86cc98b",
+   "source": "avatars/Cara.jpg"
+  },
+  {
+   "hash": "9ea8928bf86cc98b",
+   "source": "avatars/Cara.png"
+  },
+  {
+   "hash": "fc2b79a13e84e590",
+   "source": "avatars/Dominic.jpg"
+  },
+  {
+   "hash": "fc2b79a13e84e590",
+   "source": "avatars/Dominic.png"
+  },
+  {
+   "hash": "e2fca297689b09d1",
+   "source": "avatars/Edith.jpg"
+  },
+  {
+   "hash": "e2fca297689b09d1",
+   "source": "avatars/Edith.png"
+  },
+  {
+   "hash": "ecb00a53c99e74cd",
+   "source": "avatars/Eleonora.jpg"
+  },
+  {
+   "hash": "8de57186825d8ece",
+   "source": "avatars/Elif.jpg"
+  },
+  {
+   "hash": "8de57186825d8ece",
+   "source": "avatars/Elif.png"
+  },
+  {
+   "hash": "e9c02b673cb3d660",
+   "source": "avatars/Estrella.png"
+  },
+  {
+   "hash": "eca015fe9ae58334",
+   "source": "avatars/Flint.png"
+  },
+  {
+   "hash": "cbda149b35524bb2",
+   "source": "avatars/Flora.jpg"
+  },
+  {
+   "hash": "efac34c18a6c3b62",
+   "source": "avatars/Fred.jpg"
+  },
+  {
+   "hash": "adfc0a9bc23099d9",
+   "source": "avatars/Freya.jpg"
+  },
+  {
+   "hash": "f3a5721e83d08e55",
+   "source": "avatars/Gatot.jpg"
+  },
+  {
+   "hash": "c9e1adce06746785",
+   "source": "avatars/Gisela.jpg"
+  },
+  {
+   "hash": "eaea648d9c351af0",
+   "source": "avatars/Gordon.jpg"
+  },
+  {
+   "hash": "eea375b4293024db",
+   "source": "avatars/Greg.jpg"
+  },
+  {
+   "hash": "eea375b4293024db",
+   "source": "avatars/Greg.png"
+  },
+  {
+   "hash": "87d4e4d830a6c73b",
+   "source": "avatars/Gregory.jpg"
+  },
+  {
+   "hash": "adabf4c4c1921aa7",
+   "source": "avatars/Gwen-official.jpg"
+  },
+  {
+   "hash": "adabf4c4c1921aa7",
+   "source": "avatars/Gwen.jpg"
+  },
+  {
+   "hash": "f0af11ee869bc831",
+   "source": "avatars/Hank.png"
+  },
+  {
+   "hash": "bcea83cf283231cb",
+   "source": "avatars/Hector.jpg"
+  },
+  {
+   "hash": "f8a64a70a49697d6",
+   "source": "avatars/Hendrik.jpg"
+  },
+  {
+   "hash": "caa5b6d781cd0ccc",
+   "source": "avatars/Hervor.jpg"
+  },
+  {
+   "hash": "b0eceac39dc6c831",
+   "source": "avatars/Jasser.jpg"
+  },
+  {
+   "hash": "e9297cf686c48533",
+   "source": "avatars/Jeronimo.jpg"
+  },
+  {
+   "hash": "e9297cf686c48533",
+   "source": "avatars/Jeronimo.png"
+  },
+  {
+   "hash": "e1872d7a2ee007d6",
+   "source": "avatars/Jessie.png"
+  },
+  {
+   "hash": "f0a2c3ced99ccb24",
+   "source": "avatars/Karol.jpg"
+  },
+  {
+   "hash": "f0a98bb41cc7719a",
+   "source": "avatars/Ligeia.jpg"
+  },
+  {
+   "hash": "ce6ae08f8f9c4a31",
+   "source": "avatars/Ling Xue.jpg"
+  },
+  {
+   "hash": "a9c0879e6026f737",
+   "source": "avatars/Lloyd.jpg"
+  },
+  {
+   "hash": "84f6b82dcf9372c0",
+   "source": "avatars/Logan.jpg"
+  },
+  {
+   "hash": "84f6b82dcf9372c0",
+   "source": "avatars/Logan.png"
+  },
+  {
+   "hash": "a6f2a58353b97132",
+   "source": "avatars/Lumak Bokan.jpg"
+  },
+  {
+   "hash": "a6f2a58353b97134",
+   "source": "avatars/Lumak Bokan.png"
+  },
+  {
+   "hash": "e5c927e518dc930e",
+   "source": "avatars/Lynn.jpg"
+  },
+  {
+   "hash": "c9b681a678c93f98",
+   "source": "avatars/Magnus.jpg"
+  },
+  {
+   "hash": "ee8f24c46cacdc58",
+   "source": "avatars/Mia.jpg"
+  },
+  {
+   "hash": "ee8f24c46cacdc58",
+   "source": "avatars/Mia.png"
+  },
+  {
+   "hash": "eaad356539942137",
+   "source": "avatars/Molly.jpg"
+  },
+  {
+   "hash": "eaad356539942137",
+   "source": "avatars/Molly.png"
+  },
+  {
+   "hash": "e16d58857acc53f0",
+   "source": "avatars/Natalia.png"
+  },
+  {
+   "hash": "a9b4077e9887334b",
+   "source": "avatars/Nora.jpg"
+  },
+  {
+   "hash": "e9843de8a35d096b",
+   "source": "avatars/Patrick.jpg"
+  },
+  {
+   "hash": "eb843de8a355096b",
+   "source": "avatars/Patrick.png"
+  },
+  {
+   "hash": "ea655c7423728e71",
+   "source": "avatars/Philly.jpg"
+  },
+  {
+   "hash": "ea655c7423728e71",
+   "source": "avatars/Philly.png"
+  },
+  {
+   "hash": "e5b370a09ad6b331",
+   "source": "avatars/Reina.jpg"
+  },
+  {
+   "hash": "ea9a90c70bbdc266",
+   "source": "avatars/Renee.jpg"
+  },
+  {
+   "hash": "fca3b061c7668ab2",
+   "source": "avatars/Rufus.jpg"
+  },
+  {
+   "hash": "cc69b1c6bcc73819",
+   "source": "avatars/Seo-yoon.jpg"
+  },
+  {
+   "hash": "c1a97fca8a3f60a1",
+   "source": "avatars/Sergey.png"
+  },
+  {
+   "hash": "e994c29e8587f2ca",
+   "source": "avatars/Sonya.jpg"
+  },
+  {
+   "hash": "d6ec4184fc17cb25",
+   "source": "avatars/Viveca.png"
+  },
+  {
+   "hash": "adc836d5492dd983",
+   "source": "avatars/Vulcanus.jpg"
+  },
+  {
+   "hash": "f9e39174d70a5298",
+   "source": "avatars/Wayne.jpg"
+  },
+  {
+   "hash": "e8ae90a6cb976c52",
+   "source": "avatars/Wu Ming.jpg"
+  },
+  {
+   "hash": "e7a8d5c1a8966b34",
+   "source": "avatars/Xura.jpg"
+  },
+  {
+   "hash": "c0af7997ac1d9542",
+   "source": "avatars/Zinman.jpg"
+  },
+  {
+   "hash": "c0af7997bc1c9542",
+   "source": "avatars/Zinman.png"
+  },
+  {
+   "hash": "c6cc613f1d961666",
+   "source": "assets/Backdrop/Backdrop1.png"
+  },
+  {
+   "hash": "da934dedac347188",
+   "source": "assets/Backdrop/Backdrop2.png"
+  },
+  {
+   "hash": "c6c1a9f37dbc6408",
+   "source": "assets/Backdrop/Backdrop3.png"
+  },
+  {
+   "hash": "c6c1770e1b0e34b7",
+   "source": "assets/Backdrop/Backdrop4.jpg"
+  },
+  {
+   "hash": "e6fd7e14182b6560",
+   "source": "assets/Backdrop/Backdrop4.png"
+  },
+  {
+   "hash": "c7cc066c975b6523",
+   "source": "assets/Backdrop/Backdrop6.png"
+  },
+  {
+   "hash": "c4e41b936ddb644c",
+   "source": "assets/Icons/Infantry.png"
+  },
+  {
+   "hash": "c3c37538193c568f",
+   "source": "assets/Icons/Lancer.png"
+  },
+  {
+   "hash": "c5aaf817459ba2e8",
+   "source": "assets/Icons/download.png"
+  },
+  {
+   "hash": "c4c83e3b69a72395",
+   "source": "assets/Icons/marksman.png"
+  },
+  {
+   "hash": "981b736c63a69e92",
+   "source": "assets/Icons/upload.png"
+  },
+  {
+   "hash": "959e4a610fc23f96",
+   "source": "assets/hero_skills/ahmose/skill_1.png"
+  },
+  {
+   "hash": "959c5e6541c74bd8",
+   "source": "assets/hero_skills/ahmose/skill_2.png"
+  },
+  {
+   "hash": "9d3f68e0c6851e96",
+   "source": "assets/hero_skills/ahmose/skill_3.png"
+  },
+  {
+   "hash": "909dd36661d84fc3",
+   "source": "assets/hero_skills/alonso/skill_1.png"
+  },
+  {
+   "hash": "908fc73a5ae87ae0",
+   "source": "assets/hero_skills/alonso/skill_2.png"
+  },
+  {
+   "hash": "95bd706ace921e91",
+   "source": "assets/hero_skills/alonso/skill_3.png"
+  },
+  {
+   "hash": "b5b440c85b6f4ab9",
+   "source": "assets/hero_skills/bahiti/skill_1.png"
+  },
+  {
+   "hash": "c46d49b373c81e93",
+   "source": "assets/hero_skills/bahiti/skill_2.png"
+  },
+  {
+   "hash": "ddcd063dc0924bcd",
+   "source": "assets/hero_skills/blanchette/skill_1.png"
+  },
+  {
+   "hash": "cfcd60b291e492b3",
+   "source": "assets/hero_skills/blanchette/skill_2.png"
+  },
+  {
+   "hash": "ddcd40b287cb5a92",
+   "source": "assets/hero_skills/blanchette/skill_3.png"
+  },
+  {
+   "hash": "9599507649684fb7",
+   "source": "assets/hero_skills/bradley/skill_1.png"
+  },
+  {
+   "hash": "c0c6113917975edd",
+   "source": "assets/hero_skills/bradley/skill_2.png"
+  },
+  {
+   "hash": "d0cf053d15b553d2",
+   "source": "assets/hero_skills/bradley/skill_3.png"
+  },
+  {
+   "hash": "d19805e736c47b9c",
+   "source": "assets/hero_skills/cara/skill_1.png"
+  },
+  {
+   "hash": "c01d1de417c2739f",
+   "source": "assets/hero_skills/cara/skill_2.png"
+  },
+  {
+   "hash": "c5691cbf53d24e90",
+   "source": "assets/hero_skills/cara/skill_3.png"
+  },
+  {
+   "hash": "94c6603c476b1fc7",
+   "source": "assets/hero_skills/dominic/skill_1.png"
+  },
+  {
+   "hash": "90b7477843c01fcf",
+   "source": "assets/hero_skills/dominic/skill_2.png"
+  },
+  {
+   "hash": "997846b546c56e4d",
+   "source": "assets/hero_skills/dominic/skill_3.png"
+  },
+  {
+   "hash": "e18f3c68f192c28f",
+   "source": "assets/hero_skills/edith/skill_1.png"
+  },
+  {
+   "hash": "98dbd93466e11693",
+   "source": "assets/hero_skills/edith/skill_2.png"
+  },
+  {
+   "hash": "cdb63c19c0e54b96",
+   "source": "assets/hero_skills/edith/skill_3.png"
+  },
+  {
+   "hash": "d1cb34b5439536c3",
+   "source": "assets/hero_skills/eleonora/skill_1.png"
+  },
+  {
+   "hash": "c4cc39b364cd5396",
+   "source": "assets/hero_skills/eleonora/skill_2.png"
+  },
+  {
+   "hash": "c9ce106167b65bb4",
+   "source": "assets/hero_skills/eleonora/skill_3.png"
+  },
+  {
+   "hash": "c03c97e33ac31ed1",
+   "source": "assets/hero_skills/elif/skill_1.png"
+  },
+  {
+   "hash": "d1ca413d16f14ec7",
+   "source": "assets/hero_skills/elif/skill_2.png"
+  },
+  {
+   "hash": "d13785d864691be6",
+   "source": "assets/hero_skills/elif/skill_3.png"
+  },
+  {
+   "hash": "946b419747c653d9",
+   "source": "assets/hero_skills/estrella/skill_1.png"
+  },
+  {
+   "hash": "95cf46352594527b",
+   "source": "assets/hero_skills/estrella/skill_2.png"
+  },
+  {
+   "hash": "94795194478f6bc6",
+   "source": "assets/hero_skills/estrella/skill_3.png"
+  },
+  {
+   "hash": "90384fc561c776d3",
+   "source": "assets/hero_skills/flint/skill_1.png"
+  },
+  {
+   "hash": "853327c85a8d6ad7",
+   "source": "assets/hero_skills/flint/skill_2.png"
+  },
+  {
+   "hash": "c53a66c512cb1acf",
+   "source": "assets/hero_skills/flint/skill_3.png"
+  },
+  {
+   "hash": "d43a05c517d127cf",
+   "source": "assets/hero_skills/flora/skill_1.png"
+  },
+  {
+   "hash": "c9dc3527969113d3",
+   "source": "assets/hero_skills/flora/skill_2.png"
+  },
+  {
+   "hash": "913d45e056e71697",
+   "source": "assets/hero_skills/flora/skill_3.png"
+  },
+  {
+   "hash": "d03f21e596934bc5",
+   "source": "assets/hero_skills/fred/skill_1.png"
+  },
+  {
+   "hash": "d0be15e147cd1e92",
+   "source": "assets/hero_skills/fred/skill_2.png"
+  },
+  {
+   "hash": "9597546943ec1cf1",
+   "source": "assets/hero_skills/fred/skill_3.png"
+  },
+  {
+   "hash": "d54f15b647914ac9",
+   "source": "assets/hero_skills/freya/skill_1.png"
+  },
+  {
+   "hash": "d5bf50c016e01bf3",
+   "source": "assets/hero_skills/freya/skill_2.png"
+  },
+  {
+   "hash": "b59c5167ce989386",
+   "source": "assets/hero_skills/freya/skill_3.png"
+  },
+  {
+   "hash": "9cbd34cbc3925a86",
+   "source": "assets/hero_skills/gatot/skill_1.png"
+  },
+  {
+   "hash": "856b58a465da4f99",
+   "source": "assets/hero_skills/gatot/skill_2.png"
+  },
+  {
+   "hash": "95cd593c669b06c6",
+   "source": "assets/hero_skills/gatot/skill_3.png"
+  },
+  {
+   "hash": "cc853578536f4bc1",
+   "source": "assets/hero_skills/gisela/skill_1.png"
+  },
+  {
+   "hash": "94ec42390dc777d4",
+   "source": "assets/hero_skills/gisela/skill_2.png"
+  },
+  {
+   "hash": "913c5ec765851a9e",
+   "source": "assets/hero_skills/gisela/skill_3.png"
+  },
+  {
+   "hash": "cdcc513116db4f94",
+   "source": "assets/hero_skills/gordon/skill_1.png"
+  },
+  {
+   "hash": "c51e50e51ee107de",
+   "source": "assets/hero_skills/gordon/skill_2.png"
+  },
+  {
+   "hash": "982d6592966997d5",
+   "source": "assets/hero_skills/gordon/skill_3.png"
+  },
+  {
+   "hash": "94a519e243987eb7",
+   "source": "assets/hero_skills/greg/skill_1.png"
+  },
+  {
+   "hash": "847b5ba470d16f92",
+   "source": "assets/hero_skills/greg/skill_2.png"
+  },
+  {
+   "hash": "951e70a547f02f87",
+   "source": "assets/hero_skills/greg/skill_3.png"
+  },
+  {
+   "hash": "9095677acfe443c1",
+   "source": "assets/hero_skills/gregory/skill_1.png"
+  },
+  {
+   "hash": "94b7436861c3c79d",
+   "source": "assets/hero_skills/gregory/skill_2.png"
+  },
+  {
+   "hash": "f5be82b127e033c1",
+   "source": "assets/hero_skills/gregory/skill_3.png"
+  },
+  {
+   "hash": "916e47c516964b9b",
+   "source": "assets/hero_skills/gwen/skill_1.png"
+  },
+  {
+   "hash": "9499436646951fdb",
+   "source": "assets/hero_skills/gwen/skill_2.png"
+  },
+  {
+   "hash": "c1c3147c53375e33",
+   "source": "assets/hero_skills/gwen/skill_3.png"
+  },
+  {
+   "hash": "cceb11b496655b94",
+   "source": "assets/hero_skills/gwen-2/skill_1.png"
+  },
+  {
+   "hash": "9cb4c1eb47cc4ec1",
+   "source": "assets/hero_skills/gwen-2/skill_2.png"
+  },
+  {
+   "hash": "8b3c34f342cd4fc8",
+   "source": "assets/hero_skills/gwen-2/skill_3.png"
+  },
+  {
+   "hash": "d0614d9c67b11ec7",
+   "source": "assets/hero_skills/hank-2/skill_1.png"
+  },
+  {
+   "hash": "c16e1425d3cd6fb0",
+   "source": "assets/hero_skills/hank-2/skill_2.png"
+  },
+  {
+   "hash": "c59d1370258f63cb",
+   "source": "assets/hero_skills/hank-2/skill_3.png"
+  },
+  {
+   "hash": "85c51a7661dd4796",
+   "source": "assets/hero_skills/hector/skill_1.png"
+  },
+  {
+   "hash": "90b4056742db7fb2",
+   "source": "assets/hero_skills/hector/skill_2.png"
+  },
+  {
+   "hash": "c4e5339b16944e97",
+   "source": "assets/hero_skills/hector/skill_3.png"
+  },
+  {
+   "hash": "91d944b747e416c7",
+   "source": "assets/hero_skills/hendrik/skill_1.png"
+  },
+  {
+   "hash": "c9db1170c6c71f31",
+   "source": "assets/hero_skills/hendrik/skill_2.png"
+  },
+  {
+   "hash": "946e459173c61e9b",
+   "source": "assets/hero_skills/hendrik/skill_3.png"
+  },
+  {
+   "hash": "942d6be667901bc3",
+   "source": "assets/hero_skills/hervor/skill_1.png"
+  },
+  {
+   "hash": "94cb493c66b34ae5",
+   "source": "assets/hero_skills/hervor/skill_2.png"
+  },
+  {
+   "hash": "c16f1cd1659c32d3",
+   "source": "assets/hero_skills/hervor/skill_3.png"
+  },
+  {
+   "hash": "9c9f71c342640f97",
+   "source": "assets/hero_skills/jasser/skill_1.png"
+  },
+  {
+   "hash": "9c9d61c342741f97",
+   "source": "assets/hero_skills/jasser/skill_2.png"
+  },
+  {
+   "hash": "e0cc9f7941373686",
+   "source": "assets/hero_skills/jeronimo/skill_1.png"
+  },
+  {
+   "hash": "e53c93e318cb4393",
+   "source": "assets/hero_skills/jeronimo/skill_2.png"
+  },
+  {
+   "hash": "c1c013394eb74bdb",
+   "source": "assets/hero_skills/jeronimo/skill_3.png"
+  },
+  {
+   "hash": "914b46b14ed84fc7",
+   "source": "assets/hero_skills/jessie/skill_1.png"
+  },
+  {
+   "hash": "85f86bbd72c136c0",
+   "source": "assets/hero_skills/jessie/skill_2.png"
+  },
+  {
+   "hash": "d49b4b6c1ee14ac6",
+   "source": "assets/hero_skills/karol/skill_1.png"
+  },
+  {
+   "hash": "c0c93d3e57311aec",
+   "source": "assets/hero_skills/karol/skill_2.png"
+  },
+  {
+   "hash": "c46d59b3169e27c1",
+   "source": "assets/hero_skills/karol/skill_3.png"
+  },
+  {
+   "hash": "9d944472d3696fc1",
+   "source": "assets/hero_skills/ligeia/skill_1.png"
+  },
+  {
+   "hash": "857872b1c5c71ad9",
+   "source": "assets/hero_skills/ligeia/skill_2.png"
+  },
+  {
+   "hash": "c13c15c65cf1479e",
+   "source": "assets/hero_skills/ligeia/skill_3.png"
+  },
+  {
+   "hash": "959d0571c6e64ec9",
+   "source": "assets/hero_skills/ling-shuang/skill_1.png"
+  },
+  {
+   "hash": "d8b7136997944e92",
+   "source": "assets/hero_skills/ling-shuang/skill_2.png"
+  },
+  {
+   "hash": "959d0571c6e64ec9",
+   "source": "assets/hero_skills/ling-xue/skill_1.png"
+  },
+  {
+   "hash": "d8b7136997944e92",
+   "source": "assets/hero_skills/ling-xue/skill_2.png"
+  },
+  {
+   "hash": "9da961f2c68d1bc4",
+   "source": "assets/hero_skills/lloyd/skill_1.png"
+  },
+  {
+   "hash": "c9cc34b3d2cc4bb4",
+   "source": "assets/hero_skills/lloyd/skill_2.png"
+  },
+  {
+   "hash": "d82d45f231c55ee4",
+   "source": "assets/hero_skills/lloyd/skill_3.png"
+  },
+  {
+   "hash": "9595427a73636bc1",
+   "source": "assets/hero_skills/logan/skill_1.png"
+  },
+  {
+   "hash": "cda61cd8621d33e6",
+   "source": "assets/hero_skills/logan/skill_2.png"
+  },
+  {
+   "hash": "90cd4db2326867cf",
+   "source": "assets/hero_skills/logan/skill_3.png"
+  },
+  {
+   "hash": "c49e11711ecd4f93",
+   "source": "assets/hero_skills/lumak-bokan/skill_1.png"
+  },
+  {
+   "hash": "cd8c343653c34fcc",
+   "source": "assets/hero_skills/lumak-bokan/skill_2.png"
+  },
+  {
+   "hash": "c75c4da596d332e0",
+   "source": "assets/hero_skills/lynn/skill_1.png"
+  },
+  {
+   "hash": "cdb311c4c6ec1ed1",
+   "source": "assets/hero_skills/lynn/skill_2.png"
+  },
+  {
+   "hash": "c57a199dd2c21bc5",
+   "source": "assets/hero_skills/lynn/skill_3.png"
+  },
+  {
+   "hash": "95cd403645655bd7",
+   "source": "assets/hero_skills/magnus/skill_1.png"
+  },
+  {
+   "hash": "c46b3594d29a4fc6",
+   "source": "assets/hero_skills/magnus/skill_2.png"
+  },
+  {
+   "hash": "953b17e142c64bcb",
+   "source": "assets/hero_skills/magnus/skill_3.png"
+  },
+  {
+   "hash": "99b966c490e47793",
+   "source": "assets/hero_skills/mia/skill_1.png"
+  },
+  {
+   "hash": "85a748d9334c4f97",
+   "source": "assets/hero_skills/mia/skill_2.png"
+  },
+  {
+   "hash": "9999c46633734bc6",
+   "source": "assets/hero_skills/mia/skill_3.png"
+  },
+  {
+   "hash": "e5d818371e871fc8",
+   "source": "assets/hero_skills/molly/skill_1.png"
+  },
+  {
+   "hash": "b494c06f47730fc9",
+   "source": "assets/hero_skills/molly/skill_2.png"
+  },
+  {
+   "hash": "b41edae141c16fc5",
+   "source": "assets/hero_skills/molly/skill_3.png"
+  },
+  {
+   "hash": "9566439952d91eb3",
+   "source": "assets/hero_skills/natalia/skill_1.png"
+  },
+  {
+   "hash": "a43b52e447c33b96",
+   "source": "assets/hero_skills/natalia/skill_2.png"
+  },
+  {
+   "hash": "95c9526947963f92",
+   "source": "assets/hero_skills/natalia/skill_3.png"
+  },
+  {
+   "hash": "916e47c516964b9b",
+   "source": "assets/hero_skills/nora/skill_1.png"
+  },
+  {
+   "hash": "9499436646951fdb",
+   "source": "assets/hero_skills/nora/skill_2.png"
+  },
+  {
+   "hash": "c1c3147c53375e33",
+   "source": "assets/hero_skills/nora/skill_3.png"
+  },
+  {
+   "hash": "c16952d22f871e9d",
+   "source": "assets/hero_skills/patrick/skill_1.png"
+  },
+  {
+   "hash": "949e43e917906ae7",
+   "source": "assets/hero_skills/patrick/skill_2.png"
+  },
+  {
+   "hash": "d199919e4ee46467",
+   "source": "assets/hero_skills/philly/skill_1.png"
+  },
+  {
+   "hash": "d1f2509d87664b93",
+   "source": "assets/hero_skills/philly/skill_2.png"
+  },
+  {
+   "hash": "d8cc0ce4c19b1ef3",
+   "source": "assets/hero_skills/philly/skill_3.png"
+  },
+  {
+   "hash": "c06f158d43935fc6",
+   "source": "assets/hero_skills/reina/skill_1.png"
+  },
+  {
+   "hash": "912f45d916c55bd2",
+   "source": "assets/hero_skills/reina/skill_2.png"
+  },
+  {
+   "hash": "c59531634d9c1b97",
+   "source": "assets/hero_skills/reina/skill_3.png"
+  },
+  {
+   "hash": "94cc147603df5ba5",
+   "source": "assets/hero_skills/renee/skill_1.png"
+  },
+  {
+   "hash": "c0e5153bc39e1e96",
+   "source": "assets/hero_skills/renee/skill_2.png"
+  },
+  {
+   "hash": "b1db5db350244ecc",
+   "source": "assets/hero_skills/renee/skill_3.png"
+  },
+  {
+   "hash": "943d49e365c61e96",
+   "source": "assets/hero_skills/rufus/skill_1.png"
+  },
+  {
+   "hash": "c8f3359dc0e41b93",
+   "source": "assets/hero_skills/rufus/skill_2.png"
+  },
+  {
+   "hash": "9c9c6063c76c4f95",
+   "source": "assets/hero_skills/rufus/skill_3.png"
+  },
+  {
+   "hash": "949f41f052e79693",
+   "source": "assets/hero_skills/seo-yoon/skill_1.png"
+  },
+  {
+   "hash": "943c65c34bd81e97",
+   "source": "assets/hero_skills/seo-yoon/skill_2.png"
+  },
+  {
+   "hash": "e09b1b3d1ea40ece",
+   "source": "assets/hero_skills/sergey/skill_1.png"
+  },
+  {
+   "hash": "d1ed853632b116cd",
+   "source": "assets/hero_skills/sergey/skill_2.png"
+  },
+  {
+   "hash": "94cd513395ce63d1",
+   "source": "assets/hero_skills/sonya/skill_1.png"
+  },
+  {
+   "hash": "946f51f167965a81",
+   "source": "assets/hero_skills/sonya/skill_2.png"
+  },
+  {
+   "hash": "9569419616937bd6",
+   "source": "assets/hero_skills/sonya/skill_3.png"
+  },
+  {
+   "hash": "c4c8313796c16fda",
+   "source": "assets/hero_skills/viveca-2/skill_1.png"
+  },
+  {
+   "hash": "c41616e5977843cf",
+   "source": "assets/hero_skills/viveca-2/skill_2.png"
+  },
+  {
+   "hash": "d43741c896e57a96",
+   "source": "assets/hero_skills/viveca-2/skill_3.png"
+  },
+  {
+   "hash": "851e516156c76f99",
+   "source": "assets/hero_skills/vulcanus/skill_1.png"
+  },
+  {
+   "hash": "9d99456557961ac6",
+   "source": "assets/hero_skills/vulcanus/skill_2.png"
+  },
+  {
+   "hash": "953b40c553c96f96",
+   "source": "assets/hero_skills/vulcanus/skill_3.png"
+  },
+  {
+   "hash": "c4d8513616e517cf",
+   "source": "assets/hero_skills/wayne/skill_1.png"
+  },
+  {
+   "hash": "91db446467cd1f92",
+   "source": "assets/hero_skills/wayne/skill_2.png"
+  },
+  {
+   "hash": "9d3941e652d90f96",
+   "source": "assets/hero_skills/wayne/skill_3.png"
+  },
+  {
+   "hash": "858d12f24f594be5",
+   "source": "assets/hero_skills/wu-ming/skill_1.png"
+  },
+  {
+   "hash": "953e419547f11ac7",
+   "source": "assets/hero_skills/wu-ming/skill_2.png"
+  },
+  {
+   "hash": "959911e5666656d5",
+   "source": "assets/hero_skills/wu-ming/skill_3.png"
+  },
+  {
+   "hash": "e43f15cd53e44a92",
+   "source": "assets/hero_skills/xura/skill_1.png"
+  },
+  {
+   "hash": "d13f047113d3629f",
+   "source": "assets/hero_skills/xura/skill_2.png"
+  },
+  {
+   "hash": "cdcc1133d2cb4b35",
+   "source": "assets/hero_skills/xura/skill_3.png"
+  },
+  {
+   "hash": "bb6b9298e181e64e",
+   "source": "assets/hero_skills/zinman/skill_1.png"
+  },
+  {
+   "hash": "e1c5163a5a3a1b9d",
+   "source": "assets/hero_skills/zinman/skill_2.png"
+  },
+  {
+   "hash": "ebe09c1fc7c1c4d0",
+   "source": "assets/hero_skills/zinman/skill_3.png"
+  },
+  {
+   "hash": "fd87608742c887f6",
+   "source": "assets/troop_skill_crop_contact.png"
+  },
+  {
+   "hash": "f5876087429987fc",
+   "source": "assets/troop_skill_crop_contact_right.png"
+  },
+  {
+   "hash": "bf9578c2dac8ca82",
+   "source": "assets/troop_skills/Incandescent Field.png"
+  },
+  {
+   "hash": "f24849f78c38d29d",
+   "source": "assets/troop_skills/ambusher.png"
+  },
+  {
+   "hash": "cf831d3c3e52ec21",
+   "source": "assets/troop_skills/crystal_gunpowder.png"
+  },
+  {
+   "hash": "bf8ade70e2c5a908",
+   "source": "assets/troop_skills/crystal_lance.png"
+  },
+  {
+   "hash": "8885175ede7aba28",
+   "source": "assets/troop_skills/crystal_shield.png"
+  },
+  {
+   "hash": "81980fc76f5e5c58",
+   "source": "assets/troop_skills/indomitable_wall.png"
+  },
+  {
+   "hash": "d0f007b4be9e30b9",
+   "source": "assets/troop_skills/meridian_phalanx.png"
+  },
+  {
+   "hash": "c0f01bb4eee638b8",
+   "source": "assets/troop_skills/starfire.png"
+  },
+  {
+   "hash": "bf8ade70e2c5a908",
+   "source": "assets/troop_skills/volley.png"
+  },
+  {
+   "hash": "c4713b666c6e6499",
+   "source": "assets/ui/class-infantry.png"
+  },
+  {
+   "hash": "c7c730382dc6c9cd",
+   "source": "assets/ui/class-lancer.png"
+  },
+  {
+   "hash": "974d36336d9c9891",
+   "source": "assets/ui/class-marksman.png"
+  },
+  {
+   "hash": "0000000000000000",
+   "source": "assets/ui/garrison-shield.png"
+  },
+  {
+   "hash": "b2f5cd02c52dcc3c",
+   "source": "assets/ui/load-up.png"
+  },
+  {
+   "hash": "0000000000000000",
+   "source": "assets/ui/rally-swords.png"
+  },
+  {
+   "hash": "0000000000000000",
+   "source": "assets/ui/rename-pen.png"
+  },
+  {
+   "hash": "90cb6eb06b94e7c1",
+   "source": "assets/ui/save-down.png"
+  },
+  {
+   "hash": "e9a123fd82daa24e",
+   "source": "avatars/Ahmose.jpeg"
+  },
+  {
+   "hash": "e9a123fd82daa24e",
+   "source": "avatars/Ahmose.jpg"
+  },
+  {
+   "hash": "adea4e24bcdd2232",
+   "source": "avatars/Alonso.png"
+  },
+  {
+   "hash": "f0056d7ba647d322",
+   "source": "avatars/Bahiti.jpeg"
+  },
+  {
+   "hash": "f0056d7ba647d322",
+   "source": "avatars/Bahiti.jpg"
+  },
+  {
+   "hash": "b8d4a5d36f84d246",
+   "source": "avatars/Blanchette.jpeg"
+  },
+  {
+   "hash": "b8d4a5d36f84d246",
+   "source": "avatars/Blanchette.jpg"
+  },
+  {
+   "hash": "e1e5dc93d68a18c3",
+   "source": "avatars/Bradley.jpeg"
+  },
+  {
+   "hash": "e1e5dc93d68a18c3",
+   "source": "avatars/Bradley.jpg"
+  },
+  {
+   "hash": "9ea8928bf86cc98b",
+   "source": "avatars/Cara.jpeg"
+  },
+  {
+   "hash": "9ea8928bf86cc98b",
+   "source": "avatars/Cara.jpg"
+  },
+  {
+   "hash": "fc2b79a13e84e590",
+   "source": "avatars/Dominic.jpeg"
+  },
+  {
+   "hash": "fc2b79a13e84e590",
+   "source": "avatars/Dominic.jpg"
+  },
+  {
+   "hash": "e2fca297689b09d1",
+   "source": "avatars/Edith.png"
+  },
+  {
+   "hash": "ecb00a53c99e74cd",
+   "source": "avatars/Eleonora.jpeg"
+  },
+  {
+   "hash": "ecb00a53c99e74cd",
+   "source": "avatars/Eleonora.jpg"
+  },
+  {
+   "hash": "8de57186825d8ece",
+   "source": "avatars/Elif.jpeg"
+  },
+  {
+   "hash": "8de57186825d8ece",
+   "source": "avatars/Elif.jpg"
+  },
+  {
+   "hash": "eca015fe9ae58334",
+   "source": "avatars/Flint.png"
+  },
+  {
+   "hash": "cbda149b35524bb2",
+   "source": "avatars/Flora.jpeg"
+  },
+  {
+   "hash": "cbda149b35524bb2",
+   "source": "avatars/Flora.jpg"
+  },
+  {
+   "hash": "efac34c18a6c3b62",
+   "source": "avatars/Fred.jpeg"
+  },
+  {
+   "hash": "efac34c18a6c3b62",
+   "source": "avatars/Fred.jpg"
+  },
+  {
+   "hash": "adfc0a9bc23099d9",
+   "source": "avatars/Freya.jpeg"
+  },
+  {
+   "hash": "adfc0a9bc23099d9",
+   "source": "avatars/Freya.jpg"
+  },
+  {
+   "hash": "f3a5721e83d08e55",
+   "source": "avatars/Gatot.jpeg"
+  },
+  {
+   "hash": "f3a5721e83d08e55",
+   "source": "avatars/Gatot.jpg"
+  },
+  {
+   "hash": "c9e1adce06746785",
+   "source": "avatars/Gisela.jpeg"
+  },
+  {
+   "hash": "c9e1adce06746785",
+   "source": "avatars/Gisela.jpg"
+  },
+  {
+   "hash": "eaea648d9c351af0",
+   "source": "avatars/Gordon.jpeg"
+  },
+  {
+   "hash": "eaea648d9c351af0",
+   "source": "avatars/Gordon.jpg"
+  },
+  {
+   "hash": "eea375b4293024db",
+   "source": "avatars/Greg.jpeg"
+  },
+  {
+   "hash": "eea375b4293024db",
+   "source": "avatars/Greg.jpg"
+  },
+  {
+   "hash": "87d4e4d830a6c73b",
+   "source": "avatars/Gregory.jpeg"
+  },
+  {
+   "hash": "87d4e4d830a6c73b",
+   "source": "avatars/Gregory.jpg"
+  },
+  {
+   "hash": "adabf4c4c1921aa7",
+   "source": "avatars/Gwen.jpeg"
+  },
+  {
+   "hash": "adabf4c4c1921aa7",
+   "source": "avatars/Gwen.jpg"
+  },
+  {
+   "hash": "bcea83cf283231cb",
+   "source": "avatars/Hector.jpeg"
+  },
+  {
+   "hash": "bcea83cf283231cb",
+   "source": "avatars/Hector.jpg"
+  },
+  {
+   "hash": "f8a66a70a4969796",
+   "source": "avatars/Hendrik.jpeg"
+  },
+  {
+   "hash": "f8a66a70a4969796",
+   "source": "avatars/Hendrik.jpg"
+  },
+  {
+   "hash": "caa5b6d781cd0ccc",
+   "source": "avatars/Hervor.jpeg"
+  },
+  {
+   "hash": "caa5b6d781cd0ccc",
+   "source": "avatars/Hervor.jpg"
+  },
+  {
+   "hash": "b0eceac39dc6c831",
+   "source": "avatars/Jasser.jpeg"
+  },
+  {
+   "hash": "b0eceac39dc6c831",
+   "source": "avatars/Jasser.jpg"
+  },
+  {
+   "hash": "e9297cf686c48533",
+   "source": "avatars/Jeronimo.jpeg"
+  },
+  {
+   "hash": "e9297cf686c48533",
+   "source": "avatars/Jeronimo.jpg"
+  },
+  {
+   "hash": "e1872d7a2ee007d6",
+   "source": "avatars/Jessie.png"
+  },
+  {
+   "hash": "f0a2c3ced99ccb24",
+   "source": "avatars/Karol.jpeg"
+  },
+  {
+   "hash": "f0a2c3ced99ccb24",
+   "source": "avatars/Karol.jpg"
+  },
+  {
+   "hash": "f0a98bb41cc7719a",
+   "source": "avatars/Ligeia.jpeg"
+  },
+  {
+   "hash": "f0a98bb41cc7719a",
+   "source": "avatars/Ligeia.jpg"
+  },
+  {
+   "hash": "ce6ae08f8f9c4a31",
+   "source": "avatars/Ling Xue.jpeg"
+  },
+  {
+   "hash": "ce6ae08f8f9c4a31",
+   "source": "avatars/Ling Xue.jpg"
+  },
+  {
+   "hash": "a9c0879e6026f737",
+   "source": "avatars/Lloyd.jpeg"
+  },
+  {
+   "hash": "a9c0879e6026f737",
+   "source": "avatars/Lloyd.jpg"
+  },
+  {
+   "hash": "84f6b82dcf9372c0",
+   "source": "avatars/Logan.jpeg"
+  },
+  {
+   "hash": "84f6b82dcf9372c0",
+   "source": "avatars/Logan.jpg"
+  },
+  {
+   "hash": "a6f2a58353b97132",
+   "source": "avatars/Lumak Bokan.jpeg"
+  },
+  {
+   "hash": "a6f2a58353b97132",
+   "source": "avatars/Lumak Bokan.jpg"
+  },
+  {
+   "hash": "e5c927e518dc930e",
+   "source": "avatars/Lynn.jpeg"
+  },
+  {
+   "hash": "e5c927e518dc930e",
+   "source": "avatars/Lynn.jpg"
+  },
+  {
+   "hash": "c9b681a678c93f98",
+   "source": "avatars/Magnus.jpeg"
+  },
+  {
+   "hash": "c9b681a678c93f98",
+   "source": "avatars/Magnus.jpg"
+  },
+  {
+   "hash": "ee8f24c46cacdc58",
+   "source": "avatars/Mia.jpeg"
+  },
+  {
+   "hash": "ee8f24c46cacdc58",
+   "source": "avatars/Mia.jpg"
+  },
+  {
+   "hash": "eaad356539942137",
+   "source": "avatars/Molly.jpeg"
+  },
+  {
+   "hash": "eaad356539942137",
+   "source": "avatars/Molly.jpg"
+  },
+  {
+   "hash": "e16d58857acc53f0",
+   "source": "avatars/Natalia.png"
+  },
+  {
+   "hash": "a9b4077e9887334b",
+   "source": "avatars/Nora.jpeg"
+  },
+  {
+   "hash": "a9b4077e9887334b",
+   "source": "avatars/Nora.jpg"
+  },
+  {
+   "hash": "e9843de8a35d096b",
+   "source": "avatars/Patrick.jpeg"
+  },
+  {
+   "hash": "e9843de8a35d096b",
+   "source": "avatars/Patrick.jpg"
+  },
+  {
+   "hash": "ea655c7423728e71",
+   "source": "avatars/Philly.jpeg"
+  },
+  {
+   "hash": "ea655c7423728e71",
+   "source": "avatars/Philly.jpg"
+  },
+  {
+   "hash": "e5b370a09ad6b331",
+   "source": "avatars/Reina.jpeg"
+  },
+  {
+   "hash": "e5b370a09ad6b331",
+   "source": "avatars/Reina.jpg"
+  },
+  {
+   "hash": "ea9a90c70bbdc266",
+   "source": "avatars/Renee.jpeg"
+  },
+  {
+   "hash": "ea9a90c70bbdc266",
+   "source": "avatars/Renee.jpg"
+  },
+  {
+   "hash": "fca3b061c7668ab2",
+   "source": "avatars/Rufus.jpeg"
+  },
+  {
+   "hash": "fca3b061c7668ab2",
+   "source": "avatars/Rufus.jpg"
+  },
+  {
+   "hash": "cc69b1c6bcc73819",
+   "source": "avatars/Seo-yoon.jpeg"
+  },
+  {
+   "hash": "cc69b1c6bcc73819",
+   "source": "avatars/Seo-yoon.jpg"
+  },
+  {
+   "hash": "c1a97fca8a3f60a1",
+   "source": "avatars/Sergey.png"
+  },
+  {
+   "hash": "e994c29e8587f2ca",
+   "source": "avatars/Sonya.jpeg"
+  },
+  {
+   "hash": "e994c29e8587f2ca",
+   "source": "avatars/Sonya.jpg"
+  },
+  {
+   "hash": "adc836d5492dd983",
+   "source": "avatars/Vulcanus.jpeg"
+  },
+  {
+   "hash": "adc836d5492dd983",
+   "source": "avatars/Vulcanus.jpg"
+  },
+  {
+   "hash": "f9e39174d70a5298",
+   "source": "avatars/Wayne.jpeg"
+  },
+  {
+   "hash": "f9e39174d70a5298",
+   "source": "avatars/Wayne.jpg"
+  },
+  {
+   "hash": "e8ae90a6cb976c52",
+   "source": "avatars/Wu Ming.jpeg"
+  },
+  {
+   "hash": "e8ae90a6cb976c52",
+   "source": "avatars/Wu Ming.jpg"
+  },
+  {
+   "hash": "e7a8d5c1a8966b34",
+   "source": "avatars/Xura.jpeg"
+  },
+  {
+   "hash": "e7a8d5c1a8966b34",
+   "source": "avatars/Xura.jpg"
+  },
+  {
+   "hash": "c0af7997ac1d9542",
+   "source": "avatars/Zinman.jpeg"
+  },
+  {
+   "hash": "c0af7997ac1d9542",
+   "source": "avatars/Zinman.jpg"
+  }
+ ]
+}

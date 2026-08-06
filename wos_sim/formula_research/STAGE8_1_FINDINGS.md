@@ -580,3 +580,52 @@ The **cross-class half of 8.1 is derived and checked**; the **multi-class-compos
 remains open**. Nothing has been wired into the engine - the R values live in this document
 pending a decision and an independent QA.
 
+---
+
+# ADDENDUM 10 - the cross-class law is IMPLEMENTED (2026-07-28)
+
+Wired into `stage8_army.py` and `army_router.py`. **Still opt-in** (`params={"army_router":
+True}`); the live path is unchanged.
+
+## What was added
+- `R_TABLE` with per-pair provenance - each entry carries **both** measurements and the
+  battles they came from:
+  | pair | R | measurements | sources |
+  |---|---|---|---|
+  | Inf -> Lan | 0.7896 | 0.7929 / 0.7863 | exp4, exp4b |
+  | Inf -> MM | 0.7959 | 0.8060 / 0.7859 | exp5, expX2 |
+  | Lan -> MM | 0.9454 | 0.9317 / 0.9592 | exp3a, expX1 |
+- `class_pair_R()` - same class returns exactly `(1.0, 0.0)`; the reverse direction is the
+  reciprocal (`R(Y,X) = 1/R(X,Y)`, which follows from R's definition, not from a fit).
+- `predict_army_cross_class()` - continuum only, no turn count claimed.
+
+## The abstention is DERIVED, not a threshold (answers QA P1-3)
+The router refuses to call a battle when `beta/alpha` sits **within the measured R spread**
+of 1.0 - i.e. exactly where the two-measurement uncertainty could flip the winner. This is
+the exp5 lesson made mechanical: at `beta/alpha = 0.9851` a 2.53 % uncertainty in R spans
+the parity line, so no honest winner exists. **exp5 now abstains instead of being 149 % wrong.**
+
+## Validation through the implemented path
+| battle | pair | predicted | observed | error |
+|---|---|---|---|---|
+| exp4 | Inf->Lan | 0.4572 | 0.4536 | **+0.8 %** |
+| exp4b | Inf->Lan | 0.4242 | 0.4282 | **-0.9 %** |
+| exp5 | Inf->MM | **ABSTAIN** | 0.0488 | - (correctly refused) |
+| expX2 | Inf->MM | 0.9839 | 0.9841 | **-0.0 %** |
+| exp3a | Lan->MM | 0.4053 | 0.4200 | **-3.5 %** |
+| expX1 | Lan->MM | 0.3222 | 0.3013 | **+6.9 %** |
+
+## Guards (all tested)
+Off-tier cross-class rejected (`cross_class_tier`); unmeasured pair rejected
+(`cross_class_unmeasured`); reciprocal and same-class identity asserted; cross-class without
+the opt-in flag still routes to the old engine.
+
+## Gates
+G12 backtest **PASS** (7/13) - **214 passed** / 15 skipped / 2 xfailed (5 new cross-class
+tests) - live path verified unchanged.
+
+## Unchanged limits
+Tier 6 only; two measurements per constant; **multi-class composition (mixed Inf+Lan+MM on
+one side) is still not implemented** - that is the remaining half of Stage 8.1 and its only
+data (exp6a/exp6b) is Type-2.
+

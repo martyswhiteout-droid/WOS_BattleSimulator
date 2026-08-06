@@ -941,6 +941,40 @@ is still uncalibrated (engine_meta calibrated=False) - trust direction, not the
 exact win%. (Also removed a fragile simulate_pvp winner!='D' guard from
 _kernel_box - it was rate-dependent and redundant vs the stat-range checks.)
 
+## 6s. Three stat panels — one deterministic mapping (2026-08-05, CONFIRMED)
+
+Bonus Overview vs scout "Stat Bonuses" vs battle-report "Stat Bonuses" are the
+SAME account state through different inclusion sets + the §2 multiplicative
+special fold with §6h divisor penalties. Confirmed zero-fudge on 2026-08-05
+same-state captures (worst residual 0.054 pct-points over 24 predicted cells):
+
+  std(c,s)   = BO_troops(s) + BO_class(c,s) + U(s)
+  Scout+1    = (1+std)(1+S_scout)
+  Battle+1   = (1+std)(1+S_battle)/(1+P_enemy)
+
+- S_scout = always-on specials (pet self-buffs +10%; defender-widget rows +15%
+  Atk/HP). S_battle adds territory rows (+10% Atk/Def). "Defending Own City +5%"
+  rows are LISTED in the special panel but provably NOT folded into the shown
+  rows (open item).
+- Enemy pet/expert penalty rows enter the opponent's displayed rows as DIVISORS
+  (re-confirms the §6h back-calc form).
+- U = per-class lead-hero block: generation injection (§6o) + that hero's
+  hero-gear block. Expert war buffs (Romulus/Gareth-3) sit inside Bonus
+  Overview's global "Troops' X" rows, NOT in U (pinned by an Atk=Def/Leth=HP
+  symmetry discriminator). Bonus Overview excludes heroes and all special rows.
+- Naive additive panel arithmetic misses by 100-360 pct-points — the fold is
+  multiplicative; this was the "three different numbers" illusion.
+
+Full derivation, raw data tables, verification, and the OCR conversion recipes
+(battle-report → scout-net engine input): docs/STAT_PANELS_FORMULA.md.
+Expert skill tables + worked totals: docs/EXPERTS_RULES.md.
+
+ADDENDUM 2026-08-06: independently CONFIRMED on a second account ([LnS]MaTiX —
+Gen-13 trio, non-maxed experts, NO pets: law holds with zero adjustments, worst
+residual 0.064 pp; experts-inside-Bonus-Overview upgraded inferred→MEASURED via
+the two-account symmetry discriminator; own-city +5 exclusion re-confirmed
+independently). Details: docs/STAT_PANELS_FORMULA.md §9.
+
 ## 7. Open items
 
 - Encoding consistency (flagged in audit, not yet resolved): "X deals +N% to

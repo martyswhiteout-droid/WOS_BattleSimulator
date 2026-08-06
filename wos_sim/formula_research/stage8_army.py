@@ -155,6 +155,91 @@ def _solve_rate(att, dfn, n_att, n_def, observed_fraction, observed_winner="atta
     return (lo + hi) / 2
 
 
+# --------------------------------------------------------------------------- #
+#  CROSS-CLASS (2026-07-28) -- the class-pair ratio R
+#
+#  Extending the same-class law to different classes needs ONE extra factor per
+#  ordered class pair. If each attack direction carries a factor C(att -> def),
+#  only the RATIO survives in beta/alpha:
+#
+#       beta/alpha = S(stats) * R      S = (A_d L_d D_d H_d)/(A_a L_a D_a H_a)
+#                                      R = C(def->att) / C(att->def)
+#
+#  Same class => R = 1 (which is why the same-class law needed no extra term).
+#  Each observed battle MEASURES its pair: R = (1 - f^2) / S.
+#
+#  EVIDENCE: every pair has TWO independent battles at different stat gaps.
+#  The factorization C(X->Y)=f(X)g(Y) was REFUTED by its own zero-parameter blind
+#  test (the triangle R(Inf,Lan)*R(Lan,MM) = R(Inf,MM) misses by -6.2%), so the
+#  three pairs are independent and all three are measured. Full derivation and
+#  validation: STAGE8_1_FINDINGS.md Addenda 8-9.
+#
+#  SCOPE: measured at TIER 6, ~10k scale, proc-free, hero-free. Tier dependence is
+#  UNMEASURED -- callers must not use these outside T6.
+# --------------------------------------------------------------------------- #
+R_MEASURED_TIER = 6
+
+#: {(attacker_class, defender_class): (R, [the two measurements], sources)}
+R_TABLE = {
+    ("Infantry", "Lancer"):   (0.7896, [0.7929, 0.7863], ("exp4", "exp4b")),
+    ("Infantry", "Marksman"): (0.7959, [0.8060, 0.7859], ("exp5", "expX2")),
+    ("Lancer", "Marksman"):   (0.9454, [0.9317, 0.9592], ("exp3a", "expX1")),
+}
+
+
+def class_pair_R(att_cls: str, def_cls: str):
+    """(R, relative_uncertainty) for an ordered class pair, or (None, None) if the
+    pair is unmeasured. Same class -> (1.0, 0.0) exactly. The reverse direction is
+    the reciprocal: R(Y,X) = 1/R(X,Y) follows from R's definition."""
+    if att_cls == def_cls:
+        return 1.0, 0.0
+    if (att_cls, def_cls) in R_TABLE:
+        r, meas, _ = R_TABLE[(att_cls, def_cls)]
+        return r, (max(meas) - min(meas)) / r
+    if (def_cls, att_cls) in R_TABLE:
+        r, meas, _ = R_TABLE[(def_cls, att_cls)]
+        return 1.0 / r, (max(meas) - min(meas)) / r
+    return None, None
+
+
+def predict_army_cross_class(att: dict, dfn: dict, *, att_cls: str, def_cls: str,
+                             n_att: float, n_def: float, tier: int) -> dict:
+    """Army-scale outcome for a proc-free, hero-free SINGLE-class-vs-single-class
+    matchup, same tier both sides. Continuum only (see the module docstring for
+    why the discrete clock is not claimed).
+
+    ABSTAINS (winner "uncertain") when the measured uncertainty in R could flip the
+    winner -- i.e. when beta/alpha sits within the R measurement spread of 1.0.
+    This is a DERIVED abstention band, not an arbitrary threshold: it is exactly the
+    region where the evidence cannot distinguish the two outcomes. It is also what
+    the near-parity anchor exp5 taught us -- at beta/alpha = 0.9976 a 2.5% error in
+    R became a 149% error in the survivor fraction, so a confident answer there
+    would be dishonest.
+    """
+    if tier != R_MEASURED_TIER and att_cls != def_cls:
+        return {"winner": "uncertain", "reason": f"cross-class R measured only at "
+                f"tier {R_MEASURED_TIER}, asked for tier {tier}"}
+    R, R_unc = class_pair_R(att_cls, def_cls)
+    if R is None:
+        return {"winner": "uncertain", "reason": f"unmeasured class pair "
+                f"{att_cls}->{def_cls}"}
+    alpha, beta = rates(att, dfn)
+    ba = (beta / alpha) * R
+    # could the winner flip inside the measured uncertainty?
+    if R_unc and abs(1.0 - ba) <= R_unc:
+        return {"winner": "uncertain", "R": R,
+                "reason": f"beta/alpha={ba:.4f} is within the measured R spread "
+                          f"({R_unc:.2%}) of parity -- the winner is not determined "
+                          f"by the evidence"}
+    if ba < 1.0:
+        w, f, n = "attacker", math.sqrt(1.0 - ba), n_att
+    else:
+        w, f, n = "defender", math.sqrt(max(0.0, 1.0 - 1.0 / ba)), n_def
+    return {"winner": w, "winner_fraction": f, "survivors": f * n,
+            "alpha": alpha, "beta": beta, "beta_over_alpha": ba, "R": R,
+            "R_uncertainty": R_unc, "mode": "continuum-cross-class"}
+
+
 def eff(panel_pct: dict, base: dict) -> dict:
     """effective = base x (1 + panel/100). Same-class same-tier matchups cancel
     `base`, so any consistent base works there."""

@@ -1,0 +1,14 @@
+# shell/Caddyfile — TLS termination for the shell (Agent A).
+# Caddy provisions/renews certificates automatically (DNS must point at the
+# VPS first). Each compose stack serves its own hostname; both blocks proxy
+# to that stack's app container.
+
+wostests.com {
+	encode gzip
+	reverse_proxy app:8200
+}
+
+staging.wostests.com {
+	encode gzip
+	reverse_proxy app:8200
+}

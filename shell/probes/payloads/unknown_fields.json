@@ -1,0 +1,73 @@
+{
+  "name": "unknown_fields",
+  "description": "Extra/unknown fields incl. injection-looking keys \u2014 must be a clean 4xx or safely ignored-but-limited (never 5xx)",
+  "method": "POST",
+  "path": "/api/predict",
+  "content_type": "application/json",
+  "body": {
+    "own": {
+      "label": "adv-rally",
+      "role": "rally",
+      "troops_total": 10000,
+      "formation": {
+        "Infantry": 0.5,
+        "Lancer": 0.2,
+        "Marksman": 0.3
+      },
+      "quality": {
+        "Infantry": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        },
+        "Lancer": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        },
+        "Marksman": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        }
+      },
+      "__proto__": {
+        "admin": true
+      },
+      "debug": true,
+      "DROP": "TABLE users;--"
+    },
+    "enemy": {
+      "label": "adv-garrison",
+      "role": "garrison",
+      "troops_total": 10000,
+      "formation": {
+        "Infantry": 0.5,
+        "Lancer": 0.2,
+        "Marksman": 0.3
+      },
+      "quality": {
+        "Infantry": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        },
+        "Lancer": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        },
+        "Marksman": {
+          "tier": 10,
+          "fc": 0,
+          "t12_stack": 0
+        }
+      }
+    },
+    "n": 50,
+    "seed": 1,
+    "give_me": "TURN_PARAMS"
+  },
+  "expected_status_min": 200,
+  "expected_status_max": 499
+}

@@ -15,3 +15,8 @@ Thumbs.db
 
 .vercel
 .env*
+!shell/.env.example
+
+# Generated release bundles (rebuild via shell/promote.py) — duplicates the
+# whole data tree inside an artifact snapshot; also trips Windows MAX_PATH.
+shell/build/

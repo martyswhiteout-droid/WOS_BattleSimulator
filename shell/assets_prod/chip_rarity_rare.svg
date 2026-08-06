@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 26" role="img" aria-label="Rare rarity chip">
+  <!-- ORIGINAL code-drawn badge (WoS Battle Simulator shell). Generic framed geometry; not derived from any Century Games artwork. Palette: prototype/DESIGN_SYSTEM.md. -->
+  <defs>
+    <linearGradient id="crare" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#55BFFF"/><stop offset="1" stop-color="#1682D8"/>
+    </linearGradient>
+  </defs>
+  <rect x="1.5" y="1.5" width="81" height="23" rx="11.5"
+        fill="url(#crare)" stroke="#5AAEF3" stroke-width="1.6"/>
+  <text x="42" y="17.5" text-anchor="middle" font-family="'Chakra Petch','IBM Plex Mono',Inter,system-ui,sans-serif"
+        font-weight="700" font-size="11.5" letter-spacing="1.2"
+        fill="#EAF6FF">RARE</text>
+</svg>

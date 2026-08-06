@@ -1,0 +1,79 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": "2026-01-01 12:00:00",
+  "recommended_filename": "SYNTHETIC_TestAccount_1v1_T1InfvT1Lan_NoHero.json",
+  "setup": "SYNTHETIC TEST FIXTURE - not a real battle. Canned mock vision-LLM output for shell OCR plumbing tests only; every number is invented and merely internally consistent.",
+  "outcome": {"winner": "attacker", "attacker_result": "victory", "defender_result": "defeat"},
+  "turn_inference": null,
+  "attacker": {
+    "name": "[SYN]TestAttacker",
+    "state": 999,
+    "alliance": "SYN",
+    "coords": "X:100 Y:200",
+    "role": "attacker",
+    "power_loss": -100,
+    "troops": 1000,
+    "losses": 0,
+    "injured": 10,
+    "lightly_injured": 90,
+    "survivors": 900,
+    "kills": 300,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {"Attack": 150.0, "Defense": 140.0, "Lethality": 110.0, "Health": 105.0},
+      "Lancer":   {"Attack": 148.0, "Defense": 138.0, "Lethality": 108.0, "Health": 103.0},
+      "Marksman": {"Attack": 152.0, "Defense": 142.0, "Lethality": 112.0, "Health": 107.0}
+    },
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible", "notes": ""},
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {"class": "Infantry", "skill": "Master Brawler", "unlock": "T1",
+       "effect": "+10% attack damage to Lancers",
+       "applies_in_this_battle": true, "reason": "defender fields Lancers"}
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "[SYN]TestDefender",
+    "state": 999,
+    "alliance": "SYN",
+    "coords": "X:110 Y:210",
+    "role": "defender",
+    "power_loss": -900,
+    "troops": 1000,
+    "losses": 300,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 700,
+    "kills": 10,
+    "deployed_class": "Lancer",
+    "tier_display": "Lv 1.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {"Attack": 130.0, "Defense": 125.0, "Lethality": 100.0, "Health": 95.0},
+      "Lancer":   {"Attack": 132.0, "Defense": 127.0, "Lethality": 102.0, "Health": 97.0},
+      "Marksman": {"Attack": 134.0, "Defense": 129.0, "Lethality": 104.0, "Health": 99.0}
+    },
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible", "notes": ""},
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {"class": "Lancer", "skill": "Charge", "unlock": "T1",
+       "effect": "+10% attack damage to Marksmen",
+       "applies_in_this_battle": false, "reason": "attacker fields no Marksmen"}
+    ],
+    "specials": []
+  },
+  "notes": [
+    "SYNTHETIC fixture for shell OCR plumbing tests (Agent C). Not real battle data.",
+    "Numbers were invented to satisfy the validator's arithmetic identities only."
+  ],
+  "source_images": ["battle_overview", "stat_bonuses_attacker", "stat_bonuses_defender"],
+  "_extraction": {"extracted_by": "mock_vision", "timestamp": "2026-08-04", "ocr_confidence": "high", "manual_overrides": []},
+  "_validation": {"arithmetic_checks": "pass", "missing": [], "suspicions": []}
+}

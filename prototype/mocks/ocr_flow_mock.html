@@ -1,0 +1,2046 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fill from screenshots — clickable mock</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%93%B7</text></svg>">
+<style>
+  /* ============================================================
+     Fonts — local files only, copied from prototype/index.html
+     ============================================================ */
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:400;font-display:swap;src:url('../assets/fonts/chakra-petch-400.ttf') format('truetype')}
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:500;font-display:swap;src:url('../assets/fonts/chakra-petch-500.ttf') format('truetype')}
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:600;font-display:swap;src:url('../assets/fonts/chakra-petch-600.ttf') format('truetype')}
+  @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:700;font-display:swap;src:url('../assets/fonts/chakra-petch-700.ttf') format('truetype')}
+  @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('../assets/fonts/ibm-plex-mono-400.ttf') format('truetype')}
+  @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url('../assets/fonts/ibm-plex-mono-500.ttf') format('truetype')}
+  @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url('../assets/fonts/ibm-plex-mono-600.ttf') format('truetype')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('../assets/fonts/inter-400.ttf') format('truetype')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('../assets/fonts/inter-500.ttf') format('truetype')}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('../assets/fonts/inter-600.ttf') format('truetype')}
+
+  :root{
+    --disp:'Chakra Petch',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+    --panel:#0B273D;--raised:#123B59;--raised2:#123f66;--lit:#164A72;--well:rgba(6,20,34,.38);
+    --ink:#EAF6FF;--ink-mute:#B9D2E5;--ink-label:#cfe3f4;
+    --tile:#f4faff;--tile-2:#eef6fd;--tile-card:#cfe6f9;--tile-card-2:#d4e8f7;--tile-border:#b3d0ea;--tile-hover:#8fbde4;--tile-focus:#5AAEF3;--tile-ink:#31506b;
+    --cta-1:#8ED0FF;--cta-2:#5AAEF3;--cta-3:#3E97E8;--cta-ledge:#235f9c;
+    --cta-r1:#FF9090;--cta-r2:#EF6868;--cta-r3:#DB4F4F;--cta-r-ledge:#A83A3A;
+    --ice:#2EA1F2;--ice-b:#55BFFF;--ice-d:#1682D8;--ice-g:rgba(46,161,242,.12);
+    --ember:#EF5F5F;--ember-b:#FF8181;--ember-d:#C94646;--ember-g:rgba(239,95,95,.14);
+    --ok:#57D3A3;--gold:#D9A94F;--gold-b:#E7C783;--periwinkle:#93A0C8;--periwinkle-d:#6E7CA8;
+    /* parchment world (locked per DESIGN_SYSTEM.md §3) — used for faithful
+       battle-report / scout-report recreations in this round's redesign */
+    --parch-1:#FDEFD3;--parch-2:#F7E3B9;--parch-border:#E7C783;--parch-ink:#8d5b31;--parch-ink-2:#6a5647;
+    /* game-green — a darker shade of the already-locked --ok hue, needed
+       for legibility of "positive stat" text on the light parchment ground
+       (--ok itself is too light/mint to read on tan) */
+    --game-green:#2C8F5F;
+    --shadow:0 18px 40px -24px rgba(0,0,0,.9);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:var(--body);color:var(--ink);
+    background:
+      radial-gradient(1000px 560px at 50% -8%,rgba(46,161,242,.08),transparent 60%),
+      radial-gradient(800px 480px at 100% 100%,rgba(239,95,95,.05),transparent 55%),
+      #060d15;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  button{font:inherit;color:inherit}
+  h1,h2,h3{margin:0;font-family:var(--disp)}
+  p{margin:0}
+  ul{margin:0;padding:0;list-style:none}
+  img,svg{display:block;max-width:100%}
+  ::selection{background:rgba(90,174,243,.35)}
+  :focus-visible{outline:2px solid var(--tile-focus);outline-offset:2px;border-radius:6px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  [hidden]{display:none!important}
+
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-mute);margin:0 0 6px}
+  .sub{color:var(--ink-mute);font-size:14px;line-height:1.5;margin:6px 0 16px}
+
+  .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:40px;padding:40px 24px;flex-wrap:wrap}
+  .phone-wrap{flex:none}
+  .phone{position:relative;width:390px;height:844px;border-radius:46px;background:#050a10;
+    padding:12px;box-shadow:var(--shadow),0 0 0 2px rgba(255,255,255,.05) inset,0 0 60px rgba(46,161,242,.08);}
+  .notch{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:120px;height:24px;border-radius:14px;background:#000;z-index:5}
+  .statusbar{position:absolute;top:12px;left:32px;right:32px;display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--mono);font-size:12px;color:var(--ink);z-index:4;height:22px}
+  .sb-icons{letter-spacing:.05em;font-size:11px;opacity:.85}
+  .phone-screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;background:var(--panel);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding-top:46px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .screen.active{display:flex}
+  .screen h1{outline:none}
+  .scr-head{display:flex;align-items:center;gap:10px;padding:14px 18px 4px;flex:none;min-height:38px}
+  .scr-head h1{font-size:19px;font-weight:600;letter-spacing:.01em;color:var(--ink)}
+  .scr-head-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mute)}
+  .scr-body{padding:14px 18px 24px;flex:1 1 auto}
+  .scr-foot{flex:none;position:sticky;bottom:0;padding:12px 18px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,rgba(11,39,61,0),var(--panel) 30%);backdrop-filter:blur(2px)}
+  .scr-foot-ghost{background:linear-gradient(180deg,rgba(11,39,61,0),var(--panel) 55%)}
+  .foot-note{text-align:center;font-size:11.5px;color:var(--ink-mute);margin-top:8px}
+
+  .back-btn{width:46px;height:46px;min-width:46px;min-height:46px;border-radius:11px;border:1px solid rgba(185,210,229,.25);
+    background:rgba(255,255,255,.04);color:var(--ink);font-size:19px;display:grid;place-items:center;cursor:pointer;flex:none;line-height:1}
+  .back-btn:hover{background:rgba(255,255,255,.09);border-color:var(--tile-focus)}
+
+  .btn-primary{font-family:var(--disp);font-weight:700;font-size:14.5px;letter-spacing:.02em;
+    color:#fff;text-shadow:0 1px 2px rgba(10,52,96,.55);border:0;border-radius:16px;cursor:pointer;
+    padding:14px 20px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;
+    background:linear-gradient(180deg,var(--cta-1) 0%,var(--cta-2) 46%,var(--cta-3) 100%);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+      0 2px 0 var(--cta-ledge),0 3px 5px -2px rgba(4,22,44,.7);
+    position:relative;overflow:hidden}
+  .btn-primary:hover:not(:disabled){filter:brightness(1.05);transform:translateY(-1px)}
+  .btn-primary:active:not(:disabled){transform:translateY(2px);
+    box-shadow:inset 0 2px rgba(255,255,255,.4),inset 0 -1px rgba(20,96,170,.5),0 1px 0 var(--cta-ledge)}
+  .btn-primary:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.5)}
+  .btn-primary::after{content:"";position:absolute;top:-2px;bottom:-2px;left:-70%;width:45%;transform:skewX(-22deg);pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
+  .btn-primary:hover:not(:disabled)::after{opacity:1;animation:sheen .8s ease .05s}
+  @keyframes sheen{from{left:-70%}to{left:130%}}
+  .btn-block{width:100%}
+  .btn-emoji{font-size:17px}
+
+  .btn-ghost{font-family:var(--disp);font-weight:600;font-size:13px;color:var(--ink-label);
+    background:rgba(255,255,255,.04);border:1px solid rgba(185,210,229,.28);border-radius:12px;
+    padding:11px 16px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:var(--tile-focus)}
+
+  .link-btn{font-family:var(--body);font-weight:600;font-size:13.5px;color:var(--ice-b);background:none;border:0;
+    cursor:pointer;padding:11px 8px;min-height:44px;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;justify-content:center}
+
+  /* ============================================================
+     S0 — entry (now ALWAYS the pristine entry point; the "filled"
+     duties moved to S5 in this round's redesign)
+     ============================================================ */
+  .s0-hero h1{font-size:21px;margin-top:2px}
+  .cta-note{text-align:center;font-size:11.5px;color:var(--ink-mute);margin:8px 0 0}
+  .divider{display:flex;align-items:center;gap:10px;margin:20px 0 14px;color:var(--ink-mute);font-size:11.5px}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(185,210,229,.18)}
+  .today-form{border:1px solid rgba(185,210,229,.18);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
+  .today-form-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .today-form-cap{font-size:12px;color:var(--ink-mute);margin-bottom:12px;line-height:1.4}
+  .mini-fields{display:flex;flex-direction:column;gap:8px}
+  .mini-field{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.03);
+    border:1px solid rgba(185,210,229,.15);border-radius:10px;padding:10px 12px;width:100%;text-align:left;cursor:pointer;min-height:44px}
+  .mini-field:hover{background:rgba(255,255,255,.06);border-color:rgba(185,210,229,.28)}
+  .mini-field label{font-size:12.5px;color:var(--ink-label)}
+  .mini-val{font-family:var(--mono);font-size:13px;color:var(--ink-mute);background:var(--well);border-radius:7px;padding:4px 9px;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
+  .more-note{text-align:center;font-size:11px;color:var(--ink-mute);margin-top:10px;font-family:var(--mono);letter-spacing:.04em}
+
+  /* ============================================================
+     S1 — pick cards + faithful mini game-panel recreations
+     ============================================================ */
+  .pick-card{position:relative;isolation:isolate;border-radius:16px;cursor:pointer;text-align:left;border:0;
+    background:linear-gradient(180deg,#ddeffc 0%,#cfe6f9 55%,#c0dbf3 100%);
+    box-shadow:inset 0 1px rgba(255,255,255,.78),inset 0 -2px 3px rgba(49,80,107,.14),0 9px 18px -12px rgba(0,0,0,.62);
+    padding:16px;color:var(--tile-ink);width:100%;display:block;margin-bottom:14px}
+  .pick-card::before{content:"";position:absolute;z-index:-1;inset:1px 1px 52% 1px;border-radius:15px 15px 0 0;
+    background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.07))}
+  .pick-card:hover{transform:translateY(-1px)}
+  .pick-card.promoted{box-shadow:inset 0 1px rgba(255,255,255,.78),inset 0 -2px 3px rgba(49,80,107,.14),
+    0 9px 18px -12px rgba(0,0,0,.62),0 0 0 2px var(--gold)}
+  .pick-card.muted{opacity:.86;padding:12px;transform:scale(.98)}
+  .ribbon{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;font-weight:700;
+    background:linear-gradient(180deg,var(--gold-b),var(--gold));color:#123B59;border-radius:6px;padding:4px 8px;margin-bottom:10px}
+  .pick-card .tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;font-weight:700;
+    background:rgba(110,124,168,.25);color:var(--periwinkle-d);border-radius:6px;padding:3px 7px;margin-bottom:8px}
+  .pick-card h2{font-size:16px;margin-bottom:2px}
+  .pick-card .h2-sub{display:block;font-size:10.5px;font-weight:500;color:#7a94ab;margin-bottom:8px}
+  .pick-card p{font-size:12.5px;color:#4d6883;line-height:1.4;margin-top:6px}
+  .crumb{display:inline-block;margin-top:9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;
+    color:#4d6883;background:rgba(49,80,107,.08);border-radius:6px;padding:4px 8px}
+  .fix-caption{font-family:var(--disp);font-weight:600;font-size:12.5px;color:var(--ink-label);margin:2px 0 8px}
+  .scroll-hint{pointer-events:none;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    color:var(--ink-mute);padding-top:2px;padding-bottom:14px;display:flex;align-items:center;justify-content:center;
+    gap:6px;transition:opacity .2s;backdrop-filter:none}
+  .scroll-hint.hide{opacity:0}
+
+  /* faithful mini recreations — reused on S1 cards, S2 examples, E1 sample */
+  .mini-panel{width:100%;border-radius:9px;margin-bottom:10px;overflow:hidden}
+  .mini-panel--battle{background:linear-gradient(180deg,var(--parch-1),var(--parch-2));border:1px solid var(--parch-border);padding:6px 5px}
+  .mp-b-head{display:flex;justify-content:space-between;padding:1px 4px 5px;margin-bottom:3px;border-bottom:1px solid rgba(141,91,49,.22)}
+  .mp-b-side{font-family:var(--mono);font-size:7px;letter-spacing:.09em;font-weight:700}
+  .mp-b-side.me{color:var(--game-green)}
+  .mp-b-side.enemy{color:var(--ember-d)}
+  .mp-b-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:3px;padding:2.5px 3px}
+  .mp-b-val{font-family:var(--mono);font-size:8px;font-weight:700}
+  .mp-b-val.me{color:var(--game-green);text-align:right}
+  .mp-b-val.enemy{color:var(--ember-d);text-align:left}
+  .mp-b-lab{font-family:var(--body);color:var(--parch-ink);text-align:center;font-size:6.8px;letter-spacing:.01em;line-height:1.15}
+  .mini-panel--scout{background:linear-gradient(180deg,var(--parch-1),var(--parch-2));border:1px solid var(--parch-border);padding:7px 9px}
+  .mp-s-row{display:flex;justify-content:space-between;align-items:center;padding:2.5px 0}
+  .mp-s-lab{font-family:var(--body);color:var(--parch-ink);font-size:8px}
+  .mp-s-val{font-family:var(--mono);color:var(--game-green);font-weight:700;font-size:8px}
+  .mini-panel--city{background:linear-gradient(180deg,#eaf5ff,#d9efff);border:1px solid var(--tile-border)}
+  .mp-c-head{background:linear-gradient(180deg,#78B5EA,#5E9DDA);color:#fff;font-family:var(--disp);font-weight:700;
+    font-size:7.5px;letter-spacing:.06em;text-align:center;padding:4px 6px;text-shadow:0 1px 1px rgba(0,0,0,.2)}
+  .mp-c-row{display:flex;justify-content:space-between;padding:3.5px 9px;font-family:var(--body);font-size:8px}
+  .mp-c-lab{color:#0B273D;font-weight:600}
+  .mp-c-val{color:#0B273D;font-family:var(--mono)}
+
+  /* ============================================================
+     S2 — add screenshots (single zone OR per-side sections)
+     ============================================================ */
+  .s2-notice{font-size:12.5px;color:var(--ink-label);background:rgba(255,255,255,.04);border:1px solid rgba(185,210,229,.18);
+    border-radius:10px;padding:10px 12px;margin-bottom:14px}
+  .example-cap{font-size:11.5px;color:var(--ink-mute);text-align:center;margin:2px 0 14px}
+  .dropzone{width:100%;border:2px dashed rgba(185,210,229,.35);border-radius:18px;background:var(--well);
+    padding:30px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--ink-label);
+    min-height:150px;justify-content:center}
+  .dropzone:hover{border-color:var(--tile-focus);background:rgba(90,174,243,.08)}
+  .dropzone--compact{min-height:92px;padding:16px 14px}
+  .dz-icon{width:40px;height:40px;color:var(--ice-b);margin-bottom:4px}
+  .dropzone b{font-size:14.5px;font-family:var(--disp);color:var(--ink)}
+  .dropzone span{font-size:12px;color:var(--ink-mute)}
+  .thumbs{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px}
+  .thumb{position:relative;width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,#1b3350,#0f2233);
+    border:1px solid rgba(185,210,229,.25);display:grid;place-items:center;color:var(--ice-b)}
+  .thumb svg{width:30px;height:30px}
+  .thumb-x{position:absolute;top:-15px;right:-15px;width:46px;height:46px;min-width:46px;min-height:46px;border-radius:50%;
+    background:var(--panel);border:1px solid rgba(185,210,229,.35);color:var(--ink);font-size:15px;line-height:1;
+    display:grid;place-items:center;cursor:pointer;padding:0}
+  .thumb-x:hover{background:var(--ember-d);border-color:var(--ember-d)}
+  .hint-card{display:flex;gap:10px;align-items:flex-start;background:rgba(217,169,79,.1);border:1px solid rgba(217,169,79,.3);
+    border-radius:12px;padding:11px 13px;margin-top:18px}
+  .hint-ic{font-size:16px}
+  .hint-card p{font-size:12.5px;color:var(--ink-label);line-height:1.45}
+  /* owner redesign 2026-08-06: S2 is ALWAYS the two-side screen — .s2-sides
+     wraps the two .side-section blocks so desktop can lay them side by side
+     (≥1000px rule lives in the desktop-shell block near the end of the file)
+     without touching this mobile-default stacked layout. */
+  .s2-sides{display:flex;flex-direction:column}
+  .side-section{border-radius:14px;padding:14px;margin-bottom:16px;border:1px solid}
+  .side-section.you{background:rgba(46,161,242,.06);border-color:rgba(46,161,242,.25)}
+  .side-section.enemy{background:rgba(239,95,95,.06);border-color:rgba(239,95,95,.25)}
+  .side-section.covered{opacity:.62}
+  .covered-note{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ok);font-weight:600;margin-bottom:12px}
+  .covered-check{width:18px;height:18px;border-radius:50%;background:var(--ok);color:#0B273D;
+    display:grid;place-items:center;font-size:10px;flex:none}
+  .dropzone--muted{min-height:60px;padding:10px 12px}
+  .side-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .side-label{font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.08em}
+  .side-label.ice{color:var(--ice-b)}
+  .side-label.ember{color:var(--ember-b)}
+  .type-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ink-label);
+    background:rgba(255,255,255,.06);border:1px solid rgba(185,210,229,.28);border-radius:999px;
+    padding:7px 12px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:5px}
+  .type-tag:hover{background:rgba(255,255,255,.1);border-color:var(--tile-focus)}
+
+  /* real chooser popover — anchored pop-in menu (BLOCKER 1a), positioned by JS
+     relative to #phoneScreen; reuses the pop-in motion recipe. Owner redesign
+     removed the confirm variant entirely (type changes never destroy
+     uploads now), so this is purely the plain option list. */
+  .tag-menu{position:absolute;z-index:70;min-width:200px;max-width:min(300px,calc(100% - 24px));
+    background:linear-gradient(180deg,var(--raised),var(--panel));border:1px solid rgba(185,210,229,.25);
+    border-radius:12px;padding:6px;box-shadow:0 14px 30px -10px rgba(0,0,0,.6);
+    opacity:0;transform:translateY(-6px) scale(.97);pointer-events:none;transition:opacity .16s,transform .16s}
+  .tag-menu.open{opacity:1;transform:none;pointer-events:auto}
+  .tag-menu-item{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;
+    background:none;border:0;border-radius:8px;padding:11px 12px;cursor:pointer;color:var(--ink-label);
+    font-family:var(--body);font-size:13.5px;min-height:46px}
+  .tag-menu-item:hover{background:rgba(255,255,255,.08)}
+  .tag-menu-item.current{color:var(--ice-b);font-weight:600}
+
+  /* ============================================================
+     PREP — first-time reader warm-up
+     ============================================================ */
+  .prep-body{align-items:center;justify-content:center;text-align:center;display:flex;flex-direction:column;gap:14px;flex:1}
+  .prep-ring{width:52px;height:52px;border-radius:50%;border:4px solid rgba(85,191,255,.22);border-top-color:var(--ice-b);
+    animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .prep-body h1{font-size:18px}
+
+  /* ============================================================
+     S3 — scanning
+     ============================================================ */
+  .scan-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px}
+  .scan-body h1{font-size:19px;text-align:center;margin-bottom:4px}
+  .scan-track{height:14px;border-radius:9px;background:#0a2438;border:1px solid rgba(255,255,255,.16);
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+  .scan-fill{height:100%;width:0%;position:relative;overflow:hidden;border-radius:8px;
+    background:linear-gradient(180deg,#7CC8FF,#2EA1F2 55%,#1682D8);
+    box-shadow:0 0 16px rgba(85,191,255,.55),inset 0 1px 0 rgba(255,255,255,.55);
+    transition:width 2.6s linear}
+  .scan-fill::after{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(-45deg,rgba(255,255,255,.25) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.25) 50%,rgba(255,255,255,.25) 75%,transparent 75%,transparent);
+    background-size:22px 22px;animation:scan-stripes .7s linear infinite}
+  @keyframes scan-stripes{to{background-position:22px 0}}
+  .scan-steps{display:flex;flex-direction:column;gap:14px}
+  .scan-step{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink-mute);transition:color .2s}
+  .scan-step .step-ic{width:22px;height:22px;border-radius:50%;border:2px solid rgba(185,210,229,.3);flex:none;position:relative}
+  .scan-step.active{color:var(--ink)}
+  .scan-step.active .step-ic{border-color:var(--ice-b);animation:step-pulse 1s ease-in-out infinite}
+  @keyframes step-pulse{0%,100%{box-shadow:0 0 0 0 rgba(85,191,255,.4)}50%{box-shadow:0 0 0 5px rgba(85,191,255,0)}}
+  .scan-step.done{color:var(--ok)}
+  .scan-step.done .step-ic{border-color:var(--ok);background:var(--ok)}
+  .scan-step.done .step-ic::after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;
+    border-right:2px solid #0B273D;border-bottom:2px solid #0B273D;transform:rotate(40deg)}
+  .trust-line{display:flex;align-items:center;gap:8px;justify-content:center;font-size:11.5px;color:var(--ink-mute);
+    margin-top:6px;text-align:center}
+  .trust-ic{width:17px;height:17px;flex:none;color:var(--ink-mute)}
+
+  /* ============================================================
+     S4 — review & fix / S5 — filled form (share the review-grid recipe)
+     ============================================================ */
+  .tally-card{background:var(--raised);border:1px solid rgba(185,210,229,.18);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+  .tally-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+  .tally-num{font-family:var(--disp);font-weight:700;font-size:22px;color:var(--ink)}
+  .tally-status{font-size:13.5px;color:var(--gold-b);font-weight:600}
+  .tally-status.clear{color:var(--ok)}
+  .tally-bar{display:flex;height:7px;border-radius:5px;overflow:hidden;margin-top:10px;background:var(--well)}
+  .tally-bar i{display:block;height:100%}
+  .tally-bar .b-ok{background:var(--ok)}
+  .tally-bar .b-check{background:var(--gold)}
+  .tally-bar .b-missing{background:var(--ink-mute)}
+  .see-pic{margin-bottom:4px}
+  .tally-actions{display:flex;justify-content:flex-end;margin:2px 0 12px}
+  .reset-btn{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink-mute);
+    background:none;border:1px solid rgba(185,210,229,.25);border-radius:8px;padding:8px 12px;
+    cursor:pointer;min-height:44px}
+  .reset-btn:hover{color:var(--ink);border-color:rgba(185,210,229,.4)}
+  .reset-btn.confirming{color:#123B59;border-color:var(--gold);background:linear-gradient(180deg,var(--gold-b),var(--gold))}
+
+  .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative}
+  .review-grid::before{content:"";position:absolute;left:50%;top:4px;bottom:4px;width:1px;background:rgba(185,210,229,.15)}
+  .rv-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .rv-col.me{padding-right:9px;align-items:stretch}
+  .rv-col.enemy{padding-left:9px}
+  .rv-col-head{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.08em;text-align:center;
+    padding-bottom:8px;-webkit-background-clip:text;background-clip:text;color:transparent}
+  .rv-col.me .rv-col-head{background-image:linear-gradient(180deg,#EAF6FF 20%,#8FD3FF 55%,#55BFFF)}
+  .rv-col.enemy .rv-col-head{background-image:linear-gradient(180deg,#FFEFEF 20%,#FFAFAF 55%,#FF8181)}
+  .rv-group-head{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);
+    margin-bottom:5px}
+  .rv-group{margin-bottom:10px}
+  .rv-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .rv-field{position:relative;border-radius:10px;padding:6px 6px;min-height:48px;display:flex;flex-direction:column;
+    justify-content:center;gap:2px;text-align:left;border:1px solid transparent;font-family:inherit;width:100%;cursor:pointer}
+  .rv-field .rv-lab{font-family:var(--mono);font-size:11px;letter-spacing:0;line-height:1.15;opacity:.8}
+  .rv-field .rv-val{font-family:var(--mono);font-size:12px;font-weight:600}
+  .rv-field .rv-ic{position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;display:grid;place-items:center;
+    font-size:8px;font-weight:800;line-height:1}
+  .rv-field.ok{background:linear-gradient(180deg,#fff,var(--tile-2));border-color:var(--tile-border);color:var(--tile-ink);
+    box-shadow:inset 0 1px rgba(255,255,255,.85)}
+  .rv-field.ok .rv-ic{background:var(--ok);color:#0B273D}
+  .rv-field.check{background:linear-gradient(180deg,#fff,var(--tile-2));border:1.5px solid var(--gold);color:var(--tile-ink);
+    box-shadow:inset 0 1px rgba(255,255,255,.85),0 0 0 3px rgba(217,169,79,.18)}
+  .rv-field.check .rv-ic{background:var(--gold);color:#123B59}
+  .rv-field.missing{background:var(--well);border:1.5px dashed rgba(185,210,229,.45);color:var(--ink-mute)}
+  .rv-field.missing .rv-val{color:var(--ink-mute)}
+  .rv-field.missing .rv-ic{border:1.5px dashed rgba(185,210,229,.6);color:var(--ink-mute)}
+  .rv-field:hover{transform:translateY(-1px)}
+  .rv-field.missing:hover{border-color:var(--tile-focus)}
+  /* S5 highlights any still-missing field more insistently (gold outline) —
+     same .missing state, heavier treatment scoped to the filled-form screen */
+  #s5Grid .rv-field.missing{background:linear-gradient(180deg,#fff,var(--tile-2));border:1.5px solid var(--gold);
+    box-shadow:0 0 0 3px rgba(217,169,79,.22);color:var(--tile-ink)}
+  #s5Grid .rv-field.missing .rv-val{color:var(--tile-ink)}
+  #s5Grid .rv-field.missing .rv-ic{background:var(--gold);color:#123B59;border:0}
+
+  /* ============================================================
+     S5 — Battle setup (owner redesign 2026-08-06): stats collapse to a
+     chip; formation, heroes, joiners, role toggle are the substance.
+     .s5-layout stacks on mobile (DOM order already reads a,b,c,d top to
+     bottom); the desktop two-pane split lives in the desktop-shell block.
+     ============================================================ */
+  .s5-layout{display:flex;flex-direction:column}
+  .s5-col-left,.s5-col-right{display:flex;flex-direction:column}
+  .stats-accordion{margin-bottom:20px}
+  .stats-chip{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--raised);border:1px solid rgba(185,210,229,.18);border-radius:14px;
+    padding:14px 16px;cursor:pointer;min-height:52px;text-align:left}
+  .stats-chip:hover{border-color:rgba(185,210,229,.35)}
+  .stats-chip .chip-text{font-family:var(--disp);font-weight:600;font-size:13.5px;color:var(--ink)}
+  .stats-chip.complete .chip-text{color:var(--ok)}
+  .stats-chip.needs-attention .chip-text{color:var(--gold-b)}
+  .chip-ok-ic{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;
+    background:var(--ok);color:#0B273D;font-size:9px;font-weight:800;vertical-align:middle;margin:0 1px}
+  .chip-caret{color:var(--ink-mute);font-size:14px;transition:transform .18s;flex:none}
+  .stats-chip[aria-expanded="true"] .chip-caret{transform:rotate(180deg)}
+  .stats-body{margin-top:12px}
+
+  .s5-section{margin-bottom:22px}
+  .s5-section-head{font-family:var(--disp);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:10px}
+  .s5-section-caption{font-size:12px;color:var(--ink-mute);line-height:1.4;margin:-4px 0 12px}
+
+  /* ============================================================
+     Round 8 (owner): Formation / Heroes / Joiners are now CLONES of
+     prototype/index.html's real components — .form-ctl glass-tube ratio
+     sliders (buildFormation, ratio mode only), .hpick-btn hero-picker
+     pills (captain lanes + joiner mounts). Read-only reference, never
+     imported at runtime; markup/CSS re-implemented here so the mock stays
+     one self-contained file. Real-app avatars are photographic game art;
+     this mock keeps its own code-drawn portraits (established constraint)
+     inside the SAME pill shape/sizing/mirroring as the real button. ---- */
+
+  /* -- formation: glass-tube ratio sliders (cloned from .form-ctl) -- */
+  .fm-grid{display:flex;flex-direction:column;gap:16px}
+  .form-stack{display:flex;flex-direction:column;gap:8px}
+  .form-stack-eyebrow{font-family:var(--disp);font-weight:700;font-size:11.5px;letter-spacing:.07em;margin-bottom:2px}
+  .form-stack.me .form-stack-eyebrow{color:var(--ice-b)}
+  .form-stack.enemy .form-stack-eyebrow{color:var(--ember-b)}
+  .form-ctl2{display:flex;align-items:center;gap:10px;background:var(--well);
+    border:1px solid rgba(185,210,229,.18);border-radius:12px;padding:9px 11px;width:100%}
+  .form-stack.me .form-ctl2{border-color:rgba(46,161,242,.22)}
+  .form-stack.enemy .form-ctl2{border-color:rgba(239,95,95,.2);flex-direction:row-reverse}
+  .form-ctl2.auto{opacity:.8}
+  .fic2{width:32px;height:32px;flex:none;border-radius:9px;display:grid;place-items:center;
+    font-family:var(--mono);font-weight:800;font-size:12.5px;background:var(--raised2)}
+  .form-stack.me .fic2{color:var(--ice-b)}
+  .form-stack.enemy .fic2{color:var(--ember-b)}
+  .fctrls2{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+  .form-stack.enemy .fctrls2{flex-direction:row-reverse}
+  .fslider{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:9px;border-radius:6px;margin:0;
+    background:linear-gradient(90deg,var(--fc) 0 var(--fill,50%),#0d2338 var(--fill,50%) 100%);cursor:pointer}
+  .form-stack.me .fslider{--fc:var(--ice-b)}
+  .form-stack.enemy .fslider{--fc:var(--ember-b)}
+  .fslider:focus-visible{outline:2px solid var(--tile-focus);outline-offset:2px}
+  .fslider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:#eef7fa;border:3px solid var(--fc);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+  .fslider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#eef7fa;border:3px solid var(--fc);
+    cursor:pointer;border-width:3px}
+  .fslider:disabled{opacity:.65;cursor:default}
+  .fval2{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);background:var(--panel);
+    border:1px solid rgba(185,210,229,.24);border-radius:7px;padding:5px 7px;min-width:44px;min-height:30px;
+    text-align:center;flex:none;display:grid;place-items:center}
+  .fcount2{font-family:var(--mono);font-size:10.5px;color:var(--ink-mute);flex:none;min-width:78px}
+  .form-stack.enemy .fcount2{text-align:right}
+
+  /* -- hero selection: .hpick-btn pill, cloned from the real captain lanes -- */
+  .hero-grid{display:flex;flex-direction:column;gap:16px}
+  .lead-block{display:flex;flex-direction:column;gap:8px}
+  .lead-eyebrow{font-family:var(--disp);font-weight:700;font-size:11.5px;letter-spacing:.07em;margin-bottom:2px}
+  .lead-eyebrow.me{color:var(--ice-b)}
+  .lead-eyebrow.enemy{color:var(--ember-b)}
+  .hero-src{font-size:11px;color:var(--ink-mute);margin:-2px 0 4px}
+  .lead-row2{display:flex;align-items:center;gap:9px}
+  .lead-row2.enemy{flex-direction:row-reverse}
+  .lead-cls2{width:28px;height:28px;flex:none;border-radius:8px;display:grid;place-items:center;
+    font-family:var(--mono);font-weight:800;font-size:12px;background:var(--raised2)}
+  .lead-row2.me .lead-cls2{color:var(--ice-b)}
+  .lead-row2.enemy .lead-cls2{color:var(--ember-b)}
+  .hpick-btn2{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:var(--well);
+    border:1px solid rgba(185,210,229,.2);border-radius:999px;padding:5px 14px 5px 5px;cursor:pointer;
+    min-height:46px;text-align:left}
+  .lead-row2.me .hpick-btn2{box-shadow:0 0 0 1px rgba(46,161,242,.22) inset}
+  .lead-row2.enemy .hpick-btn2{flex-direction:row-reverse;padding:5px 5px 5px 14px;text-align:right;
+    box-shadow:0 0 0 1px rgba(239,95,95,.2) inset}
+  .hpick-btn2:hover{background:rgba(255,255,255,.07);border-color:var(--tile-focus)}
+  .hpick-avatar{width:34px;height:34px;flex:none;position:relative}
+  .hpick-avatar svg{width:100%;height:100%}
+  .hpick-avatar .hero-gen-badge{position:absolute;bottom:-3px;right:-3px;min-width:16px;height:16px;padding:0 2px;
+    border-radius:50%;background:var(--gold);color:#123B59;font-family:var(--mono);font-weight:800;
+    font-size:8px;display:grid;place-items:center;border:2px solid var(--panel)}
+  .hpick-name2{flex:1;min-width:0;font-family:var(--disp);font-weight:600;font-size:12.5px;color:var(--ink);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hpick-open2{flex:none;color:var(--ink-mute);font-size:13px}
+  .hpick-btn2--empty .hpick-name2{color:var(--ink-mute)}
+  .hpick-avatar--empty{border-radius:50%;border:1.5px dashed rgba(185,210,229,.4);
+    display:grid;place-items:center;font-size:16px;line-height:1;color:var(--ink-mute)}
+
+  /* -- joiners: present but blank, no CTA — same pill family, dashed/inert -- */
+  .joiner-row{display:flex;flex-wrap:wrap;gap:8px}
+  .joiner-pill{flex:1 1 auto;min-width:120px;display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.02);border:1.5px dashed rgba(185,210,229,.3);border-radius:999px;
+    padding:5px 12px 5px 5px;min-height:44px}
+  .joiner-pill .hpick-avatar--empty{width:30px;height:30px}
+  .joiner-pill .hpick-name2{color:var(--ink-mute);font-weight:500;font-size:12px}
+
+  /* -- role toggle: mirrors the current app's .role-toggle (Rally/Garrison
+     pill, aria-pressed), re-drawn in this mock's own code-drawn icons -- */
+  .s5-role-section{margin:2px 0 20px}
+  .role-toggle{display:flex;border:1px solid rgba(185,210,229,.25);border-radius:12px;overflow:hidden;
+    background:var(--well);width:fit-content}
+  .role-toggle button{display:flex;align-items:center;gap:7px;padding:12px 18px;min-height:46px;
+    background:transparent;border:0;cursor:pointer;color:var(--ink-mute);font-family:var(--disp);
+    font-weight:600;font-size:13px}
+  .role-toggle button[aria-pressed="true"]{background:rgba(90,174,243,.22);color:var(--ink)}
+  .role-toggle button:hover{background:rgba(255,255,255,.06)}
+  .role-toggle button[aria-pressed="true"]:hover{background:rgba(90,174,243,.28)}
+  .role-icon{width:18px;height:18px;flex:none}
+
+  /* ============================================================
+     Big-digit editor (bottom sheet) + screenshot viewer (shares recipe)
+     ============================================================ */
+  .modal-scrim{position:absolute;inset:0;background:rgba(4,10,17,.62);display:flex;align-items:flex-end;justify-content:center;
+    z-index:60;opacity:0;pointer-events:none;transition:opacity .18s}
+  .modal-scrim.open{opacity:1;pointer-events:auto}
+  .editor{width:100%;background:linear-gradient(180deg,var(--raised),var(--panel));
+    border-top-left-radius:22px;border-top-right-radius:22px;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+    box-shadow:0 -12px 32px rgba(0,0,0,.5);transform:translateY(16px);opacity:0;transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .18s}
+  .modal-scrim.open .editor{transform:translateY(0);opacity:1}
+  .editor-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+  .editor-head h2{font-size:14.5px;color:var(--ink)}
+  .close-x{width:46px;height:46px;min-width:46px;min-height:46px;border-radius:12px;border:1px solid rgba(185,210,229,.25);
+    background:rgba(255,255,255,.04);color:var(--ink);font-size:18px;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
+  .close-x:hover{background:rgba(255,255,255,.09)}
+  .crop-box{width:100%;min-height:78px;border-radius:12px;position:relative;overflow:hidden;margin-bottom:12px;padding:24px 10px 10px;
+    background:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 8px,rgba(255,255,255,.02) 8px 16px),
+      linear-gradient(180deg,#0f2233,#0a1826);
+    border:1px solid rgba(185,210,229,.18)}
+  .crop-box .crop-tag{position:absolute;left:9px;top:7px;font-family:var(--mono);font-size:8.5px;text-transform:uppercase;
+    letter-spacing:.16em;color:var(--ink-mute)}
+  .crop-box .crop-empty{font-family:var(--body);font-size:12px;color:var(--ink-mute);text-align:center;padding:12px 6px 2px}
+  .game-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 11px}
+  .gr-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ink-label);text-transform:uppercase}
+  .gr-val{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--ok);text-shadow:0 0 10px rgba(87,211,163,.4)}
+  .game-row.dim{opacity:.6;border-style:dashed}
+  .gr-val.dim{color:var(--ink-mute);font-size:12.5px;font-weight:600;text-shadow:none}
+  .editor-label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-mute);margin-bottom:6px}
+  .big-input{width:100%;font-family:var(--mono);font-size:28px;font-weight:600;text-align:center;color:var(--tile-ink);
+    background:linear-gradient(180deg,#fff,var(--tile-2));border:1px solid var(--tile-border);border-radius:12px;
+    padding:11px 10px;box-shadow:inset 0 1px rgba(255,255,255,.85)}
+  .big-input:focus{border-color:var(--tile-focus);box-shadow:inset 0 1px rgba(255,255,255,.85),0 0 0 3px rgba(90,174,243,.3);outline:0}
+  .editor-msg{font-size:12px;color:#123B59;background:linear-gradient(180deg,var(--gold-b),#eecf94);border:1px solid var(--gold);
+    border-radius:8px;padding:8px 10px;margin:8px 0;text-align:center;font-weight:600}
+  .editor-help{font-size:11.5px;color:var(--ink-mute);margin:8px 0 12px;text-align:center}
+  .editor-actions{display:flex;gap:10px}
+  .editor-actions .btn-ghost,.editor-actions .btn-primary{flex:1;padding-left:8px;padding-right:8px}
+  .picture-sheet{max-height:82vh;display:flex;flex-direction:column}
+  .picture-scroll{overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:0 10px;padding-right:2px}
+  .picture-scroll .rv-group-head{margin-top:2px}
+  .picture-scroll .game-row{margin-bottom:6px;padding:7px 9px}
+  .picture-scroll .gr-val{font-size:14px}
+
+  /* ============================================================
+     E1 — single merged recovery screen
+     ============================================================ */
+  .err-icon{width:56px;height:56px;border-radius:16px;background:rgba(217,169,79,.14);border:1px solid rgba(217,169,79,.35);
+    display:grid;place-items:center;font-size:26px;margin-bottom:14px}
+  .e1-actions{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+
+  /* ============================================================
+     Toast
+     ============================================================ */
+  .toast{position:absolute;left:50%;bottom:22px;transform:translate(-50%,10px);opacity:0;pointer-events:none;
+    background:var(--raised2);border:1px solid rgba(185,210,229,.3);border-radius:11px;padding:10px 16px;
+    font-size:12.5px;color:var(--ink);box-shadow:0 10px 24px -10px rgba(0,0,0,.6);max-width:86%;text-align:center;
+    transition:opacity .18s,transform .18s;z-index:80}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  /* ============================================================
+     Desktop stepper rail (owner redesign 2026-08-06, item 3) — replaces
+     the old dev-sidebar "screens" list. In-fiction desktop navigation:
+     S0…S5, current step lit, completed steps jumpable, future steps
+     disabled. Flow Map stays reachable via the rail's own button.
+     ============================================================ */
+  .rail{width:250px;flex:none}
+  .rail-card{background:var(--raised);border:1px solid rgba(185,210,229,.15);border-radius:16px;padding:20px 18px;box-shadow:var(--shadow)}
+  .rail-fm{margin-top:20px}
+  .stepper{position:relative;display:flex;flex-direction:column}
+  .step-item{position:relative;display:flex;align-items:center;gap:12px;padding:9px 0}
+  .step-item:not(:last-child)::after{content:"";position:absolute;left:22px;top:55px;bottom:-9px;width:2px;
+    background:rgba(185,210,229,.18)}
+  .step-item.done:not(:last-child)::after{background:var(--ok)}
+  .step-dot{width:46px;height:46px;min-width:46px;min-height:46px;border-radius:50%;flex:none;
+    border:2px solid rgba(185,210,229,.3);background:var(--panel);color:var(--ink-mute);
+    display:grid;place-items:center;cursor:pointer;font-family:var(--mono);font-size:13px;font-weight:700;
+    padding:0;position:relative;z-index:1}
+  .step-item.current .step-dot{border-color:var(--ice-b);background:linear-gradient(180deg,var(--cta-1),var(--cta-3));
+    color:#0B273D;box-shadow:0 0 0 4px rgba(90,174,243,.18)}
+  .step-item.done .step-dot{border-color:var(--ok);background:var(--ok);color:#0B273D}
+  .step-item.future .step-dot{opacity:.55}
+  .step-dot:disabled{cursor:not-allowed}
+  .step-check{display:none}
+  .step-item.done .step-num{display:none}
+  .step-item.done .step-check{display:block}
+  .step-label{font-family:var(--disp);font-size:12.5px;font-weight:600;color:var(--ink-label)}
+  .step-item.current .step-label{color:var(--ink)}
+  .step-item.future .step-label{color:var(--ink-mute)}
+  @media (max-width:999px){.rail{display:none}}
+
+  /* ============================================================
+     Flow map overlay (owner tool — page level, not in-fiction)
+     ============================================================ */
+  .fm-fab{display:none;position:fixed;bottom:16px;top:auto;right:16px;z-index:90;font-family:var(--disp);font-weight:600;font-size:12px;
+    letter-spacing:.04em;color:var(--ink);background:rgba(11,39,61,.85);border:1px solid rgba(185,210,229,.3);
+    border-radius:11px;padding:10px 14px;cursor:pointer;backdrop-filter:blur(6px);min-height:44px}
+  .fm-fab:hover{background:rgba(22,74,114,.9)}
+  @media (max-width:999px){.fm-fab{display:block}}
+  body.has-footer .fm-fab{bottom:104px}
+
+  .flowmap{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:rgba(3,7,12,.78);opacity:0;pointer-events:none;transition:opacity .18s}
+  .flowmap.open{opacity:1;pointer-events:auto}
+  .flowmap-panel{width:100%;max-width:760px;max-height:86vh;overflow-y:auto;background:linear-gradient(180deg,var(--raised),var(--panel));
+    border:1px solid rgba(185,210,229,.2);border-radius:20px;padding:22px 24px 26px;box-shadow:var(--shadow);
+    transform:translateY(10px) scale(.98);opacity:0;transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .18s}
+  .flowmap.open .flowmap-panel{transform:none;opacity:1}
+  .fm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;gap:10px}
+  .fm-head h2{font-size:18px}
+  .fm-sub{color:var(--ink-mute);font-size:12.5px;margin-bottom:18px}
+  .fm-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .fm-arrow{color:var(--ink-mute);font-size:16px;flex:none}
+  .fm-arrow.fm-or{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-b);
+    border:1px solid rgba(217,169,79,.4);border-radius:999px;padding:3px 9px}
+  .fm-branch{text-align:center;color:var(--gold-b);font-size:12px;margin:16px 0;font-family:var(--mono);letter-spacing:.04em}
+  .fm-card{width:160px;text-align:left;border:0;border-radius:13px;cursor:pointer;padding:12px 13px;
+    background:linear-gradient(180deg,#ddeffc 0%,#cfe6f9 55%,#c0dbf3 100%);color:var(--tile-ink);
+    box-shadow:inset 0 1px rgba(255,255,255,.78),inset 0 -2px 3px rgba(49,80,107,.14),0 6px 14px -10px rgba(0,0,0,.6)}
+  .fm-card:hover{transform:translateY(-2px)}
+  .fm-card b{display:block;font-family:var(--disp);font-size:12.5px;margin-bottom:3px}
+  .fm-card span{display:block;font-size:10.5px;color:#4d6883;line-height:1.3}
+  .fm-card.recovery{background:linear-gradient(180deg,#fdeecb 0%,#f7e3b9 55%,#f0d59a 100%)}
+
+  /* ============================================================
+     Responsive — collapse phone chrome to edge-to-edge below 460px
+     ============================================================ */
+  @media (max-width:460px){
+    .stage{padding:0;gap:0}
+    .phone-wrap{width:100%}
+    .phone{width:100vw;height:100dvh;height:100vh;border-radius:0;padding:0;box-shadow:none}
+    .notch{display:none}
+    .statusbar{display:none}
+    .phone-screen{border-radius:0}
+    .screen{padding-top:14px}
+  }
+  @media (min-width:461px) and (max-width:999px){
+    .stage{padding:24px 16px}
+  }
+
+  /* ============================================================
+     Desktop presentation (owner redesign 2026-08-06, item 3) — a REAL
+     desktop layout at >=1000px, not a centered phone frame: the phone
+     chrome (notch/statusbar/fixed size) drops, the pane widens into a
+     roomy panel, and the stepper rail takes over navigation. Below
+     1000px the phone-frame mobile flow (edge-to-edge under 460px, a kept
+     demo-affordance frame from 461-999px) is unchanged.
+     ============================================================ */
+  @media (min-width:1000px){
+    .stage{align-items:flex-start;justify-content:center;padding:36px 28px;gap:28px}
+    .phone-wrap{width:auto;flex:1 1 auto;max-width:960px}
+    .phone{width:100%;height:auto;border-radius:22px;padding:0;box-shadow:var(--shadow),0 0 0 1px rgba(185,210,229,.1) inset}
+    .notch,.statusbar{display:none}
+    .phone-screen{border-radius:22px;height:auto;min-height:min(82vh,780px)}
+    .screen{padding-top:0}
+    .scr-head{padding:26px 36px 10px}
+    .scr-head h1{font-size:25px}
+    /* width:100% is load-bearing here: .scr-body is a flex item of .screen
+       (column direction), and margin:auto on the cross axis of a flex item
+       disables the default stretch behavior in favor of shrink-to-fit —
+       without an explicit width, max-width never actually binds (repro'd
+       live: S4 measured 439px against a 900px cap). width:100% restores
+       "fill, then get capped by max-width" the way a block context would. */
+    .scr-body{padding:22px 36px 36px;max-width:640px;width:100%;margin:0 auto}
+    .scr-foot{padding:18px 36px 24px}
+
+    /* S1: 3 cards across instead of stacked */
+    [data-screen="s1"] .scr-body{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start;max-width:none}
+    [data-screen="s1"] .scr-body>.sub{grid-column:1/-1;margin-bottom:2px}
+    [data-screen="s1"] .pick-card{margin-bottom:0}
+
+    /* S2: side-by-side YOU/ENEMY panes, never a narrow single column */
+    [data-screen="s2"] .scr-body{max-width:none}
+    .s2-sides{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+    /* S4: roomy two-side grid (already simultaneous; just give it air) */
+    [data-screen="s4"] .scr-body{max-width:900px}
+    .review-grid{gap:0 36px}
+    .rv-stats{gap:10px}
+
+    /* S5: two-pane composition — chip+formation left, heroes+joiners
+       right; CTA footer is already position:sticky (base rule), so it
+       stays pinned within the pane without extra rules here. */
+    [data-screen="s5"] .scr-body{max-width:960px}
+    .s5-layout{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="notch" aria-hidden="true"></div>
+      <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="sb-icons">••• &#128246; &#128267;</span></div>
+
+      <div class="phone-screen" id="phoneScreen">
+
+        <!-- ============ S0 — entry ============ -->
+        <section class="screen active" data-screen="s0">
+          <div class="scr-body s0-body">
+            <p class="eyebrow">BATTLE SETUP</p>
+            <div class="s0-hero">
+              <h1 tabindex="-1">Set up your battle</h1>
+              <p class="sub">Add stats for both sides to see who wins.</p>
+            </div>
+
+            <button type="button" class="btn-primary btn-block" data-goto="s1" id="ctaScreenshots">
+              <span class="btn-emoji" aria-hidden="true">&#128247;</span> Fill from screenshots
+            </button>
+            <p class="cta-note">Fastest way. No typing.</p>
+
+            <div class="divider"><span>or type it yourself</span></div>
+
+            <div class="today-form">
+              <div class="today-form-head"><p class="eyebrow" style="margin:0">TODAY'S FORM</p></div>
+              <p class="today-form-cap">What the app looks like today &mdash; type each number by hand.</p>
+              <div class="mini-fields" id="s0Fields">
+                <button type="button" class="mini-field"><label>Infantry Attack</label><div class="mini-val" data-f="infAtk">— —</div></button>
+                <button type="button" class="mini-field"><label>Infantry Defense</label><div class="mini-val" data-f="infDef">— —</div></button>
+                <button type="button" class="mini-field"><label>Lancer Attack</label><div class="mini-val" data-f="lanAtk">— —</div></button>
+              </div>
+              <p class="more-note">&hellip;and 9 more fields</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ S1 — choose screenshot kind ============ -->
+        <section class="screen" data-screen="s1">
+          <header class="scr-head"><button type="button" class="back-btn" data-back aria-label="Back">&#8249;</button>
+            <h1 tabindex="-1">Which screenshot do you have?</h1></header>
+          <div class="scr-body">
+            <p class="sub">Pick the one that matches your screenshot.</p>
+
+            <button type="button" class="pick-card promoted" data-goto="s2" data-pick-type="battle" aria-label="Battle Report — best, fills both sides at once">
+              <span class="ribbon">BEST &middot; FILLS BOTH SIDES</span>
+              <div id="s1SampleBattle"></div>
+              <h2>Battle Report</h2>
+              <p>Shows your stats and the enemy's stats together.</p>
+              <span class="crumb">Mail &rarr; Battle Report &rarr; Stat Bonuses</span>
+            </button>
+
+            <button type="button" class="pick-card" data-goto="s2" data-pick-type="scout" aria-label="Scout Report — shows one side's stats">
+              <div id="s1SampleScout"></div>
+              <h2>Scout Report</h2>
+              <p>Shows one side's stats. Yours or the enemy's.</p>
+              <span class="crumb">Scout &rarr; Report &rarr; Stat Bonuses</span>
+            </button>
+
+            <button type="button" class="pick-card muted" data-goto="s2" data-pick-type="city" aria-label="City Stats — advanced, needs one-time setup">
+              <span class="tag">ADVANCED</span>
+              <div id="s1SampleCity"></div>
+              <h2>City Stats<span class="h2-sub">(called Bonus Overview in the game)</span></h2>
+              <p>Your own city's stats. Needs a quick one-time setup.</p>
+              <span class="crumb">City &rarr; Bonuses &rarr; Overview</span>
+            </button>
+          </div>
+          <div class="scr-foot scroll-hint" id="s1ScrollHint" aria-hidden="true"><span>1 more below</span> <span aria-hidden="true">&#8964;</span></div>
+        </section>
+
+        <!-- ============ S2 — add screenshots ============ -->
+        <section class="screen" data-screen="s2">
+          <header class="scr-head"><button type="button" class="back-btn" data-back aria-label="Back">&#8249;</button>
+            <h1 tabindex="-1">Add your screenshots</h1></header>
+          <div class="scr-body" id="s2Body"></div>
+          <footer class="scr-foot">
+            <button type="button" class="btn-primary btn-block" id="s2Continue" disabled>Continue</button>
+            <p class="foot-note" id="s2Hint">Add a screenshot to continue</p>
+          </footer>
+        </section>
+
+        <!-- ============ PREP — first-time reader warm-up ============ -->
+        <section class="screen" data-screen="prep">
+          <header class="scr-head"><button type="button" class="back-btn" data-back aria-label="Back">&#8249;</button>
+            <span class="scr-head-eyebrow">Setup</span></header>
+          <div class="scr-body prep-body">
+            <div class="prep-ring" aria-hidden="true"></div>
+            <h1 tabindex="-1">Getting ready&hellip;</h1>
+            <p class="sub">First time only. Just a few seconds.</p>
+          </div>
+        </section>
+
+        <!-- ============ S3 — scanning ============ -->
+        <section class="screen" data-screen="s3">
+          <div class="scr-body scan-body">
+            <h1 tabindex="-1">Reading your screenshot&hellip;</h1>
+            <div class="scan-track"><div class="scan-fill" id="scanFill"></div></div>
+            <ul class="scan-steps" id="scanSteps">
+              <li class="scan-step"><span class="step-ic" aria-hidden="true"></span>Reading the numbers&hellip;</li>
+              <li class="scan-step"><span class="step-ic" aria-hidden="true"></span>Matching the labels&hellip;</li>
+              <li class="scan-step"><span class="step-ic" aria-hidden="true"></span>Checking both sides&hellip;</li>
+            </ul>
+            <p class="trust-line">
+              <svg class="trust-ic" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 10 V7 a4 4 0 0 1 8 0 v3" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Your screenshot stays on your phone. We read it right here.
+            </p>
+          </div>
+          <footer class="scr-foot scr-foot-ghost">
+            <button type="button" class="btn-ghost btn-block" data-back>Cancel</button>
+          </footer>
+        </section>
+
+        <!-- ============ S4 — check your numbers ============ -->
+        <section class="screen" data-screen="s4">
+          <header class="scr-head"><button type="button" class="back-btn" data-back aria-label="Back">&#8249;</button>
+            <h1 tabindex="-1">Check your numbers</h1></header>
+          <div class="scr-body">
+            <button type="button" class="link-btn see-pic" data-open-picture>See my screenshot</button>
+            <div class="tally-card" id="s4Tally"></div>
+            <div class="tally-actions"><button type="button" class="reset-btn" id="resetBtn">Reset</button></div>
+            <div class="review-grid" id="s4Grid"></div>
+          </div>
+          <footer class="scr-foot">
+            <button type="button" class="btn-primary btn-block" data-goto="s5">Next</button>
+          </footer>
+        </section>
+
+        <!-- ============ S5 — Battle setup (owner redesign 2026-08-06) ============
+             Stats are DONE and collapsed (a); the substance is formation (b),
+             heroes (c), joiners (d), the role toggle (e), then the CTA (f). -->
+        <section class="screen" data-screen="s5">
+          <header class="scr-head"><button type="button" class="back-btn" data-back aria-label="Back">&#8249;</button>
+            <h1 tabindex="-1">Battle setup</h1></header>
+          <div class="scr-body">
+            <div class="s5-layout">
+              <div class="s5-col s5-col-left">
+                <div class="stats-accordion">
+                  <button type="button" class="stats-chip" id="s5Chip" aria-expanded="false" aria-controls="s5StatsBody">
+                    <span class="chip-text" id="s5ChipText"></span>
+                    <span class="chip-caret" aria-hidden="true">&#8964;</span>
+                  </button>
+                  <div class="stats-body" id="s5StatsBody" hidden>
+                    <button type="button" class="link-btn see-pic" data-open-picture>See my screenshot</button>
+                    <div class="tally-actions"><button type="button" class="reset-btn">Reset</button></div>
+                    <div class="review-grid" id="s5Grid"></div>
+                  </div>
+                </div>
+                <section class="s5-section">
+                  <h2 class="s5-section-head">Troops Formation</h2>
+                  <div class="fm-grid" id="s5Formation"></div>
+                </section>
+              </div>
+              <div class="s5-col s5-col-right">
+                <section class="s5-section">
+                  <h2 class="s5-section-head">Hero selection</h2>
+                  <div class="hero-grid" id="s5Heroes"></div>
+                </section>
+                <section class="s5-section" aria-describedby="joinersCaption">
+                  <h2 class="s5-section-head">Joiners</h2>
+                  <p class="s5-section-caption" id="joinersCaption">No joiners yet — you can add them in the real app.</p>
+                  <div class="joiner-row" id="s5Joiners"></div>
+                </section>
+              </div>
+            </div>
+            <section class="s5-role-section">
+              <h2 class="s5-section-head">Your role</h2>
+              <div class="role-toggle" id="s5Role">
+                <button type="button" data-role-btn="rally" aria-pressed="true">
+                  <svg class="role-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 L14 10 M10 6 L18 6 L18 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Rally
+                </button>
+                <button type="button" data-role-btn="garrison" aria-pressed="false">
+                  <svg class="role-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 L20 6 V11 C20 16 16.5 19.5 12 21 C7.5 19.5 4 16 4 11 V6 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
+                  Garrison
+                </button>
+              </div>
+            </section>
+          </div>
+          <footer class="scr-foot">
+            <button type="button" class="btn-primary btn-block" id="ctaSeeResult">See who wins <span aria-hidden="true">&rarr;</span></button>
+            <div class="s0-links" id="s5Links" hidden style="display:flex;justify-content:center;margin-top:2px">
+              <button type="button" class="link-btn" id="undoChip" hidden>Put my last numbers back</button>
+            </div>
+          </footer>
+        </section>
+
+        <!-- ============ E1 — single merged recovery screen ============ -->
+        <section class="screen" data-screen="e1">
+          <header class="scr-head"><button type="button" class="back-btn" data-back aria-label="Back">&#8249;</button>
+            <h1 tabindex="-1" id="e1Heading">That doesn't look like the right screenshot</h1></header>
+          <div class="scr-body">
+            <div class="err-icon" aria-hidden="true">&#128269;</div>
+            <p class="sub" id="e1Body">This looks like a different screen. We need one with a numbers list, like this:</p>
+            <p class="fix-caption">A good example:</p>
+            <div id="e1Sample"></div>
+            <div class="e1-actions">
+              <button type="button" class="btn-primary btn-block" data-goto="s2" data-recovery="1">
+                <span class="btn-emoji" aria-hidden="true">&#128247;</span> Add a clearer screenshot
+              </button>
+              <button type="button" class="btn-ghost btn-block" id="e1Secondary" data-goto="s4" data-show-missing="1">Type the missing numbers</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ Big-digit editor (shared) ============ -->
+        <div class="modal-scrim" id="editorScrim" aria-hidden="true" inert>
+          <div class="editor" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+            <div class="editor-head"><h2 id="editorTitle">&mdash;</h2>
+              <button type="button" class="close-x" id="editorClose" aria-label="Close">&times;</button></div>
+            <div class="crop-box" id="editorCrop"></div>
+            <label class="editor-label" for="editorInput">Number</label>
+            <input class="big-input" id="editorInput" type="text" inputmode="decimal" autocomplete="off">
+            <p class="editor-msg" id="editorMsg" hidden></p>
+            <p class="editor-help" id="editorHelp">Type over the number if it needs fixing.</p>
+            <div class="editor-actions">
+              <button type="button" class="btn-ghost" id="editorCancel">Cancel</button>
+              <button type="button" class="btn-primary" id="editorSave">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ Type chooser popover (shared, S2) ============ -->
+        <div class="tag-menu" id="tagMenu" role="menu" aria-hidden="true" inert></div>
+
+        <!-- ============ Screenshot viewer (shared) ============ -->
+        <div class="modal-scrim" id="pictureScrim" aria-hidden="true" inert>
+          <div class="editor picture-sheet" role="dialog" aria-modal="true" aria-labelledby="pictureTitle">
+            <div class="editor-head"><h2 id="pictureTitle">Your screenshot</h2>
+              <button type="button" class="close-x" id="pictureClose" aria-label="Close">&times;</button></div>
+            <div class="picture-scroll" id="pictureBody"></div>
+          </div>
+        </div>
+
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <aside class="rail" id="rail">
+    <div class="rail-card">
+      <p class="eyebrow" style="margin-bottom:14px">BATTLE SETUP</p>
+      <ol class="stepper" id="stepper"></ol>
+      <button type="button" class="btn-ghost btn-block rail-fm" data-open-flowmap>Flow map</button>
+    </div>
+  </aside>
+</div>
+
+<button type="button" class="fm-fab" data-open-flowmap aria-label="Open flow map">Flow map</button>
+
+<div class="flowmap" id="flowmap" aria-hidden="true" inert>
+  <div class="flowmap-panel" role="dialog" aria-modal="true" aria-labelledby="fmTitle">
+    <div class="fm-head"><h2 id="fmTitle">Flow map</h2>
+      <button type="button" class="close-x" id="fmClose" aria-label="Close flow map">&times;</button></div>
+    <p class="fm-sub">Every screen in this flow. Tap one to jump there.</p>
+    <div class="fm-row" id="fmMain"></div>
+    <p class="fm-branch">&darr; if something looks wrong with the screenshot</p>
+    <div class="fm-row" id="fmRecovery"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(sel,root){ return (root||document).querySelector(sel); };
+  var $$ = function(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); };
+  var noMotion = function(){ return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; };
+
+  var STAT_KEYS = ['atk','def','leth','hp'];
+  var STAT_NAME = {atk:'Attack',def:'Defense',leth:'Lethality',hp:'Health'};
+  var CLASS_KEYS = ['inf','lan','mm'];
+  var CLASS_NAME = {inf:'Infantry',lan:'Lancer',mm:'Marksman'};
+  var SIDE_NAME = {me:'My side',enemy:'Enemy'};
+  var TYPE_LABEL = {battle:'Battle Report',scout:'Scout Report',city:'City Stats'};
+  var YOU_TYPES = ['city','scout','battle'];
+  var ENEMY_TYPES = ['scout','battle'];
+
+  /* ---------- OWNER REDESIGN 2026-08-06 (round 8): Troops Formation now
+     mirrors prototype/index.html's buildFormation() RATIO mode exactly —
+     Infantry/Lancer percent sliders are the CANONICAL, adjustable state
+     (0-100 each); Marksman is always the auto-derived leftover
+     (100-inf-lan), its slider disabled, matching .form-ctl.auto there.
+     Dragging Infantry or Lancer past a combined 100 clamps THE FIELD
+     BEING DRAGGED down to the remaining budget (the other field keeps
+     its value) — copied from the real app's recalc(changed).
+     Counts are READ-ONLY, independently rounded
+     from a fixed total-troops figure per side (Math.round(total*pct/100)
+     per class, same as the real app's syncCountsFromFractions — small
+     rounding drift between the three counts is accepted, matching it). */
+  var FORMATION_TOTAL = { me:43600, enemy:24200 };
+  var FORMATION_PCT_INIT = {
+    me:   {inf:42, lan:33, mm:25},
+    enemy:{inf:38, lan:33, mm:29}
+  };
+  var HERO_GEN = {me:15, enemy:13};
+  /* NOTE: the owner's verbal spec named "Ligeia" for the enemy (Gen 13)
+     Marksman slot, but hero_generations.json — which the spec doc itself
+     designates authoritative — has Ligeia at Gen 12; Gen 13's Marksman is
+     Vulcanus. Used the verified name and flagged the discrepancy in the
+     handoff rather than silently using either without disclosure. */
+  var HEROES = {
+    me:   {inf:'Hank',   lan:'Estrella', mm:'Viveca'},
+    enemy:{inf:'Gisela', lan:'Flora',    mm:'Vulcanus'}
+  };
+  var JOINER_SLOTS = 3;
+
+  /* ---------- desktop stepper rail ---------- */
+  var MAIN_STEPS = [
+    {id:'s0', label:'Start'},
+    {id:'s1', label:'Choose'},
+    {id:'s2', label:'Screenshots'},
+    {id:'s3', label:'Reading'},
+    {id:'s4', label:'Check'},
+    {id:'s5', label:'Setup'}
+  ];
+  function stepIndexFor(id){
+    if(id==='prep' || id==='e1') id='s3'; /* prep + the recovery detour both read as "still in the reading step" */
+    for(var i=0;i<MAIN_STEPS.length;i++){ if(MAIN_STEPS[i].id===id) return i; }
+    return -1;
+  }
+
+  var TRUE_VALUES = {
+    me:{inf:[4859.0,4098.0,2683.0,3040.4],lan:[4846.8,4041.4,2675.6,2958.5],mm:[4815.8,4041.4,2636.3,2949.2]},
+    enemy:{inf:[694.3,545.6,495.7,416.4],lan:[740.5,574.7,533.5,442.8],mm:[800.6,626.6,587.1,499.0]}
+  };
+  function trueVal(id){
+    var p = id.split('-'); return TRUE_VALUES[p[0]][p[1]][STAT_KEYS.indexOf(p[2])];
+  }
+  function fieldMeta(id){
+    var p = id.split('-'); return {side:p[0],cls:p[1],stat:p[2]};
+  }
+
+  var CHECK_FIELDS = {
+    'enemy-mm-atk':{guess:300.6,note:'Glare on the screen made this one hard to read.'},
+    'enemy-lan-leth':{guess:533.5,note:'This number looked a little smudged.'},
+    'me-lan-def':{guess:4047.4,note:'This digit was hard to tell apart.'}
+  };
+  var MISSING_FIELDS = ['enemy-mm-atk','enemy-mm-def','enemy-mm-leth','enemy-mm-hp','enemy-lan-leth','enemy-lan-hp','me-mm-leth','me-mm-hp','me-inf-hp'];
+
+  /* faithful mini game-panel recreations — real sample rows, reused across
+     S1's cards, S2's "what a good screenshot looks like" examples, and
+     E1's reference sample. Single source of truth (this round's redesign). */
+  var SAMPLES = {
+    battle:[
+      {label:'Infantry Attack',me:'+4859.0%',enemy:'+694.3%'},
+      {label:'Infantry Defense',me:'+4098.0%',enemy:'+545.6%'},
+      {label:'Infantry Lethality',me:'+2683.0%',enemy:'+495.7%'}
+    ],
+    scout:[
+      {label:'Infantry Attack',val:'+4491.6%'},
+      {label:'Infantry Defense',val:'+3979.1%'},
+      {label:'Infantry Lethality',val:'+2794.3%'}
+    ],
+    city:[
+      {label:"Troops' Attack",val:'748.49%'},
+      {label:"Troops' Defense",val:'775.42%'},
+      {label:'Infantry Attack',val:'658.25%'}
+    ]
+  };
+  function renderSample(type){
+    if(type==='battle'){
+      var rows = SAMPLES.battle.map(function(r){
+        return '<div class="mp-b-row"><span class="mp-b-val me">'+r.me+'</span><span class="mp-b-lab">'+r.label+'</span><span class="mp-b-val enemy">'+r.enemy+'</span></div>';
+      }).join('');
+      return '<div class="mini-panel mini-panel--battle"><div class="mp-b-head"><span class="mp-b-side me">MY SIDE</span><span class="mp-b-side enemy">ENEMY</span></div>'+rows+'</div>';
+    }
+    if(type==='scout'){
+      var rows2 = SAMPLES.scout.map(function(r){
+        return '<div class="mp-s-row"><span class="mp-s-lab">'+r.label+'</span><span class="mp-s-val">'+r.val+'</span></div>';
+      }).join('');
+      return '<div class="mini-panel mini-panel--scout">'+rows2+'</div>';
+    }
+    if(type==='city'){
+      var rows3 = SAMPLES.city.map(function(r){
+        return '<div class="mp-c-row"><span class="mp-c-lab">'+r.label+'</span><span class="mp-c-val">'+r.val+'</span></div>';
+      }).join('');
+      return '<div class="mini-panel mini-panel--city"><div class="mp-c-head">Bonus Overview</div>'+rows3+'</div>';
+    }
+    return '';
+  }
+
+  var E1_TEXT = {
+    wrong:{h:"That doesn't look like the right screenshot", b:'This looks like a different screen. We need one with a numbers list, like this:', secondary:'Type them in myself'},
+    partial:{h:'We read 15 of 24 numbers', b:'The rest were too unclear to read. Add a clearer screenshot, or type them in yourself.', secondary:'Type the missing numbers'}
+  };
+
+  var NAV = [
+    {id:'s0',goto:'s0',label:'S0 &middot; Entry',desc:'Battle setup, with the big button.',group:'main'},
+    {id:'s1',goto:'s1',label:'S1 &middot; Choose screenshot',desc:'Battle Report, Scout, or City Stats.',group:'main'},
+    {id:'s2',goto:'s2',label:'S2 &middot; Add screenshots',desc:'Always YOU and ENEMY side by side.',group:'main'},
+    {id:'prep',goto:'prep',label:'Getting ready',desc:'First time only, a few seconds.',group:'main'},
+    {id:'s3',goto:'s3',label:'S3 &middot; Reading&hellip;',desc:'3-step reading animation.',group:'main'},
+    {id:'s4',goto:'s4',label:'S4 &middot; Check numbers',desc:'Every field tappable; Reset available.',group:'main'},
+    {id:'s5',goto:'s5',label:'S5 &middot; Battle setup',desc:'Formation, heroes, joiners; stats collapsed.',group:'main'},
+    {id:'e1w',goto:'e1',opts:{e1Variant:'wrong'},label:'E1 &middot; Wrong screenshot',desc:'Recovery: screenshot does not match.',group:'recovery'},
+    {id:'e1p',goto:'e1',opts:{e1Variant:'partial'},label:'E1 &middot; Partial read',desc:'Recovery: some numbers unclear.',group:'recovery'}
+    /* round 7, minor 4: "S4 with missing" used to be its own plain NAV tail
+       node (id s4m) here, drawn as if it were E1's ONLY next step. It's now
+       one of E1's two real exits, merged directly into #fmRecovery by
+       buildNavLists() below (still reachable at data-nav-id="s4m"), drawn
+       alongside "Add a clearer screenshot" the way E1 actually behaves. */
+  ];
+
+  var state = {
+    screen:'s0', history:['s0'], maxStepReached:0,
+    youType:'city', enemyType:'scout',
+    thumbsYou:[], thumbsEnemy:[],
+    primed:false, showMissing:false, s2Notice:null, tagMenuSide:null,
+    savedValues:{}, typedFields:{},
+    editing:null, priorSnapshot:null,
+    formationPct:{ me:Object.assign({},FORMATION_PCT_INIT.me), enemy:Object.assign({},FORMATION_PCT_INIT.enemy) }
+  };
+  var timers = [];
+  function clearTimers(){ timers.forEach(function(t){ clearTimeout(t); }); timers=[]; }
+  function after(ms,fn){ var t=setTimeout(fn,ms); timers.push(t); return t; }
+
+  function show(id){
+    $$('.screen').forEach(function(el){ el.classList.toggle('active', el.dataset.screen===id); });
+    var el = $('.screen[data-screen="'+id+'"]');
+    if(el){
+      el.scrollTop = 0;
+      var h = el.querySelector('h1');
+      if(h){ h.setAttribute('tabindex','-1'); try{ h.focus({preventScroll:true}); }catch(e){ h.focus(); } }
+      document.body.classList.toggle('has-footer', !!el.querySelector('.scr-foot'));
+    }
+    var stepIdx = stepIndexFor(id);
+    if(stepIdx > state.maxStepReached) state.maxStepReached = stepIdx;
+    updateStepper(id);
+  }
+
+  /* History model (unchanged): auto-advance (timer-driven) transitions
+     REPLACE the current checkpoint instead of pushing a new one, so
+     Back/Cancel from prep/s3 always resolves to the last screen the user
+     deliberately chose (s2). S4's "Next" and S5 are real deliberate
+     clicks, so they push normally. */
+  function goto(id, opts){
+    opts = opts || {};
+    clearTimers();
+    closeEditor();
+    closePicture();
+    if(opts.push === false){
+      state.history[state.history.length-1] = id;
+    } else if(state.history[state.history.length-1] !== id){
+      state.history.push(id);
+    }
+    state.screen = id;
+    show(id);
+    onEnter(id, opts);
+  }
+  function back(){
+    if(state.history.length>1){
+      state.history.pop();
+      var prev = state.history[state.history.length-1];
+      clearTimers();
+      closeEditor();
+      closePicture();
+      state.screen = prev;
+      show(prev);
+      onEnter(prev, {});
+    }
+  }
+
+  function onEnter(id, opts){
+    opts = opts || {};
+    if(id==='s1') updateS1ScrollHint();
+    else if(id==='s2'){
+      if(opts.pickType) presetTypesFromS1(opts.pickType);
+      enterAddPicture(!!opts.fromRecovery);
+    }
+    else if(id==='prep') enterPrep();
+    else if(id==='s3') enterScan();
+    else if(id==='s4'){
+      if(opts.showMissing) state.showMissing = true;
+      buildReviewGrid($('#s4Grid'));
+      updateTally();
+    }
+    else if(id==='s5') enterFilledForm();
+    else if(id==='e1') renderE1(opts.e1Variant || 'wrong');
+  }
+
+  /* ---------- S1 sample population + scroll hint ---------- */
+  function initS1Samples(){
+    $('#s1SampleBattle').innerHTML = renderSample('battle');
+    $('#s1SampleScout').innerHTML = renderSample('scout');
+    $('#s1SampleCity').innerHTML = renderSample('city');
+  }
+  function updateS1ScrollHint(){
+    var screenEl = $('[data-screen="s1"]');
+    var hint = $('#s1ScrollHint');
+    if(!screenEl || !hint) return;
+    var distanceFromBottom = screenEl.scrollHeight - screenEl.scrollTop - screenEl.clientHeight;
+    var overflows = screenEl.scrollHeight > screenEl.clientHeight + 2;
+    hint.classList.toggle('hide', !overflows || distanceFromBottom<=8);
+  }
+
+  /* ---------- S2 add screenshots — ALWAYS the two-side screen (owner
+     redesign 2026-08-06, docs/OCR_UX_FLOW_SPEC.md §3) ----------
+     The single-zone "Battle mode" collapse/expand design — and both its
+     into/out-of-Battle confirms — is DELETED: both YOU and ENEMY sections
+     always render, the screen/layout never changes on a type pick. A side
+     typed Battle Report with an upload covers the OTHER side automatically
+     (isCoveredByOther); type changes never touch uploads, so no confirm is
+     needed here at all. The confirm-before-discard principle still applies
+     elsewhere (Reset, E1 recovery-clear). */
+  function presetTypesFromS1(pickType){
+    if(pickType==='scout'){ state.youType='scout'; state.enemyType='scout'; }
+    else if(pickType==='city'){ state.youType='city'; state.enemyType='scout'; }
+    else if(pickType==='battle'){ state.youType='battle'; state.enemyType='battle'; }
+  }
+  function dzSvg(){
+    return '<svg class="dz-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="14" width="36" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="27" r="7" fill="none" stroke="currentColor" stroke-width="3"/><rect x="17" y="8" width="14" height="7" rx="2" fill="currentColor"/></svg>';
+  }
+  function otherSide(side){ return side==='you' ? 'enemy' : 'you'; }
+  /* a side counts as covered if it has its own upload, OR the other side is
+     typed Battle Report and already has an upload of its own (a battle
+     report is two-column — one screenshot reads both sides at minimum). */
+  function isCoveredByOther(side){
+    if(thumbsArrFor(side).length>0) return false;
+    var otherType = side==='you' ? state.enemyType : state.youType;
+    return otherType==='battle' && thumbsArrFor(otherSide(side)).length>0;
+  }
+  function sideCovered(side){ return thumbsArrFor(side).length>0 || isCoveredByOther(side); }
+  function sideSectionHTML(side){
+    var isYou = side==='you';
+    var type = isYou ? state.youType : state.enemyType;
+    var covered = isCoveredByOther(side);
+    var dzLabel = covered ? 'Add your own screenshot instead' : ('Tap to add '+(isYou?'your':"the enemy's")+' screenshot');
+    return '<div class="side-section '+side+(covered?' covered':'')+'">'+
+      '<div class="side-head"><span class="side-label '+(isYou?'ice':'ember')+'">'+(isYou?'YOU':'ENEMY')+'</span>'+
+      '<button type="button" class="type-tag" data-type-tag="'+side+'" aria-haspopup="menu">'+TYPE_LABEL[type]+' <span aria-hidden="true">&#9662;</span></button></div>'+
+      (covered
+        ? '<div class="covered-note"><span class="covered-check" aria-hidden="true">&#10003;</span>Covered by your battle report</div>'
+        : renderSample(type))+
+      '<button type="button" class="dropzone dropzone--compact'+(covered?' dropzone--muted':'')+'" data-side="'+side+'">'+dzSvg()+
+      '<b>'+dzLabel+'</b>'+(covered?'':'<span>or paste it here</span>')+'</button>'+
+      '<div class="thumbs" id="thumbs'+(isYou?'You':'Enemy')+'" hidden></div>'+
+      '</div>';
+  }
+  function renderS2(){
+    var body = $('#s2Body'); if(!body) return;
+    /* minor 5 (round 5): notice text lives in state, not the DOM, so
+       rebuilding this template (e.g. on a type change) never silently
+       wipes it. */
+    var noticeHTML = '<p class="s2-notice" id="s2Notice"'+(state.s2Notice?'':' hidden')+'>'+(state.s2Notice||'')+'</p>';
+    var hint = '<div class="hint-card"><span class="hint-ic" aria-hidden="true">&#128161;</span>'+
+      "<p>Long list? Take 2 screenshots that share a row. We'll join them.</p></div>";
+    body.innerHTML = noticeHTML+
+      '<div class="s2-sides">'+sideSectionHTML('you')+sideSectionHTML('enemy')+'</div>'+
+      hint;
+    renderThumbsFor('you'); renderThumbsFor('enemy');
+  }
+  function thumbsArrFor(side){ return side==='you'?state.thumbsYou:state.thumbsEnemy; }
+  function thumbsIdFor(side){ return side==='you'?'thumbsYou':'thumbsEnemy'; }
+  function renderThumbsFor(side){
+    var wrap = $('#'+thumbsIdFor(side)); if(!wrap) return;
+    var arr = thumbsArrFor(side);
+    wrap.innerHTML = arr.map(function(_,i){
+      return '<div class="thumb"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="10" r="2" fill="currentColor"/><path d="M4 17 L9 12 L13 15 L16 11 L20 16" fill="none" stroke="currentColor" stroke-width="2"/></svg>'+
+        '<button type="button" class="thumb-x" aria-label="Remove screenshot" data-remove-thumb-side="'+side+'" data-remove-thumb="'+i+'">&times;</button></div>';
+    }).join('');
+    wrap.hidden = arr.length===0;
+  }
+  /* re-renders just ONE side's section in place — used to refresh the
+     OTHER side's covered-badge after an add/remove, without touching the
+     side that was actually clicked (keeps focus/DOM churn minimal). */
+  function refreshCoverageFor(side){
+    var el = $('.side-section.'+side);
+    if(!el) return;
+    el.outerHTML = sideSectionHTML(side);
+    renderThumbsFor(side);
+  }
+  /* Both sides' covered-badge can change on any add/remove: the OTHER side
+     obviously (it may start/stop being covered by MY battle upload), but
+     also THIS side itself — e.g. tapping "Add your own screenshot instead"
+     while covered must clear ITS OWN covered badge too, and removing your
+     last upload can bring the covered badge back. Always refresh both. */
+  function addThumbSide(side){
+    thumbsArrFor(side).push(1);
+    refreshCoverageFor('you');
+    refreshCoverageFor('enemy');
+    updateS2Continue();
+  }
+  function removeThumbSide(side,i){
+    thumbsArrFor(side).splice(i,1);
+    refreshCoverageFor('you');
+    refreshCoverageFor('enemy');
+    updateS2Continue();
+  }
+
+  /* ---------- type chooser popover (per side). Owner redesign removed the
+     shared/"both" case entirely: Battle Report is now just a normal
+     per-side option, never a structural mode, so no confirm branch is
+     needed here — picking it (or picking away from it) is a plain state
+     flip + re-render, uploads untouched either way. ---------- */
+  function optionsFor(side){ return side==='you' ? YOU_TYPES : ENEMY_TYPES; }
+  function currentTypeFor(side){ return side==='you' ? state.youType : state.enemyType; }
+  function chooseType(type){
+    var side = state.tagMenuSide;
+    if(!side) return;
+    if(type===currentTypeFor(side)){ closeTagMenu(); return; }
+    if(side==='you'){ state.youType = type; } else { state.enemyType = type; }
+    renderS2(); updateS2Continue();
+    closeTagMenu();
+  }
+  function positionTagMenu(anchorEl){
+    var menu = $('#tagMenu');
+    var phoneScreen = $('#phoneScreen');
+    var pRect = phoneScreen.getBoundingClientRect();
+    var aRect = anchorEl.getBoundingClientRect();
+    /* aRect is already viewport-relative (post-scroll) and .tag-menu is
+       position:absolute against #phoneScreen (which never itself scrolls —
+       only the inner .screen does), so subtracting pRect's origin is the
+       whole calculation; adding scrollTop again would double-count it. */
+    var top = (aRect.bottom - pRect.top) + 6;
+    var left = aRect.left - pRect.left;
+    var menuWidth = Math.min(300, pRect.width-24);
+    if(left + menuWidth > pRect.width - 8) left = pRect.width - 8 - menuWidth;
+    if(left < 8) left = 8;
+    menu.style.top = top+'px';
+    menu.style.left = left+'px';
+  }
+  var tagMenuAnchor = null;
+  function openTagMenu(side, anchorEl){
+    state.tagMenuSide = side;
+    tagMenuAnchor = anchorEl;
+    renderTagMenuOptions(side);
+    var menu = $('#tagMenu');
+    positionTagMenu(anchorEl);
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden','false');
+    menu.removeAttribute('inert');
+    syncBackgroundInert();
+  }
+  function renderTagMenuOptions(side){
+    var opts = optionsFor(side);
+    var cur = currentTypeFor(side);
+    $('#tagMenu').innerHTML = opts.map(function(t){
+      return '<button type="button" class="tag-menu-item'+(t===cur?' current':'')+'" data-choose-type="'+t+'" role="menuitemradio" aria-checked="'+(t===cur)+'">'+TYPE_LABEL[t]+(t===cur?' &#10003;':'')+'</button>';
+    }).join('');
+  }
+  function closeTagMenu(){
+    var menu = $('#tagMenu'); if(!menu) return;
+    /* accessibility fix (round 6): aria-hidden must never land on a sheet
+       that still contains focus (real repro: tabbing to a menu item, then
+       closing — the anchor button lives inside a .screen that's still
+       `inert` until syncBackgroundInert runs, so jumping straight to it
+       can silently fail). Blur out of the menu first, hide+re-enable the
+       background, THEN move focus to the anchor once it's focusable again. */
+    if(menu.contains(document.activeElement)){ document.activeElement.blur(); }
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden','true');
+    menu.setAttribute('inert','');
+    syncBackgroundInert();
+    if(tagMenuAnchor){ try{ tagMenuAnchor.focus(); }catch(e){} }
+    state.tagMenuSide = null;
+    tagMenuAnchor = null;
+  }
+
+  function enterAddPicture(fromRecovery){
+    if(fromRecovery){ state.thumbsYou=[]; state.thumbsEnemy=[]; state.s2Notice='We took that one out. Add a new screenshot.'; }
+    else { state.s2Notice = null; }
+    renderS2();
+    updateS2Continue();
+  }
+  /* Continue enables once BOTH sides are covered — own upload, or the other
+     side's Battle Report upload. Hint stays side-aware (minor 1, round 5). */
+  function updateS2Continue(){
+    var btn = $('#s2Continue'); if(!btn) return;
+    var hintEl = $('#s2Hint');
+    var haveYou = sideCovered('you'), haveEnemy = sideCovered('enemy');
+    btn.disabled = !(haveYou && haveEnemy);
+    if(hintEl){
+      if(haveYou && haveEnemy){ hintEl.hidden = true; }
+      else if(haveYou){ hintEl.hidden=false; hintEl.textContent = "Now add the enemy's screenshot."; }
+      else if(haveEnemy){ hintEl.hidden=false; hintEl.textContent = 'Now add your screenshot.'; }
+      else { hintEl.hidden=false; hintEl.textContent = 'Add a screenshot to continue'; }
+    }
+  }
+
+  /* ---------- PREP ---------- */
+  function enterPrep(){ after(1300, function(){ state.primed = true; goto('s3', {push:false}); }); }
+
+  /* ---------- S3 scanning (always -> s4; error states are Flow-Map-only) ---------- */
+  function enterScan(){
+    var fill = $('#scanFill');
+    var reduced = noMotion();
+    if(fill){
+      fill.style.transition = reduced ? 'none' : '';
+      fill.style.width = '0%';
+      void fill.offsetWidth;
+      if(!reduced){ fill.style.width='100%'; }
+    }
+    var steps = $$('.scan-step');
+    steps.forEach(function(s){ s.classList.remove('active','done'); });
+    if(steps[0]) steps[0].classList.add('active');
+    after(850, function(){
+      if(steps[0]){ steps[0].classList.remove('active'); steps[0].classList.add('done'); }
+      if(steps[1]) steps[1].classList.add('active');
+      if(reduced && fill) fill.style.width='34%';
+    });
+    after(1700, function(){
+      if(steps[1]){ steps[1].classList.remove('active'); steps[1].classList.add('done'); }
+      if(steps[2]) steps[2].classList.add('active');
+      if(reduced && fill) fill.style.width='67%';
+    });
+    after(2600, function(){
+      if(steps[2]){ steps[2].classList.remove('active'); steps[2].classList.add('done'); }
+      if(reduced && fill) fill.style.width='100%';
+    });
+    after(2900, function(){ goto('s4', {push:false}); });
+  }
+
+  /* ---------- unified review grid (used by BOTH S4 and S5) ---------- */
+  function buildReviewGrid(container){
+    if(!container) return;
+    container.innerHTML = '';
+    ['me','enemy'].forEach(function(side){
+      var col = document.createElement('div');
+      col.className = 'rv-col ' + (side==='me' ? 'me' : 'enemy');
+      var head = document.createElement('div'); head.className = 'rv-col-head'; head.textContent = side==='me' ? 'MY SIDE' : 'ENEMY';
+      col.appendChild(head);
+      CLASS_KEYS.forEach(function(cls){
+        var group = document.createElement('div'); group.className = 'rv-group';
+        var gh = document.createElement('div'); gh.className = 'rv-group-head'; gh.textContent = CLASS_NAME[cls];
+        group.appendChild(gh);
+        var stats = document.createElement('div'); stats.className = 'rv-stats';
+        STAT_KEYS.forEach(function(stat){ stats.appendChild(buildField(side+'-'+cls+'-'+stat)); });
+        group.appendChild(stats);
+        col.appendChild(group);
+      });
+      container.appendChild(col);
+    });
+  }
+  /* one unified state per field: savedValues wins; else "missing" only
+     while state.showMissing is active for that run; else "check" for the
+     3 low-confidence ids; else "ok". */
+  function fieldState(id){
+    if(state.savedValues.hasOwnProperty(id)) return 'ok';
+    if(state.showMissing && MISSING_FIELDS.indexOf(id)>=0) return 'missing';
+    if(CHECK_FIELDS.hasOwnProperty(id)) return 'check';
+    return 'ok';
+  }
+  function displayVal(id){
+    if(state.savedValues.hasOwnProperty(id)) return state.savedValues[id];
+    if(CHECK_FIELDS.hasOwnProperty(id)) return CHECK_FIELDS[id].guess;
+    return trueVal(id);
+  }
+  function buildField(id){
+    var st = fieldState(id);
+    var meta = fieldMeta(id);
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'rv-field ' + st; btn.dataset.field = id;
+    var lab = document.createElement('span'); lab.className='rv-lab'; lab.textContent = STAT_NAME[meta.stat];
+    var val = document.createElement('span'); val.className='rv-val';
+    val.textContent = st==='missing' ? '— —' : Number(displayVal(id)).toFixed(1);
+    var ic = document.createElement('span'); ic.className='rv-ic'; ic.setAttribute('aria-hidden','true');
+    ic.textContent = st==='ok' ? '✓' : (st==='check' ? '!' : '+');
+    btn.appendChild(lab); btn.appendChild(val); btn.appendChild(ic);
+    var provenance = st==='missing' ? 'Not read yet. Tap to type it.' : (state.typedFields[id] ? 'You typed this.' : 'Read from your screenshot.');
+    btn.setAttribute('aria-label', SIDE_NAME[meta.side]+' '+CLASS_NAME[meta.cls]+' '+STAT_NAME[meta.stat]+': '+val.textContent+'. '+provenance);
+    return btn;
+  }
+  function refreshGrids(){
+    if($('#s4Grid') && $('#s4Grid').children.length) buildReviewGrid($('#s4Grid'));
+    if($('#s5Grid') && $('#s5Grid').children.length) buildReviewGrid($('#s5Grid'));
+    updateTally();
+    updateS5Chip();
+    updateS5UndoVisibility();
+  }
+  /* BLOCKER 2a heritage (round 5): shared count math, S4's full tally card. */
+  function updateTallyFor(gridSel, cardSel, opts){
+    opts = opts || {};
+    var card = $(cardSel); if(!card) return null;
+    var fields = $$(gridSel+' .rv-field');
+    if(fields.length===0) return null; /* grid not built yet on this visit */
+    var checkCount = fields.filter(function(f){return f.classList.contains('check');}).length;
+    var missingCount = fields.filter(function(f){return f.classList.contains('missing');}).length;
+    var okCount = 24-checkCount-missingCount;
+    var checkPct = Math.round((checkCount/24)*100), missPct = Math.round((missingCount/24)*100), okPct = 100-checkPct-missPct;
+    var status, statusClear;
+    if(checkCount===0 && missingCount===0){ status='All 24 numbers are in.'; statusClear=true; }
+    else{
+      var bits=[okCount+' of 24 read well'];
+      if(checkCount>0) bits.push(checkCount+' to check');
+      if(missingCount>0) bits.push(missingCount+' still empty'+(opts.missingHint?(' '+opts.missingHint):''));
+      status = bits.join(' &middot; ');
+      statusClear=false;
+    }
+    card.innerHTML =
+      '<div class="tally-head"><span class="tally-num">'+okCount+'/24</span><span class="tally-status'+(statusClear?' clear':'')+'">'+status+'</span></div>'+
+      '<div class="tally-bar"><i class="b-ok" style="width:'+okPct+'%"></i><i class="b-check" style="width:'+checkPct+'%"></i><i class="b-missing" style="width:'+missPct+'%"></i></div>';
+    return {checkCount:checkCount, missingCount:missingCount, okCount:okCount};
+  }
+  function updateTally(){ return updateTallyFor('#s4Grid','#s4Tally'); }
+  /* owner redesign (round 6, S5 item a): stats are DONE and collapsed on
+     S5 — a compact chip, not the full tally card. Same underlying counts;
+     the complete-case copy is the owner's own words verbatim. Refreshing
+     the chip's text (e.g. after a live edit) never force-collapses the
+     accordion — that's a separate, deliberate action (toggleStatsAccordion). */
+  function updateS5Chip(){
+    var chipText = $('#s5ChipText'), chip = $('#s5Chip'); if(!chipText || !chip) return;
+    var fields = $$('#s5Grid .rv-field');
+    if(fields.length===0) return;
+    var checkCount = fields.filter(function(f){return f.classList.contains('check');}).length;
+    var missingCount = fields.filter(function(f){return f.classList.contains('missing');}).length;
+    var okCount = 24-checkCount-missingCount;
+    var complete = checkCount===0 && missingCount===0;
+    var text;
+    if(complete){
+      text = 'All 24 numbers in <span class="chip-ok-ic" aria-hidden="true">&#10003;</span> — tap to check';
+    } else {
+      var bits = [okCount+' of 24 in'];
+      if(checkCount>0) bits.push(checkCount+' to check');
+      if(missingCount>0) bits.push(missingCount+' still empty');
+      text = bits.join(' &middot; ')+' — tap to check';
+    }
+    chipText.innerHTML = text;
+    chip.classList.toggle('complete', complete);
+    chip.classList.toggle('needs-attention', !complete);
+  }
+  function toggleStatsAccordion(){
+    var chip = $('#s5Chip'), body = $('#s5StatsBody'); if(!chip || !body) return;
+    var expanded = chip.getAttribute('aria-expanded')==='true';
+    chip.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    body.hidden = expanded;
+  }
+  var resetConfirmTimer = null;
+  /* minor 2 (round 5): Reset's claim is "restore every field to as-scanned"
+     — clears ALL user edits, not just the check/missing ids. Generalized
+     (round 6) to accept whichever .reset-btn was actually clicked, since
+     S5's stats accordion now carries its own copy of this control. */
+  function handleReset(btn){
+    if(!btn) return;
+    if(btn.dataset.confirming==='1'){
+      clearTimeout(resetConfirmTimer);
+      btn.dataset.confirming='0'; btn.classList.remove('confirming'); btn.textContent='Reset';
+      state.savedValues = {};
+      state.typedFields = {};
+      refreshGrids();
+      showToast('Fields reset to as-scanned.');
+    } else {
+      btn.dataset.confirming='1'; btn.classList.add('confirming'); btn.textContent='Really reset?';
+      resetConfirmTimer = setTimeout(function(){ btn.dataset.confirming='0'; btn.classList.remove('confirming'); btn.textContent='Reset'; }, 3000);
+    }
+  }
+
+  /* ---------- S5 Battle setup (owner redesign 2026-08-06) ---------- */
+  function enterFilledForm(){
+    buildReviewGrid($('#s5Grid'));
+    updateS5Chip();
+    updateS5UndoVisibility();
+    /* "Collapsed by default" (spec item a) — every fresh arrival collapses,
+       regardless of whatever state a previous visit left it in. */
+    var chip = $('#s5Chip'), body = $('#s5StatsBody');
+    if(chip && body){ chip.setAttribute('aria-expanded','false'); body.hidden = true; }
+    renderFormation();
+    renderHeroes();
+    renderJoiners();
+    renderRoleToggle();
+  }
+  function updateS5UndoVisibility(){
+    var undo = $('#undoChip'), links = $('#s5Links');
+    if(!undo || !links) return;
+    var has = hasMeaningfulSnapshot();
+    undo.hidden = !has; links.hidden = !has;
+  }
+
+  /* ---- S5b: Troops Formation — glass-tube ratio sliders, cloned from
+     prototype/index.html's .form-ctl (read-only reference; see the block
+     comment above FORMATION_TOTAL). renderFormation() builds the DOM once
+     (S5 entry); dragging calls paintFormation() only, which mutates the
+     EXISTING slider/value/count nodes in place rather than rebuilding —
+     rebuilding mid-drag would orphan the thumb the user is actively
+     holding (a real bug caught in this round's own build/verify pass). ---- */
+  var CLASS_GLYPH = {inf:'I', lan:'L', mm:'M'};
+  function renderFormation(){
+    var wrap = $('#s5Formation'); if(!wrap) return;
+    wrap.innerHTML = ['me','enemy'].map(function(side){
+      var f = state.formationPct[side];
+      var rows = CLASS_KEYS.map(function(c){
+        var auto = c==='mm';
+        return '<div class="form-ctl2'+(auto?' auto':'')+'">'+
+          '<div class="fic2">'+CLASS_GLYPH[c]+'</div>'+
+          '<div class="fctrls2">'+
+            '<input type="range" class="fslider" min="0" max="100" step="1" value="'+f[c]+'"'+
+              ' data-formation-side="'+side+'" data-formation-cls="'+c+'"'+(auto?' disabled':'')+
+              ' aria-label="'+CLASS_NAME[c]+' ratio'+(auto?' (auto, the leftover after Infantry and Lancer)':'')+'">'+
+            '<span class="fval2">'+f[c]+'%</span>'+
+          '</div>'+
+          '<span class="fcount2">'+Math.round(FORMATION_TOTAL[side]*f[c]/100).toLocaleString()+' '+(auto?'auto':'troops')+'</span>'+
+          '</div>';
+      }).join('');
+      return '<div class="form-stack '+side+'"><div class="form-stack-eyebrow">'+(side==='me'?'My formation':'Enemy formation')+'</div>'+rows+'</div>';
+    }).join('');
+    paintFormation('me'); paintFormation('enemy');
+  }
+  /* mutate existing nodes only — no innerHTML rebuild (see comment above) */
+  function paintFormation(side){
+    var f = state.formationPct[side];
+    CLASS_KEYS.forEach(function(c){
+      var slider = document.querySelector('.fslider[data-formation-side="'+side+'"][data-formation-cls="'+c+'"]');
+      if(!slider) return;
+      var row = slider.closest('.form-ctl2');
+      if(document.activeElement!==slider){ slider.value = f[c]; }
+      slider.style.setProperty('--fill', f[c]+'%');
+      row.querySelector('.fval2').textContent = f[c]+'%';
+      row.querySelector('.fcount2').textContent = Math.round(FORMATION_TOTAL[side]*f[c]/100).toLocaleString()+(c==='mm'?' auto':' troops');
+    });
+  }
+  /* copied from the real app's recalc(changed): Infantry/Lancer are
+     canonical; if their sum exceeds 100 the field BEING dragged gives
+     way (clamped to 100 minus the other); Marksman is always the
+     remainder, never dragged directly. */
+  function formationRecalc(side, changedCls){
+    var f = state.formationPct[side];
+    var inf=f.inf, lan=f.lan;
+    if(inf+lan>100){ if(changedCls==='lan') lan=100-inf; else inf=100-lan; }
+    inf=Math.max(0,Math.min(100,inf)); lan=Math.max(0,Math.min(100,lan));
+    f.inf=inf; f.lan=lan; f.mm=Math.max(0,100-inf-lan);
+    paintFormation(side);
+  }
+
+  /* ---- S5c: hero selection — captain-lane .hpick-btn pills, cloned from
+     the real app's #capMe/#capFoe (mirrored me/enemy, class icon + hero
+     pill). Code-drawn generic portraits stand in for the real app's
+     photographic avatars (established constraint: no game art). ---- */
+  function heroPortraitSvg(gen, side, uid){
+    var c1 = side==='me' ? 'var(--ice-b)' : 'var(--ember-b)';
+    var c2 = side==='me' ? 'var(--ice-d)' : 'var(--ember-d)';
+    var gid = 'heroGrad-'+uid;
+    return '<svg viewBox="0 0 56 56" aria-hidden="true">'+
+      '<circle cx="28" cy="28" r="27" fill="url(#'+gid+')"/>'+
+      '<circle cx="28" cy="23" r="10" fill="rgba(255,255,255,.85)"/>'+
+      '<path d="M8 50c2-11 11-17 20-17s18 6 20 17" fill="rgba(255,255,255,.85)"/>'+
+      '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="1" y2="1">'+
+      '<stop offset="0" stop-color="'+c1+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient></defs>'+
+      '</svg><span class="hero-gen-badge">'+gen+'</span>';
+  }
+  /* round 7, minor 3 (kept under round 8's reskin): source note is
+     type-aware. City Stats shows no hero info at all, so defaulting a
+     hero there would be fabrication — NO gen default, empty slots + a
+     pick-below prompt instead. Scout/Battle keep the existing gen-badge
+     default, undifferentiated between the two (owner's framing: "current
+     ... behavior" for both). Enemy can never be City Stats (not in
+     ENEMY_TYPES), so this is the SAME function for both sides — it just
+     never takes the no-default branch for enemy. */
+  function heroesNoDefault(side){ return side==='me' && state.youType==='city'; }
+  function renderHeroes(){
+    var wrap = $('#s5Heroes'); if(!wrap) return;
+    wrap.innerHTML = ['me','enemy'].map(function(side){
+      var gen = HERO_GEN[side];
+      var noDefault = heroesNoDefault(side);
+      var srcNote = noDefault
+        ? '<p class="hero-src">From your City Stats — pick your heroes below</p>'
+        : (side==='me'
+            ? '<p class="hero-src">From your screenshot: Gen '+gen+'</p>'
+            : '<p class="hero-src">From the battle report: Gen '+gen+'</p>');
+      var rows = CLASS_KEYS.map(function(c){
+        var avatar = noDefault
+          ? '<span class="hpick-avatar hpick-avatar--empty" aria-hidden="true">+</span>'
+          : '<span class="hpick-avatar">'+heroPortraitSvg(gen, side, side+'-'+c)+'</span>';
+        var name = noDefault ? 'Pick a hero' : HEROES[side][c];
+        return '<div class="lead-row2 '+side+'">'+
+          '<span class="lead-cls2">'+CLASS_GLYPH[c]+'</span>'+
+          '<button type="button" class="hpick-btn2'+(noDefault?' hpick-btn2--empty':'')+'" data-hero-slot="'+side+'-'+c+'">'+
+          avatar+'<span class="hpick-name2">'+name+'</span><span class="hpick-open2" aria-hidden="true">&#8250;</span>'+
+          '</button></div>';
+      }).join('');
+      return '<div class="lead-block"><div class="lead-eyebrow '+side+'">'+(side==='me'?'MY CAPTAINS':'ENEMY CAPTAINS')+'</div>'+srcNote+rows+'</div>';
+    }).join('');
+  }
+
+  /* ---- S5d: joiners — present but BLANK in v1, no defaulting, no CTA;
+     same pill family as hero selection (dashed/empty variant), cloned
+     from the real app's #joinMe/#joinFoe mount look. ---- */
+  function renderJoiners(){
+    var wrap = $('#s5Joiners'); if(!wrap) return;
+    var slots = '';
+    for(var i=0;i<JOINER_SLOTS;i++){
+      slots += '<div class="joiner-pill" aria-hidden="true"><span class="hpick-avatar hpick-avatar--empty">+</span><span class="hpick-name2">Empty</span></div>';
+    }
+    wrap.innerHTML = slots;
+  }
+
+  /* ---- S5e: Attack/Defense (Rally/Garrison) toggle — persists as-is from
+     the current app's .role-toggle pattern (aria-pressed two-state pill),
+     re-drawn here in the mock's own code-drawn icon language. ---- */
+  var role = 'rally';
+  function renderRoleToggle(){
+    var wrap = $('#s5Role'); if(!wrap) return;
+    wrap.querySelectorAll('button').forEach(function(b){
+      var pressed = b.dataset.roleBtn===role;
+      b.setAttribute('aria-pressed', pressed?'true':'false');
+    });
+  }
+  function setRole(next){
+    role = next;
+    renderRoleToggle();
+  }
+
+  /* ---------- simulated crop / screenshot viewer ---------- */
+  function renderCropRow(meta, val, hasScreenshot){
+    if(!hasScreenshot){
+      return '<span class="crop-tag">NOT CAPTURED</span>'+
+        '<p class="crop-empty">This part of the screenshot was not captured.</p>';
+    }
+    return '<span class="crop-tag">WHAT WE SAW</span>'+
+      '<div class="game-row"><span class="gr-label">'+CLASS_NAME[meta.cls]+' '+STAT_NAME[meta.stat]+'</span>'+
+      '<span class="gr-val">+'+Number(val).toFixed(1)+'</span></div>';
+  }
+  function renderPictureView(){
+    var html = '';
+    ['me','enemy'].forEach(function(side){
+      html += '<div class="rv-col '+(side==='me'?'me':'enemy')+'"><div class="rv-col-head">'+(side==='me'?'MY SIDE':'ENEMY')+'</div>';
+      CLASS_KEYS.forEach(function(cls){
+        html += '<div class="rv-group"><div class="rv-group-head">'+CLASS_NAME[cls]+'</div>';
+        STAT_KEYS.forEach(function(stat){
+          var id = side+'-'+cls+'-'+stat;
+          var isMissing = fieldState(id) === 'missing';
+          html += isMissing
+            ? '<div class="game-row dim"><span class="gr-label">'+STAT_NAME[stat]+'</span><span class="gr-val dim">Not captured</span></div>'
+            : '<div class="game-row"><span class="gr-label">'+STAT_NAME[stat]+'</span><span class="gr-val">+'+Number(displayVal(id)).toFixed(1)+'</span></div>';
+        });
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    $('#pictureBody').innerHTML = html;
+  }
+  var pictureLastFocus = null;
+  function openPicture(){
+    pictureLastFocus = document.activeElement;
+    renderPictureView();
+    var scrim = $('#pictureScrim');
+    scrim.classList.add('open'); scrim.setAttribute('aria-hidden','false'); scrim.removeAttribute('inert');
+    syncBackgroundInert();
+    $('#pictureClose').focus();
+  }
+  function closePicture(){
+    var scrim = $('#pictureScrim'); if(!scrim) return;
+    var wasOpen = scrim.classList.contains('open');
+    /* accessibility fix (round 6): blur out of the sheet BEFORE it gets
+       aria-hidden (satisfies the WAI-ARIA rule Chrome now enforces), then
+       un-inert the background via syncBackgroundInert, THEN move focus to
+       the restore target — pictureLastFocus lives inside a .screen that is
+       still `inert` until that background sync runs, so focusing it any
+       earlier would silently fail. */
+    if(wasOpen && scrim.contains(document.activeElement)){ document.activeElement.blur(); }
+    scrim.classList.remove('open'); scrim.setAttribute('aria-hidden','true'); scrim.setAttribute('inert','');
+    syncBackgroundInert();
+    if(wasOpen && pictureLastFocus){ try{ pictureLastFocus.focus(); }catch(e){} }
+  }
+
+  /* ---------- big-digit editor — Save / Cancel only (owner removed the
+     Yes/No two-way gate); every field on S4 AND S5 opens this. (Round 7
+     briefly reused this sheet for formation counts too; round 8 replaced
+     that stepper+editor design with the real app's ratio sliders, so this
+     is back to stat fields only.) ---------- */
+  var lastFieldFocus = null;
+  function openEditor(id){
+    var meta = fieldMeta(id);
+    state.editing = {id:id};
+    $('#editorTitle').textContent = SIDE_NAME[meta.side]+' · '+CLASS_NAME[meta.cls]+' · '+STAT_NAME[meta.stat];
+    var st = fieldState(id);
+    var crop=$('#editorCrop'), input=$('#editorInput'), help=$('#editorHelp'), msg=$('#editorMsg');
+    msg.hidden = true; msg.textContent = '';
+    crop.hidden = false;
+    input.inputMode = 'decimal';
+    if(st==='missing'){
+      crop.innerHTML = renderCropRow(meta, null, false);
+      input.value = '';
+      help.textContent = "We couldn't read this one. Type the number.";
+    } else {
+      var val = displayVal(id);
+      crop.innerHTML = renderCropRow(meta, val, true);
+      input.value = Number(val).toFixed(1);
+      help.textContent = 'Type over the number if it needs fixing.';
+    }
+    updateSaveState();
+    var scrim = $('#editorScrim');
+    scrim.classList.add('open'); scrim.setAttribute('aria-hidden','false'); scrim.removeAttribute('inert');
+    syncBackgroundInert();
+    setTimeout(function(){ input.focus(); input.select(); }, 60);
+  }
+  function updateSaveState(){ $('#editorSave').disabled = $('#editorInput').value.trim()===''; }
+  function closeEditor(){
+    var scrim = $('#editorScrim'); if(!scrim) return;
+    var wasOpen = scrim.classList.contains('open');
+    /* accessibility fix (round 6): blur out of the sheet BEFORE it gets
+       aria-hidden, un-inert the background via syncBackgroundInert, THEN
+       move focus to lastFieldFocus — which lives inside a .screen that's
+       still `inert` until that background sync runs, so focusing it any
+       earlier silently fails (repro'd live: field never got focus back). */
+    if(wasOpen && scrim.contains(document.activeElement)){ document.activeElement.blur(); }
+    scrim.classList.remove('open'); scrim.setAttribute('aria-hidden','true'); scrim.setAttribute('inert','');
+    syncBackgroundInert();
+    if(wasOpen && state.editing && lastFieldFocus){ try{ lastFieldFocus.focus(); }catch(e){} }
+    state.editing = null;
+  }
+  function saveEditor(){
+    if(!state.editing) return;
+    var input = $('#editorInput'), msg = $('#editorMsg');
+    var raw = input.value.trim();
+    if(raw===''){ return; }
+    if(!/^[+-]?\d+(\.\d+)?$/.test(raw)){ msg.hidden=false; msg.textContent='That needs to be a number.'; return; }
+    var num = parseFloat(raw);
+    if(num<0 || num>6000){ msg.hidden=false; msg.textContent='Numbers here are usually between 0 and 6000.'; return; }
+    msg.hidden = true; msg.textContent = '';
+    var id = state.editing.id;
+    state.savedValues[id] = num;
+    state.typedFields[id] = true;
+    closeEditor();
+    refreshGrids();
+  }
+
+  /* ---------- E1 (merged wrong/partial) ---------- */
+  function renderE1(variant){
+    var v = E1_TEXT[variant] || E1_TEXT.wrong;
+    $('#e1Heading').textContent = v.h;
+    $('#e1Body').textContent = v.b;
+    $('#e1Sample').innerHTML = renderSample('battle');
+    $('#e1Secondary').textContent = v.secondary; /* minor 3 */
+  }
+
+  /* ---------- undo (snapshot-based, lives on S5 now) ---------- */
+  function snapshotBeforeRun(){
+    state.priorSnapshot = { savedValues: Object.assign({}, state.savedValues), typedFields: Object.assign({}, state.typedFields) };
+  }
+  function hasMeaningfulSnapshot(){ return !!(state.priorSnapshot && Object.keys(state.priorSnapshot.savedValues).length>0); }
+
+  /* ---------- toast ---------- */
+  var toastTimer = null;
+  function showToast(msg){
+    var t = $('#toast'); if(!t) return;
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+  }
+
+  /* ---------- flow map ---------- */
+  function buildNavLists(){
+    var fmMain = $('#fmMain'), fmRec = $('#fmRecovery');
+    var recoveryPrev = null;
+    NAV.forEach(function(n){
+      var fm = document.createElement('button');
+      fm.type = 'button'; fm.className = 'fm-card' + (n.group==='recovery' ? ' recovery' : '');
+      fm.dataset.goto = n.goto; fm.dataset.navId = n.id;
+      if(n.opts) fm.dataset.navOpts = JSON.stringify(n.opts);
+      fm.innerHTML = '<b>' + n.label + '</b><span>' + n.desc + '</span>';
+
+      if(n.group==='main'){
+        if(fmMain.children.length>0){
+          var a = document.createElement('span'); a.className='fm-arrow'; a.setAttribute('aria-hidden','true'); a.textContent='→';
+          fmMain.appendChild(a);
+        }
+        fmMain.appendChild(fm);
+      } else {
+        if(fmRec.children.length>0){
+          var isAlt = recoveryPrev==='e1w' && n.id==='e1p';
+          var b = document.createElement('span'); b.className='fm-arrow'+(isAlt?' fm-or':''); b.setAttribute('aria-hidden','true');
+          b.textContent = isAlt ? 'or' : '→';
+          fmRec.appendChild(b);
+        }
+        recoveryPrev = n.id;
+        fmRec.appendChild(fm);
+      }
+    });
+
+    /* round 5 minor 4 / round 7 minor 4: draw BOTH of E1's actual exits
+       explicitly (a single linear row can't otherwise show one screen
+       branching two ways) — wired directly into the SAME #fmRecovery row
+       as e1w/e1p, not a disconnected row of its own, so the graph reads as
+       one continuous line: e1w/e1p lead to these two exits. */
+    var leadsTo = document.createElement('span');
+    leadsTo.className='fm-arrow fm-or'; leadsTo.setAttribute('aria-hidden','true'); leadsTo.textContent='leads to';
+    fmRec.appendChild(leadsTo);
+    var exit1 = document.createElement('button');
+    exit1.type='button'; exit1.className='fm-card recovery'; exit1.dataset.goto='s2'; exit1.dataset.recovery='1'; exit1.dataset.navId='e1-exit-s2';
+    exit1.innerHTML = '<b>Add a clearer screenshot</b><span>&rarr; S2, failed screenshot removed</span>';
+    fmRec.appendChild(exit1);
+    var exitAnd = document.createElement('span');
+    exitAnd.className='fm-arrow fm-or'; exitAnd.setAttribute('aria-hidden','true'); exitAnd.textContent='and';
+    fmRec.appendChild(exitAnd);
+    var exit2 = document.createElement('button');
+    exit2.type='button'; exit2.className='fm-card recovery'; exit2.dataset.goto='s4'; exit2.dataset.showMissing='1'; exit2.dataset.navId='s4m';
+    exit2.innerHTML = '<b>Type the missing numbers</b><span>&rarr; S4, empties highlighted inline</span>';
+    fmRec.appendChild(exit2);
+  }
+  /* ---------- desktop stepper rail (owner redesign 2026-08-06, item 3) ----------
+     Desktop-only (CSS hides #rail below 1000px, mirroring the old sidebar's
+     breakpoint); mobile keeps using the Flow Map + Back for navigation.
+     "Current step lit, completed steps jumpable": a step is jumpable once
+     state.maxStepReached has passed it — future steps render disabled. */
+  function buildStepper(){
+    var ol = $('#stepper'); if(!ol) return;
+    ol.innerHTML = MAIN_STEPS.map(function(s,i){
+      return '<li class="step-item" data-step-item="'+i+'">'+
+        '<button type="button" class="step-dot" data-stepper-goto="'+s.id+'" aria-label="'+s.label+'"><span class="step-num">'+(i+1)+'</span><span class="step-check" aria-hidden="true">&#10003;</span></button>'+
+        '<span class="step-label">'+s.label+'</span>'+
+        '</li>';
+    }).join('');
+  }
+  function updateStepper(id){
+    var ol = $('#stepper'); if(!ol) return;
+    var curIdx = stepIndexFor(id);
+    $$('.step-item', ol).forEach(function(li){
+      var i = parseInt(li.dataset.stepItem,10);
+      var btn = li.querySelector('.step-dot');
+      var state3 = i===curIdx ? 'current' : (i<=state.maxStepReached ? 'done' : 'future');
+      li.classList.remove('current','done','future');
+      li.classList.add(state3);
+      btn.disabled = i>state.maxStepReached;
+      btn.setAttribute('aria-current', i===curIdx ? 'step' : 'false');
+    });
+  }
+
+  function syncBackgroundInert(){
+    /* regression fix: flow map was missing from this OR-chain, so background
+       .screen content stayed fully interactive (not inert) while the flow
+       map sheet was open — inconsistent with editor/picture/tagMenu. */
+    var anyOpen = $('#editorScrim').classList.contains('open') || $('#pictureScrim').classList.contains('open') || $('#tagMenu').classList.contains('open') || $('#flowmap').classList.contains('open');
+    $$('.screen').forEach(function(s){ if(anyOpen) s.setAttribute('inert',''); else s.removeAttribute('inert'); });
+  }
+
+  var fmLastFocus = null;
+  function openFlowMap(){
+    fmLastFocus = document.activeElement;
+    var fm = $('#flowmap');
+    fm.classList.add('open'); fm.setAttribute('aria-hidden','false'); fm.removeAttribute('inert');
+    syncBackgroundInert();
+    $('#fmClose').focus();
+  }
+  function closeFlowMap(){
+    var fm = $('#flowmap');
+    /* accessibility fix (round 6, found live in this round's console sweep):
+       aria-hidden was landing on #flowmap while #fmClose still held focus —
+       invalid per WAI-ARIA and now actively blocked/warned by Chrome. Blur
+       out first (fmLastFocus is always the trigger button itself, which
+       lives outside any .screen, so it's never blocked by background
+       inert — safe to focus directly, unlike the other three sheets). */
+    if(fm.contains(document.activeElement)){ document.activeElement.blur(); }
+    if(fmLastFocus){ try{ fmLastFocus.focus(); }catch(e){} }
+    fm.classList.remove('open'); fm.setAttribute('aria-hidden','true'); fm.setAttribute('inert','');
+    syncBackgroundInert();
+  }
+
+  /* ---------- global click delegation ---------- */
+  document.addEventListener('click', function(e){
+    if(e.target.closest('#ctaScreenshots')){
+      snapshotBeforeRun();
+      state.thumbsYou=[]; state.thumbsEnemy=[]; state.showMissing=false;
+    }
+    if(e.target.closest('.mini-field')){
+      showToast('In the real app you can type here — or use the screenshot button.');
+      return;
+    }
+
+    /* BLOCKER 1a (round 5): type-tag opens a real chooser menu — no blind
+       rotation. Owner redesign (round 6) removed the confirm branch that
+       used to live here: type changes never destroy uploads now. */
+    var tagMenuWasOpen = $('#tagMenu').classList.contains('open');
+    var typeTagEl = e.target.closest('[data-type-tag]');
+    if(typeTagEl){
+      var tagSide = typeTagEl.dataset.typeTag;
+      if(tagMenuWasOpen && state.tagMenuSide===tagSide){ closeTagMenu(); return; }
+      openTagMenu(tagSide, typeTagEl);
+      return;
+    }
+    var chooseEl = e.target.closest('[data-choose-type]');
+    if(chooseEl){ chooseType(chooseEl.dataset.chooseType); return; }
+    if(tagMenuWasOpen && !e.target.closest('#tagMenu')){ closeTagMenu(); /* outside click dismisses; fall through */ }
+
+    var dzEl = e.target.closest('.dropzone');
+    if(dzEl){ addThumbSide(dzEl.dataset.side); return; }
+
+    /* ---------- S5 Battle setup (owner redesign 2026-08-06) ---------- */
+    var chipEl = e.target.closest('#s5Chip');
+    if(chipEl){ toggleStatsAccordion(); return; }
+    /* formation ratio sliders are native <input type=range> — dragging is
+       handled by the 'input' listener below, not click; nothing to wire here. */
+    var heroSlot = e.target.closest('[data-hero-slot]');
+    if(heroSlot){ showToast(heroSlot.classList.contains('hpick-btn2--empty') ? 'Pick a hero in the real app.' : 'Pick a different hero in the real app.'); return; }
+    var roleBtn = e.target.closest('[data-role-btn]');
+    if(roleBtn){ setRole(roleBtn.dataset.roleBtn); return; }
+    var stepperDot = e.target.closest('[data-stepper-goto]');
+    if(stepperDot){ goto(stepperDot.dataset.stepperGoto); return; }
+    var resetEl = e.target.closest('.reset-btn');
+    if(resetEl){ handleReset(resetEl); return; }
+
+    var goEl = e.target.closest('[data-goto]');
+    var backEl = e.target.closest('[data-back]');
+    var removeEl = e.target.closest('[data-remove-thumb]');
+    var fieldEl = e.target.closest('.rv-field');
+    var fmOpenEl = e.target.closest('[data-open-flowmap]');
+    var picOpenEl = e.target.closest('[data-open-picture]');
+
+    if(goEl){
+      e.preventDefault();
+      var opts = {};
+      if(goEl.dataset.recovery) opts.fromRecovery = true;
+      if(goEl.dataset.showMissing) opts.showMissing = true;
+      if(goEl.dataset.pickType) opts.pickType = goEl.dataset.pickType;
+      if(goEl.dataset.navOpts){ try{ Object.assign(opts, JSON.parse(goEl.dataset.navOpts)); }catch(err){} }
+      var insideFlowmap = !!e.target.closest('#flowmap');
+      goto(goEl.dataset.goto, opts);
+      if(insideFlowmap) closeFlowMap();
+      return;
+    }
+    if(backEl){ e.preventDefault(); back(); return; }
+    if(removeEl){ e.preventDefault(); removeThumbSide(removeEl.dataset.removeThumbSide, parseInt(removeEl.dataset.removeThumb,10)); return; }
+    if(fieldEl && fieldEl.dataset.field){ lastFieldFocus = fieldEl; openEditor(fieldEl.dataset.field); return; }
+    if(fmOpenEl){ e.preventDefault(); openFlowMap(); return; }
+    if(picOpenEl){ e.preventDefault(); openPicture(); return; }
+    if(e.target.id==='fmClose' || e.target.closest('#fmClose')){ closeFlowMap(); return; }
+    if(e.target.id==='flowmap'){ closeFlowMap(); return; }
+    if(e.target.id==='pictureClose' || e.target.closest('#pictureClose')){ closePicture(); return; }
+    if(e.target.id==='pictureScrim'){ closePicture(); return; }
+    if(e.target.id==='editorClose' || e.target.closest('#editorClose')){ closeEditor(); return; }
+    if(e.target.id==='editorScrim'){ closeEditor(); return; }
+    if(e.target.id==='editorCancel' || e.target.closest('#editorCancel')){ closeEditor(); return; }
+    if(e.target.id==='editorSave'){ saveEditor(); return; }
+    if(e.target.id==='s2Continue'){
+      e.preventDefault();
+      if(!(sideCovered('you') && sideCovered('enemy'))) return;
+      goto(state.primed ? 's3' : 'prep');
+      return;
+    }
+    if(e.target.id==='undoChip' || e.target.closest('#undoChip')){
+      e.preventDefault();
+      if(state.priorSnapshot){
+        state.savedValues = Object.assign({}, state.priorSnapshot.savedValues);
+        state.typedFields = Object.assign({}, state.priorSnapshot.typedFields);
+      }
+      refreshGrids();
+      showToast('Old numbers are back.');
+      return;
+    }
+    if(e.target.id==='ctaSeeResult' || e.target.closest('#ctaSeeResult')){
+      showToast('This runs your forecast in the real app.'); return;
+    }
+  });
+
+  /* the tag menu doesn't track its anchor while scrolling, so close it
+     rather than leave it visually stuck in the wrong place */
+  document.addEventListener('scroll', function(e){
+    if($('#tagMenu').classList.contains('open') && e.target && e.target.classList && e.target.classList.contains('screen')){
+      closeTagMenu();
+    }
+  }, true);
+
+  document.addEventListener('input', function(e){
+    if(e.target.id==='editorInput'){ updateSaveState(); return; }
+    /* formation ratio sliders (round 8): native range input, live-drag —
+       Infantry/Lancer only (Marksman is disabled, never fires 'input'). */
+    if(e.target.classList && e.target.classList.contains('fslider') && !e.target.disabled){
+      var side = e.target.dataset.formationSide, cls = e.target.dataset.formationCls;
+      state.formationPct[side][cls] = parseFloat(e.target.value) || 0;
+      formationRecalc(side, cls);
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.target.id==='editorInput' && e.key==='Enter'){ e.preventDefault(); saveEditor(); return; }
+    if(e.key==='Escape'){
+      if($('#flowmap').classList.contains('open')) closeFlowMap();
+      else if($('#pictureScrim').classList.contains('open')) closePicture();
+      else if($('#editorScrim').classList.contains('open')) closeEditor();
+      else if($('#tagMenu').classList.contains('open')) closeTagMenu();
+    }
+  });
+
+  /* ---------- init ---------- */
+  initS1Samples();
+  buildNavLists();
+  buildStepper();
+  var s1ScreenEl = $('[data-screen="s1"]');
+  if(s1ScreenEl){
+    s1ScreenEl.addEventListener('scroll', updateS1ScrollHint);
+    s1ScreenEl.addEventListener('scrollend', updateS1ScrollHint);
+  }
+  show('s0');
+  onEnter('s0', {});
+})();
+</script>
+</body>
+</html>

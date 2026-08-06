@@ -1,0 +1,10 @@
+{
+  "name": "malformed_json",
+  "description": "Body is not JSON at all (QA_PROMPT risk 1: non-JSON body)",
+  "method": "POST",
+  "path": "/api/predict",
+  "content_type": "application/json",
+  "raw_body": "{\"own\": {{{ definitely not json ]]",
+  "expected_status_min": 400,
+  "expected_status_max": 422
+}

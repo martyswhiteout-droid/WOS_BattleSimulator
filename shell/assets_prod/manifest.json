@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "generated_by": "shell/assets_prod/generate_badges.py",
+  "license": "Original code-drawn SVG artwork created for the WoS Battle Simulator production shell. Not derived from, and not containing, any Century Games / Whiteout Survival assets. Safe to ship (PRODUCTION_CRITERIA F1).",
+  "palette_source": "prototype/DESIGN_SYSTEM.md",
+  "assets": {
+    "class.infantry": "class_infantry.svg",
+    "class.lancer": "class_lancer.svg",
+    "class.marksman": "class_marksman.svg",
+    "gen.1": "gen_01.svg",
+    "gen.10": "gen_10.svg",
+    "gen.11": "gen_11.svg",
+    "gen.12": "gen_12.svg",
+    "gen.13": "gen_13.svg",
+    "gen.14": "gen_14.svg",
+    "gen.2": "gen_02.svg",
+    "gen.3": "gen_03.svg",
+    "gen.4": "gen_04.svg",
+    "gen.5": "gen_05.svg",
+    "gen.6": "gen_06.svg",
+    "gen.7": "gen_07.svg",
+    "gen.8": "gen_08.svg",
+    "gen.9": "gen_09.svg",
+    "rarity.epic": "chip_rarity_epic.svg",
+    "rarity.mythic": "chip_rarity_mythic.svg",
+    "rarity.rare": "chip_rarity_rare.svg",
+    "role.garrison": "chip_role_garrison.svg",
+    "role.rally": "chip_role_rally.svg"
+  }
+}

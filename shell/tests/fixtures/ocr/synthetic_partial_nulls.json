@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "_type": "experiment_1v1",
+  "type": 1,
+  "battle_date": null,
+  "recommended_filename": "SYNTHETIC_TestAccount_1v1_partial.json",
+  "setup": "SYNTHETIC TEST FIXTURE - not a real battle. Canned mock vision-LLM output simulating a partially readable screenshot (nulls declared honestly, never guessed).",
+  "outcome": {"winner": "attacker", "attacker_result": "victory", "defender_result": "defeat"},
+  "turn_inference": null,
+  "attacker": {
+    "name": "[SYN]PartialAttacker",
+    "state": null,
+    "alliance": "SYN",
+    "coords": null,
+    "role": "attacker",
+    "power_loss": null,
+    "troops": 500,
+    "losses": null,
+    "injured": null,
+    "lightly_injured": null,
+    "survivors": null,
+    "kills": null,
+    "deployed_class": "Marksman",
+    "tier_display": "Lv 2.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {"Attack": 120.0, "Defense": 115.0, "Lethality": 100.0, "Health": 95.0},
+      "Lancer":   {"Attack": 122.0, "Defense": 117.0, "Lethality": 102.0, "Health": 97.0},
+      "Marksman": {"Attack": 124.0, "Defense": 119.0, "Lethality": 104.0, "Health": 99.0}
+    },
+    "stats_capture": {"attack_defense": "visible", "lethality_health": "visible", "notes": ""},
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [
+      {"class": "Marksman", "skill": "Ranged Strike", "unlock": "T1",
+       "effect": "+10% attack damage to Infantry",
+       "applies_in_this_battle": true, "reason": "defender fields Infantry"}
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "[SYN]PartialDefender",
+    "state": null,
+    "alliance": null,
+    "coords": null,
+    "role": "defender",
+    "power_loss": null,
+    "troops": 800,
+    "losses": null,
+    "injured": null,
+    "lightly_injured": null,
+    "survivors": null,
+    "kills": null,
+    "deployed_class": "Infantry",
+    "tier_display": null,
+    "t12_skill_levels": null,
+    "stats_capture": {"attack_defense": "missing", "lethality_health": "missing",
+                      "notes": "Stat Bonuses screen not included in the upload"},
+    "lead_heroes": null,
+    "hero_skills": [],
+    "troop_passives_active": [],
+    "specials": []
+  },
+  "notes": [
+    "SYNTHETIC fixture for shell OCR plumbing tests (Agent C). Not real battle data.",
+    "Simulates a cropped screenshot: casualty rows and the defender stat panel unreadable."
+  ],
+  "source_images": ["battle_overview"],
+  "_extraction": {"extracted_by": "mock_vision", "timestamp": "2026-08-04", "ocr_confidence": "low", "manual_overrides": []},
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [
+      "battle_date",
+      "attacker.losses", "attacker.injured", "attacker.lightly_injured",
+      "attacker.survivors", "attacker.kills",
+      "defender.losses", "defender.injured", "defender.lightly_injured",
+      "defender.survivors", "defender.kills",
+      "defender.tier_display", "defender.stats_pct"
+    ],
+    "suspicions": []
+  }
+}

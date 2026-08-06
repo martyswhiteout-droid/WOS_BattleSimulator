@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Generation 2 badge">
+  <!-- ORIGINAL code-drawn badge (WoS Battle Simulator shell). Generic framed geometry; not derived from any Century Games artwork. Palette: prototype/DESIGN_SYSTEM.md. -->
+  <defs>
+    <linearGradient id="g2f" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#164A72"/><stop offset="1" stop-color="#0B273D"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 2 L43 13 V35 L24 46 L5 35 V13 Z" fill="url(#g2f)"
+        stroke="#D9A94F" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M24 6.4 L39.2 15.2 V32.8 L24 41.6 L8.8 32.8 V15.2 Z" fill="none"
+        stroke="#B9D2E5" stroke-opacity="0.3" stroke-width="1.1"/>
+  <text x="24" y="33.4" text-anchor="middle"
+        font-family="'Chakra Petch','IBM Plex Mono',Inter,system-ui,sans-serif" font-weight="700" font-size="26"
+        fill="#EAF6FF">2</text>
+</svg>

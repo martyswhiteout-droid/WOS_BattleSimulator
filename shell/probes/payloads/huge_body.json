@@ -1,0 +1,13 @@
+{
+  "name": "huge_body",
+  "description": "~2 MiB body \u2014 must hit the body-size limit (E6), clean 4xx",
+  "method": "POST",
+  "path": "/api/predict",
+  "content_type": "application/json",
+  "generate": {
+    "type": "huge_body",
+    "approx_bytes": 2097152
+  },
+  "expected_status_min": 400,
+  "expected_status_max": 431
+}
