@@ -138,3 +138,34 @@ test('QA defect 005: service reports whether specials were observed', () => {
   assert.deepEqual(seen.specials, []);
   assert.equal(seen.specials_observed, true);
 });
+
+test('QA defect 008: out-of-range values are unreadable', () => {
+  const shot = scoutShot();
+  shot[1].text = '-4491.6%';
+  shot[3].text = '999999999%';
+  const result = extractPanel([shot], 'enemy', null);
+  assert.ok(!('Infantry|Attack' in result.stats));
+  assert.ok(!('Infantry|Defense' in result.stats));
+  assert.ok(result.unreadable_fields.includes('stats.Infantry|Attack'));
+  assert.ok(result.unreadable_fields.includes('stats.Infantry|Defense'));
+  assert.equal(result.status, 'partial');
+
+  const endpoints = scoutShot();
+  endpoints[1].text = '0.0%';
+  endpoints[3].text = '6000.0%';
+  const kept = extractPanel([endpoints], 'enemy', null);
+  assert.equal(kept.stats['Infantry|Attack'], 0.0);
+  assert.equal(kept.stats['Infantry|Defense'], 6000.0);
+  assert.equal(kept.status, 'ok');
+});
+
+test('QA defect 008: implausible special is unreadable', () => {
+  const shot = scoutShot();
+  shot.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
+  shot.push(tok('+250.0%', 0.70, 0.80, 0.95, 0.83));
+  shot.push(tok('Defense Bonus (Pet Skill)', 0.05, 0.86, 0.40, 0.89));
+  shot.push(tok('+10.0%', 0.70, 0.86, 0.95, 0.89));
+  const result = extractPanel([shot], 'you', null);
+  assert.deepEqual(result.specials, [{ label: 'Defense Bonus (Pet Skill)', value: 10.0 }]);
+  assert.ok(result.unreadable_fields.includes('specials.Attack Bonus (Pet Skill)'));
+});

@@ -402,6 +402,16 @@ function isBad(row) {
     || row.flags.some((flag) => flag.includes('conflict'));
 }
 
+// Plausibility bands (QA D-008). A number outside its band is an OCR artefact,
+// not a stat: unreadable, never emitted.
+const CLASS_VALUE_MIN = 0.0;
+const CLASS_VALUE_MAX = 6000.0;
+const SPECIAL_ABS_MAX = 25.0;
+
+function inRange(value, low, high) {
+  return value !== null && value >= low && value <= high;
+}
+
 function dedupe(items) {
   const seen = new Set();
   const output = [];
@@ -423,7 +433,9 @@ function bucket(rows, side) {
         || !row.canonical.includes('|')) continue;
     const key = row.canonical;
     if (side !== null && row.side !== side) continue;
-    if (isBad(row)) unreadable.push(`stats.${key}`);
+    if (isBad(row) || !inRange(row.value, CLASS_VALUE_MIN, CLASS_VALUE_MAX)) {
+      unreadable.push(`stats.${key}`);
+    }
     else {
       stats[key] = row.value;
       conf[key] = Math.round(row.conf * 10000) / 10000;
@@ -441,7 +453,9 @@ function collectSpecials(rows) {
     if (!row.canonical.startsWith('special:')) continue;
     observed = true; // QA D-005: seen at all, readable or not
     const label = row.canonical.slice('special:'.length);
-    if (isBad(row)) unreadable.push(`specials.${label}`);
+    if (isBad(row) || !inRange(row.value, -SPECIAL_ABS_MAX, SPECIAL_ABS_MAX)) {
+      unreadable.push(`specials.${label}`);
+    }
     else good.push({ label, value: row.value });
   }
   return [good, unreadable, observed];

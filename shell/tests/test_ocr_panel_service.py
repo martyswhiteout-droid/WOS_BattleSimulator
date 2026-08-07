@@ -133,6 +133,36 @@ def test_qa_defect_006_missing_battle_column_fields_are_listed_unreadable():
             assert f"stats_right.{cls}|{st}" in r["unreadable_fields"]
     assert not any(f.startswith("stats_left.") for f in r["unreadable_fields"])
 
+def test_qa_defect_008_out_of_range_class_values_are_unreadable():
+    # QA probe: -4491.6% and 999999999% used to come back status=ok.
+    shot = _shot_scout()
+    shot[1]["text"] = "-4491.6%"    # Infantry Attack value
+    shot[3]["text"] = "999999999%"  # Infantry Defense value
+    r = extract_panel([shot], side_hint="enemy", panel_hint=None)
+    assert "Infantry|Attack" not in r["stats"] and "Infantry|Defense" not in r["stats"]
+    assert "stats.Infantry|Attack" in r["unreadable_fields"]
+    assert "stats.Infantry|Defense" in r["unreadable_fields"]
+    assert r["status"] == "partial"
+
+def test_qa_defect_008_range_endpoints_stay_readable():
+    shot = _shot_scout()
+    shot[1]["text"] = "0.0%"
+    shot[3]["text"] = "6000.0%"
+    r = extract_panel([shot], side_hint="enemy", panel_hint=None)
+    assert r["stats"]["Infantry|Attack"] == 0.0
+    assert r["stats"]["Infantry|Defense"] == 6000.0
+    assert r["status"] == "ok"
+
+def test_qa_defect_008_implausible_special_is_unreadable():
+    shot = _shot_scout()
+    shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+250.0%", 0.70, 0.80, 0.95, 0.83))
+    shot.append(_tok("Defense Bonus (Pet Skill)", 0.05, 0.86, 0.40, 0.89))
+    shot.append(_tok("+10.0%", 0.70, 0.86, 0.95, 0.89))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [{"label": "Defense Bonus (Pet Skill)", "value": 10.0}]
+    assert "specials.Attack Bonus (Pet Skill)" in r["unreadable_fields"]
+
 def test_qa_defect_001_drifted_value_never_lands_under_wrong_label():
     r = extract_panel([_drift_shot()], side_hint=None, panel_hint=None)
     assert r["stats"] == {}

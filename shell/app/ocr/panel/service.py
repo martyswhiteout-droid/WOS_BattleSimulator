@@ -8,6 +8,16 @@ from .lexicon import CLASSES, STATS
 # order — used to report fields that were never seen at all (QA D-006).
 EXPECTED_KEYS = tuple(f"{c}|{s}" for c in CLASSES for s in STATS)
 
+# Plausibility bands (QA D-008; QA_PLAN §3 P7 + formula doc §8). A number
+# outside its band is an OCR artefact, not a stat: it goes to
+# unreadable_fields, never into stats/specials.
+CLASS_VALUE_MIN, CLASS_VALUE_MAX = 0.0, 6000.0
+SPECIAL_ABS_MAX = 25.0
+
+
+def _in_range(value, lo, hi):
+    return value is not None and lo <= value <= hi
+
 
 def _is_bad(row):
     """The single honesty predicate: a value is emitted only when it is present,
@@ -38,7 +48,7 @@ def _bucket(rows, side):
         key = r.canonical
         if side is not None and r.side != side:
             continue
-        if _is_bad(r):
+        if _is_bad(r) or not _in_range(r.value, CLASS_VALUE_MIN, CLASS_VALUE_MAX):
             unreadable.append(f"stats.{key}")
         else:
             stats[key] = r.value
@@ -56,7 +66,7 @@ def _specials(rows):
             continue
         observed = True  # QA D-005: seen at all, readable or not
         label = r.canonical.split(":", 1)[1]
-        if _is_bad(r):
+        if _is_bad(r) or not _in_range(r.value, -SPECIAL_ABS_MAX, SPECIAL_ABS_MAX):
             unreadable.append(f"specials.{label}")
         else:
             good.append({"label": label, "value": r.value})
