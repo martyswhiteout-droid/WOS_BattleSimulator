@@ -25,7 +25,7 @@ def _bucket(rows, side):
 
 def extract_panel(token_shots, side_hint=None, panel_hint=None):
     shots = [assemble_rows(tokens_from_json(s), two_column=True) for s in token_shots]
-    rows, warnings = stitch(shots)
+    rows, warnings = stitch([r for r, _ in shots], [w for _, w in shots])
     ptype = panel_hint or detect_panel_type(rows)
     specials = [{"label": r.canonical.split(":", 1)[1], "value": r.value}
                 for r in rows if r.canonical.startswith("special:") and r.value is not None]

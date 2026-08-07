@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseValue, matchLabel, foldSets, battleToScoutnet, calibrateU } from '../panel_parser.mjs';
+import {
+  parseValue, matchLabel, foldSets, battleToScoutnet, calibrateU, extractPanel,
+} from '../panel_parser.mjs';
 const FIX = JSON.parse(readFileSync(new URL('../../../../tests/fixtures/panel_ocr/golden_vectors.json', import.meta.url), 'utf8'));
 const STATS = ['Attack', 'Defense', 'Lethality', 'Health'];
 
@@ -28,3 +30,18 @@ for (const acct of ['A', 'B']) {
     for (const st of STATS) assert.ok(Math.abs(U[st] - a.U[st]) <= 0.1, st);
   });
 }
+
+const driftShot = () => ([
+  { text: 'Infantry Attack', x0: 0.05, y0: 0.100, x1: 0.40, y1: 0.130, conf: 0.99 },
+  { text: 'Infantry Defense', x0: 0.05, y0: 0.150, x1: 0.40, y1: 0.180, conf: 0.99 },
+  { text: '3979.1%', x0: 0.70, y0: 0.115, x1: 0.95, y1: 0.145, conf: 0.99 },
+]);
+
+test('QA defect 001: drifted value is orphaned, never misattributed', () => {
+  const result = extractPanel([driftShot()], null, null);
+  assert.deepEqual(result.stats, {});
+  assert.ok(result.unreadable_fields.includes('stats.Infantry|Attack'));
+  assert.ok(result.unreadable_fields.includes('stats.Infantry|Defense'));
+  assert.deepEqual(result.warnings, ['orphan value near y=0.130']);
+  assert.equal(result.status, 'failed');
+});

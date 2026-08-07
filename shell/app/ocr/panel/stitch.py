@@ -1,7 +1,16 @@
 from .rows import PanelRow
 
-def stitch(rows_per_shot):
+
+def stitch(rows_per_shot, warnings_per_shot=None):
+    """Merge per-shot rows. Returns ``(rows, warnings)``.
+
+    ``warnings_per_shot`` (QA D-001) carries the assembly warnings of each shot
+    — orphaned values — which are merged, in shot order, ahead of the conflict
+    warnings raised here.
+    """
     order, best, warns = [], {}, []
+    for shot_warnings in (warnings_per_shot or []):
+        warns.extend(shot_warnings)
     for rows in rows_per_shot:
         for r in rows:
             k = (r.canonical, r.side)

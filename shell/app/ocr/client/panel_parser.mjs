@@ -135,14 +135,19 @@ function median(values) {
   return (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
-function groupRows(tokens) {
+// QA D-001 (row drift): a value token may only pair with a label row whose own
+// vertical band contains the value's centre — the label centres widened by
+// BAND_SLACK * h (h = median token height for the shot). See rows.py for the
+// documented deviation from the ruling's literal y0/y1 phrasing.
+const BAND_SLACK = 0.35;
+
+function groupRows(tokens, height) {
   const sorted = [...tokens].sort((left, right) => {
     const leftY = (left.y0 + left.y1) / 2;
     const rightY = (right.y0 + right.y1) / 2;
     return leftY - rightY || left.x0 - right.x0;
   });
   if (!sorted.length) return [];
-  const height = median(sorted.map((token) => token.y1 - token.y0));
   const groups = [];
   let current = [sorted[0]];
   let currentY = (sorted[0].y0 + sorted[0].y1) / 2;
@@ -163,7 +168,10 @@ function groupRows(tokens) {
 
 export function assembleRows(tokens, twoColumn) {
   const output = [];
-  for (const group of groupRows(tokens)) {
+  const warnings = [];
+  if (!tokens.length) return [output, warnings];
+  const height = median(tokens.map((token) => token.y1 - token.y0));
+  for (const group of groupRows(tokens, height)) {
     const labels = group.filter((token) => parseValue(token.text) === null);
     const values = group.filter((token) => parseValue(token.text) !== null);
     const rawLabel = [...labels]
@@ -173,7 +181,16 @@ export function assembleRows(tokens, twoColumn) {
       .trim();
     const canonical = matchLabel(rawLabel);
     if (canonical === null) continue;
-    if (!values.length) {
+    const labelCenters = labels.map((token) => (token.y0 + token.y1) / 2);
+    const bandLow = Math.min(...labelCenters) - BAND_SLACK * height;
+    const bandHigh = Math.max(...labelCenters) + BAND_SLACK * height;
+    const inBand = [];
+    for (const valueToken of values) {
+      const centerY = (valueToken.y0 + valueToken.y1) / 2;
+      if (centerY >= bandLow && centerY <= bandHigh) inBand.push(valueToken);
+      else warnings.push(`orphan value near y=${centerY.toFixed(3)}`);
+    }
+    if (!inBand.length) {
       output.push({
         canonical,
         side: null,
@@ -185,11 +202,9 @@ export function assembleRows(tokens, twoColumn) {
       });
       continue;
     }
-    const labelCenter = labels.length
-      ? (Math.min(...labels.map((token) => token.x0))
-        + Math.max(...labels.map((token) => token.x1))) / 2
-      : 0.5;
-    for (const valueToken of values) {
+    const labelCenter = (Math.min(...labels.map((token) => token.x0))
+      + Math.max(...labels.map((token) => token.x1))) / 2;
+    for (const valueToken of inBand) {
       const parsed = parseValue(valueToken.text);
       const flags = [];
       let side = null;
@@ -211,7 +226,7 @@ export function assembleRows(tokens, twoColumn) {
       });
     }
   }
-  return output;
+  return [output, warnings];
 }
 
 function stitchKey(row) {
@@ -223,10 +238,11 @@ function tupleDisplay(row) {
   return `('${row.canonical}', ${side})`;
 }
 
-export function stitch(rowsPerShot) {
+export function stitch(rowsPerShot, warningsPerShot = null) {
   const order = [];
   const best = new Map();
   const warnings = [];
+  for (const shotWarnings of (warningsPerShot || [])) warnings.push(...shotWarnings);
   for (const rows of rowsPerShot) {
     for (const row of rows) {
       const key = stitchKey(row);
@@ -368,7 +384,7 @@ function bucket(rows, side) {
 
 export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   const shots = tokenShots.map((shot) => assembleRows(tokensFromJson(shot), true));
-  const [rows, warnings] = stitch(shots);
+  const [rows, warnings] = stitch(shots.map((shot) => shot[0]), shots.map((shot) => shot[1]));
   const panelType = panelHint || detectPanelType(rows);
   const specials = rows
     .filter((row) => row.canonical.startsWith('special:') && row.value !== null)
