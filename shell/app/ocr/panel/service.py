@@ -19,6 +19,25 @@ def _in_range(value, lo, hi):
     return value is not None and lo <= value <= hi
 
 
+# Hint/detection pairs that cannot describe the same screenshot (QA D-021).
+# Everything else that merely differs is read under the hint with a warning —
+# notably (battle hint, scout detection), which is a battle report with only
+# one column readable.
+INCOMPATIBLE_HINTS = frozenset({
+    ("citystats", "battle"), ("citystats", "scout"),
+    ("battle", "citystats"), ("scout", "citystats"),
+    ("scout", "battle"),
+})
+
+
+def _hint_warning(hint, detected):
+    if detected == "unknown":
+        return f"panel hint {hint} used: panel type could not be detected from these tokens"
+    if (hint, detected) == ("battle", "scout"):
+        return "panel hint battle used: enemy column not readable in this screenshot"
+    return f"panel hint {hint} used: detected {detected}"
+
+
 def _is_bad(row):
     """The single honesty predicate: a value is emitted only when it is present,
     confident, and unconflicted.
@@ -104,10 +123,12 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
 
     Malformed input raises ValueError, never a KeyError/TypeError (QA D-019).
 
-    ``panel_hint`` is a CHECK, never an override (QA D-012): if it contradicts
-    the detected panel type the result is ``status="failed"`` with an
-    explanatory warning and no stats. A hint is only followed when detection
-    itself is "unknown" (tokens too sparse to decide).
+    ``panel_hint`` is a CHECK, never a blind override (QA D-012, refined by
+    D-021). Pairs in INCOMPATIBLE_HINTS end as ``status="failed"`` with an
+    explanatory warning and no stats. Any other disagreement is read under the
+    hint WITH a warning — including (hint=battle, detected=scout), which is a
+    battle report whose second column is unreadable: the battle branch runs and
+    the absent column is enumerated in unreadable_fields.
 
     Battle results carry ``stats_left``/``stats_right`` and NO ``stats`` key
     (QA D-018); single-sided results carry ``stats``.
@@ -123,17 +144,20 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
     detected = detect_panel_type(rows)
     specials, special_unreadable, specials_observed = _specials(rows)
     ptype = detected
+    warnings = list(warnings)
     if panel_hint:
-        if detected not in ("unknown", panel_hint):
+        if (panel_hint, detected) in INCOMPATIBLE_HINTS:
             return {"panel_type": detected, "requested_side": side_hint,
                     "specials": specials, "specials_observed": specials_observed,
-                    "warnings": list(warnings) + [
+                    "warnings": warnings + [
                         f"panel hint {panel_hint} contradicts detected {detected}"],
                     "stats": {}, "field_conf": {}, "unreadable_fields": [],
                     "status": "failed"}
+        if detected != panel_hint:
+            warnings.append(_hint_warning(panel_hint, detected))
         ptype = panel_hint
     out = {"panel_type": ptype, "requested_side": side_hint, "specials": specials,
-           "specials_observed": specials_observed, "warnings": list(warnings)}
+           "specials_observed": specials_observed, "warnings": warnings}
     unreadable = []
     if ptype == "battle":
         for side, key in (("left", "stats_left"), ("right", "stats_right")):

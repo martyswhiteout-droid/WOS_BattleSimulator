@@ -508,6 +508,25 @@ function inRange(value, low, high) {
   return value !== null && value >= low && value <= high;
 }
 
+// Hint/detection pairs that cannot describe the same screenshot (QA D-021).
+// Anything else that merely differs is read under the hint with a warning —
+// notably (battle hint, scout detection) = a battle report with one column.
+const INCOMPATIBLE_HINTS = new Set([
+  'citystats|battle', 'citystats|scout',
+  'battle|citystats', 'scout|citystats',
+  'scout|battle',
+]);
+
+function hintWarning(hint, detected) {
+  if (detected === 'unknown') {
+    return `panel hint ${hint} used: panel type could not be detected from these tokens`;
+  }
+  if (hint === 'battle' && detected === 'scout') {
+    return 'panel hint battle used: enemy column not readable in this screenshot';
+  }
+  return `panel hint ${hint} used: detected ${detected}`;
+}
+
 function dedupe(items) {
   const seen = new Set();
   const output = [];
@@ -579,21 +598,23 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   const detected = detectPanelType(rows);
   const [specials, specialUnreadable, specialsObserved] = collectSpecials(rows);
   let panelType = detected;
+  const resultWarnings = [...warnings];
   if (panelHint) {
-    // QA D-012: the hint is a CHECK, never an override.
-    if (detected !== 'unknown' && detected !== panelHint) {
+    // QA D-012/D-021: the hint is a CHECK, never a blind override.
+    if (INCOMPATIBLE_HINTS.has(`${panelHint}|${detected}`)) {
       return {
         panel_type: detected,
         requested_side: sideHint,
         specials,
         specials_observed: specialsObserved,
-        warnings: [...warnings, `panel hint ${panelHint} contradicts detected ${detected}`],
+        warnings: [...resultWarnings, `panel hint ${panelHint} contradicts detected ${detected}`],
         stats: {},
         field_conf: {},
         unreadable_fields: [],
         status: 'failed',
       };
     }
+    if (detected !== panelHint) resultWarnings.push(hintWarning(panelHint, detected));
     panelType = panelHint;
   }
   const output = {
@@ -601,7 +622,7 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
     requested_side: sideHint,
     specials,
     specials_observed: specialsObserved,
-    warnings: [...warnings],
+    warnings: resultWarnings,
   };
   const unreadableFields = [];
   let present;

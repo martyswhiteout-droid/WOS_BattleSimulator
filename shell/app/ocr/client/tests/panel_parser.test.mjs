@@ -210,11 +210,11 @@ test('QA defect 011: requested_side echoed, you/enemy aliased both ways', () => 
 });
 
 test('QA defect 012: a contradicting panel hint fails closed', () => {
-  const result = extractPanel([scoutShot()], 'you', 'battle');
+  const result = extractPanel([scoutShot()], 'you', 'citystats');
   assert.equal(result.status, 'failed');
   assert.deepEqual(result.stats, {});
   assert.ok(!('stats_left' in result));
-  assert.ok(result.warnings.includes('panel hint battle contradicts detected scout'));
+  assert.ok(result.warnings.includes('panel hint citystats contradicts detected scout'));
   assert.equal(extractPanel([scoutShot()], 'enemy', 'scout').status, 'ok');
 });
 
@@ -320,4 +320,83 @@ test('QA defect 022: service reports the tri-state capture verdict', () => {
   readable.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
   readable.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83));
   assert.equal(extractPanel([readable], 'you', null).specials_observed, 'read');
+});
+
+function cityStatsShot() {
+  const shot = [];
+  let y = 0.10;
+  for (const [st, v] of [['Attack', '748.49%'], ['Defense', '612.10%'],
+    ['Lethality', '540.00%'], ['Health', '601.25%']]) {
+    shot.push(tok(`Troops' ${st}`, 0.05, y, 0.40, y + 0.03));
+    shot.push(tok(v, 0.70, y, 0.95, y + 0.03));
+    y += 0.05;
+  }
+  for (const cls of CLASSES) {
+    for (const st of STATS) {
+      shot.push(tok(`${cls} ${st}`, 0.05, y, 0.40, y + 0.03));
+      shot.push(tok('120.00%', 0.70, y, 0.95, y + 0.03));
+      y += 0.05;
+    }
+  }
+  return shot;
+}
+
+function oneColumnBattleShot() {
+  const shot = [];
+  let y = 0.10;
+  for (const cls of CLASSES) {
+    for (const st of STATS) {
+      shot.push(tok(`${cls} ${st}`, 0.38, y, 0.58, y + 0.03));
+      shot.push(tok('+4859.0%', 0.03, y, 0.23, y + 0.03, 0.99, 'green'));
+      y += 0.05;
+    }
+  }
+  return shot;
+}
+
+test('QA defect 021: incompatible hint/detection pairs still fail closed', () => {
+  const cases = [
+    ['citystats', scoutShot(), 'scout'],
+    ['citystats', battleShot(), 'battle'],
+    ['battle', cityStatsShot(), 'citystats'],
+    ['scout', cityStatsShot(), 'citystats'],
+    ['scout', battleShot(), 'battle'],
+  ];
+  for (const [hint, shot, detected] of cases) {
+    const result = extractPanel([shot], 'you', hint);
+    assert.equal(result.status, 'failed', `${hint}/${detected}`);
+    assert.deepEqual(result.stats, {}, `${hint}/${detected}`);
+    assert.ok(result.warnings.includes(`panel hint ${hint} contradicts detected ${detected}`));
+  }
+});
+
+test('QA defect 021: battle hint on a one-column shot is a partial battle read', () => {
+  const result = extractPanel([oneColumnBattleShot()], 'you', 'battle');
+  assert.equal(result.panel_type, 'battle');
+  assert.equal(result.status, 'partial');
+  assert.equal(Object.keys(result.stats_left).length, 12);
+  assert.deepEqual(result.stats_right, {});
+  assert.deepEqual(result.stats_you, result.stats_left);
+  for (const cls of CLASSES) {
+    for (const st of STATS) {
+      assert.ok(result.unreadable_fields.includes(`stats_right.${cls}|${st}`));
+      assert.ok(!result.unreadable_fields.includes(`stats_left.${cls}|${st}`));
+    }
+  }
+  assert.ok(result.warnings.some((w) => w.includes('enemy column not readable')));
+});
+
+test('QA defect 021: agreeing hints stay silent, unknown detection warns', () => {
+  for (const [hint, shot] of [['scout', scoutShot()], ['battle', battleShot()],
+    ['citystats', cityStatsShot()]]) {
+    const result = extractPanel([shot], 'you', hint);
+    assert.equal(result.panel_type, hint);
+    assert.deepEqual(result.warnings, [], hint);
+  }
+  const sparse = [tok('Infantry Attack', 0.05, 0.10, 0.40, 0.13),
+    tok('+4491.6%', 0.70, 0.10, 0.95, 0.13)];
+  const result = extractPanel([sparse], 'you', 'scout');
+  assert.equal(result.panel_type, 'scout');
+  assert.equal(result.status, 'partial');
+  assert.ok(result.warnings.some((w) => w.includes('could not be detected')));
 });

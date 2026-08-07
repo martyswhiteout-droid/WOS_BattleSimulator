@@ -155,11 +155,11 @@ def test_qa_defect_011_single_sided_panel_has_no_side_aliases():
     assert "stats_you" not in r and "stats_enemy" not in r
 
 def test_qa_defect_012_contradicting_panel_hint_fails_closed():
-    r = extract_panel([_shot_scout()], side_hint="you", panel_hint="battle")
+    r = extract_panel([_shot_scout()], side_hint="you", panel_hint="citystats")
     assert r["status"] == "failed"
     assert r["stats"] == {}
     assert "stats_left" not in r and "stats_right" not in r
-    assert "panel hint battle contradicts detected scout" in r["warnings"]
+    assert "panel hint citystats contradicts detected scout" in r["warnings"]
 
 def test_qa_defect_012_agreeing_hint_is_accepted():
     r = extract_panel([_shot_scout()], side_hint="enemy", panel_hint="scout")
@@ -257,3 +257,60 @@ def test_qa_defect_022_all_readable_specials_report_read():
     r = extract_panel([shot], side_hint="you", panel_hint=None)
     assert r["specials"] == [{"label": "Attack Bonus (Pet Skill)", "value": 10.0}]
     assert r["specials_observed"] == "read"
+
+def _shot_citystats():
+    toks, y = [], 0.10
+    for st, v in (("Attack", "748.49%"), ("Defense", "612.10%"),
+                  ("Lethality", "540.00%"), ("Health", "601.25%")):
+        toks.append(_tok(f"Troops' {st}", 0.05, y, 0.40, y + 0.03))
+        toks.append(_tok(v, 0.70, y, 0.95, y + 0.03))
+        y += 0.05
+    for cls in CLASSES:
+        for st in STATS:
+            toks.append(_tok(f"{cls} {st}", 0.05, y, 0.40, y + 0.03))
+            toks.append(_tok("120.00%", 0.70, y, 0.95, y + 0.03))
+            y += 0.05
+    return toks
+
+def test_qa_defect_021_incompatible_hint_detection_pairs_still_fail_closed():
+    cases = [
+        ("citystats", _shot_scout(), "scout"),
+        ("citystats", _shot_battle(), "battle"),
+        ("battle", _shot_citystats(), "citystats"),
+        ("scout", _shot_citystats(), "citystats"),
+        ("scout", _shot_battle(), "battle"),
+    ]
+    for hint, shot, detected in cases:
+        r = extract_panel([shot], side_hint="you", panel_hint=hint)
+        assert r["status"] == "failed", (hint, detected)
+        assert r["stats"] == {}, (hint, detected)
+        assert "stats_left" not in r and "stats_right" not in r, (hint, detected)
+        assert f"panel hint {hint} contradicts detected {detected}" in r["warnings"]
+
+def test_qa_defect_021_battle_hint_on_one_column_shot_is_a_partial_battle_read():
+    # QA probe: battle_shot with zero enemy rows. Detection says "scout" (only
+    # one column present) but the hint is compatible — read it as a partial
+    # battle instead of hard-failing.
+    r = extract_panel([_shot_battle(right_rows=set())], side_hint="you", panel_hint="battle")
+    assert r["panel_type"] == "battle" and r["status"] == "partial"
+    assert len(r["stats_left"]) == 12 and r["stats_right"] == {}
+    assert r["stats_you"] == r["stats_left"] and r["stats_enemy"] == {}
+    for cls in CLASSES:
+        for st in STATS:
+            assert f"stats_right.{cls}|{st}" in r["unreadable_fields"]
+            assert f"stats_left.{cls}|{st}" not in r["unreadable_fields"]
+    assert any("enemy column not readable" in w for w in r["warnings"])
+
+def test_qa_defect_021_agreeing_hints_stay_silent():
+    for hint, shot in (("scout", _shot_scout()), ("battle", _shot_battle()),
+                       ("citystats", _shot_citystats())):
+        r = extract_panel([shot], side_hint="you", panel_hint=hint)
+        assert r["panel_type"] == hint
+        assert r["warnings"] == [], hint
+
+def test_qa_defect_021_hint_under_unknown_detection_warns_but_proceeds():
+    shot = [_tok("Infantry Attack", 0.05, 0.10, 0.40, 0.13),
+            _tok("+4491.6%", 0.70, 0.10, 0.95, 0.13)]
+    r = extract_panel([shot], side_hint="you", panel_hint="scout")
+    assert r["panel_type"] == "scout" and r["status"] == "partial"
+    assert any("could not be detected" in w for w in r["warnings"])
