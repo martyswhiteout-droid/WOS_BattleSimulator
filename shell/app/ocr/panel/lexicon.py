@@ -30,6 +30,13 @@ PENALTY_LABELS = frozenset(
 _META = ("Deployment Capacity", "March Queue", "March Speed Up", "Training Capacity", "Training Speed", "Healing Speed")
 _HEADERS = ("Bonus Overview", "Stat Bonuses", "Military", "Troops Total", "Lootable")
 
+# The header of the panel that actually LISTS the specials rows (QA D-022).
+# Seeing it with zero special rows is the legal "this account has no specials"
+# state — which is NOT the same as never having captured the panel. Deliberately
+# narrow: "Bonus Overview" is the BO/city-stats screen, where the absence of
+# special rows says nothing about the specials panel.
+SPECIALS_PANEL_HEADERS = frozenset({"header:Stat Bonuses"})
+
 _NON_ALPHA = re.compile(r"[^a-z]", re.ASCII)  # QA D-009: ASCII-only, like the JS mirror
 
 def _skeleton(s):

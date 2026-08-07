@@ -36,6 +36,15 @@ const META = [
 ];
 const HEADERS = ['Bonus Overview', 'Stat Bonuses', 'Military', 'Troops Total', 'Lootable'];
 
+// The header of the panel that actually LISTS the specials rows (QA D-022).
+// Seeing it with zero special rows is the legal "this account has no specials"
+// state — not the same as never having captured the panel. Deliberately narrow:
+// 'Bonus Overview' is the BO/city-stats screen.
+export const SPECIALS_PANEL_HEADERS = new Set(['header:Stat Bonuses']);
+
+// Capture states for foldSets({ observed }) (QA D-022).
+export const OBSERVED_STATES = ['none', 'partial', 'read'];
+
 const PCT = /^([+-]?)(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?%$/;
 const PCT_NOSYM = /^([+-])(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?$/;
 const INT = /^(\d{1,3}(?:,\d{3})*|\d+)$/;
@@ -315,8 +324,9 @@ function zeroStats() {
   return Object.fromEntries(STATS.map((stat) => [stat, 0.0]));
 }
 
-// QA D-005: an unread specials panel is NOT the same as an account with no
-// specials — folding an empty set silently turns the conversion into identity.
+// QA D-005 (tightened by D-022): an unread — or partially read — specials panel
+// is NOT the same as an account with no specials. Folding what happened to be
+// readable pulls the conversion towards the identity (worst case 367.4 pp).
 export class MissingSpecialsError extends Error {
   constructor(message) {
     super(message);
@@ -327,20 +337,25 @@ export class MissingSpecialsError extends Error {
 
 /**
  * Fold the specials panel into [sScout, sBattle, pEnemy].
- * `options.observed` (required) states whether a specials panel was actually
- * captured and read. observed:false with no own specials throws
- * MissingSpecialsError; observed:true with an empty enemy list is legal.
+ * `options.observed` (required) is the tri-state capture verdict from the
+ * service: 'none' | 'partial' | 'read' (QA D-022). Only 'read' may fold —
+ * 'partial' is as untrustworthy as 'none'. An EMPTY specialsOwn under 'read'
+ * is legal and folds to the identity correctly (a genuinely specials-free
+ * side, e.g. account B's enemy column).
  * `options.warnings` (optional array) collects suspect rows that were excluded
  * — currently own-side penalty rows with a positive value (QA D-013).
  */
 export function foldSets(specialsOwn, specialsEnemy, options) {
-  if (typeof options?.observed !== 'boolean') {
-    throw new TypeError('foldSets requires { observed: boolean }');
+  if (!OBSERVED_STATES.includes(options?.observed)) {
+    throw new TypeError(
+      `foldSets requires { observed: ${OBSERVED_STATES.join('|')} }, got ${JSON.stringify(options?.observed)}`,
+    );
   }
-  if (!options.observed && specialsOwn.length === 0) {
+  if (options.observed !== 'read') {
     throw new MissingSpecialsError(
-      'specials panel not observed and no own specials read: refusing to fold '
-      + 'an empty set (that would make the conversion an identity)',
+      `specials panel state is '${options.observed}': refusing to fold a set that `
+      + 'was never captured or was only partly read (that would silently pull '
+      + 'the conversion towards the identity)',
     );
   }
   const warnings = Array.isArray(options.warnings) ? options.warnings : null;
@@ -526,19 +541,31 @@ function bucket(rows, side) {
 }
 
 // Specials pass the same honesty predicate as class rows (QA D-004).
+// Returns [specials, unreadable, observed] where observed is the tri-state
+// capture verdict (QA D-022): 'none' (never captured), 'partial' (rows seen,
+// >=1 withheld), 'read' (all seen rows readable, or the specials-panel header
+// seen with zero rows = the legal specials-free account).
 function collectSpecials(rows) {
   const good = [];
   const unreadable = [];
-  let observed = false;
+  let seen = 0;
+  let headerSeen = false;
   for (const row of rows) {
+    if (SPECIALS_PANEL_HEADERS.has(row.canonical)) {
+      headerSeen = true;
+      continue;
+    }
     if (!row.canonical.startsWith('special:')) continue;
-    observed = true; // QA D-005: seen at all, readable or not
+    seen += 1;
     const label = row.canonical.slice('special:'.length);
     if (isBad(row) || !inRange(row.value, -SPECIAL_ABS_MAX, SPECIAL_ABS_MAX)) {
       unreadable.push(`specials.${label}`);
     }
     else good.push({ label, value: row.value });
   }
+  let observed;
+  if (seen === 0) observed = headerSeen ? 'read' : 'none';
+  else observed = unreadable.length ? 'partial' : 'read';
   return [good, unreadable, observed];
 }
 

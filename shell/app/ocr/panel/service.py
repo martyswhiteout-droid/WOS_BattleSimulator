@@ -2,7 +2,7 @@ from .tokens import tokens_from_json
 from .rows import assemble_rows, LOW_CONF
 from .stitch import stitch
 from .detect import detect_panel_type
-from .lexicon import CLASSES, STATS
+from .lexicon import CLASSES, SPECIALS_PANEL_HEADERS, STATS
 
 # Every class-stat the app expects on a full panel, in a fixed (deterministic)
 # order — used to report fields that were never seen at all (QA D-006).
@@ -59,17 +59,35 @@ def _bucket(rows, side):
 def _specials(rows):
     """Specials pass the same honesty predicate as class rows (QA D-004):
     a low-confidence or value-less special is reported unreadable, never folded.
+
+    Returns ``(specials, unreadable, observed)`` where ``observed`` is the
+    tri-state capture verdict (QA D-022) consumed by ``convert.fold_sets``:
+
+    "none"    no special row and no specials-panel header — the panel was never
+              captured, so folding would silently be the identity.
+    "partial" special rows were seen but at least one was withheld — the fold
+              would be built from an incomplete set.
+    "read"    every special row seen was readable, OR the specials-panel header
+              was seen with zero rows (the legal specials-free account).
     """
-    good, unreadable, observed = [], [], False
+    good, unreadable, seen = [], [], 0
+    header_seen = False
     for r in rows:
+        if r.canonical in SPECIALS_PANEL_HEADERS:
+            header_seen = True
+            continue
         if not r.canonical.startswith("special:"):
             continue
-        observed = True  # QA D-005: seen at all, readable or not
+        seen += 1
         label = r.canonical.split(":", 1)[1]
         if _is_bad(r) or not _in_range(r.value, -SPECIAL_ABS_MAX, SPECIAL_ABS_MAX):
             unreadable.append(f"specials.{label}")
         else:
             good.append({"label": label, "value": r.value})
+    if seen == 0:
+        observed = "read" if header_seen else "none"
+    else:
+        observed = "partial" if unreadable else "read"
     return good, unreadable, observed
 
 

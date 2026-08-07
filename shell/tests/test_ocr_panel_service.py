@@ -108,14 +108,14 @@ def test_qa_defect_004_valueless_special_is_unreadable():
 
 def test_qa_defect_005_service_reports_whether_specials_were_observed():
     clean = extract_panel([_shot_scout()], side_hint="you", panel_hint=None)
-    assert clean["specials_observed"] is False
+    assert clean["specials_observed"] == "none"
 
     shot = _shot_scout()
     shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
     shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83, conf=0.05))
     seen = extract_panel([shot], side_hint="you", panel_hint=None)
-    # Row was seen but rejected: specials stay empty, "observed" is still true.
-    assert seen["specials"] == [] and seen["specials_observed"] is True
+    # Row was seen but rejected: specials stay empty and the state says so.
+    assert seen["specials"] == [] and seen["specials_observed"] == "partial"
 
 def test_qa_defect_006_never_seen_scout_fields_are_listed_unreadable():
     shot = [t for t in _shot_scout() if not t["text"].startswith("Marksman")]
@@ -221,3 +221,39 @@ def test_qa_defect_019_extract_panel_rejects_malformed_token_shots():
     for bad in ("nope", [{"text": "Infantry Attack"}], [None], 7):
         with pytest.raises(ValueError):
             extract_panel(bad, side_hint=None, panel_hint=None)
+
+def test_qa_defect_022_all_unreadable_specials_report_partial_not_read():
+    shot = _shot_scout()
+    shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83, conf=0.20))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [] and r["specials_observed"] == "partial"
+
+def test_qa_defect_022_partially_readable_specials_report_partial():
+    shot = _shot_scout()
+    shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83, conf=0.20))
+    shot.append(_tok("Defense Bonus (Pet Skill)", 0.05, 0.86, 0.40, 0.89))
+    shot.append(_tok("+8.0%", 0.70, 0.86, 0.95, 0.89))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [{"label": "Defense Bonus (Pet Skill)", "value": 8.0}]
+    assert r["specials_observed"] == "partial"
+
+def test_qa_defect_022_specials_panel_header_with_no_rows_reads_clean():
+    # The legal zero-specials account: the panel WAS captured and read.
+    shot = _shot_scout()
+    shot.append(_tok("Stat Bonuses", 0.05, 0.80, 0.40, 0.83))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [] and r["specials_observed"] == "read"
+
+def test_qa_defect_022_no_rows_and_no_header_is_none():
+    assert extract_panel([_shot_scout()], side_hint="you",
+                         panel_hint=None)["specials_observed"] == "none"
+
+def test_qa_defect_022_all_readable_specials_report_read():
+    shot = _shot_scout()
+    shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [{"label": "Attack Bonus (Pet Skill)", "value": 10.0}]
+    assert r["specials_observed"] == "read"

@@ -6,13 +6,17 @@ class CalibrationError(ValueError):
     pass
 
 class MissingSpecialsError(ValueError):
-    """The specials panel was never observed (QA D-005).
+    """The specials panel was not fully read (QA D-005, tightened by D-022).
 
-    An unread specials panel is NOT the same as an account with no specials:
-    folding an empty set silently turns battle->scout conversion into the
-    identity (measured worst-case silent error: 367.4 pp). Callers must state
-    explicitly whether the panel was observed.
+    An unread — or partially read — specials panel is NOT the same as an
+    account with no specials: folding whatever happened to be readable turns
+    battle->scout conversion into (or towards) the identity, measured worst
+    case 367.4 pp of silent error. Only the "read" capture state may fold.
     """
+
+# Capture states for ``fold_sets(observed=...)`` (QA D-022). See
+# service._specials for how each is decided from the rows.
+OBSERVED_STATES = ("none", "partial", "read")
 
 def _stat_of(label):
     for st in STATS:
@@ -23,19 +27,25 @@ def _stat_of(label):
 def fold_sets(specials_own, specials_enemy, *, observed, warnings=None):
     """Fold the specials panel into (S_scout, S_battle, P_enemy).
 
-    ``observed`` (required, keyword-only) states whether a specials panel was
-    actually captured and read. ``observed=False`` with no own specials raises
-    MissingSpecialsError; ``observed=True`` with an empty enemy list is legal
-    (real case: account B).
+    ``observed`` (required, keyword-only) is the tri-state capture verdict from
+    the service: "none" | "partial" | "read" (QA D-022). Only "read" may fold —
+    "partial" (some special rows withheld) is just as untrustworthy as "none".
+    An EMPTY ``specials_own`` under "read" is legal and folds to the identity
+    correctly: that is a genuinely specials-free side (e.g. account B's enemy
+    column), not a missing capture.
 
     ``warnings`` (optional out-parameter) collects rows that were excluded as
     suspect — currently own-side penalty rows with a positive value, i.e. OCR
     that lost the minus sign (QA D-013). The 3-tuple return is unchanged.
     """
-    if not observed and not specials_own:
+    if observed not in OBSERVED_STATES:
+        raise ValueError(
+            f"observed must be one of {OBSERVED_STATES}, got {observed!r}")
+    if observed != "read":
         raise MissingSpecialsError(
-            "specials panel not observed and no own specials read: refusing to "
-            "fold an empty set (that would make the conversion an identity)")
+            f"specials panel state is {observed!r}: refusing to fold a set that "
+            "was never captured or was only partly read (that would silently "
+            "pull the conversion towards the identity)")
     S_scout = {st: 0.0 for st in STATS}
     territory = {st: 0.0 for st in STATS}
     for sp in specials_own:

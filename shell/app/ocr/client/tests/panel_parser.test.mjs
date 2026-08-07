@@ -21,7 +21,7 @@ test('labels match fixture', () => {
 for (const acct of ['A', 'B']) {
   test(`law round-trips on account ${acct}`, () => {
     const a = FIX.accounts[acct];
-    const [sScout, sBattle, pEnemy] = foldSets(a.specials_own, a.specials_enemy, { observed: true });
+    const [sScout, sBattle, pEnemy] = foldSets(a.specials_own, a.specials_enemy, { observed: 'read' });
     for (const st of STATS) assert.ok(Math.abs(sScout[st] - a.S_scout[st]) < 1e-9, st);
     const scout = battleToScoutnet(a.battle_left, sScout, sBattle, pEnemy);
     for (const cls of Object.keys(a.scout))
@@ -120,10 +120,10 @@ test('QA defect 006: never-seen fields are listed unreadable', () => {
 });
 
 test('QA defect 005: unobserved empty specials refuses the identity fold', () => {
-  assert.throws(() => foldSets([], [], { observed: false }), (error) => error.code === 'missing_specials');
+  assert.throws(() => foldSets([], [], { observed: 'none' }), (error) => error.code === 'missing_specials');
   assert.throws(() => foldSets([], []), TypeError);
   const b = FIX.accounts.B;
-  const [sScout, , pEnemy] = foldSets(b.specials_own, b.specials_enemy, { observed: true });
+  const [sScout, , pEnemy] = foldSets(b.specials_own, b.specials_enemy, { observed: 'read' });
   for (const st of STATS) {
     assert.equal(pEnemy[st], 0.0);
     assert.ok(Math.abs(sScout[st] - b.S_scout[st]) < 1e-9, st);
@@ -131,13 +131,13 @@ test('QA defect 005: unobserved empty specials refuses the identity fold', () =>
 });
 
 test('QA defect 005: service reports whether specials were observed', () => {
-  assert.equal(extractPanel([scoutShot()], 'you', null).specials_observed, false);
+  assert.equal(extractPanel([scoutShot()], 'you', null).specials_observed, 'none');
   const shot = scoutShot();
   shot.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
   shot.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83, 0.05));
   const seen = extractPanel([shot], 'you', null);
   assert.deepEqual(seen.specials, []);
-  assert.equal(seen.specials_observed, true);
+  assert.equal(seen.specials_observed, 'partial');
 });
 
 test('QA defect 008: out-of-range values are unreadable', () => {
@@ -228,14 +228,14 @@ test('QA defect 013: penalties classify by canonical label, not substring or sig
   const [, , pEnemy] = foldSets([], [
     { label: 'Enemy Attack Reduction', value: -12.0 },
     { label: 'Enemy Defense Reduction', value: 8.0 },
-  ], { observed: true });
+  ], { observed: 'read' });
   assert.ok(Math.abs(pEnemy.Attack - 0.12) < 1e-9);
   assert.ok(Math.abs(pEnemy.Defense - 0.08) < 1e-9);
 
   const warnings = [];
   const [sScout, sBattle] = foldSets(
     [{ label: 'Enemy Defense Penalty (Pet Skill)', value: 10.0 }], [],
-    { observed: true, warnings },
+    { observed: 'read', warnings },
   );
   assert.equal(sScout.Defense, 0.0);
   assert.equal(sBattle.Defense, 0.0);
@@ -245,13 +245,13 @@ test('QA defect 013: penalties classify by canonical label, not substring or sig
   const quiet = [];
   const [negative] = foldSets(
     [{ label: 'Enemy Defense Penalty (Pet Skill)', value: -10.0 }], [],
-    { observed: true, warnings: quiet },
+    { observed: 'read', warnings: quiet },
   );
   assert.equal(negative.Defense, 0.0);
   assert.deepEqual(quiet, []);
 
   const [bonus] = foldSets([{ label: 'Defense Bonus (Pet Skill)', value: 10.0 }], [],
-    { observed: true });
+    { observed: 'read' });
   assert.ok(Math.abs(bonus.Defense - 0.10) < 1e-9);
 });
 
@@ -283,4 +283,41 @@ test('QA defect 019: convert + token layers raise typed errors, never TypeErrors
     [[{ text: 'x', x0: 0.1, y0: 0.1, x1: 0.2, y1: 0.2, conf: null }]]]) {
     assert.throws(() => extractPanel(bad, null, null), Error);
   }
+});
+
+test('QA defect 022: only a fully read specials panel may fold', () => {
+  const own = [{ label: 'Attack Bonus (Pet Skill)', value: 10.0 }];
+  for (const state of ['none', 'partial']) {
+    assert.throws(() => foldSets([], [], { observed: state }), (e) => e.code === 'missing_specials');
+    assert.throws(() => foldSets(own, [], { observed: state }), (e) => e.code === 'missing_specials');
+  }
+  const [sScout, sBattle, pEnemy] = foldSets([], [], { observed: 'read' });
+  for (const st of STATS) {
+    assert.equal(sScout[st], 0.0);
+    assert.equal(sBattle[st], 0.0);
+    assert.equal(pEnemy[st], 0.0);
+  }
+  for (const bad of [true, false, null, 1, 'yes', 'READ', undefined]) {
+    assert.throws(() => foldSets([], [], { observed: bad }), TypeError);
+  }
+});
+
+test('QA defect 022: service reports the tri-state capture verdict', () => {
+  const partial = scoutShot();
+  partial.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
+  partial.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83, 0.20));
+  assert.equal(extractPanel([partial], 'you', null).specials_observed, 'partial');
+
+  const headerOnly = scoutShot();
+  headerOnly.push(tok('Stat Bonuses', 0.05, 0.80, 0.40, 0.83));
+  const headerResult = extractPanel([headerOnly], 'you', null);
+  assert.deepEqual(headerResult.specials, []);
+  assert.equal(headerResult.specials_observed, 'read');
+
+  assert.equal(extractPanel([scoutShot()], 'you', null).specials_observed, 'none');
+
+  const readable = scoutShot();
+  readable.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
+  readable.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83));
+  assert.equal(extractPanel([readable], 'you', null).specials_observed, 'read');
 });
