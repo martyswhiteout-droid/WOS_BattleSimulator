@@ -96,3 +96,31 @@ def test_qa_defect_013_own_non_penalty_bonus_still_folds():
     S_scout, _, _ = fold_sets([{"label": "Defense Bonus (Pet Skill)", "value": 10.0}], [],
                               observed=True)
     assert abs(S_scout["Defense"] - 0.10) < 1e-9
+
+def test_qa_defect_015_calibration_requires_all_three_classes():
+    a = FIX["accounts"]["A"]
+    with pytest.raises(CalibrationError):
+        calibrate_U(a["bo_troops"], a["bo_class"],
+                    {"Infantry": a["scout"]["Infantry"]}, a["S_scout"])
+    with pytest.raises(CalibrationError):
+        calibrate_U(a["bo_troops"], {"Infantry": a["bo_class"]["Infantry"]},
+                    a["scout"], a["S_scout"])
+
+def test_qa_defect_019_calibrate_U_raises_typed_errors_on_bad_input():
+    a = FIX["accounts"]["A"]
+    with pytest.raises(CalibrationError):        # was a bare ValueError from max([])
+        calibrate_U(a["bo_troops"], a["bo_class"], {}, a["S_scout"])
+    with pytest.raises(CalibrationError):        # was ZeroDivisionError
+        calibrate_U(a["bo_troops"], a["bo_class"], a["scout"], {st: -1.0 for st in STATS})
+    with pytest.raises(CalibrationError):        # was KeyError
+        holes = {c: {st: v for st, v in s.items() if st != "Health"}
+                 for c, s in a["scout"].items()}
+        calibrate_U(a["bo_troops"], a["bo_class"], holes, a["S_scout"])
+    with pytest.raises(CalibrationError):        # was TypeError
+        calibrate_U(a["bo_troops"], a["bo_class"], a["scout"], None)
+
+def test_qa_defect_019_battle_to_scoutnet_guards_the_division():
+    a = FIX["accounts"]["A"]
+    with pytest.raises(CalibrationError):
+        battle_to_scoutnet(a["battle_left"], a["S_scout"],
+                           {st: -1.0 for st in STATS}, a["P_enemy"])

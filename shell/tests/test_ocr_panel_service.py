@@ -1,4 +1,5 @@
 import json
+import pytest
 from shell.app.ocr.panel.service import extract_panel
 
 def _shot_scout():
@@ -215,3 +216,8 @@ def test_qa_defect_001_drifted_value_never_lands_under_wrong_label():
     assert "stats.Infantry|Defense" in r["unreadable_fields"]
     assert r["warnings"] == ["orphan value near y=0.130"]
     assert r["status"] == "failed"
+
+def test_qa_defect_019_extract_panel_rejects_malformed_token_shots():
+    for bad in ("nope", [{"text": "Infantry Attack"}], [None], 7):
+        with pytest.raises(ValueError):
+            extract_panel(bad, side_hint=None, panel_hint=None)

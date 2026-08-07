@@ -84,6 +84,8 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
     side="enemy" -> stats_you = stats_right, stats_enemy = stats_left
     (`_conf` twins alias the same way). Single-sided panels get no aliases.
 
+    Malformed input raises ValueError, never a KeyError/TypeError (QA D-019).
+
     ``panel_hint`` is a CHECK, never an override (QA D-012): if it contradicts
     the detected panel type the result is ``status="failed"`` with an
     explanatory warning and no stats. A hint is only followed when detection
@@ -92,6 +94,12 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
     Battle results carry ``stats_left``/``stats_right`` and NO ``stats`` key
     (QA D-018); single-sided results carry ``stats``.
     """
+    if not isinstance(token_shots, (list, tuple)):
+        raise ValueError(f"token_shots must be a list of token lists, got "
+                         f"{type(token_shots).__name__}")
+    for shot in token_shots:
+        if not isinstance(shot, (list, tuple)):
+            raise ValueError(f"each token shot must be a list, got {type(shot).__name__}")
     shots = [assemble_rows(tokens_from_json(s), two_column=True) for s in token_shots]
     rows, warnings = stitch([r for r, _ in shots], [w for _, w in shots])
     detected = detect_panel_type(rows)

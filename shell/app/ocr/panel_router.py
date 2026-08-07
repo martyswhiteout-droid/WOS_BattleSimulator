@@ -87,5 +87,12 @@ async def panel_upload(
     if os.environ.get("OCR_PANEL_MOCK") != "1":
         return JSONResponse(status_code=503, content={"error": "ocr_engine_unavailable"})
 
-    result = extract_panel([_mock_tokens() for _ in images], side, panel)
+    # QA D-019: every malformed-token failure in the panel stack is a ValueError
+    # (CalibrationError/MissingSpecialsError included) — a client-input problem,
+    # not a server fault. No 500 is reachable from bad tokens.
+    try:
+        result = extract_panel([_mock_tokens() for _ in images], side, panel)
+    except ValueError as exc:
+        return JSONResponse(status_code=422,
+                            content={"error": "unreadable_tokens", "message": str(exc)})
     return JSONResponse(status_code=200, content=result)

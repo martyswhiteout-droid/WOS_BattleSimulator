@@ -49,3 +49,13 @@ def test_mock_extraction_roundtrip_and_no_files_left(tmp_path, client_paid, monk
     r = client_paid.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
     assert r.status_code == 200 and r.json()["status"] in ("ok", "partial")
     assert list(tmp_path.iterdir()) == []   # nothing persisted anywhere under the app tmp dir
+
+def test_qa_defect_019_malformed_tokens_are_422_not_500(client_paid, monkeypatch):
+    def boom(*args, **kwargs):
+        raise ValueError("malformed token: coord out of range: 1.7")
+
+    monkeypatch.setattr("shell.app.ocr.panel_router.extract_panel", boom)
+    r = client_paid.post("/shell/ocr/panel",
+                         files={"file": ("a.png", PNG_BYTES, "image/png")},
+                         data={"side": "enemy"})
+    assert r.status_code == 422 and r.json()["error"] == "unreadable_tokens"

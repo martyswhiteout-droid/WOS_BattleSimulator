@@ -116,9 +116,20 @@ export function matchLabel(raw) {
   return bestDistance <= 2 ? best : null;
 }
 
+// Every rejection is an Error (QA D-019): a malformed engine payload must never
+// surface as a TypeError on undefined further up the stack.
 function tokensFromJson(items) {
+  if (!Array.isArray(items)) throw new Error('token shot must be an array');
   const output = [];
   for (const item of items) {
+    if (item === null || typeof item !== 'object' || Array.isArray(item)) {
+      throw new Error('token must be an object');
+    }
+    for (const key of ['text', 'x0', 'y0', 'x1', 'y1', 'conf']) {
+      if (!(key in item) || item[key] === null || item[key] === undefined) {
+        throw new Error(`token missing key '${key}'`);
+      }
+    }
     const token = {
       text: String(item.text),
       x0: Number(item.x0),
@@ -128,6 +139,11 @@ function tokensFromJson(items) {
       conf: Number(item.conf),
       color: item.color ?? null,
     };
+    for (const [key, value] of Object.entries(token)) {
+      if (key !== 'text' && key !== 'color' && Number.isNaN(value)) {
+        throw new Error(`token has a non-numeric ${key}`);
+      }
+    }
     for (const coordinate of [token.x0, token.y0, token.x1, token.y1]) {
       if (!(coordinate >= 0.0 && coordinate <= 1.0)) {
         throw new Error(`coord out of range: ${coordinate}`);
@@ -364,27 +380,65 @@ export function battleToScoutnet(battleRows, sScout, sBattle, pEnemy) {
   for (const [cls, stats] of Object.entries(battleRows)) {
     output[cls] = {};
     for (const [stat, battle] of Object.entries(stats)) {
-      const ratio = (1 + sScout[stat]) * (1 + pEnemy[stat]) / (1 + sBattle[stat]);
+      const battleSet = setValue('sBattle', sBattle, stat);
+      if (battleSet <= -1.0) {
+        throw new CalibrationError(`sBattle[${stat}] <= -1 makes the conversion undefined`);
+      }
+      const ratio = (1 + setValue('sScout', sScout, stat))
+        * (1 + setValue('pEnemy', pEnemy, stat)) / (1 + battleSet);
       output[cls][stat] = ((1 + battle / 100.0) * ratio - 1) * 100.0;
     }
   }
   return output;
 }
 
-class CalibrationError extends Error {
+export class CalibrationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'CalibrationError';
+    this.code = 'calibration_failed';
   }
 }
 
+// One entry of an S/P set, as a number, or a typed error (QA D-019).
+function setValue(name, mapping, stat) {
+  const raw = mapping?.[stat];
+  const value = Number(raw);
+  if (raw === null || raw === undefined || Number.isNaN(value)) {
+    throw new CalibrationError(`malformed ${name} for ${stat}`);
+  }
+  return value;
+}
+
+/**
+ * Solve the per-class hero block U. Requires all three troop classes on BOTH
+ * the scout panel and the BO class block (QA D-015) — with fewer, the
+ * uniformity guard is vacuous. Malformed input throws CalibrationError, never
+ * a bare TypeError/Infinity (QA D-019).
+ */
 export function calibrateU(boTroops, boClass, scoutRows, sScout) {
+  const isMapping = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+  if (!isMapping(scoutRows) || !isMapping(boClass)) {
+    throw new CalibrationError('scoutRows and boClass must be objects');
+  }
+  const absent = CLASSES.filter((cls) => !(cls in scoutRows) || !(cls in boClass));
+  if (absent.length) {
+    throw new CalibrationError(`calibration needs all three classes; missing ${absent.join(', ')}`);
+  }
   const output = {};
   for (const stat of STATS) {
+    const s = setValue('sScout', sScout, stat);
+    if (s <= -1.0) throw new CalibrationError(`sScout[${stat}] <= -1 makes the standardisation undefined`);
     const values = [];
-    for (const [cls, stats] of Object.entries(scoutRows)) {
-      const standard = ((1 + stats[stat] / 100.0) / (1 + sScout[stat]) - 1) * 100.0;
-      values.push(standard - boTroops[stat] - boClass[cls][stat]);
+    for (const cls of CLASSES) {
+      const scoutValue = Number(scoutRows[cls]?.[stat]);
+      const troopsValue = Number(boTroops?.[stat]);
+      const classValue = Number(boClass[cls]?.[stat]);
+      if ([scoutValue, troopsValue, classValue].some((value) => Number.isNaN(value))) {
+        throw new CalibrationError(`malformed calibration input for ${cls}|${stat}`);
+      }
+      const standard = ((1 + scoutValue / 100.0) / (1 + s) - 1) * 100.0;
+      values.push(standard - troopsValue - classValue);
     }
     const spread = Math.max(...values) - Math.min(...values);
     if (spread > 1.0) throw new CalibrationError(`U not uniform for ${stat}: spread ${spread.toFixed(2)}`);
@@ -489,6 +543,10 @@ function collectSpecials(rows) {
 }
 
 export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
+  if (!Array.isArray(tokenShots)) throw new Error('tokenShots must be an array of token arrays');
+  for (const shot of tokenShots) {
+    if (!Array.isArray(shot)) throw new Error('each token shot must be an array');
+  }
   const shots = tokenShots.map((shot) => assembleRows(tokensFromJson(shot), true));
   const [rows, warnings] = stitch(shots.map((shot) => shot[0]), shots.map((shot) => shot[1]));
   const detected = detectPanelType(rows);

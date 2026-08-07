@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   parseValue, matchLabel, foldSets, battleToScoutnet, calibrateU, extractPanel,
+  CalibrationError,
 } from '../panel_parser.mjs';
 const FIX = JSON.parse(readFileSync(new URL('../../../../tests/fixtures/panel_ocr/golden_vectors.json', import.meta.url), 'utf8'));
 const STATS = ['Attack', 'Defense', 'Lethality', 'Health'];
@@ -252,4 +253,34 @@ test('QA defect 013: penalties classify by canonical label, not substring or sig
   const [bonus] = foldSets([{ label: 'Defense Bonus (Pet Skill)', value: 10.0 }], [],
     { observed: true });
   assert.ok(Math.abs(bonus.Defense - 0.10) < 1e-9);
+});
+
+test('QA defect 015: calibration requires all three classes', () => {
+  const a = FIX.accounts.A;
+  assert.throws(() => calibrateU(a.bo_troops, a.bo_class,
+    { Infantry: a.scout.Infantry }, a.S_scout), CalibrationError);
+  assert.throws(() => calibrateU(a.bo_troops, { Infantry: a.bo_class.Infantry },
+    a.scout, a.S_scout), CalibrationError);
+});
+
+test('QA defect 019: convert + token layers raise typed errors, never TypeErrors', () => {
+  const a = FIX.accounts.A;
+  assert.throws(() => calibrateU(a.bo_troops, a.bo_class, {}, a.S_scout), CalibrationError);
+  assert.throws(() => calibrateU(a.bo_troops, a.bo_class, a.scout,
+    Object.fromEntries(STATS.map((st) => [st, -1.0]))), CalibrationError);
+  assert.throws(() => calibrateU(a.bo_troops, a.bo_class, a.scout, null), CalibrationError);
+  const holes = Object.fromEntries(Object.entries(a.scout)
+    .map(([cls, stats]) => [cls, { ...stats, Health: undefined }]));
+  assert.throws(() => calibrateU(a.bo_troops, a.bo_class, holes, a.S_scout), CalibrationError);
+  assert.throws(() => battleToScoutnet(a.battle_left, a.S_scout,
+    Object.fromEntries(STATS.map((st) => [st, -1.0])), a.P_enemy), CalibrationError);
+
+  for (const bad of ['nope', [{ text: 'Infantry Attack' }], [null], 7]) {
+    assert.throws(() => extractPanel(bad, null, null), Error);
+  }
+  for (const bad of [[['not an object']], [[{ x0: 0.1, y0: 0.1, x1: 0.2, y1: 0.2, conf: 0.9 }]],
+    [[{ text: 'x', x0: 'a', y0: 0.1, x1: 0.2, y1: 0.2, conf: 0.9 }]],
+    [[{ text: 'x', x0: 0.1, y0: 0.1, x1: 0.2, y1: 0.2, conf: null }]]]) {
+    assert.throws(() => extractPanel(bad, null, null), Error);
+  }
 });

@@ -10,3 +10,16 @@ def test_token_rejects_bad_coords_and_conf():
         tokens_from_json([{"text": "x", "x0": -0.1, "y0": 0, "x1": 0.5, "y1": 0.1, "conf": 0.9}])
     with pytest.raises(ValueError):
         tokens_from_json([{"text": "x", "x0": 0.1, "y0": 0, "x1": 0.5, "y1": 0.1, "conf": 1.7}])
+
+def test_qa_defect_019_malformed_tokens_raise_value_error_not_key_or_type_error():
+    bad_inputs = [
+        "not a list",
+        ["not an object"],
+        [{"x0": 0.1, "y0": 0.1, "x1": 0.2, "y1": 0.2, "conf": 0.9}],          # no text
+        [{"text": "x", "y0": 0.1, "x1": 0.2, "y1": 0.2, "conf": 0.9}],        # no x0
+        [{"text": "x", "x0": "a", "y0": 0.1, "x1": 0.2, "y1": 0.2, "conf": 0.9}],
+        [{"text": "x", "x0": 0.1, "y0": 0.1, "x1": 0.2, "y1": 0.2, "conf": None}],
+    ]
+    for bad in bad_inputs:
+        with pytest.raises(ValueError):
+            tokens_from_json(bad)
