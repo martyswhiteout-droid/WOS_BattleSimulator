@@ -1,14 +1,24 @@
 """POST /shell/ocr/panel — stat-panel screenshot upload.
 
-What happens to the uploaded bytes (QA D-007, stated honestly): Starlette
+What happens to the uploaded bytes (QA D-007/D-024, stated honestly): Starlette
 parses the multipart body into UploadFile objects backed by
 ``tempfile.SpooledTemporaryFile`` with a 1 MiB spool threshold. Uploads under
 1 MiB stay in memory; anything larger IS written to the OS temp directory for
 the life of the request and deleted when the request ends. This module never
 opens a file for writing and never persists anything itself — the only durable
-artefacts are Starlette's short-lived spill files. Requests whose declared
-Content-Length exceeds MAX_REQUEST_BYTES are rejected by the route guard below
-BEFORE the form is parsed, so a rejected upload never reaches the spool.
+artefacts are Starlette's short-lived spill files.
+
+The route guard below runs BEFORE the body is read or parsed, so it bounds what
+can ever reach the spool:
+  * ``Transfer-Encoding: chunked`` (any casing) -> 411. A chunked body declares
+    no length, so it cannot be size-checked up front.
+  * declared ``Content-Length`` over MAX_REQUEST_BYTES (MAX_BODY_BYTES plus
+    64 KiB of multipart framing) -> 413.
+  * no Content-Length and not chunked -> FAIL OPEN, deliberately: the request
+    reaches the handler and is caught by the post-parse per-file and aggregate
+    caps, which means such a body can be spooled first.
+So the worst case an unauthenticated caller can put on disk is one body of
+roughly MAX_BODY_BYTES + 64 KiB, not the 3x that the earlier ceiling allowed.
 """
 from __future__ import annotations
 
@@ -19,19 +29,24 @@ from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 
 from shell.app.billing.entitlements import resolve_plan
+from ._shims import get_settings
 from .panel.service import extract_panel
 
 MAX_BODY_BYTES = 8 * 1024 * 1024
-# Three files at the per-file cap plus multipart framing overhead. This is the
-# pre-parse ceiling only; the per-file and aggregate caps below are the real
-# limits (QA D-007/D-014).
-MAX_REQUEST_BYTES = MAX_BODY_BYTES * 3 + 16384
+# The aggregate cap plus 64 KiB of multipart framing: nothing legitimate can
+# declare more, so anything larger is refused before the body is read
+# (QA D-024 tightened this from 3 x MAX_BODY_BYTES).
+MAX_REQUEST_BYTES = MAX_BODY_BYTES + 65536
+
+
+def _is_chunked(request: Request) -> bool:
+    return "chunked" in request.headers.get("transfer-encoding", "").lower()
 
 
 def _declared_length_too_large(request: Request) -> bool:
     raw = request.headers.get("content-length")
     if not raw:
-        return False
+        return False        # deliberate fail-open; see the module docstring
     try:
         return int(raw) > MAX_REQUEST_BYTES
     except ValueError:
@@ -39,7 +54,8 @@ def _declared_length_too_large(request: Request) -> bool:
 
 
 class _ContentLengthGuardRoute(APIRoute):
-    """Reject oversize requests before FastAPI reads/parses the body (QA D-007).
+    """Reject unsizeable/oversize requests before FastAPI reads or parses the
+    body (QA D-007/D-024).
 
     A route-class wrapper is the only hook that runs ahead of form parsing: a
     handler-level check (or a Depends) would fire only after Starlette had
@@ -50,6 +66,12 @@ class _ContentLengthGuardRoute(APIRoute):
         handler = super().get_route_handler()
 
         async def guarded(request: Request) -> Response:
+            if _is_chunked(request):
+                return JSONResponse(
+                    status_code=411,
+                    content={"error": "length_required",
+                             "message": "chunked uploads are not accepted; "
+                                        "send a Content-Length"})
             if _declared_length_too_large(request):
                 return JSONResponse(status_code=413, content={"error": "body_too_large"})
             return await handler(request)
@@ -69,15 +91,19 @@ def _is_image(raw: bytes) -> bool:
 
 
 def _mock_enabled() -> bool:
-    """Fixture tokens are a DEV convenience only (QA D-010).
+    """Fixture tokens are a DEV convenience only (QA D-010/D-023).
 
-    OCR_PANEL_MOCK=1 is honoured when ENV is unset or "dev"; in any other
-    environment the endpoint reports the engine as unavailable rather than
-    serving synthetic stats that look like a real read.
+    The environment comes from the app's Settings — the same object the rest of
+    the shell is configured from — NOT from os.environ, which can disagree with
+    it (.env file, cached settings). Anything other than "dev" fails CLOSED:
+    blank, whitespace, a non-dev value, or a settings object without ENV all
+    disable the mock, so no environment can be tricked into serving synthetic
+    stats that look like a real read.
     """
     if os.environ.get("OCR_PANEL_MOCK") != "1":
         return False
-    return (os.environ.get("ENV") or "dev").strip().lower() == "dev"
+    env = getattr(get_settings(), "ENV", None)
+    return isinstance(env, str) and env.strip().lower() == "dev"
 
 
 def _mock_tokens():

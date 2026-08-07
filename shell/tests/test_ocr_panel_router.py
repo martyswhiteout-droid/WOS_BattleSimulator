@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 from shell.app.auth import UserCtx
-from shell.app.ocr.panel_router import MAX_BODY_BYTES, router as panel_router
+from shell.app.ocr.panel_router import MAX_BODY_BYTES, MAX_REQUEST_BYTES, router as panel_router
 
 PNG_BYTES = b"\x89PNG\r\n\x1a\nminimal-test-image"
 
@@ -104,7 +104,7 @@ def test_qa_defect_007_oversize_content_length_rejected_before_form_parsing(clie
     r = client_paid.post("/shell/ocr/panel",
                          files={"file": ("a.png", PNG_BYTES, "image/png")},
                          data={"side": "enemy"},
-                         headers={"content-length": str(MAX_BODY_BYTES * 3 + 16384 + 1)})
+                         headers={"content-length": str(MAX_REQUEST_BYTES + 1)})
     assert r.status_code == 413 and r.json()["error"] == "body_too_large"
     assert sentinel == []                 # the handler never ran, so no spooling
 
@@ -119,17 +119,12 @@ def test_qa_defect_010_mock_response_is_marked_as_mock(client_paid):
     assert r.status_code == 200 and r.json()["source"] == "mock"
 
 def test_qa_defect_010_mock_refused_outside_dev_env(client_paid, monkeypatch):
-    monkeypatch.setenv("ENV", "prod")
-    r = client_paid.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
+    _stub_env(monkeypatch, "prod")
+    r = _post(client_paid)
     assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
 
-    monkeypatch.setenv("ENV", "dev")
-    ok = client_paid.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
-    assert ok.status_code == 200
-
-    monkeypatch.delenv("ENV", raising=False)
-    unset = client_paid.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
-    assert unset.status_code == 200
+    _stub_env(monkeypatch, "dev")
+    assert _post(client_paid).status_code == 200
 
 def test_qa_defect_019_malformed_tokens_are_422_not_500(client_paid, monkeypatch):
     def boom(*args, **kwargs):
@@ -140,3 +135,65 @@ def test_qa_defect_019_malformed_tokens_are_422_not_500(client_paid, monkeypatch
                          files={"file": ("a.png", PNG_BYTES, "image/png")},
                          data={"side": "enemy"})
     assert r.status_code == 422 and r.json()["error"] == "unreadable_tokens"
+
+
+def _post(client, **kwargs):
+    return client.post("/shell/ocr/panel",
+                       files={"file": ("a.png", PNG_BYTES, "image/png")},
+                       data={"side": "enemy"}, **kwargs)
+
+def _stub_env(monkeypatch, value, present=True):
+    class _Settings:
+        pass
+
+    settings = _Settings()
+    if present:
+        settings.ENV = value
+    monkeypatch.setattr("shell.app.ocr.panel_router.get_settings", lambda: settings)
+
+def test_qa_defect_023_mock_gate_reads_settings_env_not_the_process_env(client_paid, monkeypatch):
+    # QA probe: the process env says dev, the real config says prod. Settings win.
+    monkeypatch.setenv("ENV", "dev")
+    _stub_env(monkeypatch, "prod")
+    r = _post(client_paid)
+    assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
+
+def test_qa_defect_023_blank_or_missing_env_fails_closed(client_paid, monkeypatch):
+    for value in ("", "   ", "	", "prod", "staging", "development", None, 7):
+        _stub_env(monkeypatch, value)
+        assert _post(client_paid).status_code == 503, repr(value)
+    _stub_env(monkeypatch, None, present=False)      # settings object without ENV
+    assert _post(client_paid).status_code == 503
+
+def test_qa_defect_023_dev_env_enables_the_mock(client_paid, monkeypatch):
+    for value in ("dev", "  DEV  ", "Dev"):
+        _stub_env(monkeypatch, value)
+        r = _post(client_paid)
+        assert r.status_code == 200 and r.json()["source"] == "mock", repr(value)
+
+def test_qa_defect_024_oversize_declared_length_never_reaches_the_parser(client_paid, monkeypatch):
+    from starlette.formparsers import MultiPartParser
+
+    parsed = []
+    original = MultiPartParser.parse
+
+    async def spy(self, *args, **kwargs):
+        parsed.append(1)
+        return await original(self, *args, **kwargs)
+
+    monkeypatch.setattr(MultiPartParser, "parse", spy)
+    r = _post(client_paid, headers={"content-length": str(9 * 1024 * 1024)})
+    assert r.status_code == 413 and r.json()["error"] == "body_too_large"
+    assert parsed == []
+    # the ceiling is MAX_BODY_BYTES + 64 KiB, not 3x it
+    assert MAX_REQUEST_BYTES == MAX_BODY_BYTES + 65536
+
+def test_qa_defect_024_chunked_upload_is_411(client_paid):
+    for value in ("chunked", "Chunked", "CHUNKED"):
+        r = _post(client_paid, headers={"transfer-encoding": value})
+        assert r.status_code == 411, value
+        assert r.json()["error"] == "length_required", value
+
+def test_qa_defect_024_streamed_chunked_body_is_411(client_paid):
+    r = client_paid.post("/shell/ocr/panel", content=iter([b"not-a-multipart-body"]))
+    assert r.status_code == 411 and r.json()["error"] == "length_required"
