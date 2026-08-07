@@ -13,6 +13,21 @@ Save the ORIGINAL screenshots (PNG preferred, no messenger recompression if avoi
 | `B_battle.png` | [LnS]MaTiX: battle-report "Stat Bonuses" |
 | `B_specials.png` | [LnS]MaTiX: "Notes on Special Bonuses" panel |
 
+The A_*/B_* whale sets above remain **WANTED** — not yet dropped. They stay in this table per the original naming scheme so the corpus can widen when the owner captures them.
+
 Extra device/quality variants are welcome (suffix `_alt1` etc.) — they widen the benchmark corpus (`docs/OCR_QA_PLAN.md` §2).
 
 The expected VALUES for every one of these images are already fixed in `../golden_vectors.json` (plan Task 0) — the Task-12 benchmark reads an image, runs the engine, and compares against those numbers. Pass bar: ≥99% digit accuracy, zero false-confident fields.
+
+## Account C — [Lns]Marlinman (present)
+
+Non-max account, mixed-gen trio (Rufus g11 Marksman 5-star, Gisela g13 Infantry 4-star+1, Karol g12 Lancer 4-star+2), widget-skill fold +7.5% Attack only, no pets. Expected values: `accounts.C` in `../golden_vectors.json`. See `docs/GEAR_LADDERS.md` § "Account C — [Lns] Marlinman" for the source transcription.
+
+| File | What it is |
+|---|---|
+| `C_battle_1.png` | Chief-gear/hero/expert comparison screens (gear-OCR phase, not panel benchmark) |
+| `C_battle_2.png` | Hero/expert/troop-power screens (gear-OCR phase, not panel benchmark) |
+| `C_battle_3.png` | Battle report "Stat Bonuses" panel (two-column) |
+| `C_battle_4.png` | "Notes on Special Bonuses" panel |
+| `C_citystats_1.png`, `C_citystats_2.png` | Bonus Overview, both scroll positions |
+| `C_scout.png` | Scout report "Stat Bonuses" panel |

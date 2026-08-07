@@ -72,6 +72,34 @@
       "P_enemy":  {"Attack": 0.00, "Defense": 0.00, "Lethality": 0.00, "Health": 0.00},
       "U": {"Attack": 1836.28, "Defense": 1836.28, "Lethality": 1020.01, "Health": 1020.00},
       "hero_generation": 13
+    },
+    "C": {
+      "label": "[Lns]Marlinman #567 — non-max account, mixed-gen trio (Rufus g11 MM 5-star, Gisela g13 Inf 4-star+1, Karol g12 Lan 4-star+2), widget-skill fold +7.5% Atk only, no pets, enemy = 1-troop no-hero poke with zero specials",
+      "bo_troops": {"Attack": 429.07, "Defense": 477.37, "Lethality": 109.90, "Health": 103.90},
+      "bo_class": {
+        "Infantry": {"Attack": 436.25, "Defense": 435.25, "Lethality": 523.71, "Health": 516.77},
+        "Lancer":   {"Attack": 421.81, "Defense": 407.81, "Lethality": 519.99, "Health": 521.82},
+        "Marksman": {"Attack": 460.25, "Defense": 440.25, "Lethality": 556.33, "Health": 555.74}},
+      "scout": {
+        "Infantry": {"Attack": 2269.7, "Defense": 2151.7, "Lethality": 1126.5, "Health": 1129.0},
+        "Lancer":   {"Attack": 2189.6, "Defense": 2064.1, "Lethality": 1103.7, "Health": 1058.4},
+        "Marksman": {"Attack": 2385.8, "Defense": 2240.6, "Lethality": 1263.9, "Health": 1257.3}},
+      "battle_left": {
+        "Infantry": {"Attack": 2269.7, "Defense": 2151.7, "Lethality": 1126.5, "Health": 1129.0},
+        "Lancer":   {"Attack": 2189.6, "Defense": 2064.1, "Lethality": 1103.7, "Health": 1058.4},
+        "Marksman": {"Attack": 2385.8, "Defense": 2240.6, "Lethality": 1263.9, "Health": 1257.3}},
+      "battle_right": {
+        "Infantry": {"Attack": 543.3, "Defense": 509.1, "Lethality": 411.7, "Health": 368.3},
+        "Lancer":   {"Attack": 553.1, "Defense": 497.7, "Lethality": 417.0, "Health": 367.6},
+        "Marksman": {"Attack": 645.4, "Defense": 587.2, "Lethality": 466.1, "Health": 392.2}},
+      "specials_own": [
+        {"label": "Defender Troops' Attack", "value": 7.5}],
+      "specials_enemy": [],
+      "S_scout":  {"Attack": 0.075, "Defense": 0.0, "Lethality": 0.0, "Health": 0.0},
+      "S_battle": {"Attack": 0.075, "Defense": 0.0, "Lethality": 0.0, "Health": 0.0},
+      "P_enemy":  {"Attack": 0.00, "Defense": 0.00, "Lethality": 0.00, "Health": 0.00},
+      "U_note": "per-class (mixed-gen trio); see docs/GEAR_LADDERS.md",
+      "hero_generations": {"Infantry": 13, "Lancer": 12, "Marksman": 11}
     }
   },
   "value_grammar_cases": [

@@ -18,7 +18,7 @@ test('value grammar matches fixture', () => {
 test('labels match fixture', () => {
   for (const c of FIX.label_cases) assert.equal(matchLabel(c.raw), c.canonical, c.raw);
 });
-for (const acct of ['A', 'B']) {
+for (const acct of ['A', 'B', 'C']) {
   test(`law round-trips on account ${acct}`, () => {
     const a = FIX.accounts[acct];
     const [sScout, sBattle, pEnemy] = foldSets(a.specials_own, a.specials_enemy, { observed: 'read' });
@@ -27,6 +27,13 @@ for (const acct of ['A', 'B']) {
     for (const cls of Object.keys(a.scout))
       for (const st of STATS)
         assert.ok(Math.abs(scout[cls][st] - a.scout[cls][st]) <= 0.11, `${acct}/${cls}/${st}`);
+  });
+}
+for (const acct of ['A', 'B']) {
+  // Account C's hero block U is per-class (mixed-gen trio, docs/GEAR_LADDERS.md),
+  // not per-stat, so calibrateU's uniformity assumption does not apply to it.
+  test(`U calibrates on account ${acct}`, () => {
+    const a = FIX.accounts[acct];
     const U = calibrateU(a.bo_troops, a.bo_class, a.scout, a.S_scout);
     for (const st of STATS) assert.ok(Math.abs(U[st] - a.U[st]) <= 0.1, st);
   });

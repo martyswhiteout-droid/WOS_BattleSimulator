@@ -5,7 +5,7 @@ from shell.app.ocr.panel.convert import (fold_sets, battle_to_scoutnet, calibrat
 FIX = json.loads((pathlib.Path(__file__).parent / "fixtures" / "panel_ocr" / "golden_vectors.json").read_text(encoding="utf-8"))
 STATS = ("Attack", "Defense", "Lethality", "Health")
 
-@pytest.mark.parametrize("acct", ["A", "B"])
+@pytest.mark.parametrize("acct", ["A", "B", "C"])
 def test_fold_sets_reproduce_documented_sets(acct):
     a = FIX["accounts"][acct]
     S_scout, S_battle, P_enemy = fold_sets(a["specials_own"], a["specials_enemy"], observed="read")
@@ -14,7 +14,7 @@ def test_fold_sets_reproduce_documented_sets(acct):
         assert abs(S_battle[st] - a["S_battle"][st]) < 1e-9, (acct, st)
         assert abs(P_enemy[st] - a["P_enemy"][st]) < 1e-9, (acct, st)
 
-@pytest.mark.parametrize("acct", ["A", "B"])
+@pytest.mark.parametrize("acct", ["A", "B", "C"])
 def test_battle_to_scoutnet_recovers_scout_panel(acct):
     a = FIX["accounts"][acct]
     S_scout, S_battle, P_enemy = fold_sets(a["specials_own"], a["specials_enemy"], observed="read")
