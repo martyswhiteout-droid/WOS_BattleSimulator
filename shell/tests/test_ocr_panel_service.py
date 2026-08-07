@@ -1,4 +1,4 @@
-import json
+﻿import json
 import pytest
 from shell.app.ocr.panel.service import extract_panel
 
@@ -63,7 +63,7 @@ def _shot_battle(right_rows=None):
     return toks
 
 def test_qa_defect_002_col_conflict_is_never_silently_attributed():
-    # QA probe: colour contradicts geometry on every row — the values may not be
+    # QA probe: colour contradicts geometry on every row â€” the values may not be
     # attributed to either column.
     toks, y = [], 0.10
     for cls in CLASSES:
@@ -289,7 +289,7 @@ def test_qa_defect_021_incompatible_hint_detection_pairs_still_fail_closed():
 
 def test_qa_defect_021_battle_hint_on_one_column_shot_is_a_partial_battle_read():
     # QA probe: battle_shot with zero enemy rows. Detection says "scout" (only
-    # one column present) but the hint is compatible — read it as a partial
+    # one column present) but the hint is compatible â€” read it as a partial
     # battle instead of hard-failing.
     r = extract_panel([_shot_battle(right_rows=set())], side_hint="you", panel_hint="battle")
     assert r["panel_type"] == "battle" and r["status"] == "partial"
@@ -299,7 +299,7 @@ def test_qa_defect_021_battle_hint_on_one_column_shot_is_a_partial_battle_read()
         for st in STATS:
             assert f"stats_right.{cls}|{st}" in r["unreadable_fields"]
             assert f"stats_left.{cls}|{st}" not in r["unreadable_fields"]
-    assert any("enemy column not readable" in w for w in r["warnings"])
+    assert any("only one column was readable" in w for w in r["warnings"])
 
 def test_qa_defect_021_agreeing_hints_stay_silent():
     for hint, shot in (("scout", _shot_scout()), ("battle", _shot_battle()),

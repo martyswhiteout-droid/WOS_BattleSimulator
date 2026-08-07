@@ -1,14 +1,14 @@
-from .tokens import tokens_from_json
+﻿from .tokens import tokens_from_json
 from .rows import assemble_rows, LOW_CONF
 from .stitch import stitch
 from .detect import detect_panel_type
 from .lexicon import CLASSES, SPECIALS_PANEL_HEADERS, STATS
 
 # Every class-stat the app expects on a full panel, in a fixed (deterministic)
-# order — used to report fields that were never seen at all (QA D-006).
+# order â€” used to report fields that were never seen at all (QA D-006).
 EXPECTED_KEYS = tuple(f"{c}|{s}" for c in CLASSES for s in STATS)
 
-# Plausibility bands (QA D-008; QA_PLAN §3 P7 + formula doc §8). A number
+# Plausibility bands (QA D-008; QA_PLAN Â§3 P7 + formula doc Â§8). A number
 # outside its band is an OCR artefact, not a stat: it goes to
 # unreadable_fields, never into stats/specials.
 CLASS_VALUE_MIN, CLASS_VALUE_MAX = 0.0, 6000.0
@@ -20,7 +20,7 @@ def _in_range(value, lo, hi):
 
 
 # Hint/detection pairs that cannot describe the same screenshot (QA D-021).
-# Everything else that merely differs is read under the hint with a warning —
+# Everything else that merely differs is read under the hint with a warning â€”
 # notably (battle hint, scout detection), which is a battle report with only
 # one column readable.
 INCOMPATIBLE_HINTS = frozenset({
@@ -34,7 +34,7 @@ def _hint_warning(hint, detected):
     if detected == "unknown":
         return f"panel hint {hint} used: panel type could not be detected from these tokens"
     if (hint, detected) == ("battle", "scout"):
-        return "panel hint battle used: enemy column not readable in this screenshot"
+        return "panel hint battle used: only one column was readable in this screenshot"
     return f"panel hint {hint} used: detected {detected}"
 
 
@@ -82,9 +82,9 @@ def _specials(rows):
     Returns ``(specials, unreadable, observed)`` where ``observed`` is the
     tri-state capture verdict (QA D-022) consumed by ``convert.fold_sets``:
 
-    "none"    no special row and no specials-panel header — the panel was never
+    "none"    no special row and no specials-panel header â€” the panel was never
               captured, so folding would silently be the identity.
-    "partial" special rows were seen but at least one was withheld — the fold
+    "partial" special rows were seen but at least one was withheld â€” the fold
               would be built from an incomplete set.
     "read"    every special row seen was readable, OR the specials-panel header
               was seen with zero rows (the legal specials-free account).
@@ -114,8 +114,8 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
     """Tokens -> result JSON.
 
     ``warnings`` and ``unreadable_fields`` are DEVELOPER-FACING API fields
-    (QA D-026): stable identifiers and diagnostics — field keys, panel types,
-    token coordinates — for the caller to act on. The UI copy layer is what
+    (QA D-026): stable identifiers and diagnostics â€” field keys, panel types,
+    token coordinates â€” for the caller to act on. The UI copy layer is what
     turns them into user-facing sentences; do not write end-user prose here.
 
     ``side_hint`` ("you" | "enemy" | None) is echoed back as ``requested_side``
@@ -131,7 +131,7 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
     ``panel_hint`` is a CHECK, never a blind override (QA D-012, refined by
     D-021). Pairs in INCOMPATIBLE_HINTS end as ``status="failed"`` with an
     explanatory warning and no stats. Any other disagreement is read under the
-    hint WITH a warning — including (hint=battle, detected=scout), which is a
+    hint WITH a warning â€” including (hint=battle, detected=scout), which is a
     battle report whose second column is unreadable: the battle branch runs and
     the absent column is enumerated in unreadable_fields.
 

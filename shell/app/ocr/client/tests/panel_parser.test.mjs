@@ -1,4 +1,4 @@
-import test from 'node:test';
+﻿import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
@@ -172,10 +172,10 @@ test('QA defect 008: implausible special is unreadable', () => {
 });
 
 test('QA defect 009: non-ASCII digits never parse (pinned in both languages)', () => {
-  assert.equal(parseValue('٤٤٩١%'), null);
-  assert.equal(parseValue('٤٤٩١'), null);
-  assert.equal(parseValue('４４９１％'), null);
-  assert.equal(parseValue('４４９１%'), null);
+  assert.equal(parseValue('Ù¤Ù¤Ù©Ù¡%'), null);
+  assert.equal(parseValue('Ù¤Ù¤Ù©Ù¡'), null);
+  assert.equal(parseValue('ï¼”ï¼”ï¼™ï¼‘ï¼…'), null);
+  assert.equal(parseValue('ï¼”ï¼”ï¼™ï¼‘%'), null);
 });
 
 function battleShot() {
@@ -383,7 +383,7 @@ test('QA defect 021: battle hint on a one-column shot is a partial battle read',
       assert.ok(!result.unreadable_fields.includes(`stats_left.${cls}|${st}`));
     }
   }
-  assert.ok(result.warnings.some((w) => w.includes('enemy column not readable')));
+  assert.ok(result.warnings.some((w) => w.includes('only one column was readable')));
 });
 
 test('QA defect 021: agreeing hints stay silent, unknown detection warns', () => {

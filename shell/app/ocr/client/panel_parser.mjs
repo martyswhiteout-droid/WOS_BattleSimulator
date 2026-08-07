@@ -1,4 +1,4 @@
-const CLASSES = ['Infantry', 'Lancer', 'Marksman'];
+﻿const CLASSES = ['Infantry', 'Lancer', 'Marksman'];
 const STATS = ['Attack', 'Defense', 'Lethality', 'Health'];
 const LOW_CONF = 0.90;
 
@@ -16,7 +16,7 @@ const SPECIALS = [
   'Enemy Attack Reduction', 'Enemy Defense Reduction',
 ];
 // Specials that describe damage done to the ENEMY's stats (QA D-013). Penalty
-// classification is by canonical label — never by a 'Penalty' substring (which
+// classification is by canonical label â€” never by a 'Penalty' substring (which
 // missed the '... Reduction' wording) and never by the sign of the value (which
 // OCR can lose). Enemy-side rows fold |value| into P; own-side rows never enter
 // the S folds at all.
@@ -28,7 +28,7 @@ export const PENALTY_LABELS = new Set(SPECIALS.filter(
 // 'Enemy Lethality Penalty (Pet Skill)' are the one label pair a 2-edit OCR
 // corruption can make ambiguous. Impact is bounded and harmless to the maths:
 // both are Lethality, both are in PENALTY_LABELS, so either resolution folds
-// the value identically — only the provenance text differs. No exact-match
+// the value identically â€” only the provenance text differs. No exact-match
 // input can collide (their skeletons differ by 3 characters).
 const META = [
   'Deployment Capacity', 'March Queue', 'March Speed Up',
@@ -38,7 +38,7 @@ const HEADERS = ['Bonus Overview', 'Stat Bonuses', 'Military', 'Troops Total', '
 
 // The header of the panel that actually LISTS the specials rows (QA D-022).
 // Seeing it with zero special rows is the legal "this account has no specials"
-// state — not the same as never having captured the panel. Deliberately narrow:
+// state â€” not the same as never having captured the panel. Deliberately narrow:
 // 'Bonus Overview' is the BO/city-stats screen.
 export const SPECIALS_PANEL_HEADERS = new Set(['header:Stat Bonuses']);
 
@@ -75,7 +75,7 @@ export function parseValue(raw) {
 function skeleton(value) {
   return (value || '')
     .toLowerCase()
-    .replaceAll('’', "'")
+    .replaceAll('â€™', "'")
     .replaceAll('"', "'")
     .replaceAll('0', 'o')
     .replaceAll('1', 'l')
@@ -176,7 +176,7 @@ function median(values) {
 }
 
 // QA D-001 (row drift): a value token may only pair with a label row whose own
-// vertical band contains the value's centre — the label centres widened by
+// vertical band contains the value's centre â€” the label centres widened by
 // BAND_SLACK * hRow, where (QA D-025) hRow = max(shot median token height,
 // median LABEL height of the row itself), so a tall row inside a shot of small
 // tokens is judged against its own line height. See rows.py for the documented
@@ -302,7 +302,7 @@ export function stitch(rowsPerShot, warningsPerShot = null) {
         order.push(key);
       } else {
         const current = best.get(key);
-        // QA D-003: conflicts are sticky — never replaced by a later shot.
+        // QA D-003: conflicts are sticky â€” never replaced by a later shot.
         if (current.flags.includes('conflict')) continue;
         if (current.value !== null && row.value !== null && current.value !== row.value) {
           warnings.push(`conflict on ${tupleDisplay(row)}: ${current.value} vs ${row.value}`);
@@ -335,7 +335,7 @@ function zeroStats() {
   return Object.fromEntries(STATS.map((stat) => [stat, 0.0]));
 }
 
-// QA D-005 (tightened by D-022): an unread — or partially read — specials panel
+// QA D-005 (tightened by D-022): an unread â€” or partially read â€” specials panel
 // is NOT the same as an account with no specials. Folding what happened to be
 // readable pulls the conversion towards the identity (worst case 367.4 pp).
 export class MissingSpecialsError extends Error {
@@ -349,12 +349,12 @@ export class MissingSpecialsError extends Error {
 /**
  * Fold the specials panel into [sScout, sBattle, pEnemy].
  * `options.observed` (required) is the tri-state capture verdict from the
- * service: 'none' | 'partial' | 'read' (QA D-022). Only 'read' may fold —
+ * service: 'none' | 'partial' | 'read' (QA D-022). Only 'read' may fold â€”
  * 'partial' is as untrustworthy as 'none'. An EMPTY specialsOwn under 'read'
  * is legal and folds to the identity correctly (a genuinely specials-free
  * side, e.g. account B's enemy column).
  * `options.warnings` (optional array) collects suspect rows that were excluded
- * — currently own-side penalty rows with a positive value (QA D-013).
+ * â€” currently own-side penalty rows with a positive value (QA D-013).
  */
 export function foldSets(specialsOwn, specialsEnemy, options) {
   if (!OBSERVED_STATES.includes(options?.observed)) {
@@ -438,7 +438,7 @@ function setValue(name, mapping, stat) {
 
 /**
  * Solve the per-class hero block U. Requires all three troop classes on BOTH
- * the scout panel and the BO class block (QA D-015) — with fewer, the
+ * the scout panel and the BO class block (QA D-015) â€” with fewer, the
  * uniformity guard is vacuous. Malformed input throws CalibrationError, never
  * a bare TypeError/Infinity (QA D-019).
  */
@@ -498,7 +498,7 @@ function detectPanelType(rows) {
 }
 
 // Every class-stat the app expects on a full panel, in a fixed (deterministic)
-// order — used to report fields that were never seen at all (QA D-006).
+// order â€” used to report fields that were never seen at all (QA D-006).
 const EXPECTED_KEYS = CLASSES.flatMap((cls) => STATS.map((stat) => `${cls}|${stat}`));
 
 // The single honesty predicate. QA D-002: the flag test is a SUBSTRING match so
@@ -520,7 +520,7 @@ function inRange(value, low, high) {
 }
 
 // Hint/detection pairs that cannot describe the same screenshot (QA D-021).
-// Anything else that merely differs is read under the hint with a warning —
+// Anything else that merely differs is read under the hint with a warning â€”
 // notably (battle hint, scout detection) = a battle report with one column.
 const INCOMPATIBLE_HINTS = new Set([
   'citystats|battle', 'citystats|scout',
@@ -533,7 +533,7 @@ function hintWarning(hint, detected) {
     return `panel hint ${hint} used: panel type could not be detected from these tokens`;
   }
   if (hint === 'battle' && detected === 'scout') {
-    return 'panel hint battle used: enemy column not readable in this screenshot';
+    return 'panel hint battle used: only one column was readable in this screenshot';
   }
   return `panel hint ${hint} used: detected ${detected}`;
 }
