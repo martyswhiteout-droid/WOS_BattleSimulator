@@ -124,7 +124,13 @@ def test_ocr_denied_402_on_free_plan():
     assert verdict.status == 402 and verdict.code == "payment_required"
 
 
-def test_ocr_allowed_on_pro_until_daily_quota():
+def test_ocr_allowed_on_pro_until_daily_quota(monkeypatch):
+    # Freeze the DB clock mid-day: the backdated rows below must land on the
+    # SAME UTC day as the quota check. With the real clock this test fails
+    # whenever it runs within ~34 minutes after UTC midnight (the backdated
+    # timestamps cross into yesterday) — time-of-day flake found 2026-08-07.
+    from datetime import datetime as _dt, timezone as _tz
+    monkeypatch.setattr(db, "_utcnow", lambda: _dt(2026, 8, 7, 12, 0, 0, tzinfo=_tz.utc))
     verdict = run(limits.check_and_record(PRO, "/shell/ocr", None, "ip1"))
     assert isinstance(verdict, limits.Allowed)
     # exhaust the remaining 29 (backdated to dodge the burst window)
