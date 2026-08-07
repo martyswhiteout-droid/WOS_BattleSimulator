@@ -464,10 +464,29 @@ function collectSpecials(rows) {
 export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   const shots = tokenShots.map((shot) => assembleRows(tokensFromJson(shot), true));
   const [rows, warnings] = stitch(shots.map((shot) => shot[0]), shots.map((shot) => shot[1]));
-  const panelType = panelHint || detectPanelType(rows);
+  const detected = detectPanelType(rows);
   const [specials, specialUnreadable, specialsObserved] = collectSpecials(rows);
+  let panelType = detected;
+  if (panelHint) {
+    // QA D-012: the hint is a CHECK, never an override.
+    if (detected !== 'unknown' && detected !== panelHint) {
+      return {
+        panel_type: detected,
+        requested_side: sideHint,
+        specials,
+        specials_observed: specialsObserved,
+        warnings: [...warnings, `panel hint ${panelHint} contradicts detected ${detected}`],
+        stats: {},
+        field_conf: {},
+        unreadable_fields: [],
+        status: 'failed',
+      };
+    }
+    panelType = panelHint;
+  }
   const output = {
     panel_type: panelType,
+    requested_side: sideHint,
     specials,
     specials_observed: specialsObserved,
     warnings: [...warnings],
@@ -500,7 +519,14 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   }
   output.unreadable_fields = dedupe([...unreadableFields, ...specialUnreadable]);
   output.status = present >= total ? 'ok' : (present > 0 ? 'partial' : 'failed');
-  if (!output.stats) output.stats = {};
-  void sideHint;
+  // QA D-011: the LEFT column belongs to the report viewer.
+  if (panelType === 'battle' && ['you', 'enemy'].includes(sideHint)) {
+    const youKey = sideHint === 'you' ? 'stats_left' : 'stats_right';
+    const enemyKey = sideHint === 'you' ? 'stats_right' : 'stats_left';
+    output.stats_you = output[youKey];
+    output.stats_you_conf = output[`${youKey}_conf`];
+    output.stats_enemy = output[enemyKey];
+    output.stats_enemy_conf = output[`${enemyKey}_conf`];
+  }
   return output;
 }

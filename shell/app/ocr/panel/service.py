@@ -74,11 +74,39 @@ def _specials(rows):
 
 
 def extract_panel(token_shots, side_hint=None, panel_hint=None):
+    """Tokens -> result JSON.
+
+    ``side_hint`` ("you" | "enemy" | None) is echoed back as ``requested_side``
+    and, on battle panels, drives the ``stats_you`` / ``stats_enemy`` aliases
+    (QA D-011). The LEFT column of a battle report always belongs to the report
+    viewer, i.e. to whoever the uploader says the report belongs to:
+    side="you"   -> stats_you = stats_left,  stats_enemy = stats_right
+    side="enemy" -> stats_you = stats_right, stats_enemy = stats_left
+    (`_conf` twins alias the same way). Single-sided panels get no aliases.
+
+    ``panel_hint`` is a CHECK, never an override (QA D-012): if it contradicts
+    the detected panel type the result is ``status="failed"`` with an
+    explanatory warning and no stats. A hint is only followed when detection
+    itself is "unknown" (tokens too sparse to decide).
+
+    Battle results carry ``stats_left``/``stats_right`` and NO ``stats`` key
+    (QA D-018); single-sided results carry ``stats``.
+    """
     shots = [assemble_rows(tokens_from_json(s), two_column=True) for s in token_shots]
     rows, warnings = stitch([r for r, _ in shots], [w for _, w in shots])
-    ptype = panel_hint or detect_panel_type(rows)
+    detected = detect_panel_type(rows)
     specials, special_unreadable, specials_observed = _specials(rows)
-    out = {"panel_type": ptype, "specials": specials,
+    ptype = detected
+    if panel_hint:
+        if detected not in ("unknown", panel_hint):
+            return {"panel_type": detected, "requested_side": side_hint,
+                    "specials": specials, "specials_observed": specials_observed,
+                    "warnings": list(warnings) + [
+                        f"panel hint {panel_hint} contradicts detected {detected}"],
+                    "stats": {}, "field_conf": {}, "unreadable_fields": [],
+                    "status": "failed"}
+        ptype = panel_hint
+    out = {"panel_type": ptype, "requested_side": side_hint, "specials": specials,
            "specials_observed": specials_observed, "warnings": list(warnings)}
     unreadable = []
     if ptype == "battle":
@@ -98,5 +126,9 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
         total = 12
     out["unreadable_fields"] = _dedupe(unreadable + special_unreadable)
     out["status"] = "ok" if present >= total else ("partial" if present > 0 else "failed")
-    out.setdefault("stats", {})
+    if ptype == "battle" and side_hint in ("you", "enemy"):
+        you_key = "stats_left" if side_hint == "you" else "stats_right"
+        enemy_key = "stats_right" if side_hint == "you" else "stats_left"
+        out["stats_you"], out["stats_you_conf"] = out[you_key], out[you_key + "_conf"]
+        out["stats_enemy"], out["stats_enemy_conf"] = out[enemy_key], out[enemy_key + "_conf"]
     return out

@@ -133,6 +133,51 @@ def test_qa_defect_006_missing_battle_column_fields_are_listed_unreadable():
             assert f"stats_right.{cls}|{st}" in r["unreadable_fields"]
     assert not any(f.startswith("stats_left.") for f in r["unreadable_fields"])
 
+def test_qa_defect_011_requested_side_is_echoed_and_aliased_both_ways():
+    # Left column belongs to the report viewer: side=you => you is the LEFT
+    # column; side=enemy => the uploader is looking at the enemy's report, so
+    # you is the RIGHT column.
+    you = extract_panel([_shot_battle()], side_hint="you", panel_hint=None)
+    assert you["requested_side"] == "you"
+    assert you["stats_you"] == you["stats_left"] and you["stats_enemy"] == you["stats_right"]
+    assert you["stats_you_conf"] == you["stats_left_conf"]
+    assert you["stats_enemy_conf"] == you["stats_right_conf"]
+
+    enemy = extract_panel([_shot_battle()], side_hint="enemy", panel_hint=None)
+    assert enemy["requested_side"] == "enemy"
+    assert enemy["stats_you"] == enemy["stats_right"] and enemy["stats_enemy"] == enemy["stats_left"]
+    assert enemy["stats_you_conf"] == enemy["stats_right_conf"]
+
+def test_qa_defect_011_single_sided_panel_has_no_side_aliases():
+    r = extract_panel([_shot_scout()], side_hint="you", panel_hint=None)
+    assert r["requested_side"] == "you"
+    assert "stats_you" not in r and "stats_enemy" not in r
+
+def test_qa_defect_012_contradicting_panel_hint_fails_closed():
+    r = extract_panel([_shot_scout()], side_hint="you", panel_hint="battle")
+    assert r["status"] == "failed"
+    assert r["stats"] == {}
+    assert "stats_left" not in r and "stats_right" not in r
+    assert "panel hint battle contradicts detected scout" in r["warnings"]
+
+def test_qa_defect_012_agreeing_hint_is_accepted():
+    r = extract_panel([_shot_scout()], side_hint="enemy", panel_hint="scout")
+    assert r["status"] == "ok" and r["panel_type"] == "scout"
+
+def test_qa_defect_012_hint_still_applies_when_detection_is_unknown():
+    shot = [_tok("Infantry Attack", 0.05, 0.10, 0.40, 0.13),
+            _tok("+4491.6%", 0.70, 0.10, 0.95, 0.13),
+            _tok("Infantry Defense", 0.05, 0.16, 0.40, 0.19),
+            _tok("+3979.1%", 0.70, 0.16, 0.95, 0.19)]
+    r = extract_panel([shot], side_hint="you", panel_hint="scout")
+    assert r["panel_type"] == "scout" and r["status"] == "partial"
+    assert r["stats"]["Infantry|Attack"] == 4491.6
+
+def test_qa_defect_018_battle_response_omits_the_empty_stats_key():
+    r = extract_panel([_shot_battle()], side_hint="you", panel_hint=None)
+    assert "stats" not in r
+    assert "stats_left" in r and "stats_right" in r
+
 def test_qa_defect_008_out_of_range_class_values_are_unreadable():
     # QA probe: -4491.6% and 999999999% used to come back status=ok.
     shot = _shot_scout()

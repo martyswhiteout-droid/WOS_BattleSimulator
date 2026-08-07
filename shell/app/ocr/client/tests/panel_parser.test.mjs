@@ -176,3 +176,49 @@ test('QA defect 009: non-ASCII digits never parse (pinned in both languages)', (
   assert.equal(parseValue('４４９１％'), null);
   assert.equal(parseValue('４４９１%'), null);
 });
+
+function battleShot() {
+  const shot = [];
+  let y = 0.10;
+  for (const cls of CLASSES) {
+    for (const st of STATS) {
+      shot.push(tok(`${cls} ${st}`, 0.38, y, 0.58, y + 0.03));
+      shot.push(tok('+4859.0%', 0.03, y, 0.23, y + 0.03, 0.99, 'green'));
+      shot.push(tok('+694.3%', 0.70, y, 0.90, y + 0.03, 0.99, 'red'));
+      y += 0.05;
+    }
+  }
+  return shot;
+}
+
+test('QA defect 011: requested_side echoed, you/enemy aliased both ways', () => {
+  const you = extractPanel([battleShot()], 'you', null);
+  assert.equal(you.requested_side, 'you');
+  assert.deepEqual(you.stats_you, you.stats_left);
+  assert.deepEqual(you.stats_enemy, you.stats_right);
+  assert.deepEqual(you.stats_you_conf, you.stats_left_conf);
+
+  const enemy = extractPanel([battleShot()], 'enemy', null);
+  assert.equal(enemy.requested_side, 'enemy');
+  assert.deepEqual(enemy.stats_you, enemy.stats_right);
+  assert.deepEqual(enemy.stats_enemy, enemy.stats_left);
+
+  const scout = extractPanel([scoutShot()], 'you', null);
+  assert.equal(scout.requested_side, 'you');
+  assert.ok(!('stats_you' in scout));
+});
+
+test('QA defect 012: a contradicting panel hint fails closed', () => {
+  const result = extractPanel([scoutShot()], 'you', 'battle');
+  assert.equal(result.status, 'failed');
+  assert.deepEqual(result.stats, {});
+  assert.ok(!('stats_left' in result));
+  assert.ok(result.warnings.includes('panel hint battle contradicts detected scout'));
+  assert.equal(extractPanel([scoutShot()], 'enemy', 'scout').status, 'ok');
+});
+
+test('QA defect 018: battle responses omit the empty stats key', () => {
+  const result = extractPanel([battleShot()], 'you', null);
+  assert.ok(!('stats' in result));
+  assert.ok('stats_left' in result && 'stats_right' in result);
+});
