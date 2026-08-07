@@ -14,10 +14,12 @@ _SPECIALS = (
 _META = ("Deployment Capacity", "March Queue", "March Speed Up", "Training Capacity", "Training Speed", "Healing Speed")
 _HEADERS = ("Bonus Overview", "Stat Bonuses", "Military", "Troops Total", "Lootable")
 
+_NON_ALPHA = re.compile(r"[^a-z]", re.ASCII)  # QA D-009: ASCII-only, like the JS mirror
+
 def _skeleton(s):
     s = s.lower().replace("’", "'").replace('"', "'")
     s = s.replace("0", "o").replace("1", "l")
-    return re.sub(r"[^a-z]", "", s)
+    return _NON_ALPHA.sub("", s)
 
 def _dist(a, b):
     if abs(len(a) - len(b)) > 2:

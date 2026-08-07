@@ -1,9 +1,12 @@
 import re
 from collections import namedtuple
 ParsedValue = namedtuple("ParsedValue", "value unit signed")
-_PCT = re.compile(r"^([+-]?)(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?%$")
-_PCT_NOSYM = re.compile(r"^([+-])(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?$")  # signed ⇒ clearly a bonus value
-_INT = re.compile(r"^(\d{1,3}(?:,\d{3})*|\d+)$")
+# re.ASCII on every pattern (QA D-009): Python's \d otherwise matches
+# Arabic-Indic / fullwidth digits (and float() accepts them), so the server
+# parsed values the JS client — whose \d is ASCII-only — refused.
+_PCT = re.compile(r"^([+-]?)(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?%$", re.ASCII)
+_PCT_NOSYM = re.compile(r"^([+-])(\d{1,3}(?:,\d{3})*|\d+)(\.\d+)?$", re.ASCII)  # signed ⇒ clearly a bonus value
+_INT = re.compile(r"^(\d{1,3}(?:,\d{3})*|\d+)$", re.ASCII)
 
 def parse_value(raw):
     raw = (raw or "").strip()

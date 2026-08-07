@@ -169,3 +169,10 @@ test('QA defect 008: implausible special is unreadable', () => {
   assert.deepEqual(result.specials, [{ label: 'Defense Bonus (Pet Skill)', value: 10.0 }]);
   assert.ok(result.unreadable_fields.includes('specials.Attack Bonus (Pet Skill)'));
 });
+
+test('QA defect 009: non-ASCII digits never parse (pinned in both languages)', () => {
+  assert.equal(parseValue('٤٤٩١%'), null);
+  assert.equal(parseValue('٤٤٩١'), null);
+  assert.equal(parseValue('４４９１％'), null);
+  assert.equal(parseValue('４４９１%'), null);
+});

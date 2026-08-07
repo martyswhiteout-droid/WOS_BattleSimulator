@@ -13,3 +13,11 @@ def test_value_grammar_all_fixture_cases():
 def test_no_locale_ambiguity_rejected():
     assert parse_value("1.234,5%") is None   # EU decimal style: reject in v1, don't guess
     assert parse_value("12 345") is None
+
+def test_qa_defect_009_non_ascii_digits_never_parse():
+    # Python's \d matched Arabic-Indic / fullwidth digits (and float() accepts
+    # them), so the server parsed rows the JS client refused. Both refuse now.
+    assert parse_value("٤٤٩١%") is None
+    assert parse_value("٤٤٩١") is None
+    assert parse_value("４４９１％") is None
+    assert parse_value("４４９１%") is None
