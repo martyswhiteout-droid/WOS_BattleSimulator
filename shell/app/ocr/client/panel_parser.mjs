@@ -251,6 +251,8 @@ export function stitch(rowsPerShot, warningsPerShot = null) {
         order.push(key);
       } else {
         const current = best.get(key);
+        // QA D-003: conflicts are sticky — never replaced by a later shot.
+        if (current.flags.includes('conflict')) continue;
         if (current.value !== null && row.value !== null && current.value !== row.value) {
           warnings.push(`conflict on ${tupleDisplay(row)}: ${current.value} vs ${row.value}`);
           best.set(key, {
@@ -363,6 +365,30 @@ function detectPanelType(rows) {
   return 'unknown';
 }
 
+// Every class-stat the app expects on a full panel, in a fixed (deterministic)
+// order — used to report fields that were never seen at all (QA D-006).
+const EXPECTED_KEYS = CLASSES.flatMap((cls) => STATS.map((stat) => `${cls}|${stat}`));
+
+// The single honesty predicate. QA D-002: the flag test is a SUBSTRING match so
+// `col_conflict` counts, not just the stitch `conflict`.
+function isBad(row) {
+  return row.value === null
+    || row.conf < LOW_CONF
+    || row.flags.some((flag) => flag.includes('conflict'));
+}
+
+function dedupe(items) {
+  const seen = new Set();
+  const output = [];
+  for (const item of items) {
+    if (!seen.has(item)) {
+      seen.add(item);
+      output.push(item);
+    }
+  }
+  return output;
+}
+
 function bucket(rows, side) {
   const stats = {};
   const conf = {};
@@ -372,8 +398,7 @@ function bucket(rows, side) {
         || !row.canonical.includes('|')) continue;
     const key = row.canonical;
     if (side !== null && row.side !== side) continue;
-    const bad = row.value === null || row.flags.includes('conflict') || row.conf < LOW_CONF;
-    if (bad) unreadable.push(`stats.${key}`);
+    if (isBad(row)) unreadable.push(`stats.${key}`);
     else {
       stats[key] = row.value;
       conf[key] = Math.round(row.conf * 10000) / 10000;
@@ -382,14 +407,26 @@ function bucket(rows, side) {
   return [stats, conf, unreadable];
 }
 
+// Specials pass the same honesty predicate as class rows (QA D-004).
+function collectSpecials(rows) {
+  const good = [];
+  const unreadable = [];
+  for (const row of rows) {
+    if (!row.canonical.startsWith('special:')) continue;
+    const label = row.canonical.slice('special:'.length);
+    if (isBad(row)) unreadable.push(`specials.${label}`);
+    else good.push({ label, value: row.value });
+  }
+  return [good, unreadable];
+}
+
 export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   const shots = tokenShots.map((shot) => assembleRows(tokensFromJson(shot), true));
   const [rows, warnings] = stitch(shots.map((shot) => shot[0]), shots.map((shot) => shot[1]));
   const panelType = panelHint || detectPanelType(rows);
-  const specials = rows
-    .filter((row) => row.canonical.startsWith('special:') && row.value !== null)
-    .map((row) => ({ label: row.canonical.split(':', 2)[1], value: row.value }));
+  const [specials, specialUnreadable] = collectSpecials(rows);
   const output = { panel_type: panelType, specials, warnings: [...warnings] };
+  const unreadableFields = [];
   let present;
   let total;
   if (panelType === 'battle') {
@@ -397,8 +434,10 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
       const [stats, conf, unreadable] = bucket(rows, side);
       output[key] = stats;
       output[`${key}_conf`] = conf;
-      if (!output.unreadable_fields) output.unreadable_fields = [];
-      output.unreadable_fields.push(...unreadable.map((item) => `${key}.${item.split('.', 2)[1]}`));
+      unreadableFields.push(...unreadable.map((item) => `${key}.${item.slice('stats.'.length)}`));
+      unreadableFields.push(...EXPECTED_KEYS
+        .filter((expected) => !(expected in stats))
+        .map((expected) => `${key}.${expected}`));
     }
     present = Object.keys(output.stats_left).length + Object.keys(output.stats_right).length;
     total = 24;
@@ -406,11 +445,14 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
     const [stats, conf, unreadable] = bucket(rows, null);
     output.stats = stats;
     output.field_conf = conf;
-    output.unreadable_fields = unreadable;
-    present = Object.keys(stats).filter((key) => CLASSES.includes(key.split('|', 1)[0])).length;
+    unreadableFields.push(...unreadable);
+    unreadableFields.push(...EXPECTED_KEYS
+      .filter((expected) => !(expected in stats))
+      .map((expected) => `stats.${expected}`));
+    present = Object.keys(stats).filter((key) => CLASSES.includes(key.split('|')[0])).length;
     total = 12;
   }
-  if (!output.unreadable_fields) output.unreadable_fields = [];
+  output.unreadable_fields = dedupe([...unreadableFields, ...specialUnreadable]);
   output.status = present >= total ? 'ok' : (present > 0 ? 'partial' : 'failed');
   if (!output.stats) output.stats = {};
   void sideHint;

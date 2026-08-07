@@ -19,6 +19,8 @@ def stitch(rows_per_shot, warnings_per_shot=None):
                 order.append(k)
             else:
                 cur = best[k]
+                if "conflict" in cur.flags:
+                    continue  # QA D-003: conflicts are sticky — never replaced
                 if cur.value is not None and r.value is not None and cur.value != r.value:
                     warns.append(f"conflict on {k}: {cur.value} vs {r.value}")
                     best[k] = PanelRow(r.canonical, r.side, None, None, 0.0, r.raw_label,

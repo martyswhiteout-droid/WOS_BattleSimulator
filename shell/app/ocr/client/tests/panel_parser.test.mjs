@@ -45,3 +45,75 @@ test('QA defect 001: drifted value is orphaned, never misattributed', () => {
   assert.deepEqual(result.warnings, ['orphan value near y=0.130']);
   assert.equal(result.status, 'failed');
 });
+
+const CLASSES = ['Infantry', 'Lancer', 'Marksman'];
+const tok = (text, x0, y0, x1, y1, conf = 0.99, color = null) => ({
+  text, x0, y0, x1, y1, conf, color,
+});
+
+function scoutShot() {
+  const shot = [];
+  let y = 0.10;
+  for (const cls of CLASSES) {
+    for (const [st, v] of [['Attack', '+4491.6%'], ['Defense', '+3979.1%'],
+      ['Lethality', '+2794.3%'], ['Health', '+3197.4%']]) {
+      shot.push(tok(`${cls} ${st}`, 0.05, y, 0.40, y + 0.03));
+      shot.push(tok(v, 0.70, y, 0.95, y + 0.03, 0.97));
+      y += 0.05;
+    }
+  }
+  return shot;
+}
+
+test('QA defect 002: col_conflict is never silently attributed', () => {
+  const shot = [];
+  let y = 0.10;
+  for (const cls of CLASSES) {
+    for (const st of STATS) {
+      shot.push(tok(`${cls} ${st}`, 0.38, y, 0.58, y + 0.03));
+      shot.push(tok('+4859.0%', 0.03, y, 0.23, y + 0.03, 0.99, 'red'));
+      shot.push(tok('+694.3%', 0.70, y, 0.90, y + 0.03, 0.99, 'green'));
+      y += 0.05;
+    }
+  }
+  const result = extractPanel([shot], 'you', null);
+  assert.equal(result.panel_type, 'battle');
+  assert.deepEqual(result.stats_left, {});
+  assert.deepEqual(result.stats_right, {});
+  assert.equal(result.status, 'failed');
+  assert.ok(result.unreadable_fields.includes('stats_left.Infantry|Attack'));
+  assert.ok(result.unreadable_fields.includes('stats_right.Infantry|Attack'));
+});
+
+test('QA defect 003: a third shot cannot erase a conflict', () => {
+  const shot = (value) => ([
+    tok('Infantry Attack', 0.05, 0.10, 0.40, 0.13),
+    tok(value, 0.70, 0.10, 0.95, 0.13),
+  ]);
+  const result = extractPanel([shot('4491.6%'), shot('4431.6%'), shot('1111.1%')], null, null);
+  assert.ok(!('Infantry|Attack' in result.stats));
+  assert.ok(result.unreadable_fields.includes('stats.Infantry|Attack'));
+  assert.equal(result.warnings.length, 1);
+});
+
+test('QA defect 004: bad specials are unreadable, never folded', () => {
+  const lowConf = scoutShot();
+  lowConf.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
+  lowConf.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83, 0.05));
+  let result = extractPanel([lowConf], 'you', null);
+  assert.deepEqual(result.specials, []);
+  assert.ok(result.unreadable_fields.includes('specials.Attack Bonus (Pet Skill)'));
+
+  const valueless = scoutShot();
+  valueless.push(tok('Defense Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
+  result = extractPanel([valueless], 'you', null);
+  assert.deepEqual(result.specials, []);
+  assert.ok(result.unreadable_fields.includes('specials.Defense Bonus (Pet Skill)'));
+});
+
+test('QA defect 006: never-seen fields are listed unreadable', () => {
+  const shot = scoutShot().filter((token) => !token.text.startsWith('Marksman'));
+  const result = extractPanel([shot], 'enemy', null);
+  assert.equal(result.status, 'partial');
+  for (const st of STATS) assert.ok(result.unreadable_fields.includes(`stats.Marksman|${st}`));
+});
