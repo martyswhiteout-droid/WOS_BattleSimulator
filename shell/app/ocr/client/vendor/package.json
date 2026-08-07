@@ -1,0 +1,12 @@
+{
+  "name": "wos-panel-ocr-vendor",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned offline runtime for the Task 12 client-side OCR adapter",
+  "dependencies": {
+    "@tesseract.js-data/eng": "1.0.0",
+    "pngjs": "7.0.0",
+    "tesseract.js": "7.0.0",
+    "tesseract.js-core": "7.0.0"
+  }
+}

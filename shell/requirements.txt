@@ -14,3 +14,8 @@ imagehash
 python-multipart
 pytest
 pytest-asyncio
+
+# Task 12 stat-panel OCR fallback. Exact pins keep model/runtime behavior
+# reproducible across the benchmark and production shell.
+rapidocr==3.9.2
+onnxruntime==1.28.0
