@@ -1,3 +1,5 @@
+from .lexicon import PENALTY_LABELS
+
 STATS = ("Attack", "Defense", "Lethality", "Health")
 
 class CalibrationError(ValueError):
@@ -18,13 +20,17 @@ def _stat_of(label):
             return st
     return None
 
-def fold_sets(specials_own, specials_enemy, *, observed):
+def fold_sets(specials_own, specials_enemy, *, observed, warnings=None):
     """Fold the specials panel into (S_scout, S_battle, P_enemy).
 
     ``observed`` (required, keyword-only) states whether a specials panel was
     actually captured and read. ``observed=False`` with no own specials raises
     MissingSpecialsError; ``observed=True`` with an empty enemy list is legal
     (real case: account B).
+
+    ``warnings`` (optional out-parameter) collects rows that were excluded as
+    suspect — currently own-side penalty rows with a positive value, i.e. OCR
+    that lost the minus sign (QA D-013). The 3-tuple return is unchanged.
     """
     if not observed and not specials_own:
         raise MissingSpecialsError(
@@ -34,8 +40,17 @@ def fold_sets(specials_own, specials_enemy, *, observed):
     territory = {st: 0.0 for st in STATS}
     for sp in specials_own:
         label, v, st = sp["label"], sp["value"] / 100.0, _stat_of(sp["label"])
-        if st is None or v < 0:
-            continue                      # own outgoing penalties don't touch own rows
+        if st is None:
+            continue
+        if label in PENALTY_LABELS:
+            # Own outgoing penalties never touch own rows. A POSITIVE one is an
+            # OCR sign-loss suspect: excluded and reported, never a self-buff.
+            if sp["value"] > 0 and warnings is not None:
+                warnings.append(
+                    f"own penalty row has a positive value (OCR sign loss?): {label}")
+            continue
+        if v < 0:
+            continue
         if "When Defending Own City" in label:
             continue                      # displayed but never folded (measured, both accounts)
         if "Territory Defender" in label:
@@ -46,7 +61,7 @@ def fold_sets(specials_own, specials_enemy, *, observed):
     P_enemy = {st: 0.0 for st in STATS}
     for sp in specials_enemy:
         st = _stat_of(sp["label"])
-        if st is not None and sp["value"] < 0 and "Penalty" in sp["label"]:
+        if st is not None and sp["label"] in PENALTY_LABELS:
             P_enemy[st] += abs(sp["value"]) / 100.0
     return S_scout, S_battle, P_enemy
 

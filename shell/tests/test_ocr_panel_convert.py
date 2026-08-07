@@ -66,3 +66,33 @@ def test_qa_defect_005_observed_panel_with_no_enemy_specials_stays_legal():
 def test_qa_defect_005_observed_empty_own_specials_is_legal():
     S_scout, S_battle, P_enemy = fold_sets([], [], observed=True)
     assert all(S_scout[st] == 0.0 and S_battle[st] == 0.0 and P_enemy[st] == 0.0 for st in STATS)
+
+def test_qa_defect_013_reduction_rows_fold_into_the_enemy_penalty_set():
+    # "Enemy Attack/Defense Reduction" are lexicon-known penalties; the old
+    # substring test on "Penalty" skipped them entirely.
+    _, _, P_enemy = fold_sets([], [{"label": "Enemy Attack Reduction", "value": -12.0},
+                                   {"label": "Enemy Defense Reduction", "value": 8.0}],
+                              observed=True)
+    assert abs(P_enemy["Attack"] - 0.12) < 1e-9
+    assert abs(P_enemy["Defense"] - 0.08) < 1e-9   # abs(): a lost sign must not drop the row
+
+def test_qa_defect_013_own_positive_penalty_row_is_excluded_with_a_warning():
+    # OCR dropping the minus turned an outgoing penalty into a self-buff.
+    warns = []
+    S_scout, S_battle, _ = fold_sets(
+        [{"label": "Enemy Defense Penalty (Pet Skill)", "value": 10.0}], [],
+        observed=True, warnings=warns)
+    assert S_scout["Defense"] == 0.0 and S_battle["Defense"] == 0.0
+    assert len(warns) == 1 and "Enemy Defense Penalty (Pet Skill)" in warns[0]
+
+def test_qa_defect_013_own_negative_penalty_row_is_silently_unfolded():
+    warns = []
+    S_scout, _, P_enemy = fold_sets(
+        [{"label": "Enemy Defense Penalty (Pet Skill)", "value": -10.0}], [],
+        observed=True, warnings=warns)
+    assert S_scout["Defense"] == 0.0 and P_enemy["Defense"] == 0.0 and warns == []
+
+def test_qa_defect_013_own_non_penalty_bonus_still_folds():
+    S_scout, _, _ = fold_sets([{"label": "Defense Bonus (Pet Skill)", "value": 10.0}], [],
+                              observed=True)
+    assert abs(S_scout["Defense"] - 0.10) < 1e-9

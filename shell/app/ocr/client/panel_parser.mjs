@@ -15,6 +15,21 @@ const SPECIALS = [
   'Attack Bonus', 'Defense Bonus', 'Lethality Bonus', 'Health Bonus',
   'Enemy Attack Reduction', 'Enemy Defense Reduction',
 ];
+// Specials that describe damage done to the ENEMY's stats (QA D-013). Penalty
+// classification is by canonical label — never by a 'Penalty' substring (which
+// missed the '... Reduction' wording) and never by the sign of the value (which
+// OCR can lose). Enemy-side rows fold |value| into P; own-side rows never enter
+// the S folds at all.
+export const PENALTY_LABELS = new Set(SPECIALS.filter(
+  (label) => label.startsWith('Enemy ') && (label.includes('Penalty') || label.includes('Reduction')),
+));
+
+// QA D-020 (accepted, documented): 'Enemy Lethality Penalty (Expert Skill)' and
+// 'Enemy Lethality Penalty (Pet Skill)' are the one label pair a 2-edit OCR
+// corruption can make ambiguous. Impact is bounded and harmless to the maths:
+// both are Lethality, both are in PENALTY_LABELS, so either resolution folds
+// the value identically — only the provenance text differs. No exact-match
+// input can collide (their skeletons differ by 3 characters).
 const META = [
   'Deployment Capacity', 'March Queue', 'March Speed Up',
   'Training Capacity', 'Training Speed', 'Healing Speed',
@@ -299,6 +314,8 @@ export class MissingSpecialsError extends Error {
  * `options.observed` (required) states whether a specials panel was actually
  * captured and read. observed:false with no own specials throws
  * MissingSpecialsError; observed:true with an empty enemy list is legal.
+ * `options.warnings` (optional array) collects suspect rows that were excluded
+ * — currently own-side penalty rows with a positive value (QA D-013).
  */
 export function foldSets(specialsOwn, specialsEnemy, options) {
   if (typeof options?.observed !== 'boolean') {
@@ -310,13 +327,23 @@ export function foldSets(specialsOwn, specialsEnemy, options) {
       + 'an empty set (that would make the conversion an identity)',
     );
   }
+  const warnings = Array.isArray(options.warnings) ? options.warnings : null;
   const sScout = zeroStats();
   const territory = zeroStats();
   for (const special of specialsOwn) {
     const label = special.label;
     const value = special.value / 100.0;
     const stat = statOf(label);
-    if (stat === null || value < 0) continue;
+    if (stat === null) continue;
+    if (PENALTY_LABELS.has(label)) {
+      // Own outgoing penalties never touch own rows. A POSITIVE one is an OCR
+      // sign-loss suspect: excluded and reported, never a self-buff.
+      if (special.value > 0 && warnings !== null) {
+        warnings.push(`own penalty row has a positive value (OCR sign loss?): ${label}`);
+      }
+      continue;
+    }
+    if (value < 0) continue;
     if (label.includes('When Defending Own City')) continue;
     if (label.includes('Territory Defender')) territory[stat] += value;
     else sScout[stat] += value;
@@ -325,7 +352,7 @@ export function foldSets(specialsOwn, specialsEnemy, options) {
   const pEnemy = zeroStats();
   for (const special of specialsEnemy) {
     const stat = statOf(special.label);
-    if (stat !== null && special.value < 0 && special.label.includes('Penalty')) {
+    if (stat !== null && PENALTY_LABELS.has(special.label)) {
       pEnemy[stat] += Math.abs(special.value) / 100.0;
     }
   }

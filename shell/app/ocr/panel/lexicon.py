@@ -11,6 +11,22 @@ _SPECIALS = (
     "Attack Bonus", "Defense Bonus", "Lethality Bonus", "Health Bonus",
     "Enemy Attack Reduction", "Enemy Defense Reduction",
 )
+# Specials that describe damage done to the ENEMY's stats (QA D-013). Penalty
+# classification is by canonical label — never by a "Penalty" substring (which
+# missed the "... Reduction" wording) and never by the sign of the value (which
+# OCR can lose). Enemy-side rows fold |value| into P; own-side rows never enter
+# the S folds at all.
+PENALTY_LABELS = frozenset(
+    sp for sp in _SPECIALS
+    if sp.startswith("Enemy ") and ("Penalty" in sp or "Reduction" in sp)
+)
+
+# QA D-020 (accepted, documented): "Enemy Lethality Penalty (Expert Skill)" and
+# "Enemy Lethality Penalty (Pet Skill)" are the one label pair a 2-edit OCR
+# corruption can make ambiguous. Impact is bounded and harmless to the maths:
+# both are Lethality, both are in PENALTY_LABELS, so either resolution folds
+# the value identically — only the provenance text differs. No exact-match
+# input can collide (their skeletons differ by 3 characters).
 _META = ("Deployment Capacity", "March Queue", "March Speed Up", "Training Capacity", "Training Speed", "Healing Speed")
 _HEADERS = ("Bonus Overview", "Stat Bonuses", "Military", "Troops Total", "Lootable")
 

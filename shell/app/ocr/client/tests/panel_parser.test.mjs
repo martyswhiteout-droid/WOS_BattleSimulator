@@ -222,3 +222,34 @@ test('QA defect 018: battle responses omit the empty stats key', () => {
   assert.ok(!('stats' in result));
   assert.ok('stats_left' in result && 'stats_right' in result);
 });
+
+test('QA defect 013: penalties classify by canonical label, not substring or sign', () => {
+  const [, , pEnemy] = foldSets([], [
+    { label: 'Enemy Attack Reduction', value: -12.0 },
+    { label: 'Enemy Defense Reduction', value: 8.0 },
+  ], { observed: true });
+  assert.ok(Math.abs(pEnemy.Attack - 0.12) < 1e-9);
+  assert.ok(Math.abs(pEnemy.Defense - 0.08) < 1e-9);
+
+  const warnings = [];
+  const [sScout, sBattle] = foldSets(
+    [{ label: 'Enemy Defense Penalty (Pet Skill)', value: 10.0 }], [],
+    { observed: true, warnings },
+  );
+  assert.equal(sScout.Defense, 0.0);
+  assert.equal(sBattle.Defense, 0.0);
+  assert.equal(warnings.length, 1);
+  assert.ok(warnings[0].includes('Enemy Defense Penalty (Pet Skill)'));
+
+  const quiet = [];
+  const [negative] = foldSets(
+    [{ label: 'Enemy Defense Penalty (Pet Skill)', value: -10.0 }], [],
+    { observed: true, warnings: quiet },
+  );
+  assert.equal(negative.Defense, 0.0);
+  assert.deepEqual(quiet, []);
+
+  const [bonus] = foldSets([{ label: 'Defense Bonus (Pet Skill)', value: 10.0 }], [],
+    { observed: true });
+  assert.ok(Math.abs(bonus.Defense - 0.10) < 1e-9);
+});
