@@ -284,7 +284,32 @@ function zeroStats() {
   return Object.fromEntries(STATS.map((stat) => [stat, 0.0]));
 }
 
-export function foldSets(specialsOwn, specialsEnemy) {
+// QA D-005: an unread specials panel is NOT the same as an account with no
+// specials — folding an empty set silently turns the conversion into identity.
+export class MissingSpecialsError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'MissingSpecialsError';
+    this.code = 'missing_specials';
+  }
+}
+
+/**
+ * Fold the specials panel into [sScout, sBattle, pEnemy].
+ * `options.observed` (required) states whether a specials panel was actually
+ * captured and read. observed:false with no own specials throws
+ * MissingSpecialsError; observed:true with an empty enemy list is legal.
+ */
+export function foldSets(specialsOwn, specialsEnemy, options) {
+  if (typeof options?.observed !== 'boolean') {
+    throw new TypeError('foldSets requires { observed: boolean }');
+  }
+  if (!options.observed && specialsOwn.length === 0) {
+    throw new MissingSpecialsError(
+      'specials panel not observed and no own specials read: refusing to fold '
+      + 'an empty set (that would make the conversion an identity)',
+    );
+  }
   const sScout = zeroStats();
   const territory = zeroStats();
   for (const special of specialsOwn) {
@@ -411,21 +436,28 @@ function bucket(rows, side) {
 function collectSpecials(rows) {
   const good = [];
   const unreadable = [];
+  let observed = false;
   for (const row of rows) {
     if (!row.canonical.startsWith('special:')) continue;
+    observed = true; // QA D-005: seen at all, readable or not
     const label = row.canonical.slice('special:'.length);
     if (isBad(row)) unreadable.push(`specials.${label}`);
     else good.push({ label, value: row.value });
   }
-  return [good, unreadable];
+  return [good, unreadable, observed];
 }
 
 export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   const shots = tokenShots.map((shot) => assembleRows(tokensFromJson(shot), true));
   const [rows, warnings] = stitch(shots.map((shot) => shot[0]), shots.map((shot) => shot[1]));
   const panelType = panelHint || detectPanelType(rows);
-  const [specials, specialUnreadable] = collectSpecials(rows);
-  const output = { panel_type: panelType, specials, warnings: [...warnings] };
+  const [specials, specialUnreadable, specialsObserved] = collectSpecials(rows);
+  const output = {
+    panel_type: panelType,
+    specials,
+    specials_observed: specialsObserved,
+    warnings: [...warnings],
+  };
   const unreadableFields = [];
   let present;
   let total;

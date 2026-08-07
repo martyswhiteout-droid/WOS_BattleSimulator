@@ -3,13 +3,33 @@ STATS = ("Attack", "Defense", "Lethality", "Health")
 class CalibrationError(ValueError):
     pass
 
+class MissingSpecialsError(ValueError):
+    """The specials panel was never observed (QA D-005).
+
+    An unread specials panel is NOT the same as an account with no specials:
+    folding an empty set silently turns battle->scout conversion into the
+    identity (measured worst-case silent error: 367.4 pp). Callers must state
+    explicitly whether the panel was observed.
+    """
+
 def _stat_of(label):
     for st in STATS:
         if st in label:
             return st
     return None
 
-def fold_sets(specials_own, specials_enemy):
+def fold_sets(specials_own, specials_enemy, *, observed):
+    """Fold the specials panel into (S_scout, S_battle, P_enemy).
+
+    ``observed`` (required, keyword-only) states whether a specials panel was
+    actually captured and read. ``observed=False`` with no own specials raises
+    MissingSpecialsError; ``observed=True`` with an empty enemy list is legal
+    (real case: account B).
+    """
+    if not observed and not specials_own:
+        raise MissingSpecialsError(
+            "specials panel not observed and no own specials read: refusing to "
+            "fold an empty set (that would make the conversion an identity)")
     S_scout = {st: 0.0 for st in STATS}
     territory = {st: 0.0 for st in STATS}
     for sp in specials_own:

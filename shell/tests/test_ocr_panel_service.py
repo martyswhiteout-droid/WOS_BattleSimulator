@@ -105,6 +105,17 @@ def test_qa_defect_004_valueless_special_is_unreadable():
     assert r["specials"] == []
     assert "specials.Defense Bonus (Pet Skill)" in r["unreadable_fields"]
 
+def test_qa_defect_005_service_reports_whether_specials_were_observed():
+    clean = extract_panel([_shot_scout()], side_hint="you", panel_hint=None)
+    assert clean["specials_observed"] is False
+
+    shot = _shot_scout()
+    shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83, conf=0.05))
+    seen = extract_panel([shot], side_hint="you", panel_hint=None)
+    # Row was seen but rejected: specials stay empty, "observed" is still true.
+    assert seen["specials"] == [] and seen["specials_observed"] is True
+
 def test_qa_defect_006_never_seen_scout_fields_are_listed_unreadable():
     shot = [t for t in _shot_scout() if not t["text"].startswith("Marksman")]
     r = extract_panel([shot], side_hint="enemy", panel_hint=None)

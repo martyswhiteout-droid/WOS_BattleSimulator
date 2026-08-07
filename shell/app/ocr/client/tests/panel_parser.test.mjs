@@ -20,7 +20,7 @@ test('labels match fixture', () => {
 for (const acct of ['A', 'B']) {
   test(`law round-trips on account ${acct}`, () => {
     const a = FIX.accounts[acct];
-    const [sScout, sBattle, pEnemy] = foldSets(a.specials_own, a.specials_enemy);
+    const [sScout, sBattle, pEnemy] = foldSets(a.specials_own, a.specials_enemy, { observed: true });
     for (const st of STATS) assert.ok(Math.abs(sScout[st] - a.S_scout[st]) < 1e-9, st);
     const scout = battleToScoutnet(a.battle_left, sScout, sBattle, pEnemy);
     for (const cls of Object.keys(a.scout))
@@ -116,4 +116,25 @@ test('QA defect 006: never-seen fields are listed unreadable', () => {
   const result = extractPanel([shot], 'enemy', null);
   assert.equal(result.status, 'partial');
   for (const st of STATS) assert.ok(result.unreadable_fields.includes(`stats.Marksman|${st}`));
+});
+
+test('QA defect 005: unobserved empty specials refuses the identity fold', () => {
+  assert.throws(() => foldSets([], [], { observed: false }), (error) => error.code === 'missing_specials');
+  assert.throws(() => foldSets([], []), TypeError);
+  const b = FIX.accounts.B;
+  const [sScout, , pEnemy] = foldSets(b.specials_own, b.specials_enemy, { observed: true });
+  for (const st of STATS) {
+    assert.equal(pEnemy[st], 0.0);
+    assert.ok(Math.abs(sScout[st] - b.S_scout[st]) < 1e-9, st);
+  }
+});
+
+test('QA defect 005: service reports whether specials were observed', () => {
+  assert.equal(extractPanel([scoutShot()], 'you', null).specials_observed, false);
+  const shot = scoutShot();
+  shot.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
+  shot.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83, 0.05));
+  const seen = extractPanel([shot], 'you', null);
+  assert.deepEqual(seen.specials, []);
+  assert.equal(seen.specials_observed, true);
 });

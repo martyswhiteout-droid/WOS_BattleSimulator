@@ -50,24 +50,26 @@ def _specials(rows):
     """Specials pass the same honesty predicate as class rows (QA D-004):
     a low-confidence or value-less special is reported unreadable, never folded.
     """
-    good, unreadable = [], []
+    good, unreadable, observed = [], [], False
     for r in rows:
         if not r.canonical.startswith("special:"):
             continue
+        observed = True  # QA D-005: seen at all, readable or not
         label = r.canonical.split(":", 1)[1]
         if _is_bad(r):
             unreadable.append(f"specials.{label}")
         else:
             good.append({"label": label, "value": r.value})
-    return good, unreadable
+    return good, unreadable, observed
 
 
 def extract_panel(token_shots, side_hint=None, panel_hint=None):
     shots = [assemble_rows(tokens_from_json(s), two_column=True) for s in token_shots]
     rows, warnings = stitch([r for r, _ in shots], [w for _, w in shots])
     ptype = panel_hint or detect_panel_type(rows)
-    specials, special_unreadable = _specials(rows)
-    out = {"panel_type": ptype, "specials": specials, "warnings": list(warnings)}
+    specials, special_unreadable, specials_observed = _specials(rows)
+    out = {"panel_type": ptype, "specials": specials,
+           "specials_observed": specials_observed, "warnings": list(warnings)}
     unreadable = []
     if ptype == "battle":
         for side, key in (("left", "stats_left"), ("right", "stats_right")):
