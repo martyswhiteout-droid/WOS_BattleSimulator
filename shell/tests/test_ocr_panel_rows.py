@@ -69,3 +69,40 @@ def test_qa_defect_001_in_band_value_still_pairs():
     rows, warnings = assemble_rows(toks, two_column=False)
     assert [(r.canonical, r.value) for r in rows] == [("Infantry|Attack", 4491.6)]
     assert warnings == []
+
+def test_qa_defect_025_tall_row_in_a_short_shot_still_pairs():
+    # QA probe: 14 tokens of height 0.008 set the shot median, one row is a
+    # 0.030-tall label whose value sits 13% of the ROW height off-centre. Judged
+    # against the shot median it looked like drift; judged against its own row
+    # it is ordinary jitter and must pair.
+    toks, y = [], 0.10
+    for cls, st in (("Infantry", "Attack"), ("Infantry", "Defense"), ("Infantry", "Lethality"),
+                    ("Infantry", "Health"), ("Lancer", "Attack"), ("Lancer", "Defense"),
+                    ("Lancer", "Lethality")):
+        toks.append(_tok(f"{cls} {st}", 0.05, y, h=0.008))
+        toks.append(_tok("120.00%", 0.70, y, h=0.008))
+        y += 0.02
+    toks.append(_tok("Marksman Attack", 0.05, 0.500, h=0.030))    # centre .515
+    toks.append(_tok("4491.6%", 0.70, 0.5039, h=0.030))           # centre .5189 = 13% of .030
+    rows, warnings = assemble_rows(tokens_from_json(toks), two_column=False)
+    got = {r.canonical: r.value for r in rows}
+    assert got["Marksman|Attack"] == 4491.6
+    assert got["Infantry|Attack"] == 120.0
+    assert warnings == []
+
+def test_qa_defect_026_value_only_group_is_reported_unmatched():
+    toks = tokens_from_json([_tok("1,234,567", 0.70, 0.10)])
+    rows, warnings = assemble_rows(toks, two_column=False)
+    assert rows == []
+    assert warnings == ["unmatched row near y=0.115"]
+
+def test_qa_defect_026_unmatchable_label_with_a_value_is_reported_unmatched():
+    toks = tokens_from_json([_tok("Zzyzx", 0.05, 0.20), _tok("42", 0.70, 0.20)])
+    rows, warnings = assemble_rows(toks, two_column=False)
+    assert rows == []
+    assert warnings == ["unmatched row near y=0.215"]
+
+def test_qa_defect_026_unmatchable_label_without_a_value_stays_quiet():
+    toks = tokens_from_json([_tok("Zzyzx", 0.05, 0.20)])
+    rows, warnings = assemble_rows(toks, two_column=False)
+    assert rows == [] and warnings == []

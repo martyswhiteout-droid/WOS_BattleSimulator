@@ -314,3 +314,8 @@ def test_qa_defect_021_hint_under_unknown_detection_warns_but_proceeds():
     r = extract_panel([shot], side_hint="you", panel_hint="scout")
     assert r["panel_type"] == "scout" and r["status"] == "partial"
     assert any("could not be detected" in w for w in r["warnings"])
+
+def test_qa_defect_026_repeated_warnings_are_deduped_across_shots():
+    r = extract_panel([_drift_shot(), _drift_shot(), _drift_shot()],
+                      side_hint=None, panel_hint=None)
+    assert r["warnings"] == ["orphan value near y=0.130"]

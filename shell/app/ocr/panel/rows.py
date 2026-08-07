@@ -8,7 +8,12 @@ LOW_CONF = 0.90
 
 # QA D-001 (row drift): a value token may only pair with a label row whose own
 # vertical band contains the value's centre. The band is the label tokens'
-# centre span widened by BAND_SLACK * h (h = median token height for the shot).
+# centre span widened by BAND_SLACK * h_row, where (QA D-025)
+#     h_row = max(median token height for the shot, median LABEL height of the
+#                 row itself)
+# so a tall row inside a shot of small tokens is judged against its own line
+# height instead of the shot's — otherwise ordinary jitter on that row reads as
+# drift and the value is wrongly orphaned.
 #
 # Deviation note (deliberate, documented): the ruling wrote the band as
 # [min(label y0) - 0.35h, max(label y1) + 0.35h] tested against the value's
@@ -46,8 +51,10 @@ def assemble_rows(tokens, two_column):
     """Group tokens into panel rows.
 
     Returns ``(rows, warnings)``. Warnings carry values that could not be
-    attributed to any label row ("orphan value near y=..."); such values are
-    DROPPED, never guessed onto a neighbouring label (QA D-001).
+    attributed to any label row — "orphan value near y=..." when the value
+    missed its row's band (QA D-001), "unmatched row near y=..." when a group
+    holds numbers but no label the lexicon recognises (QA D-026). Such values
+    are DROPPED, never guessed onto a neighbouring label.
     """
     out, warnings = [], []
     toks = list(tokens)
@@ -60,10 +67,14 @@ def assemble_rows(tokens, two_column):
         raw_label = " ".join(t.text for t in sorted(labels, key=lambda t: t.x0)).strip()
         canonical = match_label(raw_label)
         if canonical is None:
+            if values:  # numbers with nothing to attach them to (QA D-026)
+                cy = (values[0].y0 + values[0].y1) / 2
+                warnings.append(f"unmatched row near y={cy:.3f}")
             continue
+        h_row = max(h, median(t.y1 - t.y0 for t in labels))
         label_cys = [(t.y0 + t.y1) / 2 for t in labels]
-        band_lo = min(label_cys) - BAND_SLACK * h
-        band_hi = max(label_cys) + BAND_SLACK * h
+        band_lo = min(label_cys) - BAND_SLACK * h_row
+        band_hi = max(label_cys) + BAND_SLACK * h_row
         in_band = []
         for vt in values:
             cy = (vt.y0 + vt.y1) / 2

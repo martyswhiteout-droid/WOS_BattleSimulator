@@ -113,6 +113,11 @@ def _specials(rows):
 def extract_panel(token_shots, side_hint=None, panel_hint=None):
     """Tokens -> result JSON.
 
+    ``warnings`` and ``unreadable_fields`` are DEVELOPER-FACING API fields
+    (QA D-026): stable identifiers and diagnostics — field keys, panel types,
+    token coordinates — for the caller to act on. The UI copy layer is what
+    turns them into user-facing sentences; do not write end-user prose here.
+
     ``side_hint`` ("you" | "enemy" | None) is echoed back as ``requested_side``
     and, on battle panels, drives the ``stats_you`` / ``stats_enemy`` aliases
     (QA D-011). The LEFT column of a battle report always belongs to the report

@@ -400,3 +400,36 @@ test('QA defect 021: agreeing hints stay silent, unknown detection warns', () =>
   assert.equal(result.status, 'partial');
   assert.ok(result.warnings.some((w) => w.includes('could not be detected')));
 });
+
+test('QA defect 025: a tall row in a short shot still pairs', () => {
+  const shot = [];
+  let y = 0.10;
+  for (const [cls, st] of [['Infantry', 'Attack'], ['Infantry', 'Defense'],
+    ['Infantry', 'Lethality'], ['Infantry', 'Health'], ['Lancer', 'Attack'],
+    ['Lancer', 'Defense'], ['Lancer', 'Lethality']]) {
+    shot.push(tok(`${cls} ${st}`, 0.05, y, 0.25, y + 0.008));
+    shot.push(tok('120.00%', 0.70, y, 0.90, y + 0.008));
+    y += 0.02;
+  }
+  shot.push(tok('Marksman Attack', 0.05, 0.500, 0.25, 0.530));       // centre .515
+  shot.push(tok('4491.6%', 0.70, 0.5039, 0.90, 0.5339));             // centre .5189
+  const result = extractPanel([shot], 'you', null);
+  assert.equal(result.stats['Marksman|Attack'], 4491.6);
+  assert.equal(result.stats['Infantry|Attack'], 120.0);
+  assert.deepEqual(result.warnings, []);
+});
+
+test('QA defect 026: warnings are deduped and unmatched rows are reported', () => {
+  const repeated = extractPanel([driftShot(), driftShot(), driftShot()], null, null);
+  assert.deepEqual(repeated.warnings, ['orphan value near y=0.130']);
+
+  const valueOnly = extractPanel([[tok('1,234,567', 0.70, 0.10, 0.90, 0.13)]], null, null);
+  assert.deepEqual(valueOnly.warnings, ['unmatched row near y=0.115']);
+
+  const unmatchedLabel = extractPanel([[tok('Zzyzx', 0.05, 0.20, 0.25, 0.23),
+    tok('42', 0.70, 0.20, 0.90, 0.23)]], null, null);
+  assert.deepEqual(unmatchedLabel.warnings, ['unmatched row near y=0.215']);
+
+  const quiet = extractPanel([[tok('Zzyzx', 0.05, 0.20, 0.25, 0.23)]], null, null);
+  assert.deepEqual(quiet.warnings, []);
+});

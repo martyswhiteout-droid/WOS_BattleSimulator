@@ -177,8 +177,10 @@ function median(values) {
 
 // QA D-001 (row drift): a value token may only pair with a label row whose own
 // vertical band contains the value's centre — the label centres widened by
-// BAND_SLACK * h (h = median token height for the shot). See rows.py for the
-// documented deviation from the ruling's literal y0/y1 phrasing.
+// BAND_SLACK * hRow, where (QA D-025) hRow = max(shot median token height,
+// median LABEL height of the row itself), so a tall row inside a shot of small
+// tokens is judged against its own line height. See rows.py for the documented
+// deviation from the ruling's literal y0/y1 phrasing.
 const BAND_SLACK = 0.35;
 
 function groupRows(tokens, height) {
@@ -220,10 +222,17 @@ export function assembleRows(tokens, twoColumn) {
       .join(' ')
       .trim();
     const canonical = matchLabel(rawLabel);
-    if (canonical === null) continue;
+    if (canonical === null) {
+      if (values.length) { // numbers with nothing to attach them to (QA D-026)
+        const centerY = (values[0].y0 + values[0].y1) / 2;
+        warnings.push(`unmatched row near y=${centerY.toFixed(3)}`);
+      }
+      continue;
+    }
+    const rowHeight = Math.max(height, median(labels.map((token) => token.y1 - token.y0)));
     const labelCenters = labels.map((token) => (token.y0 + token.y1) / 2);
-    const bandLow = Math.min(...labelCenters) - BAND_SLACK * height;
-    const bandHigh = Math.max(...labelCenters) + BAND_SLACK * height;
+    const bandLow = Math.min(...labelCenters) - BAND_SLACK * rowHeight;
+    const bandHigh = Math.max(...labelCenters) + BAND_SLACK * rowHeight;
     const inBand = [];
     for (const valueToken of values) {
       const centerY = (valueToken.y0 + valueToken.y1) / 2;
@@ -278,6 +287,8 @@ function tupleDisplay(row) {
   return `('${row.canonical}', ${side})`;
 }
 
+// Merged warnings are deduped preserving first-seen order (QA D-026): three
+// screenshots of the same panel report the same defect once, not three times.
 export function stitch(rowsPerShot, warningsPerShot = null) {
   const order = [];
   const best = new Map();
@@ -310,7 +321,7 @@ export function stitch(rowsPerShot, warningsPerShot = null) {
       }
     }
   }
-  return [order.map((key) => best.get(key)), warnings];
+  return [order.map((key) => best.get(key)), dedupe(warnings)];
 }
 
 function statOf(label) {
