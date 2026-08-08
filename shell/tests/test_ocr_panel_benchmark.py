@@ -31,6 +31,7 @@ def _benchmark_selected() -> bool:
 
 
 if _benchmark_selected():
+    from shell.app.ocr.panel.engine_gemini import GeminiUnavailable, extract_panel_gemini
     from shell.app.ocr.panel.engine_rapidocr import recognize_image
     from shell.app.ocr.panel.service import extract_panel
 
@@ -172,6 +173,15 @@ if _benchmark_selected():
 
     def _evaluate(case, tokens):
         result = extract_panel([tokens], side_hint="you", panel_hint=None)
+        return _score(case, result)
+
+
+    def _score(case, result):
+        """Score an already-produced ``extract_panel``-shaped result against
+        the golden vectors. Split out from ``_evaluate`` so the Gemini engine
+        — which returns this same shape directly, with no token layer — can
+        share the exact scoring logic (digit accuracy, false-confident) used
+        for the token-based engines."""
         maps = _account_maps(case.account)
         correct_digits = total_digits = false_confident = fields_read = 0
         if case.kind == "specials":
@@ -280,6 +290,31 @@ process.stdout.write(JSON.stringify(output));
         return results
 
 
+    def _gemini_results():
+        """Run the Gemini engine over the same CASES used by the token-based
+        engines. Unlike those, extract_panel_gemini returns the final result
+        shape directly (binding decision #1: a vision LLM's native strength
+        is structured extraction, not per-token bounding boxes) — so there is
+        no _validate_tokens() step here, and _score() is called directly.
+
+        Raises GeminiUnavailable (propagated to the caller) if no
+        GEMINI_API_KEY is configured — the caller is expected to catch this
+        and report Gemini as skipped rather than failing the whole benchmark.
+        """
+        results = []
+        models_used = set()
+        for case in CASES:
+            raw = (IMAGE_DIR / case.name).read_bytes()
+            started = time.perf_counter()
+            result = extract_panel_gemini(raw, panel_hint=None, side_hint="you")
+            latency_ms = (time.perf_counter() - started) * 1000.0
+            models_used.add(result.get("engine_model"))
+            row = _score(case, result)
+            row["latency_ms"] = latency_ms
+            results.append(row)
+        return results, models_used
+
+
     def _summary(engine, rows):
         correct = sum(row["correct_digits"] for row in rows)
         total = sum(row["total_digits"] for row in rows)
@@ -301,5 +336,17 @@ process.stdout.write(JSON.stringify(output));
             _summary("rapidocr", _rapidocr_results()),
             _summary("tesseract", _tesseract_results()),
         ]
+        try:
+            gemini_rows, gemini_models = _gemini_results()
+        except GeminiUnavailable as exc:
+            # No GEMINI_API_KEY configured: Gemini is skipped, never a hard
+            # failure — the D2 verdict below must still stand on RapidOCR
+            # alone regardless of Gemini's presence (binding decision #6).
+            reports.append({"engine": "gemini", "passed": False, "skipped": True,
+                             "reason": str(exc)})
+        else:
+            gemini_report = _summary("gemini", gemini_rows)
+            gemini_report["model"] = sorted(model for model in gemini_models if model)
+            reports.append(gemini_report)
         print("OCR_BENCHMARK_JSON=" + json.dumps(reports, sort_keys=True))
-        assert any(report["passed"] for report in reports), reports
+        assert any(report.get("passed") for report in reports), reports

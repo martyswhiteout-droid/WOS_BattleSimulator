@@ -50,6 +50,31 @@ Practical notes:
 
 At 100k scans/month: paid Gemini Flash-Lite-class ≈ **$0.40–$40/mo** depending on model (still trivial), vs $0 for the client-side deterministic path — which is why the endgame architecture in `docs/OCR_SERVICE_PLAN.md` is unchanged; the free tier is the fastest zero-cost on-ramp, not the destination.
 
+## 6. How to run the benchmark
+
+The engine adapter (`shell/app/ocr/panel/engine_gemini.py`, `extract_panel_gemini`)
+and its benchmark entry are built (2026-08-08) and compare Gemini against
+RapidOCR / tesseract.js on the same account-C golden vectors, apples-to-apples
+(same digit-accuracy + false-confident metrics, same per-image table). With no
+key configured the benchmark reports Gemini as `skipped` and the D2 verdict
+still stands on RapidOCR alone — this is the default, keyless-safe state.
+
+To actually exercise Gemini:
+
+1. Create a key per §4 above (Google AI Studio → API Keys → the `wos-tests`
+   project).
+2. `shell/.env` → `GEMINI_API_KEY=...` (the slot already exists in
+   `shell/app/config.py`).
+3. From the **repo root** (`Settings`' `env_file=".env"` resolves relative to
+   the current working directory, not to `shell/`, so running from inside
+   `shell/` — or anywhere else — will silently miss the key):
+   `py -m pytest -m benchmark shell/tests/test_ocr_panel_benchmark.py -q -s`
+
+The run prints one `OCR_BENCHMARK_JSON=...` line with all three engines'
+per-image digit accuracy, false-confident count, and (for Gemini) which model
+id actually served each request — Gemini 3 Flash by default, falling back to
+Gemini 2.5 Flash if the former 404s.
+
 ## Sources
 
 - [Gemini API rate limits (official — defers numbers to your AI Studio dashboard)](https://ai.google.dev/gemini-api/docs/rate-limits)
