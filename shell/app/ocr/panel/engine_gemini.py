@@ -217,8 +217,15 @@ def _call_model(client, model, api_key, payload, sleep):
                     raise _GeminiCallFailed(
                         f"Gemini ({model}) response body was not valid JSON"
                     ) from exc
+            detail = ""
+            try:
+                api_msg = response.json().get("error", {}).get("message", "")
+                if api_msg:
+                    detail = f": {api_msg[:160]}"
+            except ValueError:
+                pass
             last_error = _GeminiCallFailed(
-                f"Gemini ({model}) returned HTTP {response.status_code}"
+                f"Gemini ({model}) returned HTTP {response.status_code}{detail}"
             )
             retryable = response.status_code == 429 or response.status_code >= 500
             if not retryable:
