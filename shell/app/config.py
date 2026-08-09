@@ -48,6 +48,10 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str | None = None
     OCR_MOCK: bool = True                  # mock-first: real vision calls are opt-in
 
+    # --- OCR engine ladder (shell/app/ocr/panel/ladder.py) ----------------
+    OCR_CPU_CONCURRENCY: int = 2           # concurrent RapidOCR executions (VPS cores)
+    GEMINI_OCR_DAILY_BUDGET: int = 1200    # hard daily cap on Gemini gap-fill calls
+
     # --- production limits (enforced by Agent B's limits.py; defaults here
     #     are the single source for keyless/dev fallbacks) ------------------
     MIN_TROOPS_PER_SIDE: int = 5000
@@ -127,7 +131,8 @@ for _key in ("ENV", "BASE_URL", "CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY",
              "CLERK_JWKS_URL", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY",
              "DATABASE_URL", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET",
              "STRIPE_PRICE_ID_PRO", "ANTHROPIC_API_KEY", "GEMINI_API_KEY",
-             "OCR_MOCK", "MIN_TROOPS_PER_SIDE", "FREE_SIMS_PER_DAY",
+             "OCR_MOCK", "OCR_CPU_CONCURRENCY", "GEMINI_OCR_DAILY_BUDGET",
+             "MIN_TROOPS_PER_SIDE", "FREE_SIMS_PER_DAY",
              "PRO_SIMS_PER_DAY", "PRO_OCR_PER_DAY", "BURST_PER_MIN",
              "GLOBAL_CONCURRENCY"):
     setattr(Settings, _key.lower(), _alias(_key))
