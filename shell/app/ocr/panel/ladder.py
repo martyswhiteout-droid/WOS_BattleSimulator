@@ -209,7 +209,25 @@ def _fill_gaps(result, gemini_result):
         # specials_you/specials_enemy are filtered copies, not aliases, so they
         # must be rebuilt from the updated specials list (QA D-029).
         attach_side_specials(result)
+        _recompute_specials_observed(result)
     return filled
+
+
+def _recompute_specials_observed(result):
+    """A repaired specials panel is READ again (QA D-028).
+
+    "partial" means rows were seen but at least one was withheld; once every
+    specials key has been filled there is nothing withheld any more, so the
+    verdict must return to "read" or convert.fold_sets would keep refusing a
+    panel that is now complete. "none" (nothing ever seen) is never upgraded —
+    there would be no specials key to fill in the first place.
+    """
+    if result.get("specials_observed") != "partial":
+        return
+    if any(key.split(".", 1)[0].startswith("specials")
+           for key in result.get("unreadable_fields") or []):
+        return
+    result["specials_observed"] = "read"
 
 
 def _engine_failure_reason(gemini_result):

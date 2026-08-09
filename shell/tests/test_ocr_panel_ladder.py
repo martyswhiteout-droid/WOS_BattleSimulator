@@ -511,3 +511,60 @@ def test_gemini_fill_values_are_coerced_to_float(monkeypatch):
     result = _ladder()
     value = result["stats"]["Infantry|Attack"]
     assert isinstance(value, float) and value == 4491.0
+
+
+# ---------------------------------------------------------------------------
+# QA D-028: a repaired specials panel is "read" again
+# ---------------------------------------------------------------------------
+
+def _scout_tokens_with_two_specials(first_conf, second_conf):
+    tokens = _scout_tokens()
+    y = 0.10 + 12 * 0.05
+    for label, conf in ((SPECIAL_LABEL, first_conf),
+                        ("Defense Bonus (Pet Skill)", second_conf)):
+        tokens.append({"text": label, "x0": 0.05, "y0": y, "x1": 0.40,
+                       "y1": y + 0.03, "conf": 0.99})
+        tokens.append({"text": "+10.0%", "x0": 0.70, "y0": y, "x1": 0.95,
+                       "y1": y + 0.03, "conf": conf})
+        y += 0.05
+    return tokens
+
+
+def test_qa_defect_028_repaired_specials_panel_folds_without_error(monkeypatch):
+    from shell.app.ocr.panel.convert import fold_sets
+
+    _install_rapid(monkeypatch, special_conf=0.20)
+    _install_gemini(monkeypatch, result=_gemini_result(
+        specials=[{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]))
+
+    result = _ladder()
+
+    assert not any(k.startswith("specials") for k in result["unreadable_fields"])
+    assert result["specials_observed"] == "read"
+    S_scout, _, _ = fold_sets(result["specials"], [], observed=result["specials_observed"])
+    assert abs(S_scout["Attack"] - 0.10) < 1e-9        # no MissingSpecialsError
+
+
+def test_qa_defect_028_still_partial_while_any_special_is_unreadable(monkeypatch):
+    _install_rapid(monkeypatch,
+                   recognize=lambda image: _scout_tokens_with_two_specials(0.20, 0.20))
+    _install_gemini(monkeypatch, result=_gemini_result(
+        specials=[{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]))
+    result = _ladder()
+    assert f"specials.{SPECIAL_LABEL}" not in result["unreadable_fields"]
+    assert "specials.Defense Bonus (Pet Skill)" in result["unreadable_fields"]
+    assert result["specials_observed"] == "partial"
+
+
+def test_qa_defect_028_a_stats_only_fill_does_not_touch_the_specials_verdict(monkeypatch):
+    _install_rapid(monkeypatch, missing={"Infantry|Attack"}, special_conf=0.20)
+    _install_gemini(monkeypatch, result=_gemini_result(stats={"Infantry|Attack": 4491.6}))
+    result = _ladder()
+    assert result["specials_observed"] == "partial"
+
+
+def test_qa_defect_028_none_state_is_never_upgraded(monkeypatch):
+    _install_rapid(monkeypatch, missing={"Infantry|Attack"})
+    _install_gemini(monkeypatch, result=_gemini_result(stats={"Infantry|Attack": 4491.6}))
+    result = _ladder()
+    assert result["specials_observed"] == "none"
