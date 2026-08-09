@@ -60,6 +60,7 @@ from .service import (
     _dedupe,
     _hint_warning,
     _specials,
+    attach_side_specials,
 )
 from .values import parse_value
 
@@ -295,20 +296,25 @@ def _assemble_result(rows, warnings, side_hint, panel_hint):
     shell differs, because the input here is already-assembled rows instead
     of raw token shots run through stitch()."""
     detected = detect_panel_type(rows)
-    specials, special_unreadable, specials_observed = _specials(rows)
     ptype = detected
     warnings = list(warnings)
+    contradiction = None
     if panel_hint:
         if (panel_hint, detected) in INCOMPATIBLE_HINTS:
-            return {"panel_type": detected, "requested_side": side_hint,
-                    "specials": specials, "specials_observed": specials_observed,
-                    "warnings": warnings + [
-                        f"panel hint {panel_hint} contradicts detected {detected}"],
-                    "stats": {}, "field_conf": {}, "unreadable_fields": [],
-                    "status": "failed"}
-        if detected != panel_hint:
-            warnings.append(_hint_warning(panel_hint, detected))
-        ptype = panel_hint
+            contradiction = f"panel hint {panel_hint} contradicts detected {detected}"
+        else:
+            if detected != panel_hint:
+                warnings.append(_hint_warning(panel_hint, detected))
+            ptype = panel_hint
+    # Side-aware specials need the settled panel type first (QA D-029).
+    specials, special_unreadable, specials_observed = _specials(
+        rows, two_column=(ptype == "battle"))
+    if contradiction:
+        return {"panel_type": detected, "requested_side": side_hint,
+                "specials": specials, "specials_observed": specials_observed,
+                "warnings": warnings + [contradiction],
+                "stats": {}, "field_conf": {}, "unreadable_fields": [],
+                "status": "failed"}
     out = {"panel_type": ptype, "requested_side": side_hint, "specials": specials,
            "specials_observed": specials_observed, "warnings": warnings}
     unreadable = []
@@ -334,6 +340,7 @@ def _assemble_result(rows, warnings, side_hint, panel_hint):
         enemy_key = "stats_right" if side_hint == "you" else "stats_left"
         out["stats_you"], out["stats_you_conf"] = out[you_key], out[you_key + "_conf"]
         out["stats_enemy"], out["stats_enemy_conf"] = out[enemy_key], out[enemy_key + "_conf"]
+    attach_side_specials(out)
     return out
 
 

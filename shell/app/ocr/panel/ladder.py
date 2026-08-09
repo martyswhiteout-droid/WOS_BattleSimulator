@@ -41,6 +41,7 @@ from .service import (
     CLASS_VALUE_MAX,
     CLASS_VALUE_MIN,
     SPECIAL_ABS_MAX,
+    attach_side_specials,
     extract_panel,
 )
 
@@ -123,9 +124,12 @@ def _plausible(prefix, value):
     these, and a gap fill must never be the one path that skips them."""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return False
-    if prefix == "specials":
+    if prefix in _SPECIALS_SIDE:
         return abs(value) <= SPECIAL_ABS_MAX
     return CLASS_VALUE_MIN <= value <= CLASS_VALUE_MAX
+
+
+_SPECIALS_SIDE = {"specials": None, "specials_left": "left", "specials_right": "right"}
 
 
 def _gemini_value(gemini_result, prefix, field):
@@ -133,11 +137,15 @@ def _gemini_value(gemini_result, prefix, field):
 
     Only the SAME container is consulted: a Gemini result whose shape differs
     from the RapidOCR one (e.g. single-column where RapidOCR saw two) fills
-    nothing rather than guessing which column a value belongs to.
+    nothing rather than guessing which column a value belongs to. Specials are
+    matched on (label, side) so a two-column panel's left entry can never be
+    filled from the right column's value (QA D-029).
     """
-    if prefix == "specials":
+    if prefix in _SPECIALS_SIDE:
+        want_side = _SPECIALS_SIDE[prefix]
         for special in gemini_result.get("specials") or []:
-            if isinstance(special, dict) and special.get("label") == field:
+            if (isinstance(special, dict) and special.get("label") == field
+                    and special.get("side") == want_side):
                 return special.get("value")
         return None
     container = gemini_result.get(prefix)
@@ -161,13 +169,25 @@ def _fill_gaps(result, gemini_result):
     filled = []
     for key in list(result.get("unreadable_fields") or []):
         prefix, _, field = key.partition(".")
-        if prefix not in _CONF_KEYS and prefix != "specials":
+        if prefix not in _CONF_KEYS and prefix not in _SPECIALS_SIDE:
             continue
         value = _gemini_value(gemini_result, prefix, field)
         if value is None or not _plausible(prefix, value):
             continue
-        if prefix == "specials":
-            result.setdefault("specials", []).append({"label": field, "value": value})
+        value = float(value)        # type parity with the RapidOCR path
+        if prefix in _SPECIALS_SIDE:
+            side = _SPECIALS_SIDE[prefix]
+            entry = {"label": field, "value": value, "side": side}
+            specials = result.setdefault("specials", [])
+            # Replace the (label, side) entry if one exists; a fill for one
+            # side must never disturb the other side's entry (QA D-029).
+            for index, existing in enumerate(specials):
+                if (isinstance(existing, dict) and existing.get("label") == field
+                        and existing.get("side") == side):
+                    specials[index] = entry
+                    break
+            else:
+                specials.append(entry)
         else:
             target = result.get(prefix)
             if not isinstance(target, dict):
@@ -186,6 +206,9 @@ def _fill_gaps(result, gemini_result):
         result["unreadable_fields"] = [k for k in result["unreadable_fields"]
                                        if k not in dropped]
         _recompute_status(result)
+        # specials_you/specials_enemy are filtered copies, not aliases, so they
+        # must be rebuilt from the updated specials list (QA D-029).
+        attach_side_specials(result)
     return filled
 
 

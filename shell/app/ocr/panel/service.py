@@ -75,9 +75,33 @@ def _bucket(rows, side):
     return stats, conf, unreadable
 
 
-def _specials(rows):
+def attach_side_specials(out):
+    """(Re)build the ``specials_you`` / ``specials_enemy`` convenience lists.
+
+    Same left=report-viewer orientation as stats_you/stats_enemy (QA D-011).
+    Called by extract_panel and AGAIN by the ladder after a gap fill, so the
+    convenience lists can never go stale relative to ``specials``.
+    """
+    if out.get("panel_type") != "battle" or out.get("requested_side") not in ("you", "enemy"):
+        return out
+    you_side = "left" if out["requested_side"] == "you" else "right"
+    enemy_side = "right" if out["requested_side"] == "you" else "left"
+    specials = out.get("specials") or []
+    out["specials_you"] = [s for s in specials if s.get("side") == you_side]
+    out["specials_enemy"] = [s for s in specials if s.get("side") == enemy_side]
+    return out
+
+
+def _specials(rows, two_column=False):
     """Specials pass the same honesty predicate as class rows (QA D-004):
     a low-confidence or value-less special is reported unreadable, never folded.
+
+    Specials are SIDE-AWARE on two-column panels (QA D-029): the same label can
+    appear in both columns with different values, so each entry carries its
+    ``side`` and unreadable entries are keyed ``specials_left.<label>`` /
+    ``specials_right.<label>``. Single-column panels keep ``side: None`` and the
+    flat ``specials.<label>`` key. Without this, two columns of one label
+    collapse into two flat entries that fold_sets would sum.
 
     Returns ``(specials, unreadable, observed)`` where ``observed`` is the
     tri-state capture verdict (QA D-022) consumed by ``convert.fold_sets``:
@@ -99,10 +123,12 @@ def _specials(rows):
             continue
         seen += 1
         label = r.canonical.split(":", 1)[1]
+        side = r.side if (two_column and r.side in ("left", "right")) else None
+        key = f"specials_{side}.{label}" if side else f"specials.{label}"
         if _is_bad(r) or not _in_range(r.value, -SPECIAL_ABS_MAX, SPECIAL_ABS_MAX):
-            unreadable.append(f"specials.{label}")
+            unreadable.append(key)
         else:
-            good.append({"label": label, "value": r.value})
+            good.append({"label": label, "value": r.value, "side": side})
     if seen == 0:
         observed = "read" if header_seen else "none"
     else:
@@ -147,20 +173,26 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
     shots = [assemble_rows(tokens_from_json(s), two_column=True) for s in token_shots]
     rows, warnings = stitch([r for r, _ in shots], [w for _, w in shots])
     detected = detect_panel_type(rows)
-    specials, special_unreadable, specials_observed = _specials(rows)
     ptype = detected
     warnings = list(warnings)
+    contradiction = None
     if panel_hint:
         if (panel_hint, detected) in INCOMPATIBLE_HINTS:
-            return {"panel_type": detected, "requested_side": side_hint,
-                    "specials": specials, "specials_observed": specials_observed,
-                    "warnings": warnings + [
-                        f"panel hint {panel_hint} contradicts detected {detected}"],
-                    "stats": {}, "field_conf": {}, "unreadable_fields": [],
-                    "status": "failed"}
-        if detected != panel_hint:
-            warnings.append(_hint_warning(panel_hint, detected))
-        ptype = panel_hint
+            contradiction = f"panel hint {panel_hint} contradicts detected {detected}"
+        else:
+            if detected != panel_hint:
+                warnings.append(_hint_warning(panel_hint, detected))
+            ptype = panel_hint
+    # The panel type must be settled BEFORE reading specials: only a two-column
+    # panel has per-side specials (QA D-029).
+    specials, special_unreadable, specials_observed = _specials(
+        rows, two_column=(ptype == "battle"))
+    if contradiction:
+        return {"panel_type": detected, "requested_side": side_hint,
+                "specials": specials, "specials_observed": specials_observed,
+                "warnings": warnings + [contradiction],
+                "stats": {}, "field_conf": {}, "unreadable_fields": [],
+                "status": "failed"}
     out = {"panel_type": ptype, "requested_side": side_hint, "specials": specials,
            "specials_observed": specials_observed, "warnings": warnings}
     unreadable = []
@@ -186,4 +218,5 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
         enemy_key = "stats_right" if side_hint == "you" else "stats_left"
         out["stats_you"], out["stats_you_conf"] = out[you_key], out[you_key + "_conf"]
         out["stats_enemy"], out["stats_enemy_conf"] = out[enemy_key], out[enemy_key + "_conf"]
+    attach_side_specials(out)
     return out

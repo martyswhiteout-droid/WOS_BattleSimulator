@@ -571,11 +571,30 @@ function bucket(rows, side) {
 }
 
 // Specials pass the same honesty predicate as class rows (QA D-004).
+// (Re)build the specials_you / specials_enemy convenience lists — same
+// left=report-viewer orientation as stats_you/stats_enemy (QA D-011/D-029).
+export function attachSideSpecials(output) {
+  if (output.panel_type !== 'battle' || !['you', 'enemy'].includes(output.requested_side)) {
+    return output;
+  }
+  const youSide = output.requested_side === 'you' ? 'left' : 'right';
+  const enemySide = output.requested_side === 'you' ? 'right' : 'left';
+  const specials = output.specials || [];
+  output.specials_you = specials.filter((special) => special.side === youSide);
+  output.specials_enemy = specials.filter((special) => special.side === enemySide);
+  return output;
+}
+
 // Returns [specials, unreadable, observed] where observed is the tri-state
 // capture verdict (QA D-022): 'none' (never captured), 'partial' (rows seen,
 // >=1 withheld), 'read' (all seen rows readable, or the specials-panel header
 // seen with zero rows = the legal specials-free account).
-function collectSpecials(rows) {
+//
+// Specials are SIDE-AWARE on two-column panels (QA D-029): the same label can
+// appear in both columns with different values, so each entry carries its side
+// and unreadable entries are keyed specials_left./specials_right. Single-column
+// panels keep side null and the flat specials. key.
+function collectSpecials(rows, twoColumn = false) {
   const good = [];
   const unreadable = [];
   let seen = 0;
@@ -588,10 +607,12 @@ function collectSpecials(rows) {
     if (!row.canonical.startsWith('special:')) continue;
     seen += 1;
     const label = row.canonical.slice('special:'.length);
+    const side = (twoColumn && ['left', 'right'].includes(row.side)) ? row.side : null;
+    const key = side ? `specials_${side}.${label}` : `specials.${label}`;
     if (isBad(row) || !inRange(row.value, -SPECIAL_ABS_MAX, SPECIAL_ABS_MAX)) {
-      unreadable.push(`specials.${label}`);
+      unreadable.push(key);
     }
-    else good.push({ label, value: row.value });
+    else good.push({ label, value: row.value, side });
   }
   let observed;
   if (seen === 0) observed = headerSeen ? 'read' : 'none';
@@ -607,26 +628,33 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
   const shots = tokenShots.map((shot) => assembleRows(tokensFromJson(shot), true));
   const [rows, warnings] = stitch(shots.map((shot) => shot[0]), shots.map((shot) => shot[1]));
   const detected = detectPanelType(rows);
-  const [specials, specialUnreadable, specialsObserved] = collectSpecials(rows);
   let panelType = detected;
   const resultWarnings = [...warnings];
+  let contradiction = null;
   if (panelHint) {
     // QA D-012/D-021: the hint is a CHECK, never a blind override.
     if (INCOMPATIBLE_HINTS.has(`${panelHint}|${detected}`)) {
-      return {
-        panel_type: detected,
-        requested_side: sideHint,
-        specials,
-        specials_observed: specialsObserved,
-        warnings: [...resultWarnings, `panel hint ${panelHint} contradicts detected ${detected}`],
-        stats: {},
-        field_conf: {},
-        unreadable_fields: [],
-        status: 'failed',
-      };
+      contradiction = `panel hint ${panelHint} contradicts detected ${detected}`;
+    } else {
+      if (detected !== panelHint) resultWarnings.push(hintWarning(panelHint, detected));
+      panelType = panelHint;
     }
-    if (detected !== panelHint) resultWarnings.push(hintWarning(panelHint, detected));
-    panelType = panelHint;
+  }
+  // The panel type must be settled before reading specials (QA D-029).
+  const [specials, specialUnreadable, specialsObserved] = collectSpecials(
+    rows, panelType === 'battle');
+  if (contradiction) {
+    return {
+      panel_type: detected,
+      requested_side: sideHint,
+      specials,
+      specials_observed: specialsObserved,
+      warnings: [...resultWarnings, contradiction],
+      stats: {},
+      field_conf: {},
+      unreadable_fields: [],
+      status: 'failed',
+    };
   }
   const output = {
     panel_type: panelType,
@@ -672,5 +700,6 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
     output.stats_enemy = output[enemyKey];
     output.stats_enemy_conf = output[`${enemyKey}_conf`];
   }
+  attachSideSpecials(output);
   return output;
 }

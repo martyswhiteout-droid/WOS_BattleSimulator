@@ -243,7 +243,7 @@ def test_gemini_value_failing_validation_stays_unreadable(monkeypatch):
 def test_gemini_implausible_special_stays_unreadable(monkeypatch):
     _install_rapid(monkeypatch, special_conf=0.20)
     _install_gemini(monkeypatch, result=_gemini_result(
-        specials=[{"label": "Attack Bonus (Pet Skill)", "value": 250.0}]))
+        specials=[{"label": "Attack Bonus (Pet Skill)", "value": 250.0, "side": None}]))
     result = _ladder()
     assert result["specials"] == []
     assert "specials.Attack Bonus (Pet Skill)" in result["unreadable_fields"]
@@ -253,9 +253,9 @@ def test_gemini_implausible_special_stays_unreadable(monkeypatch):
 def test_gemini_readable_special_fills_the_gap(monkeypatch):
     _install_rapid(monkeypatch, special_conf=0.20)
     _install_gemini(monkeypatch, result=_gemini_result(
-        specials=[{"label": "Attack Bonus (Pet Skill)", "value": 10.0}]))
+        specials=[{"label": "Attack Bonus (Pet Skill)", "value": 10.0, "side": None}]))
     result = _ladder()
-    assert result["specials"] == [{"label": "Attack Bonus (Pet Skill)", "value": 10.0}]
+    assert result["specials"] == [{"label": "Attack Bonus (Pet Skill)", "value": 10.0, "side": None}]
     assert "specials.Attack Bonus (Pet Skill)" not in result["unreadable_fields"]
     assert result["field_engine"] == {"specials.Attack Bonus (Pet Skill)": "gemini"}
 
@@ -427,3 +427,87 @@ def test_real_gemini_loader_resolves_its_three_symbols():
     assert unavailable is engine_gemini.GeminiUnavailable
     assert issubclass(unavailable, Exception)
     assert callable(resolve_key)
+
+
+# ---------------------------------------------------------------------------
+# QA D-029: side-aware specials survive the gap fill
+# ---------------------------------------------------------------------------
+
+SPECIAL_LABEL = "Attack Bonus (Pet Skill)"
+
+
+def _battle_tokens_with_specials(right_special_conf=0.99):
+    tokens, y = [], 0.10
+    for cls in CLASSES:
+        for stat in STATS:
+            tokens.append({"text": f"{cls} {stat}", "x0": 0.38, "y0": y,
+                           "x1": 0.58, "y1": y + 0.03, "conf": 0.99})
+            tokens.append({"text": "+1200.5%", "x0": 0.03, "y0": y, "x1": 0.23,
+                           "y1": y + 0.03, "conf": 0.99, "color": "green"})
+            tokens.append({"text": "+700.5%", "x0": 0.70, "y0": y, "x1": 0.90,
+                           "y1": y + 0.03, "conf": 0.99, "color": "red"})
+            y += 0.05
+    tokens.append({"text": SPECIAL_LABEL, "x0": 0.38, "y0": y, "x1": 0.58,
+                   "y1": y + 0.03, "conf": 0.99})
+    tokens.append({"text": "+10.0%", "x0": 0.03, "y0": y, "x1": 0.23,
+                   "y1": y + 0.03, "conf": 0.99, "color": "green"})
+    tokens.append({"text": "+8.0%", "x0": 0.70, "y0": y, "x1": 0.90,
+                   "y1": y + 0.03, "conf": right_special_conf, "color": "red"})
+    return tokens
+
+
+def test_qa_defect_029_gemini_fills_one_side_of_a_special_only(monkeypatch):
+    _install_rapid(monkeypatch,
+                   recognize=lambda image: _battle_tokens_with_specials(right_special_conf=0.20))
+    _install_gemini(monkeypatch, result={
+        "panel_type": "battle", "stats_left": {}, "stats_right": {},
+        "stats_left_conf": {}, "stats_right_conf": {},
+        "specials": [
+            {"label": SPECIAL_LABEL, "value": 99.0, "side": "left"},   # already read
+            {"label": SPECIAL_LABEL, "value": 8.0, "side": "right"},   # the gap
+        ],
+        "unreadable_fields": [], "warnings": [], "status": "partial"})
+
+    result = _ladder(side="you")
+
+    assert result["specials"] == [
+        {"label": SPECIAL_LABEL, "value": 10.0, "side": "left"},        # untouched
+        {"label": SPECIAL_LABEL, "value": 8.0, "side": "right"},        # filled
+    ]
+    assert result["field_engine"] == {f"specials_right.{SPECIAL_LABEL}": "gemini"}
+    assert f"specials_right.{SPECIAL_LABEL}" not in result["unreadable_fields"]
+    # the convenience lists are rebuilt, not left stale
+    assert result["specials_you"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": "left"}]
+    assert result["specials_enemy"] == [{"label": SPECIAL_LABEL, "value": 8.0, "side": "right"}]
+
+
+def test_qa_defect_029_gemini_cannot_fill_a_side_from_the_other_columns_value(monkeypatch):
+    _install_rapid(monkeypatch,
+                   recognize=lambda image: _battle_tokens_with_specials(right_special_conf=0.20))
+    _install_gemini(monkeypatch, result={
+        "panel_type": "battle", "stats_left": {}, "stats_right": {},
+        "stats_left_conf": {}, "stats_right_conf": {},
+        "specials": [{"label": SPECIAL_LABEL, "value": 8.0, "side": "left"}],
+        "unreadable_fields": [], "warnings": [], "status": "partial"})
+    result = _ladder(side="you")
+    assert result["field_engine"] == {}
+    assert f"specials_right.{SPECIAL_LABEL}" in result["unreadable_fields"]
+    assert result["specials"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": "left"}]
+
+
+def test_qa_defect_029_a_filled_special_replaces_never_duplicates(monkeypatch):
+    _install_rapid(monkeypatch, special_conf=0.20)
+    _install_gemini(monkeypatch, result=_gemini_result(
+        specials=[{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]))
+    result = _ladder()
+    labels = [(s["label"], s["side"]) for s in result["specials"]]
+    assert labels == [(SPECIAL_LABEL, None)]
+    assert isinstance(result["specials"][0]["value"], float)
+
+
+def test_gemini_fill_values_are_coerced_to_float(monkeypatch):
+    _install_rapid(monkeypatch, missing={"Infantry|Attack"})
+    _install_gemini(monkeypatch, result=_gemini_result(stats={"Infantry|Attack": 4491}))
+    result = _ladder()
+    value = result["stats"]["Infantry|Attack"]
+    assert isinstance(value, float) and value == 4491.0

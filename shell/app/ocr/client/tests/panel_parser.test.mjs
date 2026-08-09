@@ -174,7 +174,7 @@ test('QA defect 008: implausible special is unreadable', () => {
   shot.push(tok('Defense Bonus (Pet Skill)', 0.05, 0.86, 0.40, 0.89));
   shot.push(tok('+10.0%', 0.70, 0.86, 0.95, 0.89));
   const result = extractPanel([shot], 'you', null);
-  assert.deepEqual(result.specials, [{ label: 'Defense Bonus (Pet Skill)', value: 10.0 }]);
+  assert.deepEqual(result.specials, [{ label: 'Defense Bonus (Pet Skill)', value: 10.0, side: null }]);
   assert.ok(result.unreadable_fields.includes('specials.Attack Bonus (Pet Skill)'));
 });
 
@@ -439,4 +439,54 @@ test('QA defect 026: warnings are deduped and unmatched rows are reported', () =
 
   const quiet = extractPanel([[tok('Zzyzx', 0.05, 0.20, 0.25, 0.23)]], null, null);
   assert.deepEqual(quiet.warnings, []);
+});
+
+const SPECIAL_LABEL = 'Attack Bonus (Pet Skill)';
+
+function battleShotWithSpecials(rightConf = 0.99) {
+  const shot = battleShot();
+  const y = 0.10 + 12 * 0.05;
+  shot.push(tok(SPECIAL_LABEL, 0.38, y, 0.58, y + 0.03));
+  shot.push(tok('+10.0%', 0.03, y, 0.23, y + 0.03, 0.99, 'green'));
+  shot.push(tok('+8.0%', 0.70, y, 0.90, y + 0.03, rightConf, 'red'));
+  return shot;
+}
+
+test('QA defect 029: dual-column specials are side-aware, never summed', () => {
+  const result = extractPanel([battleShotWithSpecials()], 'you', null);
+  assert.deepEqual(result.specials, [
+    { label: SPECIAL_LABEL, value: 10.0, side: 'left' },
+    { label: SPECIAL_LABEL, value: 8.0, side: 'right' },
+  ]);
+  assert.deepEqual(result.specials_you, [{ label: SPECIAL_LABEL, value: 10.0, side: 'left' }]);
+  assert.deepEqual(result.specials_enemy, [{ label: SPECIAL_LABEL, value: 8.0, side: 'right' }]);
+
+  const [sScout] = foldSets(result.specials_you, result.specials_enemy, { observed: 'read' });
+  assert.ok(Math.abs(sScout.Attack - 0.10) < 1e-9);      // NOT 0.18
+
+  const flipped = extractPanel([battleShotWithSpecials()], 'enemy', null);
+  assert.deepEqual(flipped.specials_you, [{ label: SPECIAL_LABEL, value: 8.0, side: 'right' }]);
+});
+
+test('QA defect 029: unreadable specials are keyed per side', () => {
+  const result = extractPanel([battleShotWithSpecials(0.20)], 'you', null);
+  assert.deepEqual(result.specials, [{ label: SPECIAL_LABEL, value: 10.0, side: 'left' }]);
+  assert.ok(result.unreadable_fields.includes(`specials_right.${SPECIAL_LABEL}`));
+  assert.ok(!result.unreadable_fields.includes(`specials_left.${SPECIAL_LABEL}`));
+  assert.equal(result.specials_observed, 'partial');
+});
+
+test('QA defect 029: single-column specials keep the flat key and a null side', () => {
+  const shot = scoutShot();
+  shot.push(tok(SPECIAL_LABEL, 0.05, 0.80, 0.40, 0.83));
+  shot.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83));
+  const result = extractPanel([shot], 'you', null);
+  assert.deepEqual(result.specials, [{ label: SPECIAL_LABEL, value: 10.0, side: null }]);
+  assert.ok(!('specials_you' in result));
+
+  const bad = scoutShot();
+  bad.push(tok(SPECIAL_LABEL, 0.05, 0.80, 0.40, 0.83));
+  bad.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83, 0.20));
+  assert.ok(extractPanel([bad], 'you', null).unreadable_fields
+    .includes(`specials.${SPECIAL_LABEL}`));
 });

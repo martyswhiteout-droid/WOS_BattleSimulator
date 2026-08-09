@@ -206,7 +206,7 @@ def test_qa_defect_008_implausible_special_is_unreadable():
     shot.append(_tok("Defense Bonus (Pet Skill)", 0.05, 0.86, 0.40, 0.89))
     shot.append(_tok("+10.0%", 0.70, 0.86, 0.95, 0.89))
     r = extract_panel([shot], side_hint="you", panel_hint=None)
-    assert r["specials"] == [{"label": "Defense Bonus (Pet Skill)", "value": 10.0}]
+    assert r["specials"] == [{"label": "Defense Bonus (Pet Skill)", "value": 10.0, "side": None}]
     assert "specials.Attack Bonus (Pet Skill)" in r["unreadable_fields"]
 
 def test_qa_defect_001_drifted_value_never_lands_under_wrong_label():
@@ -236,7 +236,7 @@ def test_qa_defect_022_partially_readable_specials_report_partial():
     shot.append(_tok("Defense Bonus (Pet Skill)", 0.05, 0.86, 0.40, 0.89))
     shot.append(_tok("+8.0%", 0.70, 0.86, 0.95, 0.89))
     r = extract_panel([shot], side_hint="you", panel_hint=None)
-    assert r["specials"] == [{"label": "Defense Bonus (Pet Skill)", "value": 8.0}]
+    assert r["specials"] == [{"label": "Defense Bonus (Pet Skill)", "value": 8.0, "side": None}]
     assert r["specials_observed"] == "partial"
 
 def test_qa_defect_022_specials_panel_header_with_no_rows_reads_clean():
@@ -255,7 +255,7 @@ def test_qa_defect_022_all_readable_specials_report_read():
     shot.append(_tok("Attack Bonus (Pet Skill)", 0.05, 0.80, 0.40, 0.83))
     shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83))
     r = extract_panel([shot], side_hint="you", panel_hint=None)
-    assert r["specials"] == [{"label": "Attack Bonus (Pet Skill)", "value": 10.0}]
+    assert r["specials"] == [{"label": "Attack Bonus (Pet Skill)", "value": 10.0, "side": None}]
     assert r["specials_observed"] == "read"
 
 def _shot_citystats():
@@ -319,3 +319,68 @@ def test_qa_defect_026_repeated_warnings_are_deduped_across_shots():
     r = extract_panel([_drift_shot(), _drift_shot(), _drift_shot()],
                       side_hint=None, panel_hint=None)
     assert r["warnings"] == ["orphan value near y=0.130"]
+
+
+# ---------------------------------------------------------------------------
+# QA D-029: specials are side-aware end to end
+# ---------------------------------------------------------------------------
+
+SPECIAL_LABEL = "Attack Bonus (Pet Skill)"
+
+def _shot_battle_with_specials(left="+10.0%", right="+8.0%",
+                               left_conf=0.99, right_conf=0.99):
+    toks = _shot_battle()
+    y = 0.10 + 12 * 0.05
+    toks.append(_tok(SPECIAL_LABEL, 0.38, y, 0.58, y + 0.03))
+    if left is not None:
+        toks.append(_tok(left, 0.03, y, 0.23, y + 0.03, conf=left_conf, color="green"))
+    if right is not None:
+        toks.append(_tok(right, 0.70, y, 0.90, y + 0.03, conf=right_conf, color="red"))
+    return toks
+
+def test_qa_defect_029_dual_column_specials_are_not_summed():
+    r = extract_panel([_shot_battle_with_specials()], side_hint="you", panel_hint=None)
+    assert r["panel_type"] == "battle"
+    assert r["specials"] == [
+        {"label": SPECIAL_LABEL, "value": 10.0, "side": "left"},
+        {"label": SPECIAL_LABEL, "value": 8.0, "side": "right"},
+    ]
+    assert r["specials_you"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": "left"}]
+    assert r["specials_enemy"] == [{"label": SPECIAL_LABEL, "value": 8.0, "side": "right"}]
+
+def test_qa_defect_029_side_lists_fold_per_side_not_summed():
+    from shell.app.ocr.panel.convert import fold_sets
+    r = extract_panel([_shot_battle_with_specials()], side_hint="you", panel_hint=None)
+    S_scout, S_battle, P_enemy = fold_sets(r["specials_you"], r["specials_enemy"],
+                                           observed="read")
+    assert abs(S_scout["Attack"] - 0.10) < 1e-9      # NOT 0.18
+    assert abs(S_battle["Attack"] - 0.10) < 1e-9
+    assert P_enemy["Attack"] == 0.0
+
+def test_qa_defect_029_side_orientation_follows_the_requested_side():
+    r = extract_panel([_shot_battle_with_specials()], side_hint="enemy", panel_hint=None)
+    assert r["specials_you"] == [{"label": SPECIAL_LABEL, "value": 8.0, "side": "right"}]
+    assert r["specials_enemy"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": "left"}]
+
+def test_qa_defect_029_unreadable_specials_are_keyed_per_side():
+    r = extract_panel([_shot_battle_with_specials(right_conf=0.20)],
+                      side_hint="you", panel_hint=None)
+    assert r["specials"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": "left"}]
+    assert f"specials_right.{SPECIAL_LABEL}" in r["unreadable_fields"]
+    assert f"specials_left.{SPECIAL_LABEL}" not in r["unreadable_fields"]
+    assert r["specials_observed"] == "partial"
+
+def test_qa_defect_029_single_column_specials_keep_the_flat_key_and_null_side():
+    shot = _shot_scout()
+    shot.append(_tok(SPECIAL_LABEL, 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]
+    assert "specials_you" not in r and "specials_enemy" not in r
+
+def test_qa_defect_029_single_column_unreadable_special_keeps_the_flat_key():
+    shot = _shot_scout()
+    shot.append(_tok(SPECIAL_LABEL, 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83, conf=0.20))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert f"specials.{SPECIAL_LABEL}" in r["unreadable_fields"]
