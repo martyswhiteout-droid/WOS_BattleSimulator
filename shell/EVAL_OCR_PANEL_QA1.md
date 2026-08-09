@@ -84,6 +84,12 @@ All 20 defects accepted as valid; none dismissed. Attribution note for the recor
 
 ---
 
+# Cycle outcome (rounds 4–6, 2026-08-09/10) — engine ladder + metering: READY at `587ece2`
+
+Rounds 4–6 covered the production ladder (`ladder.py`: RapidOCR primary under a per-loop CPU semaphore → Gemini gap-fill under a pre-committed daily budget → graceful degrade), router wiring (`source:"engine"`, engines_used, field_engine provenance, RuntimeError→503 backstop), and metering (`/shell/ocr/panel` joins OCR_ENDPOINTS: 402 free signal standardized (D-031 amendment), 30/day pro quota SHARED with /shell/ocr, burst, zero CPU for unauthorized). Defects D-028..D-034 found and closed across two fix rounds — headline: **specials are now SIDE-AWARE end-to-end** (D-029 dual-column double-count 0.18→0.10; D-034 closed it structurally by deriving two-column-ness from the rows, not the panel type). Final: **336 py / 41 node / 7 guard, all probes green in both languages; evaluator merge approval for this surface.** Papercut ruling kept: specials_you/enemy aliases stay battle-gated (geometric side is always emitted; semantic orientation is only asserted when earned). Residual one-liner offered (left-side row implies two columns) — non-blocking.
+
+**Formally un-QA'd on the branch (evaluator's standing note):** the 10 commits `97af525..a9c63a7` — real engine adapters, L2 benchmark, account-C fixtures (golden_vectors gained accounts.C), gear-law docs, vendored tesseract.js. The real-image accuracy claim rests on the builder's benchmark **plus the owner's independent rerun** (RapidOCR 100% D2 PASS verified by Martin 2026-08-08); no third-party QA round has probed the adapters themselves. GATED still open: L4 overlay UI (unbuilt), performance budgets on real engines under load.
+
 # Cycle outcome (rounds 2–3, 2026-08-07) — FINAL VERDICT: READY at `97af525` (+D-027 wording fix)
 
 - **Fix round 1** (`e838c25..b0049b5`, 9 commits): all 20 defects fixed per rulings, +45 py/+16 node regression tests. One necessary deviation on D-001: the ruling's literal band was provably a no-op (±0.85h from centre, looser than the 0.6h grouper); the engineer anchored ±0.35h on the label centre — later independently re-derived and ENDORSED by QA.
