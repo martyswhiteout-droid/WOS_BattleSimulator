@@ -30,6 +30,7 @@ from fastapi.routing import APIRoute
 
 from shell.app.billing.entitlements import resolve_plan
 from ._shims import get_settings
+from .panel.ladder import EngineUnavailable, extract_panel_production
 from .panel.service import extract_panel
 
 MAX_BODY_BYTES = 8 * 1024 * 1024
@@ -173,16 +174,27 @@ async def panel_upload(
     if any(not _is_image(image) for image in images):
         return JSONResponse(status_code=415, content={"error": "unsupported_image_type"})
 
-    if not _mock_enabled():
-        return JSONResponse(status_code=503, content={"error": "ocr_engine_unavailable"})
-
-    # QA D-019: every malformed-token failure in the panel stack is a ValueError
+    # QA D-019: every malformed-input failure in the panel stack is a ValueError
     # (CalibrationError/MissingSpecialsError included) — a client-input problem,
-    # not a server fault. No 500 is reachable from bad tokens.
+    # not a server fault. No 500 is reachable from bad tokens or bad images.
+    if _mock_enabled():
+        try:
+            result = extract_panel([_mock_tokens() for _ in images], side, panel)
+        except ValueError as exc:
+            return JSONResponse(status_code=422,
+                                content={"error": "unreadable_tokens", "message": str(exc)})
+        result["source"] = "mock"   # QA D-010: mock output is never mistakable for a real read
+        return JSONResponse(status_code=200, content=result)
+
+    # Production: the engine ladder (RapidOCR primary, Gemini gap filler).
+    # engines_used / field_engine pass straight through to the caller.
     try:
-        result = extract_panel([_mock_tokens() for _ in images], side, panel)
+        result = await extract_panel_production(images, side, panel,
+                                                settings=get_settings())
+    except EngineUnavailable:
+        return JSONResponse(status_code=503, content={"error": "ocr_engine_unavailable"})
     except ValueError as exc:
         return JSONResponse(status_code=422,
                             content={"error": "unreadable_tokens", "message": str(exc)})
-    result["source"] = "mock"   # QA D-010: mock output is never mistakable for a real read
+    result["source"] = "engine"     # the mock/real distinction is one field in both paths
     return JSONResponse(status_code=200, content=result)

@@ -33,6 +33,21 @@ def client_free(monkeypatch):
 def client_paid(monkeypatch):
     return _client(monkeypatch, "pro")
 
+def _no_primary_engine(monkeypatch):
+    """Make the primary engine unloadable.
+
+    These tests assert the 503 that "the mock is refused" produced when the
+    router had no engine at all. Since the production ladder landed, refusing
+    the mock means falling through to the real engines, so the no-engine
+    premise is now stated explicitly — the property under test is unchanged:
+    if the mock gate regressed, the response would be 200 with source "mock".
+    """
+    def unloadable():
+        raise ImportError("no module named rapidocr")
+
+    monkeypatch.setattr("shell.app.ocr.panel.ladder._load_rapidocr", unloadable)
+
+
 def test_free_tier_gets_403(client_free):
     r = client_free.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
     assert r.status_code == 403 and r.json()["error"] == "ocr_not_available_on_free"
@@ -90,6 +105,7 @@ def test_qa_defect_016_invalid_panel_422(client_paid):
 
 def test_qa_defect_016_mock_off_is_503(client_paid, monkeypatch):
     monkeypatch.delenv("OCR_PANEL_MOCK", raising=False)
+    _no_primary_engine(monkeypatch)
     r = client_paid.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
     assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
 
@@ -119,6 +135,7 @@ def test_qa_defect_010_mock_response_is_marked_as_mock(client_paid):
     assert r.status_code == 200 and r.json()["source"] == "mock"
 
 def test_qa_defect_010_mock_refused_outside_dev_env(client_paid, monkeypatch):
+    _no_primary_engine(monkeypatch)
     _stub_env(monkeypatch, "prod")
     r = _post(client_paid)
     assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
@@ -153,12 +170,14 @@ def _stub_env(monkeypatch, value, present=True):
 
 def test_qa_defect_023_mock_gate_reads_settings_env_not_the_process_env(client_paid, monkeypatch):
     # QA probe: the process env says dev, the real config says prod. Settings win.
+    _no_primary_engine(monkeypatch)
     monkeypatch.setenv("ENV", "dev")
     _stub_env(monkeypatch, "prod")
     r = _post(client_paid)
     assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
 
 def test_qa_defect_023_blank_or_missing_env_fails_closed(client_paid, monkeypatch):
+    _no_primary_engine(monkeypatch)
     for value in ("", "   ", "	", "prod", "staging", "development", None, 7):
         _stub_env(monkeypatch, value)
         assert _post(client_paid).status_code == 503, repr(value)
@@ -197,3 +216,73 @@ def test_qa_defect_024_chunked_upload_is_411(client_paid):
 def test_qa_defect_024_streamed_chunked_body_is_411(client_paid):
     r = client_paid.post("/shell/ocr/panel", content=iter([b"not-a-multipart-body"]))
     assert r.status_code == 411 and r.json()["error"] == "length_required"
+
+
+# ---------------------------------------------------------------------------
+# Production path: the engine ladder (RapidOCR primary, Gemini gap filler)
+# ---------------------------------------------------------------------------
+
+def _fake_ladder(monkeypatch, result=None, raises=None, captured=None):
+    async def ladder(images, side, panel_hint, *, settings):
+        if captured is not None:
+            captured.update(images=list(images), side=side, panel_hint=panel_hint,
+                            settings=settings)
+        if raises is not None:
+            raise raises
+        return dict(result or {"status": "ok", "stats": {}, "unreadable_fields": [],
+                               "warnings": [], "engines_used": ["rapidocr"],
+                               "field_engine": {}})
+
+    monkeypatch.setattr("shell.app.ocr.panel_router.extract_panel_production", ladder)
+
+
+def test_production_path_runs_the_ladder_and_passes_provenance(client_paid, monkeypatch):
+    monkeypatch.delenv("OCR_PANEL_MOCK", raising=False)
+    captured = {}
+    _fake_ladder(monkeypatch, captured=captured, result={
+        "status": "ok", "stats": {"Infantry|Attack": 4491.6}, "unreadable_fields": [],
+        "warnings": [], "engines_used": ["rapidocr", "gemini"],
+        "field_engine": {"stats.Infantry|Attack": "gemini"}})
+
+    r = client_paid.post("/shell/ocr/panel",
+                         files={"file": ("a.png", PNG_BYTES, "image/png")},
+                         data={"side": "enemy", "panel": "scout"})
+
+    assert r.status_code == 200
+    body = r.json()
+    assert body["engines_used"] == ["rapidocr", "gemini"]
+    assert body["field_engine"] == {"stats.Infantry|Attack": "gemini"}
+    assert body["source"] == "engine"
+    assert captured["images"] == [PNG_BYTES]
+    assert captured["side"] == "enemy" and captured["panel_hint"] == "scout"
+    assert captured["settings"] is not None
+
+
+def test_production_path_engine_unavailable_is_503(client_paid, monkeypatch):
+    from shell.app.ocr.panel.ladder import EngineUnavailable
+
+    monkeypatch.delenv("OCR_PANEL_MOCK", raising=False)
+    _fake_ladder(monkeypatch, raises=EngineUnavailable("no rapidocr"))
+    r = client_paid.post("/shell/ocr/panel",
+                         files={"file": ("a.png", PNG_BYTES, "image/png")},
+                         data={"side": "enemy"})
+    assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
+
+
+def test_production_path_malformed_image_is_422_not_500(client_paid, monkeypatch):
+    monkeypatch.delenv("OCR_PANEL_MOCK", raising=False)
+    _fake_ladder(monkeypatch, raises=ValueError("unsupported or malformed OCR image"))
+    r = client_paid.post("/shell/ocr/panel",
+                         files={"file": ("a.png", PNG_BYTES, "image/png")},
+                         data={"side": "enemy"})
+    assert r.status_code == 422 and r.json()["error"] == "unreadable_tokens"
+
+
+def test_mock_path_never_reaches_the_ladder(client_paid, monkeypatch):
+    _fake_ladder(monkeypatch, raises=AssertionError("ladder must not run under the mock"))
+    r = client_paid.post("/shell/ocr/panel",
+                         files={"file": ("a.png", PNG_BYTES, "image/png")},
+                         data={"side": "enemy"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["source"] == "mock" and "engines_used" not in body
