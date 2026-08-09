@@ -143,6 +143,61 @@ def test_ocr_allowed_on_pro_until_daily_quota(monkeypatch):
 
 
 # ---------------------------------------------------------------------------
+# /shell/ocr/panel is the SAME metered OCR class as /shell/ocr (stat-panel
+# upload endpoint; engine ladder in shell/app/ocr/panel/ladder.py).
+# ---------------------------------------------------------------------------
+
+def test_ocr_panel_endpoint_classified_as_ocr():
+    assert limits.classify_endpoint("/shell/ocr/panel") == "ocr"
+    assert limits.classify_endpoint("shell/ocr/panel/") == "ocr"
+
+
+def test_ocr_panel_denied_402_on_free_plan():
+    verdict = run(limits.check_and_record(FREE, "/shell/ocr/panel", None, "ip1"))
+    assert isinstance(verdict, limits.Denied)
+    assert verdict.status == 402 and verdict.code == "payment_required"
+
+
+def test_ocr_panel_allowed_on_pro_until_daily_quota(monkeypatch):
+    # Same frozen-clock discipline as the /shell/ocr test above.
+    from datetime import datetime as _dt, timezone as _tz
+    monkeypatch.setattr(db, "_utcnow", lambda: _dt(2026, 8, 7, 12, 0, 0, tzinfo=_tz.utc))
+    verdict = run(limits.check_and_record(PRO, "/shell/ocr/panel", None, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    for i in range(29):
+        run(db.record_usage(PRO.user_id, endpoint="/shell/ocr/panel", kind="ocr",
+                            ts=db._utcnow() - db.timedelta(minutes=5 + i)))
+    verdict = run(limits.check_and_record(PRO, "/shell/ocr/panel", None, "ip1"))
+    assert isinstance(verdict, limits.Denied)
+    assert verdict.status == 429 and verdict.code == "quota_exhausted"
+
+
+def test_ocr_panel_quota_is_shared_with_the_other_ocr_endpoint(monkeypatch):
+    from datetime import datetime as _dt, timezone as _tz
+    monkeypatch.setattr(db, "_utcnow", lambda: _dt(2026, 8, 7, 12, 0, 0, tzinfo=_tz.utc))
+    for i in range(30):
+        run(db.record_usage(PRO.user_id, endpoint="/shell/ocr", kind="ocr",
+                            ts=db._utcnow() - db.timedelta(minutes=5 + i)))
+    verdict = run(limits.check_and_record(PRO, "/shell/ocr/panel", None, "ip1"))
+    assert isinstance(verdict, limits.Denied)
+    assert verdict.status == 429 and verdict.code == "quota_exhausted"
+
+
+def test_ocr_panel_allowed_request_is_recorded(monkeypatch):
+    from datetime import datetime as _dt, timezone as _tz
+    monkeypatch.setattr(db, "_utcnow", lambda: _dt(2026, 8, 7, 12, 0, 0, tzinfo=_tz.utc))
+    run(limits.check_and_record(PRO, "/shell/ocr/panel", None, "ip1"))
+    events = db.get_db().usage_events
+    assert [(e["endpoint"], e["kind"]) for e in events] == [("/shell/ocr/panel", "ocr")]
+
+
+def test_middleware_meters_the_panel_path():
+    middleware = limits.LimitsMiddleware(app=None)
+    assert middleware._metered({"type": "http", "method": "POST",
+                                "path": "/shell/ocr/panel"}) is True
+
+
+# ---------------------------------------------------------------------------
 # Burst (<= BURST_PER_MIN sliding 60s window) -> 429 burst
 # ---------------------------------------------------------------------------
 

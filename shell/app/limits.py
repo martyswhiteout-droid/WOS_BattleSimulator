@@ -61,7 +61,10 @@ class Denied:
 LimitVerdict = Union[Allowed, Denied]
 
 SIM_ENDPOINTS = {"/api/predict", "/api/battle"}
-OCR_ENDPOINTS = {"/shell/ocr"}
+# Both OCR upload endpoints share one metered class and therefore one daily
+# quota: /shell/ocr (battle-report screenshots) and /shell/ocr/panel (stat-panel
+# screenshots, engine ladder in shell/app/ocr/panel/ladder.py).
+OCR_ENDPOINTS = {"/shell/ocr", "/shell/ocr/panel"}
 IP_CAP_MULTIPLIER = 3  # per-IP daily cap = 3x account cap (task spec / C5)
 
 
