@@ -286,3 +286,12 @@ def test_mock_path_never_reaches_the_ladder(client_paid, monkeypatch):
     assert r.status_code == 200
     body = r.json()
     assert body["source"] == "mock" and "engines_used" not in body
+
+
+def test_qa_defect_030_runtime_error_from_the_ladder_is_503_not_500(client_paid, monkeypatch):
+    monkeypatch.delenv("OCR_PANEL_MOCK", raising=False)
+    _fake_ladder(monkeypatch, raises=RuntimeError("Event loop is closed"))
+    r = client_paid.post("/shell/ocr/panel",
+                         files={"file": ("a.png", PNG_BYTES, "image/png")},
+                         data={"side": "enemy"})
+    assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"

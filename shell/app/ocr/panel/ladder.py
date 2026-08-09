@@ -33,6 +33,7 @@ helpers: one row per actual Gemini call under the reserved system user, so
 from __future__ import annotations
 
 import asyncio
+import weakref
 
 from shell.app import db
 
@@ -64,8 +65,18 @@ _CONF_KEYS = {"stats": "field_conf",
               "stats_left": "stats_left_conf",
               "stats_right": "stats_right_conf"}
 
-_cpu_semaphore_instance: asyncio.Semaphore | None = None
-_cpu_semaphore_size: int | None = None
+# asyncio primitives belong to the loop that awaits them, so the cache is keyed
+# on (loop identity, size) — a semaphore built in one event loop must never be
+# awaited in the next one (QA D-030). A server has exactly one loop, so this
+# dict holds one entry there; the bound only matters for test processes that
+# spin up many short-lived loops.
+#
+# id() alone is NOT a sound identity: CPython reuses the address of a collected
+# loop, so a later loop can land on a dead loop's key and inherit its
+# semaphore. Each entry therefore carries a weak reference to the loop it was
+# built for and is only a hit while that exact loop is still alive.
+_cpu_semaphores: dict[tuple[int, int], tuple[weakref.ref, asyncio.Semaphore]] = {}
+_SEMAPHORE_CACHE_MAX = 16
 
 
 class EngineUnavailable(RuntimeError):
@@ -108,15 +119,26 @@ def _int_setting(settings, name, default, minimum):
 
 
 def _cpu_semaphore(settings) -> asyncio.Semaphore:
-    global _cpu_semaphore_instance, _cpu_semaphore_size
+    """The CPU gate for THIS event loop at the configured size (QA D-030)."""
     size = _int_setting(settings, "OCR_CPU_CONCURRENCY", DEFAULT_CPU_CONCURRENCY, 1)
-    if _cpu_semaphore_instance is None or _cpu_semaphore_size != size:
-        _cpu_semaphore_instance = asyncio.Semaphore(size)
-        _cpu_semaphore_size = size
-    return _cpu_semaphore_instance
+    loop = asyncio.get_running_loop()
+    key = (id(loop), size)
+    cached = _cpu_semaphores.get(key)
+    if cached is not None and cached[0]() is loop:
+        return cached[1]
+    if len(_cpu_semaphores) >= _SEMAPHORE_CACHE_MAX:
+        # Only reachable from a process that churns event loops (tests); the
+        # entries left behind belong to loops that are already gone.
+        _cpu_semaphores.clear()
+    semaphore = asyncio.Semaphore(size)
+    _cpu_semaphores[key] = (weakref.ref(loop), semaphore)
+    return semaphore
 
 
 # --- gap-fill plumbing -----------------------------------------------------
+
+_SPECIALS_SIDE = {"specials": None, "specials_left": "left", "specials_right": "right"}
+
 
 def _plausible(prefix, value):
     """The same plausibility bands service.py applies to its own engines
@@ -127,9 +149,6 @@ def _plausible(prefix, value):
     if prefix in _SPECIALS_SIDE:
         return abs(value) <= SPECIAL_ABS_MAX
     return CLASS_VALUE_MIN <= value <= CLASS_VALUE_MAX
-
-
-_SPECIALS_SIDE = {"specials": None, "specials_left": "left", "specials_right": "right"}
 
 
 def _gemini_value(gemini_result, prefix, field):

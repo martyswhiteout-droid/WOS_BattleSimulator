@@ -568,3 +568,49 @@ def test_qa_defect_028_none_state_is_never_upgraded(monkeypatch):
     _install_gemini(monkeypatch, result=_gemini_result(stats={"Infantry|Attack": 4491.6}))
     result = _ladder()
     assert result["specials_observed"] == "none"
+
+
+# ---------------------------------------------------------------------------
+# QA D-030: the CPU semaphore is per event loop
+# ---------------------------------------------------------------------------
+
+def test_qa_defect_030_semaphore_is_cached_per_event_loop():
+    async def grab():
+        return ladder._cpu_semaphore(_Settings(cpu=2))
+
+    first, second = run(grab()), run(grab())
+    assert first is not second          # a new loop gets its own primitive
+
+    async def grab_twice():
+        return ladder._cpu_semaphore(_Settings(cpu=2)), ladder._cpu_semaphore(_Settings(cpu=2))
+
+    same_loop_a, same_loop_b = run(grab_twice())
+    assert same_loop_a is same_loop_b   # but one loop reuses one primitive
+
+
+def test_qa_defect_030_two_contended_loop_cycles_both_succeed(monkeypatch):
+    assert _concurrency_probe(monkeypatch, cap=2, calls=6, pair_size=2) == 2
+    assert _concurrency_probe(monkeypatch, cap=2, calls=6, pair_size=2) == 2
+
+
+def test_qa_defect_030_semaphore_cache_does_not_grow_without_bound():
+    async def grab():
+        return ladder._cpu_semaphore(_Settings(cpu=2))
+
+    for _ in range(ladder._SEMAPHORE_CACHE_MAX + 4):
+        run(grab())
+    assert len(ladder._cpu_semaphores) <= ladder._SEMAPHORE_CACHE_MAX
+
+
+def test_qa_defect_030_a_recycled_loop_id_does_not_inherit_a_dead_semaphore():
+    # CPython reuses the address of a collected loop, so id() alone would hand
+    # a fresh loop the previous loop's primitive.
+    async def grab():
+        return ladder._cpu_semaphore(_Settings(cpu=2)), id(asyncio.get_running_loop())
+
+    seen = {}
+    for _ in range(12):
+        semaphore, loop_id = run(grab())
+        if loop_id in seen:
+            assert seen[loop_id] is not semaphore, "recycled loop id reused a dead semaphore"
+        seen[loop_id] = semaphore

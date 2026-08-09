@@ -193,6 +193,11 @@ async def panel_upload(
                                                 settings=get_settings())
     except EngineUnavailable:
         return JSONResponse(status_code=503, content={"error": "ocr_engine_unavailable"})
+    except RuntimeError:
+        # Backstop for loop/primitive-level faults inside the ladder (e.g. an
+        # asyncio primitive bound to a dead loop, QA D-030): the engine is what
+        # is broken, so report it as unavailable rather than a 500.
+        return JSONResponse(status_code=503, content={"error": "ocr_engine_unavailable"})
     except ValueError as exc:
         return JSONResponse(status_code=422,
                             content={"error": "unreadable_tokens", "message": str(exc)})
