@@ -1,3 +1,4 @@
+import pathlib
 import tempfile
 
 from fastapi import FastAPI
@@ -10,10 +11,6 @@ from shell.app.ocr.panel_router import MAX_BODY_BYTES, MAX_REQUEST_BYTES, router
 PNG_BYTES = b"\x89PNG\r\n\x1a\nminimal-test-image"
 
 def _client(monkeypatch, plan):
-    async def fake_resolve_plan(user_id):
-        return plan
-
-    monkeypatch.setattr("shell.app.ocr.panel_router.resolve_plan", fake_resolve_plan)
     monkeypatch.setenv("OCR_PANEL_MOCK", "1")
     app = FastAPI()
 
@@ -48,10 +45,6 @@ def _no_primary_engine(monkeypatch):
     monkeypatch.setattr("shell.app.ocr.panel.ladder._load_rapidocr", unloadable)
 
 
-def test_free_tier_gets_403(client_free):
-    r = client_free.post("/shell/ocr/panel", files={"file": ("a.png", PNG_BYTES, "image/png")}, data={"side": "enemy"})
-    assert r.status_code == 403 and r.json()["error"] == "ocr_not_available_on_free"
-
 def test_oversize_body_413(client_paid):
     blob = b"\x89PNG\r\n\x1a\n" + b"0" * (MAX_BODY_BYTES + 1)
     r = client_paid.post("/shell/ocr/panel", files={"file": ("a.png", blob, "image/png")}, data={"side": "enemy"})
@@ -78,10 +71,6 @@ def test_qa_defect_016_mock_roundtrip_never_spools_a_small_upload_to_disk(client
     assert rollovers == []
 
 def test_qa_defect_016_unauthenticated_gets_401(monkeypatch):
-    async def fake_resolve_plan(user_id):
-        return "pro"
-
-    monkeypatch.setattr("shell.app.ocr.panel_router.resolve_plan", fake_resolve_plan)
     monkeypatch.setenv("OCR_PANEL_MOCK", "1")
     app = FastAPI()
     app.include_router(panel_router)      # no auth middleware => no request.state.user
@@ -295,3 +284,40 @@ def test_qa_defect_030_runtime_error_from_the_ladder_is_503_not_500(client_paid,
                          files={"file": ("a.png", PNG_BYTES, "image/png")},
                          data={"side": "enemy"})
     assert r.status_code == 503 and r.json()["error"] == "ocr_engine_unavailable"
+
+
+# ---------------------------------------------------------------------------
+# QA D-031: the free-tier signal is the middleware's 402, for BOTH endpoints
+# ---------------------------------------------------------------------------
+
+def test_qa_defect_031_free_tier_is_402_from_the_middleware(monkeypatch):
+    from shell.app import db, limits
+
+    db.reset_db()
+    monkeypatch.setenv("OCR_PANEL_MOCK", "1")
+    app = FastAPI()
+    app.include_router(panel_router)
+    app.add_middleware(limits.LimitsMiddleware)
+    client = TestClient(app)
+    try:
+        r = client.post("/shell/ocr/panel",
+                        files={"file": ("a.png", PNG_BYTES, "image/png")},
+                        data={"side": "enemy"}, headers={"x-dev-plan": "free"})
+        assert r.status_code == 402 and r.json()["error"] == "payment_required"
+
+        # a paid plan clears the meter and reaches the route (which then applies
+        # its own auth contract) — proof the 402 came from the plan, not the path
+        paid = client.post("/shell/ocr/panel",
+                           files={"file": ("a.png", PNG_BYTES, "image/png")},
+                           data={"side": "enemy"}, headers={"x-dev-plan": "pro"})
+        assert paid.status_code != 402
+    finally:
+        db.reset_db()
+
+
+def test_qa_defect_031_router_has_no_plan_branch_left():
+    import shell.app.ocr.panel_router as module
+
+    assert not hasattr(module, "resolve_plan")
+    source = pathlib.Path(module.__file__).read_text(encoding="utf-8")
+    assert "ocr_not_available_on_free" not in source

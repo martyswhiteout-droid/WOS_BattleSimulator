@@ -14,6 +14,7 @@
 - **Determinism:** same input bytes → byte-identical JSON output. No wall-clock, no randomness in parser/converter.
 - **User-facing copy:** "screenshot(s)", never "picture"; no jargon (OCR/parse/confidence banned in copy).
 - **Free tier = NO OCR** (D1): server rejects with 403 `ocr_not_available_on_free`; client hides entry.
+  - *Amended 2026-08-09 (QA D-031): the rejection is **402 `payment_required`** from `LimitsMiddleware`, not a 403 in the route; the router's 403 branch was removed as unreachable behind the metered path.*
 - **Do not modify** `prototype/index.html`, `wos_sim/` engine code, or anything in `WOSTests.com`.
 - **Reference docs:** flow = `docs/OCR_UX_FLOW_SPEC.md`; math = `docs/STAT_PANELS_FORMULA.md` (§2 law, §8 recipes, §9 second account); architecture = `docs/OCR_SERVICE_PLAN.md`.
 - Commit after every green test, message prefix `ocr:`.

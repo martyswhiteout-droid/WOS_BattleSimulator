@@ -19,6 +19,10 @@ can ever reach the spool:
     caps, which means such a body can be spooled first.
 So the worst case an unauthenticated caller can put on disk is one body of
 roughly MAX_BODY_BYTES + 64 KiB, not the 3x that the earlier ceiling allowed.
+
+Plan gating is NOT done here (QA D-031). Both OCR endpoints are metered by
+LimitsMiddleware, whose free-tier signal is 402 ``payment_required``; the outer
+layer wins, so a second in-route plan check could only ever disagree with it.
 """
 from __future__ import annotations
 
@@ -28,7 +32,6 @@ from fastapi import APIRouter, File, Form, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 
-from shell.app.billing.entitlements import resolve_plan
 from ._shims import get_settings
 from .panel.ladder import EngineUnavailable, extract_panel_production
 from .panel.service import extract_panel
@@ -139,13 +142,6 @@ async def panel_upload(
     user = getattr(request.state, "user", None)
     if user is None:
         return JSONResponse(status_code=401, content={"error": "auth_required"})
-
-    plan = await resolve_plan(user.user_id)
-    if plan == "free":
-        return JSONResponse(
-            status_code=403,
-            content={"error": "ocr_not_available_on_free"},
-        )
 
     if side not in ("you", "enemy"):
         return JSONResponse(status_code=422, content={"error": "invalid_side"})

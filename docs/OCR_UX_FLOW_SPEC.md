@@ -6,6 +6,7 @@
 ## 1. Product rules (non-UI)
 
 1. **Tiering (D1):** free tier = NO OCR of any kind — manual input only. OCR (including the zero-cost client-side path) is paid-tier. Enforce server-side via entitlements, not just hidden UI.
+   - *Amended 2026-08-09 (QA D-031): the server-side enforcement signal is **402 `payment_required`** from `LimitsMiddleware` (shell-wide convention) for both `/shell/ocr` and `/shell/ocr/panel` — the endpoints carry no plan branch of their own.*
 2. **Engines:** client-side WASM primary → server RapidOCR fallback. **Vision-LLM: deferred to a future build** — never in v1; unreadable fields are typed by the user.
 3. **Never fabricate:** unreadable = absent = highlighted for the user; no guesses, no zeros.
 4. **Determinism:** same screenshot → same output; parsed values validate against the panel law (`STAT_PANELS_FORMULA` §8 recipes + sanity ranges).
