@@ -92,16 +92,40 @@ def attach_side_specials(out):
     return out
 
 
-def _specials(rows, two_column=False):
+def _specials_are_two_column(rows):
+    """True when at least one special label appears in BOTH columns.
+
+    Side-awareness is derived from the ROWS, never from the panel type
+    (QA D-034): a standalone specials screenshot has no class rows, so it
+    detects as "unknown" and may well be uploaded under a scout hint — gating
+    on the panel type would collapse its two columns back into flat entries a
+    caller would sum. A label with no counterpart in the other column cannot be
+    summed with anything, so it keeps the flat single-column contract.
+    """
+    left, right = set(), set()
+    for r in rows:
+        if not r.canonical.startswith("special:"):
+            continue
+        if r.side == "left":
+            left.add(r.canonical)
+        elif r.side == "right":
+            right.add(r.canonical)
+    return not left.isdisjoint(right)
+
+
+def _specials(rows):
     """Specials pass the same honesty predicate as class rows (QA D-004):
     a low-confidence or value-less special is reported unreadable, never folded.
 
-    Specials are SIDE-AWARE on two-column panels (QA D-029): the same label can
-    appear in both columns with different values, so each entry carries its
-    ``side`` and unreadable entries are keyed ``specials_left.<label>`` /
-    ``specials_right.<label>``. Single-column panels keep ``side: None`` and the
-    flat ``specials.<label>`` key. Without this, two columns of one label
-    collapse into two flat entries that fold_sets would sum.
+    Specials are SIDE-AWARE on two-column layouts (QA D-029, D-034): the same
+    label can appear in both columns with different values, so each entry
+    carries its ``side`` and unreadable entries are keyed
+    ``specials_left.<label>`` / ``specials_right.<label>``. Single-column
+    layouts keep ``side: None`` and the flat ``specials.<label>`` key. Which
+    one applies is decided by ``_specials_are_two_column(rows)`` — the rows
+    themselves — so it holds for a standalone specials screenshot whose panel
+    type is "unknown". Without this, two columns of one label collapse into two
+    flat entries that fold_sets would sum.
 
     Returns ``(specials, unreadable, observed)`` where ``observed`` is the
     tri-state capture verdict (QA D-022) consumed by ``convert.fold_sets``:
@@ -113,6 +137,7 @@ def _specials(rows, two_column=False):
     "read"    every special row seen was readable, OR the specials-panel header
               was seen with zero rows (the legal specials-free account).
     """
+    two_column = _specials_are_two_column(rows)
     good, unreadable, seen = [], [], 0
     header_seen = False
     for r in rows:
@@ -183,10 +208,7 @@ def extract_panel(token_shots, side_hint=None, panel_hint=None):
             if detected != panel_hint:
                 warnings.append(_hint_warning(panel_hint, detected))
             ptype = panel_hint
-    # The panel type must be settled BEFORE reading specials: only a two-column
-    # panel has per-side specials (QA D-029).
-    specials, special_unreadable, specials_observed = _specials(
-        rows, two_column=(ptype == "battle"))
+    specials, special_unreadable, specials_observed = _specials(rows)
     if contradiction:
         return {"panel_type": detected, "requested_side": side_hint,
                 "specials": specials, "specials_observed": specials_observed,

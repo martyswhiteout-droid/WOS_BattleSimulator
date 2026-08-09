@@ -384,3 +384,75 @@ def test_qa_defect_029_single_column_unreadable_special_keeps_the_flat_key():
     shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83, conf=0.20))
     r = extract_panel([shot], side_hint="you", panel_hint=None)
     assert f"specials.{SPECIAL_LABEL}" in r["unreadable_fields"]
+
+
+# ---------------------------------------------------------------------------
+# QA D-034: side-awareness is derived from the ROWS, not the panel type
+# ---------------------------------------------------------------------------
+
+def _shot_specials_only(right_conf=0.99):
+    """A standalone two-column specials screenshot: no class rows at all, so
+    detect_panel_type() says "unknown"."""
+    toks, y = [], 0.10
+    for label in (SPECIAL_LABEL, "Defense Bonus (Pet Skill)"):
+        toks.append(_tok(label, 0.38, y, 0.58, y + 0.03))
+        toks.append(_tok("+10.0%", 0.03, y, 0.23, y + 0.03, color="green"))
+        toks.append(_tok("+8.0%", 0.70, y, 0.90, y + 0.03, conf=right_conf, color="red"))
+        y += 0.05
+    return toks
+
+def _fold_attack(specials_side):
+    from shell.app.ocr.panel.convert import fold_sets
+    S_scout, _, _ = fold_sets(specials_side, [], observed="read")
+    return S_scout["Attack"]
+
+def _left(specials):
+    return [s for s in specials if s["side"] == "left"]
+
+def test_qa_defect_034_standalone_specials_image_is_side_aware_without_a_hint():
+    r = extract_panel([_shot_specials_only()], side_hint="you", panel_hint=None)
+    assert r["panel_type"] == "unknown"          # no class rows to detect on
+    assert r["specials"][:2] == [
+        {"label": SPECIAL_LABEL, "value": 10.0, "side": "left"},
+        {"label": SPECIAL_LABEL, "value": 8.0, "side": "right"},
+    ]
+    assert abs(_fold_attack(_left(r["specials"])) - 0.10) < 1e-9      # not 0.18
+
+def test_qa_defect_034_scout_hint_does_not_flatten_two_column_specials():
+    r = extract_panel([_shot_specials_only()], side_hint="you", panel_hint="scout")
+    assert r["panel_type"] == "scout"
+    assert abs(_fold_attack(_left(r["specials"])) - 0.10) < 1e-9
+    assert {s["side"] for s in r["specials"]} == {"left", "right"}
+
+def test_qa_defect_034_battle_hint_is_unchanged():
+    r = extract_panel([_shot_specials_only()], side_hint="you", panel_hint="battle")
+    assert r["panel_type"] == "battle"
+    assert abs(_fold_attack(_left(r["specials"])) - 0.10) < 1e-9
+
+def test_qa_defect_034_unreadable_side_keys_survive_an_unknown_panel_type():
+    r = extract_panel([_shot_specials_only(right_conf=0.20)], side_hint="you", panel_hint=None)
+    assert f"specials_right.{SPECIAL_LABEL}" in r["unreadable_fields"]
+    assert r["specials"] == [
+        {"label": SPECIAL_LABEL, "value": 10.0, "side": "left"},
+        {"label": "Defense Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+    ]
+
+def test_qa_defect_034_single_column_contract_is_untouched():
+    shot = _shot_scout()
+    shot.append(_tok(SPECIAL_LABEL, 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("+10.0%", 0.70, 0.80, 0.95, 0.83))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]
+    assert abs(_fold_attack(r["specials"]) - 0.10) < 1e-9
+    assert "specials_you" not in r
+
+def test_qa_defect_034_one_sided_special_on_a_battle_panel_stays_flat():
+    # No counterpart in the other column => nothing can be summed, so the flat
+    # single-column contract applies (the ruling's "otherwise" branch).
+    toks = _shot_battle()
+    y = 0.10 + 12 * 0.05
+    toks.append(_tok(SPECIAL_LABEL, 0.38, y, 0.58, y + 0.03))
+    toks.append(_tok("+10.0%", 0.03, y, 0.23, y + 0.03, color="green"))
+    r = extract_panel([toks], side_hint="you", panel_hint=None)
+    assert r["panel_type"] == "battle"
+    assert r["specials"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]

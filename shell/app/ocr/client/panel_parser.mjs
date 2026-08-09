@@ -590,11 +590,32 @@ export function attachSideSpecials(output) {
 // >=1 withheld), 'read' (all seen rows readable, or the specials-panel header
 // seen with zero rows = the legal specials-free account).
 //
-// Specials are SIDE-AWARE on two-column panels (QA D-029): the same label can
-// appear in both columns with different values, so each entry carries its side
-// and unreadable entries are keyed specials_left./specials_right. Single-column
-// panels keep side null and the flat specials. key.
-function collectSpecials(rows, twoColumn = false) {
+// True when at least one special label appears in BOTH columns. Side-awareness
+// is derived from the ROWS, never the panel type (QA D-034): a standalone
+// specials screenshot has no class rows, so it detects as 'unknown' and may be
+// uploaded under a scout hint — gating on the panel type would collapse its two
+// columns into flat entries a caller would sum. A label with no counterpart in
+// the other column cannot be summed, so it keeps the flat contract.
+function specialsAreTwoColumn(rows) {
+  const left = new Set();
+  const right = new Set();
+  for (const row of rows) {
+    if (!row.canonical.startsWith('special:')) continue;
+    if (row.side === 'left') left.add(row.canonical);
+    else if (row.side === 'right') right.add(row.canonical);
+  }
+  for (const canonical of left) {
+    if (right.has(canonical)) return true;
+  }
+  return false;
+}
+
+// Specials are SIDE-AWARE on two-column layouts (QA D-029, D-034): the same
+// label can appear in both columns with different values, so each entry carries
+// its side and unreadable entries are keyed specials_left./specials_right.
+// Single-column layouts keep side null and the flat specials. key.
+function collectSpecials(rows) {
+  const twoColumn = specialsAreTwoColumn(rows);
   const good = [];
   const unreadable = [];
   let seen = 0;
@@ -640,9 +661,7 @@ export function extractPanel(tokenShots, sideHint = null, panelHint = null) {
       panelType = panelHint;
     }
   }
-  // The panel type must be settled before reading specials (QA D-029).
-  const [specials, specialUnreadable, specialsObserved] = collectSpecials(
-    rows, panelType === 'battle');
+  const [specials, specialUnreadable, specialsObserved] = collectSpecials(rows);
   if (contradiction) {
     return {
       panel_type: detected,

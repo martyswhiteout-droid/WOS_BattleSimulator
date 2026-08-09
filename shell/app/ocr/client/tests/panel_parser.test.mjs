@@ -490,3 +490,44 @@ test('QA defect 029: single-column specials keep the flat key and a null side', 
   assert.ok(extractPanel([bad], 'you', null).unreadable_fields
     .includes(`specials.${SPECIAL_LABEL}`));
 });
+
+function specialsOnlyShot(rightConf = 0.99) {
+  const shot = [];
+  let y = 0.10;
+  for (const label of [SPECIAL_LABEL, 'Defense Bonus (Pet Skill)']) {
+    shot.push(tok(label, 0.38, y, 0.58, y + 0.03));
+    shot.push(tok('+10.0%', 0.03, y, 0.23, y + 0.03, 0.99, 'green'));
+    shot.push(tok('+8.0%', 0.70, y, 0.90, y + 0.03, rightConf, 'red'));
+    y += 0.05;
+  }
+  return shot;
+}
+
+test('QA defect 034: a standalone specials image is side-aware without a hint', () => {
+  const result = extractPanel([specialsOnlyShot()], 'you', null);
+  assert.equal(result.panel_type, 'unknown');       // no class rows to detect on
+  assert.deepEqual(result.specials.slice(0, 2), [
+    { label: SPECIAL_LABEL, value: 10.0, side: 'left' },
+    { label: SPECIAL_LABEL, value: 8.0, side: 'right' },
+  ]);
+  const [sScout] = foldSets(result.specials.filter((s) => s.side === 'left'), [],
+    { observed: 'read' });
+  assert.ok(Math.abs(sScout.Attack - 0.10) < 1e-9);      // not 0.18
+
+  const hinted = extractPanel([specialsOnlyShot()], 'you', 'scout');
+  assert.equal(hinted.panel_type, 'scout');
+  const [hintedScout] = foldSets(hinted.specials.filter((s) => s.side === 'left'), [],
+    { observed: 'read' });
+  assert.ok(Math.abs(hintedScout.Attack - 0.10) < 1e-9);
+});
+
+test('QA defect 034: the single-column specials contract is untouched', () => {
+  const shot = scoutShot();
+  shot.push(tok(SPECIAL_LABEL, 0.05, 0.80, 0.40, 0.83));
+  shot.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83));
+  const result = extractPanel([shot], 'you', null);
+  assert.deepEqual(result.specials, [{ label: SPECIAL_LABEL, value: 10.0, side: null }]);
+  const [sScout] = foldSets(result.specials, [], { observed: 'read' });
+  assert.ok(Math.abs(sScout.Attack - 0.10) < 1e-9);
+  assert.ok(!('specials_you' in result));
+});

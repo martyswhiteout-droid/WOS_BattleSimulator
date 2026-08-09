@@ -656,3 +656,36 @@ def test_qa_defect_032_absent_setting_is_the_default_without_a_warning():
 
 def test_qa_defect_032_the_clamped_value_actually_sizes_the_semaphore(monkeypatch):
     assert _concurrency_probe(monkeypatch, cap=0, calls=4, pair_size=1) == 1
+
+
+def _specials_only_tokens(right_conf=0.99):
+    """Standalone two-column specials screenshot: no class rows, so the panel
+    type is "unknown" (QA D-034)."""
+    tokens, y = [], 0.10
+    for label in (SPECIAL_LABEL, "Defense Bonus (Pet Skill)"):
+        tokens.append({"text": label, "x0": 0.38, "y0": y, "x1": 0.58,
+                       "y1": y + 0.03, "conf": 0.99})
+        tokens.append({"text": "+10.0%", "x0": 0.03, "y0": y, "x1": 0.23,
+                       "y1": y + 0.03, "conf": 0.99, "color": "green"})
+        tokens.append({"text": "+8.0%", "x0": 0.70, "y0": y, "x1": 0.90,
+                       "y1": y + 0.03, "conf": right_conf, "color": "red"})
+        y += 0.05
+    return tokens
+
+
+def test_qa_defect_034_gap_fill_is_per_side_on_an_unknown_type_specials_image(monkeypatch):
+    _install_rapid(monkeypatch, recognize=lambda image: _specials_only_tokens(right_conf=0.20))
+    _install_gemini(monkeypatch, result=_gemini_result(specials=[
+        {"label": SPECIAL_LABEL, "value": 99.0, "side": "left"},        # already read
+        {"label": SPECIAL_LABEL, "value": 8.0, "side": "right"},        # the gap
+    ]))
+
+    result = _ladder(side="you")
+
+    assert result["panel_type"] == "unknown"
+    assert result["field_engine"] == {f"specials_right.{SPECIAL_LABEL}": "gemini"}
+    assert {(s["label"], s["side"], s["value"]) for s in result["specials"]} >= {
+        (SPECIAL_LABEL, "left", 10.0),      # untouched by the fill
+        (SPECIAL_LABEL, "right", 8.0),      # filled per side
+    }
+    assert f"specials_right.{SPECIAL_LABEL}" not in result["unreadable_fields"]

@@ -306,9 +306,9 @@ def _assemble_result(rows, warnings, side_hint, panel_hint):
             if detected != panel_hint:
                 warnings.append(_hint_warning(panel_hint, detected))
             ptype = panel_hint
-    # Side-aware specials need the settled panel type first (QA D-029).
-    specials, special_unreadable, specials_observed = _specials(
-        rows, two_column=(ptype == "battle"))
+    # Side-awareness comes from the rows themselves, not the panel type
+    # (QA D-034), so a standalone specials image is handled identically here.
+    specials, special_unreadable, specials_observed = _specials(rows)
     if contradiction:
         return {"panel_type": detected, "requested_side": side_hint,
                 "specials": specials, "specials_observed": specials_observed,
