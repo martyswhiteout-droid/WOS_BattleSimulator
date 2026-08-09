@@ -403,3 +403,27 @@ def test_semaphore_caps_in_flight_rapidocr_executions(monkeypatch):
 def test_semaphore_of_one_serializes_rapidocr(monkeypatch):
     peak = _concurrency_probe(monkeypatch, cap=1, calls=4, pair_size=1)
     assert peak == 1
+
+
+# ---------------------------------------------------------------------------
+# The loader seams are faked in every test above, so pin the REAL symbols too:
+# a rename in either engine would otherwise degrade production to "engine
+# unavailable" silently, forever.
+# ---------------------------------------------------------------------------
+
+def test_real_rapidocr_loader_resolves_the_engine_entry_point():
+    pytest.importorskip("PIL")          # the rapidocr wheel itself stays lazy
+    from shell.app.ocr.panel import engine_rapidocr
+
+    assert ladder._load_rapidocr() is engine_rapidocr.recognize_image
+
+
+def test_real_gemini_loader_resolves_its_three_symbols():
+    pytest.importorskip("httpx")
+    from shell.app.ocr.panel import engine_gemini
+
+    extract, unavailable, resolve_key = ladder._load_gemini()
+    assert extract is engine_gemini.extract_panel_gemini
+    assert unavailable is engine_gemini.GeminiUnavailable
+    assert issubclass(unavailable, Exception)
+    assert callable(resolve_key)
