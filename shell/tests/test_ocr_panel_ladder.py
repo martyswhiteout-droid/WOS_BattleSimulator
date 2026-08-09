@@ -614,3 +614,45 @@ def test_qa_defect_030_a_recycled_loop_id_does_not_inherit_a_dead_semaphore():
         if loop_id in seen:
             assert seen[loop_id] is not semaphore, "recycled loop id reused a dead semaphore"
         seen[loop_id] = semaphore
+
+
+# ---------------------------------------------------------------------------
+# QA D-032: OCR_CPU_CONCURRENCY is clamped to a sane range
+# ---------------------------------------------------------------------------
+
+def test_qa_defect_032_in_range_concurrency_passes_through_silently():
+    import warnings as warnings_module
+
+    with warnings_module.catch_warnings():
+        warnings_module.simplefilter("error")        # any warning fails the test
+        assert ladder._cpu_concurrency(_Settings(cpu=1)) == 1
+        assert ladder._cpu_concurrency(_Settings(cpu=4)) == 4
+        assert ladder._cpu_concurrency(_Settings(cpu=8)) == 8
+
+
+def test_qa_defect_032_out_of_range_concurrency_is_clamped_with_a_warning():
+    for value, expected in ((99, 8), (9, 8), (0, 1), (-3, 1)):
+        with pytest.warns(RuntimeWarning, match="clamped"):
+            assert ladder._cpu_concurrency(_Settings(cpu=value)) == expected
+
+
+def test_qa_defect_032_garbage_concurrency_warns_and_uses_the_default():
+    with pytest.warns(RuntimeWarning, match="not an integer"):
+        assert ladder._cpu_concurrency(_Settings(cpu="two")) == ladder.DEFAULT_CPU_CONCURRENCY
+    with pytest.warns(RuntimeWarning, match="not an integer"):
+        assert ladder._cpu_concurrency(_Settings(cpu=object())) == ladder.DEFAULT_CPU_CONCURRENCY
+
+
+def test_qa_defect_032_absent_setting_is_the_default_without_a_warning():
+    import warnings as warnings_module
+
+    class _NoSetting:
+        pass
+
+    with warnings_module.catch_warnings():
+        warnings_module.simplefilter("error")
+        assert ladder._cpu_concurrency(_NoSetting()) == ladder.DEFAULT_CPU_CONCURRENCY
+
+
+def test_qa_defect_032_the_clamped_value_actually_sizes_the_semaphore(monkeypatch):
+    assert _concurrency_probe(monkeypatch, cap=0, calls=4, pair_size=1) == 1

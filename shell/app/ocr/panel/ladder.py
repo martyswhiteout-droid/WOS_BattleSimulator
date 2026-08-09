@@ -29,10 +29,19 @@ Ladder order:
 Budget accounting reuses the existing usage_events table and day-bounds
 helpers: one row per actual Gemini call under the reserved system user, so
 ``db.get_usage_today`` is the counter. No new storage.
+
+Accepted caveat (QA D-033): that read-then-write is NOT atomic. Concurrent
+requests can each read the same count before either records its call, so the
+daily total can overshoot the budget by at most the number of ladder calls in
+flight at that instant — single digits against a 1200/day budget, and it can
+never run away because every call records before it is made. Making it exact
+would need a transactional counter (a new table or a SELECT ... FOR UPDATE),
+which is not worth the storage change for a soft cost ceiling.
 """
 from __future__ import annotations
 
 import asyncio
+import warnings as warnings_module
 import weakref
 
 from shell.app import db
@@ -47,6 +56,10 @@ from .service import (
 )
 
 DEFAULT_CPU_CONCURRENCY = 2
+# Below 1 there is no worker at all; above 8 the RapidOCR threads simply thrash
+# a VPS that has nothing like that many cores to give (QA D-032).
+MIN_CPU_CONCURRENCY = 1
+MAX_CPU_CONCURRENCY = 8
 DEFAULT_GEMINI_DAILY_BUDGET = 1200
 
 # Budget bookkeeping: a reserved pseudo-user so Gemini spend is global, never
@@ -118,9 +131,36 @@ def _int_setting(settings, name, default, minimum):
         return default
 
 
+def _cpu_concurrency(settings) -> int:
+    """OCR_CPU_CONCURRENCY, clamped to [MIN, MAX] (QA D-032).
+
+    A misconfigured value is corrected rather than obeyed, and says so once:
+    0 or a negative number would deadlock the ladder, and an absurdly high one
+    would let RapidOCR threads thrash the box the semaphore exists to protect.
+    An absent setting is the documented default and warns about nothing.
+    """
+    raw = getattr(settings, "OCR_CPU_CONCURRENCY", None)
+    if raw is None:
+        return DEFAULT_CPU_CONCURRENCY
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        warnings_module.warn(
+            f"OCR_CPU_CONCURRENCY={raw!r} is not an integer; "
+            f"using {DEFAULT_CPU_CONCURRENCY}", RuntimeWarning, stacklevel=2)
+        return DEFAULT_CPU_CONCURRENCY
+    clamped = min(max(value, MIN_CPU_CONCURRENCY), MAX_CPU_CONCURRENCY)
+    if clamped != value:
+        warnings_module.warn(
+            f"OCR_CPU_CONCURRENCY={value} is outside "
+            f"[{MIN_CPU_CONCURRENCY}, {MAX_CPU_CONCURRENCY}]; clamped to {clamped}",
+            RuntimeWarning, stacklevel=2)
+    return clamped
+
+
 def _cpu_semaphore(settings) -> asyncio.Semaphore:
     """The CPU gate for THIS event loop at the configured size (QA D-030)."""
-    size = _int_setting(settings, "OCR_CPU_CONCURRENCY", DEFAULT_CPU_CONCURRENCY, 1)
+    size = _cpu_concurrency(settings)
     loop = asyncio.get_running_loop()
     key = (id(loop), size)
     cached = _cpu_semaphores.get(key)
@@ -258,9 +298,9 @@ def _engine_failure_reason(gemini_result):
 
 def _skip(result, reason):
     warning = f"{_SKIP_PREFIX}{reason}"
-    warnings = result.setdefault("warnings", [])
-    if warning not in warnings:
-        warnings.append(warning)
+    entries = result.setdefault("warnings", [])
+    if warning not in entries:
+        entries.append(warning)
 
 
 async def _gemini_gap_fill(result, images, side, panel_hint, *, settings):
@@ -281,6 +321,8 @@ async def _gemini_gap_fill(result, images, side, panel_hint, *, settings):
 
     budget = _int_setting(settings, "GEMINI_OCR_DAILY_BUDGET",
                           DEFAULT_GEMINI_DAILY_BUDGET, 0)
+    # Read-then-write, deliberately non-atomic — see the module docstring for
+    # the bounded overshoot this accepts (QA D-033).
     spent = await db.get_usage_today(GEMINI_BUDGET_USER, GEMINI_BUDGET_KIND)
     # Gemini sees the panel type RapidOCR already established, so the two
     # results cannot end up in differently-shaped containers.
