@@ -278,3 +278,60 @@
 .ocrf-stats-chip[aria-expanded="true"] .ocrf-chip-caret{transform:rotate(180deg)}
 .ocrf-stats-body{margin-top:12px}
 .ocrf-s5-links{text-align:center;margin:4px 0 0}
+
+/* ============================================================
+   Desktop (>=1000px), ported from prototype/mocks/ocr_flow_mock.html's own
+   `@media (min-width:1000px)` block (lines 617-654) onto this build's
+   classes — per docs/OCR_UX_FLOW_SPEC.md §4 "Two presentations, one HTML:
+   mobile flow AND a slick desktop layout — responsive, not separate apps."
+   Deliberately SKIPPED: the mock's phone-frame chrome (.stage/.phone-wrap/
+   .phone/.notch/.statusbar — a demo-only device simulator, nothing in this
+   build renders inside a fake phone), the stepper rail (.rail/.stepper/
+   .step-item, mock lines 535-558), and the Flow Map overlay (.flowmap/
+   .fm-*) — both are owner/demo navigation tools with no equivalent in
+   OCR_UX_FLOW_SPEC.md §3's screen list; this build's real Back/Cancel
+   controls are the actual navigation.
+
+   Host-page isolation: #ocrfRoot is appended straight to <body> as a
+   sibling of prototype/index.html's own <main> (which caps at 1680px for
+   its own multi-panel dashboard) — nothing here inherits or fights that
+   layout, and no selector below reaches outside #ocrfRoot or the entry
+   card. The mock's per-screen habit of a `.phone-wrap{max-width:960px}`
+   OUTER bound plus a narrower `.scr-body{max-width:640px}` INNER default
+   doesn't map 1:1 onto this build's single-layer `.screen{max-width:640px}`
+   structure, so the desktop cap (mock's 900-960px values) is applied
+   directly to `.screen`/`.ocrf-s5` as one bound, simplified from the mock's
+   two-layer version rather than reproducing a narrower default for
+   E1/S3 specifically (neither is named in the brief; both stay legible at
+   this width — same as every other centered single-column screen here). */
+@media (min-width:1000px){
+  #ocrfRoot .screen{max-width:960px}
+  .ocrf-s5{max-width:960px;margin:0 auto}
+
+  .ocrf-scr-head{padding:26px 8px 10px}
+  .ocrf-scr-head h1{font-size:25px}
+  .ocrf-scr-body{padding:22px 8px 36px}
+  .ocrf-scr-foot{padding:18px 8px 24px}
+
+  /* S1: 3 cards across instead of stacked */
+  [data-screen="s1"] .ocrf-scr-body{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+  [data-screen="s1"] .ocrf-scr-body>.ocrf-sub{grid-column:1/-1;margin-bottom:2px}
+  [data-screen="s1"] .ocrf-pick-card{margin-bottom:0}
+
+  /* S2: side-by-side YOU/ENEMY panes, never a narrow single column */
+  .ocrf-s2-sides{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+  /* S4: roomy two-side grid (already simultaneous; just give it air) */
+  [data-screen="s4"] .ocrf-scr-body{max-width:900px;margin:0 auto}
+  .ocrf-review-grid{gap:0 36px}
+  .ocrf-rv-stats{gap:10px}
+
+  /* S5: this build's own S5 widget is only the collapsed stats chip (Task
+     9's own scope — Troops Formation/Heroes/Joiners/Role toggle are the
+     real app's own pre-existing DOM, never rendered or laid out by this
+     file), so the mock's chip-left/heroes-right two-pane split has no
+     direct equivalent to port here; carries the same wider breathing room
+     into the expanded review grid instead, when the chip is open. */
+  .ocrf-s5 .ocrf-review-grid{gap:0 36px}
+  .ocrf-s5 .ocrf-rv-stats{gap:10px}
+}
