@@ -14,14 +14,24 @@
 import { createFlow } from './flow_state.mjs';
 import { convertSide } from './convert_side.mjs';
 import { mapError } from './error_copy.mjs';
+import { fieldEngineForSide } from './fill_mapper.mjs';
 
 const SIDES = ['you', 'enemy'];
 
+// D-036 fix: a view carries everything BOTH convertSide (Task 1's
+// panelType/stats/specialsOwn/specialsEnemy/specialsObserved) AND
+// classifyFields (fieldConf/fieldEngine, COORDINATOR RULING 2026-08-10 #2)
+// need — so the assembly can derive S4's field-state/tally for EITHER side
+// through this one function, never by reading a raw per-side `results[side]`
+// directly (which is simply absent for a battle-covered side that had no
+// upload of its own).
 function extractView(result, side) {
   if (result.panel_type === 'battle') {
     return {
       panelType: 'battle',
       stats: (side === 'you' ? result.stats_you : result.stats_enemy) || {},
+      fieldConf: (side === 'you' ? result.stats_you_conf : result.stats_enemy_conf) || {},
+      fieldEngine: fieldEngineForSide(result, side),
       specialsOwn: (side === 'you' ? result.specials_you : result.specials_enemy) || [],
       specialsEnemy: (side === 'you' ? result.specials_enemy : result.specials_you) || [],
       specialsObserved: result.specials_observed,
@@ -30,6 +40,8 @@ function extractView(result, side) {
   return {
     panelType: result.panel_type,
     stats: result.stats || {},
+    fieldConf: result.field_conf || {},
+    fieldEngine: fieldEngineForSide(result, side),
     specialsOwn: result.specials || [],
     specialsEnemy: [],
     specialsObserved: result.specials_observed,
@@ -40,7 +52,11 @@ function extractView(result, side) {
 // side's battle-typed, successfully-read upload gets its view DERIVED from
 // that same result's stats_you/stats_enemy/specials_you/specials_enemy
 // aliases (service.py's own documented behavior) — never a second call.
-function deriveViews(types, results) {
+// Exported (D-036): this is the SOLE source of per-side view data — the
+// assembly must never read app.lastRead.results[side] directly for
+// field-state/tally purposes, or a battle-covered side (no results[side]
+// entry of its own) silently reads as entirely missing.
+export function deriveViews(types, results) {
   const views = { you: null, enemy: null };
   for (const side of SIDES) {
     const other = side === 'you' ? 'enemy' : 'you';

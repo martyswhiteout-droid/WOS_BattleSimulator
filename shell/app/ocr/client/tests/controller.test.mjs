@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createController } from '../controller.mjs';
+import { createController, deriveViews } from '../controller.mjs';
+import { classifyFields, ALL_FIELD_KEYS } from '../fill_mapper.mjs';
 
 const GOLD = JSON.parse(readFileSync(
   new URL('../../../../tests/fixtures/panel_ocr/golden_vectors.json', import.meta.url), 'utf8'));
@@ -138,4 +139,55 @@ test('city-stats U cache round-trips through the injected storage, keyed per use
   const after = await controllerB.readAll({ you: [new Uint8Array([1])] }, access.userId);
   assert.equal(after.conversion.you.outcome, 'ready');
   assert.ok(Math.abs(after.conversion.you.percents['Infantry|Attack'] - a.scout.Infantry.Attack) <= 0.11);
+});
+
+// --- D-036 regression: the render path must route through deriveViews, not
+// raw per-side `results`, or a battle-covered enemy column (no upload of its
+// own) reads as entirely missing even though the single upload read it fine. ---
+
+test('deriveViews is exported directly — the assembly routes S4 field-state/tally derivation through it, never raw per-side results (D-036)', () => {
+  assert.equal(typeof deriveViews, 'function');
+});
+
+test('D-036 probe: a single full battle response (stats_you+stats_enemy, both 12/12) derives BOTH columns with enough data for 24/24 classifyFields, in exactly one network call', async () => {
+  let serverCalls = 0;
+  const fullSide = (base) => Object.fromEntries(ALL_FIELD_KEYS.map((k, i) => [k, base + i]));
+  const confFor = (stats) => Object.fromEntries(Object.keys(stats).map((k) => [k, 0.95]));
+  const controller = createController({
+    postPanel: async ({ side }) => {
+      serverCalls += 1;
+      const you = fullSide(1000);
+      const enemy = fullSide(100);
+      return {
+        panel_type: 'battle', requested_side: side, specials: [], specials_observed: 'read', warnings: [],
+        stats_left: you, stats_left_conf: confFor(you),
+        stats_right: enemy, stats_right_conf: confFor(enemy),
+        stats_you: you, stats_you_conf: confFor(you),
+        stats_enemy: enemy, stats_enemy_conf: confFor(enemy),
+        specials_you: [], specials_enemy: [], field_engine: {},
+        unreadable_fields: [], status: 'ok',
+      };
+    },
+    storage: memoryStorage(),
+  });
+  controller.flow.pickKind('battle');
+  controller.flow.addShot('you', 's1');
+  const { views } = await controller.readAll({ you: [new Uint8Array([1])] });   // no 'enemy' key at all
+
+  assert.equal(serverCalls, 1);
+  assert.ok(views.enemy, 'enemy view must be derived, not left null, when the single battle upload covers it');
+  assert.equal(views.enemy.stats['Infantry|Attack'], 100);
+  // The whole point of D-036: the DERIVED side must carry the SAME field-tier
+  // inputs (confidence + field_engine) as the directly-read side — not just
+  // stats — or S4's ok/check/missing classification silently degrades for a
+  // battle-covered column even though the read was complete.
+  assert.ok(views.you.fieldConf && views.enemy.fieldConf, 'both views must carry fieldConf for classifyFields');
+  assert.equal(views.enemy.fieldConf['Infantry|Attack'], 0.95);
+
+  const classify = (view) => classifyFields({
+    expectedKeys: ALL_FIELD_KEYS, stats: view.stats, fieldConf: view.fieldConf, fieldEngine: view.fieldEngine ?? {},
+  });
+  const allStates = [...Object.values(classify(views.you)), ...Object.values(classify(views.enemy))].map((f) => f.state);
+  assert.equal(allStates.length, 24);
+  assert.ok(allStates.every((s) => s === 'ok'), `expected 24/24 ok (both columns fully classified), got: ${JSON.stringify(allStates)}`);
 });
