@@ -19,6 +19,7 @@ from fastapi.testclient import TestClient
 from shell.app.config import Settings
 from shell.app.main import create_app
 from shell.app.overlay import SCRIPT_TAG, inject
+from shell.app.overlay.middleware import INJECTED_TAGS   # NEW import
 
 TAG = SCRIPT_TAG.decode()
 
@@ -43,13 +44,13 @@ def client():
 
 def test_inject_before_last_body_tag_case_insensitive():
     assert inject(b"<html><body>x</body></html>") == \
-        b"<html><body>x" + SCRIPT_TAG + b"</body></html>"
+        b"<html><body>x" + INJECTED_TAGS + b"</body></html>"
     assert inject(b"<HTML><BODY>x</BODY></HTML>").endswith(
-        SCRIPT_TAG + b"</BODY></HTML>")
+        INJECTED_TAGS + b"</BODY></HTML>")
 
 
 def test_inject_without_body_tag_appends():
-    assert inject(b"<p>fragment</p>") == b"<p>fragment</p>" + SCRIPT_TAG
+    assert inject(b"<p>fragment</p>") == b"<p>fragment</p>" + INJECTED_TAGS
 
 
 # -------------------------------------------------------------- end to end

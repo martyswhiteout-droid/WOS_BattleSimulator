@@ -1,0 +1,35 @@
+/* shell/app/ocr/client/ocr_flow.css — base tokens + Task 5's entry/upgrade styles.
+   Palette-locked to prototype/DESIGN_SYSTEM.md (same tokens the mock itself uses);
+   Tasks 6-9 append more rules to this file, reusing these custom properties —
+   never introducing a new color. Not unit-tested (decision #6); the Task 10
+   browser gate is the actual visual acceptance bar. */
+:root {
+  --ocrf-panel:#0B273D; --ocrf-raised:#123B59; --ocrf-well:rgba(6,20,34,.38);
+  --ocrf-ink:#EAF6FF; --ocrf-ink-mute:#B9D2E5;
+  --ocrf-cta-1:#8ED0FF; --ocrf-cta-2:#5AAEF3; --ocrf-cta-3:#3E97E8; --ocrf-cta-ledge:#235f9c;
+  --ocrf-ice-b:#55BFFF; --ocrf-gold:#D9A94F;
+}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.ocrf-entry *,.ocrf-sheet *{transition:none!important;animation:none!important}}
+
+.ocrf-entry{margin:0 0 16px;text-align:center}
+.ocrf-cta{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:15px;color:#fff;
+  text-shadow:0 1px 2px rgba(10,52,96,.55);border:0;border-radius:16px;cursor:pointer;
+  padding:14px 22px;min-height:48px;display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,var(--ocrf-cta-1) 0%,var(--ocrf-cta-2) 46%,var(--ocrf-cta-3) 100%);
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+    0 2px 0 var(--ocrf-cta-ledge),0 3px 5px -2px rgba(4,22,44,.7)}
+.ocrf-cta-note{font-size:11.5px;color:var(--ocrf-ink-mute);margin:8px 0 0}
+
+.ocrf-modal-scrim{position:fixed;inset:0;background:rgba(4,10,17,.62);display:flex;align-items:center;
+  justify-content:center;z-index:2147483000;padding:20px}
+.ocrf-modal-scrim[aria-hidden="true"]{display:none}
+.ocrf-sheet{max-width:420px;background:linear-gradient(180deg,var(--ocrf-raised),var(--ocrf-panel));
+  border-radius:16px;padding:22px;color:var(--ocrf-ink);box-shadow:0 18px 40px -24px rgba(0,0,0,.9)}
+.ocrf-sheet h2{font-family:'Chakra Petch',system-ui,sans-serif;margin:0 0 10px;font-size:17px}
+.ocrf-sheet p{margin:0 0 16px;font-size:13.5px;color:var(--ocrf-ink-mute);line-height:1.5}
+.ocrf-sheet-actions{display:flex;gap:10px}
+.ocrf-btn-ghost,.ocrf-btn-primary{min-height:44px;border-radius:12px;font-weight:600;font-size:13px;
+  cursor:pointer;flex:1;padding:0 12px}
+.ocrf-btn-ghost{background:rgba(255,255,255,.04);border:1px solid rgba(185,210,229,.28);color:var(--ocrf-ink)}
+.ocrf-btn-primary{border:0;color:#fff;background:linear-gradient(180deg,var(--ocrf-cta-1),var(--ocrf-cta-3))}

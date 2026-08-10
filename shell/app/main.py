@@ -219,6 +219,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     except ImportError:
         pass
 
+    # shell/app/ocr/client/ is mounted as static so the browser can `import`
+    # ocr_flow.js's sibling ES modules (flow_state.mjs, panel_parser.mjs,
+    # engine_tesseract.mjs) and fetch the vendored tesseract.js/WASM assets at
+    # runtime — OverlayMiddleware only injects <link>/<script> TAGS for
+    # ocr_flow.js/.css, it does not serve any file itself.
+    from pathlib import Path as _Path
+    from starlette.staticfiles import StaticFiles as _StaticFiles
+    _ocr_client_dir = _Path(__file__).resolve().parent / "ocr" / "client"
+    app.mount("/shell/ocr/client", _StaticFiles(directory=str(_ocr_client_dir)),
+              name="ocr_client_assets")
+
     # ---- mount the untouched prototype app LAST (so /shell/* wins) -------
     sim_mounted = False
     try:
