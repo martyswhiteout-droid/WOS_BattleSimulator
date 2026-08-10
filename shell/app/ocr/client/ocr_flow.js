@@ -56,10 +56,18 @@ const app = { history: ['entry'], screen: 'entry',
 
 function root() { return document.getElementById('ocrfRoot'); }
 
+// Set once by boot() — the S0 CTA card, hidden while the flow is open and
+// restored on Back-to-entry (the [hidden] show/hide pattern, per the global
+// constraints; the entry card is not itself part of the #ocrfRoot stack).
+let entryNode = null;
+
 function show(html) {
   root().innerHTML = html;
   const heading = root().querySelector('h1, h2[tabindex]');
   if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+  // Every screen template's header carries the same data-back control
+  // (S3/S5 render none — optional chaining is the no-op there).
+  root().querySelector('[data-back]')?.addEventListener('click', back);
 }
 
 function goto(screen, { push = true } = {}) {
@@ -96,7 +104,11 @@ function flatTallyStates(states) {
 
 function render() {
   if (app.screen === 'entry') {
-    return; // the entry card is mounted once, outside the screen stack — see boot()
+    // Back from S1 lands here: restore the CTA, clear whatever the flow was
+    // showing so a later "Fill from screenshots" tap starts clean.
+    if (entryNode) { entryNode.hidden = false; entryNode.querySelector('#ocrfCtaScreenshots')?.focus({ preventScroll: true }); }
+    root()?.remove();
+    return;
   }
   if (app.screen === 's1') { show(renderS1()); wireS1(root(), { onPick: onPickKind }); return; }
   if (app.screen === 's2') {
@@ -251,13 +263,15 @@ function openPicture() {
 }
 
 function boot() {
-  const entryNode = mountEntry({ root: document });
+  entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
   if (!entryNode) return;
   wireEntry(entryNode, {
     checkAccess,
     onProceed: () => {
-      const stack = document.createElement('div'); stack.id = 'ocrfRoot';
-      document.body.appendChild(stack);
+      entryNode.hidden = true;
+      // Reuse an existing #ocrfRoot (e.g. after Back-to-entry then proceeding
+      // again) rather than appending a second one with a duplicate id.
+      const stack = root() || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'ocrfRoot' }));
       goto('s1');
     },
     onNeedsUpgrade: () => {
