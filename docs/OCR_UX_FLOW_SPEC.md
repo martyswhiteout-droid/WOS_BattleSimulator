@@ -8,6 +8,7 @@
 1. **Tiering (D1):** free tier = NO OCR of any kind — manual input only. OCR (including the zero-cost client-side path) is paid-tier. Enforce server-side via entitlements, not just hidden UI.
    - *Amended 2026-08-09 (QA D-031): the server-side enforcement signal is **402 `payment_required`** from `LimitsMiddleware` (shell-wide convention) for both `/shell/ocr` and `/shell/ocr/panel` — the endpoints carry no plan branch of their own.*
 2. **Engines:** client-side WASM primary → server RapidOCR fallback. **Vision-LLM: deferred to a future build** — never in v1; unreadable fields are typed by the user.
+   - *Amended 2026-08-10 (post-benchmark, owner-decided): v1 is SERVER-side — the production ladder at `/shell/ocr/panel` (RapidOCR primary at 100% D2 PASS → Gemini gap-fill under daily budget at 100% → manual typing). Client-side tesseract.js benchmarked 64% and is BENCHED as the future client tier. §3 S3's "stays on your phone" trust line is replaced accordingly: "Sent securely and read right away. Your screenshots are never saved."*
 3. **Never fabricate:** unreadable = absent = highlighted for the user; no guesses, no zeros.
 4. **Determinism:** same screenshot → same output; parsed values validate against the panel law (`STAT_PANELS_FORMULA` §8 recipes + sanity ranges).
 
