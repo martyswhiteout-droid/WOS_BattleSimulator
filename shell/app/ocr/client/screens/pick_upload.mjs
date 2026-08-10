@@ -45,7 +45,28 @@ export function renderS1() {
 </section>`.trim();
 }
 
-function sideSectionHtml(side, { type, covered, shotCount }) {
+// D-035 fix: one thumb per shot, each with a >=44px remove control keyed by
+// (side, INDEX) — mock's own convention (ocr_flow_mock.html's
+// renderThumbsFor/removeThumbSide use position, not an id, since its own
+// thumbsArrFor is a placeholder array; this build's shots DO carry real
+// stable ids, but the delegate/removal wiring stays index-based to match
+// the mock 1:1 — the index is resolved back to the real shot id where the
+// removal actually happens, in ocr_flow.js). The icon is the same generic
+// "screenshot" glyph the mock uses (never a real image preview — no
+// screenshot bytes are ever re-rendered as an <img>, consistent with
+// "screenshots are never saved").
+const THUMB_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3" '
+  + 'fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="10" r="2" fill="currentColor"/>'
+  + '<path d="M4 17 L9 12 L13 15 L16 11 L20 16" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+
+export function renderThumbs(side, ids) {
+  return ids.map((_, i) => (
+    `<div class="ocrf-thumb">${THUMB_ICON}<button type="button" class="ocrf-thumb-x" aria-label="Remove screenshot" `
+    + `data-remove-thumb-side="${side}" data-remove-thumb="${i}">&times;</button></div>`
+  )).join('');
+}
+
+function sideSectionHtml(side, { type, covered, shotCount, ids = [] }) {
   const label = side === 'you' ? 'YOU' : 'ENEMY';
   const coveredNote = covered
     ? '<div class="ocrf-covered-note"><span class="ocrf-covered-check" aria-hidden="true">&#10003;</span>'
@@ -63,15 +84,15 @@ function sideSectionHtml(side, { type, covered, shotCount }) {
     <b>${dropzoneLabel({ side, covered })}</b>
     ${subLabel}
   </button>
-  <div class="ocrf-thumbs" data-thumbs="${side}"${shotCount ? '' : ' hidden'}></div>
+  <div class="ocrf-thumbs" data-thumbs="${side}"${shotCount ? '' : ' hidden'}>${renderThumbs(side, ids)}</div>
 </div>`.trim();
 }
 
 export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, notice = null }) {
   const you = sideSectionHtml('you',
-    { type: types.you, covered: coverage.you && !shots.you.length, shotCount: shots.you.length });
+    { type: types.you, covered: coverage.you && !shots.you.length, shotCount: shots.you.length, ids: shots.you });
   const enemy = sideSectionHtml('enemy',
-    { type: types.enemy, covered: coverage.enemy && !shots.enemy.length, shotCount: shots.enemy.length });
+    { type: types.enemy, covered: coverage.enemy && !shots.enemy.length, shotCount: shots.enemy.length, ids: shots.enemy });
   const state = computeS2ContinueState(coverage);
   // D-039: the E1-recovery removal notice (mock's #s2Notice) — only rendered
   // when actually supplied, never an empty placeholder element.

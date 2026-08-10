@@ -88,13 +88,28 @@ test('a click that resolves [data-back] calls the injected back(), not goto', ()
   assert.equal(calls.back, 1);
 });
 
-test('a click matching neither selector is a silent no-op (never throws, never calls anything)', () => {
-  const calls = { goto: 0, back: 0 };
+test('D-035: a click that resolves [data-remove-thumb] calls the injected onRemoveThumb with side + numeric index, not goto/back', () => {
+  const calls = { goto: [], back: 0, removeThumb: [] };
   const handle = createDelegatedClickHandler({
-    goto: () => { calls.goto += 1; }, back: () => { calls.back += 1; },
+    goto: (s, o) => calls.goto.push([s, o]), back: () => { calls.back += 1; },
+    onRemoveThumb: (side, i) => calls.removeThumb.push([side, i]),
+  });
+  // screens/pick_upload.mjs's renderThumbs emits:
+  //   <button ... data-remove-thumb-side="enemy" data-remove-thumb="2">&times;</button>
+  const removeBtn = fakeElement({ removeThumbSide: 'enemy', removeThumb: '2' });
+  handle({ target: fakeTarget({ '[data-remove-thumb]': removeBtn }), preventDefault() {} });
+  assert.deepEqual(calls.removeThumb, [['enemy', 2]]);
+  assert.deepEqual(calls.goto, []);
+  assert.equal(calls.back, 0);
+});
+
+test('a click matching none of the delegate\'s selectors is a silent no-op (never throws, never calls anything)', () => {
+  const calls = { goto: 0, back: 0, removeThumb: 0 };
+  const handle = createDelegatedClickHandler({
+    goto: () => { calls.goto += 1; }, back: () => { calls.back += 1; }, onRemoveThumb: () => { calls.removeThumb += 1; },
   });
   assert.doesNotThrow(() => handle({ target: fakeTarget({}), preventDefault() {} }));
-  assert.deepEqual(calls, { goto: 0, back: 0 });
+  assert.deepEqual(calls, { goto: 0, back: 0, removeThumb: 0 });
 });
 
 // --- D-039: planS2Entry — the pure decision behind "Add a clearer screenshot" ---

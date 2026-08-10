@@ -142,6 +142,16 @@
 .ocrf-dropzone b{font-size:14.5px;font-family:'Chakra Petch',system-ui,sans-serif;color:var(--ocrf-ink)}
 .ocrf-dropzone span{font-size:12px;color:var(--ocrf-ink-mute)}
 .ocrf-thumbs{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px}
+/* D-035: per-shot thumbnail + >=44px remove control, ported from the
+   mock's .thumb/.thumb-x */
+.ocrf-thumb{position:relative;width:64px;height:64px;border-radius:12px;
+  background:linear-gradient(180deg,#1b3350,#0f2233);border:1px solid rgba(185,210,229,.25);
+  display:grid;place-items:center;color:var(--ocrf-ice-b)}
+.ocrf-thumb svg{width:30px;height:30px}
+.ocrf-thumb-x{position:absolute;top:-15px;right:-15px;width:46px;height:46px;min-width:46px;min-height:46px;
+  border-radius:50%;background:var(--ocrf-panel);border:1px solid rgba(185,210,229,.35);color:var(--ocrf-ink);
+  font-size:15px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+.ocrf-thumb-x:hover{background:var(--ocrf-ember-d);border-color:var(--ocrf-ember-d)}
 
 .ocrf-hint-card{display:flex;gap:10px;align-items:flex-start;background:rgba(217,169,79,.1);
   border:1px solid rgba(217,169,79,.3);border-radius:12px;padding:11px 13px;margin-top:18px}

@@ -99,7 +99,7 @@ function back() {
 // so the actual branching is unit-testable without a real DOM (see
 // tests/ocr_flow.test.mjs) — the real listener below just wires this against
 // the module's own goto/back closures.
-export function createDelegatedClickHandler({ goto: gotoFn, back: backFn }) {
+export function createDelegatedClickHandler({ goto: gotoFn, back: backFn, onRemoveThumb }) {
   return function handleDelegatedClick(event) {
     const target = event.target;
     if (!target || typeof target.closest !== 'function') return;
@@ -113,7 +113,14 @@ export function createDelegatedClickHandler({ goto: gotoFn, back: backFn }) {
       return;
     }
     const backEl = target.closest('[data-back]');
-    if (backEl) { event.preventDefault(); backFn(); }
+    if (backEl) { event.preventDefault(); backFn(); return; }
+    // D-035: screens/pick_upload.mjs's renderThumbs() remove control
+    // (mock's .thumb-x counterpart) — side + INDEX into that side's shot list.
+    const removeEl = target.closest('[data-remove-thumb]');
+    if (removeEl && onRemoveThumb) {
+      event.preventDefault();
+      onRemoveThumb(removeEl.dataset.removeThumbSide, parseInt(removeEl.dataset.removeThumb, 10));
+    }
   };
 }
 
@@ -268,6 +275,19 @@ function onDropzone(side) {
   input.click();
 }
 
+// D-035 fix: index into app.shots[side] (matches renderThumbs's own
+// side+index keying) resolved to the real shot id for controller.flow
+// (flow_state.mjs removes by id, not position) — removing then re-renders,
+// which naturally recomputes both sides' covered badges and Continue state
+// (Task 6's existing, untouched dropzoneLabel/computeS2ContinueState).
+function onRemoveThumb(side, index) {
+  const shot = app.shots[side][index];
+  if (!shot) return;
+  controller.flow.removeShot(side, shot.id);
+  app.shots[side].splice(index, 1);
+  render();
+}
+
 // Real anchored popover: no decision logic (Task 6's TYPE_LABEL/YOU_TYPES/
 // ENEMY_TYPES are the only source of truth for what's offered).
 function onTypeTag(side, tagElement) {
@@ -373,7 +393,7 @@ function openPicture() {
 
 function boot() {
   controller = createController({ fetchMe, postPanel, storage: window.localStorage });
-  document.addEventListener('click', createDelegatedClickHandler({ goto, back }));
+  document.addEventListener('click', createDelegatedClickHandler({ goto, back, onRemoveThumb }));
 
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
   if (!entryNode) return;
