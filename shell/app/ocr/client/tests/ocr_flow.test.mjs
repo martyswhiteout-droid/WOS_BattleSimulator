@@ -18,7 +18,7 @@
 // codebase already uses.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDelegatedClickHandler, planS2Entry } from '../ocr_flow.js';
+import { createDelegatedClickHandler, planS2Entry, decideAfterRead } from '../ocr_flow.js';
 
 function fakeElement(dataset) {
   return { dataset };
@@ -116,4 +116,29 @@ test('D-039 probe: planS2Entry with fromRecovery=true and nothing tracked on one
   assert.deepEqual(plan.clearYou, []);
   assert.deepEqual(plan.clearEnemy, ['e1']);
   assert.equal(plan.notice, 'We took that one out. Add a new screenshot.');
+});
+
+// --- D-038: onReadDone must branch three ways, not two — a 200 that parsed
+// NOTHING (evaluator's probe: "C_battle_1-style response, 24 unreadable, 0
+// read") is the E1 WRONG-screenshot variant, never partial copy ("We read 0
+// of 24 numbers... The rest were too unclear to read" is nonsense when NONE
+// were read — that's "this doesn't look like the right screenshot"). ---
+
+test('D-038 probe: 0 of 24 read (C_battle_1-style: totally unreadable) routes to the E1 WRONG variant, never partial', () => {
+  const allMissing = Array(24).fill('missing');
+  assert.deepEqual(decideAfterRead(allMissing), { screen: 'e1', variant: 'wrong' });
+});
+
+test('D-038: some read, some missing routes to E1 PARTIAL with the real (never hardcoded) counts', () => {
+  const states = [...Array(9).fill('ok'), ...Array(15).fill('missing')];
+  assert.deepEqual(decideAfterRead(states), { screen: 'e1', variant: 'partial', readCount: 9, totalCount: 24 });
+});
+
+test('D-038: everything read routes straight to S4', () => {
+  assert.deepEqual(decideAfterRead(Array(24).fill('ok')), { screen: 's4' });
+});
+
+test('D-038: a "check" (Gemini gap-fill) field counts as read, not missing — only true missing routes away from S4', () => {
+  const states = [...Array(20).fill('ok'), ...Array(4).fill('check')];
+  assert.deepEqual(decideAfterRead(states), { screen: 's4' });
 });

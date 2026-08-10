@@ -297,9 +297,34 @@ function onTypeTag(side, tagElement) {
 }
 
 function onS2Continue() { goto('s3'); }   // PREP dropped entirely (Ruling #1) — every read is the same network round trip
-function onReadDone(result) { app.lastRead = result; const unreadable = countUnreadable(result); if (unreadable === 0) goto('s4', { push: false }); else { app.e1Variant = 'partial'; app.e1Counts = { readCount: 24 - unreadable, totalCount: 24 }; goto('e1', { push: false }); } }
+
+// D-038 fix: onReadDone previously only checked "any unreadable at all?",
+// collapsing two very different outcomes into one "partial" branch — a
+// clean 200 that parsed NOTHING (the evaluator's probe: a C_battle_1-style
+// response, 24 unreadable, 0 read) landed on E1's PARTIAL copy ("We read 0
+// of 24 numbers... The rest were too unclear to read"), which is nonsense
+// when none were read at all — that is exactly the WRONG-screenshot case.
+// Pure decision, exported/tested (tests/ocr_flow.test.mjs) — reuses the
+// SAME allFieldStates()/flatTallyStates() pipeline S4 itself renders from
+// (Ruling #2's ok/check/missing tiers — a "check" field counts as read),
+// so E1's reported count can never disagree with what S4 would actually show.
+export function decideAfterRead(tallyStates) {
+  const total = tallyStates.length;
+  const missingCount = tallyStates.filter((s) => s === 'missing').length;
+  const readCount = total - missingCount;
+  if (missingCount === 0) return { screen: 's4' };
+  if (readCount === 0) return { screen: 'e1', variant: 'wrong' };
+  return { screen: 'e1', variant: 'partial', readCount, totalCount: total };
+}
+function onReadDone(result) {
+  app.lastRead = result;
+  const decision = decideAfterRead(flatTallyStates(allFieldStates()));
+  if (decision.screen === 's4') { goto('s4', { push: false }); return; }
+  app.e1Variant = decision.variant;
+  app.e1Counts = decision.variant === 'partial' ? { readCount: decision.readCount, totalCount: decision.totalCount } : {};
+  goto('e1', { push: false });
+}
 function onReadError(err) { app.e1Variant = 'wrong'; goto('e1', { push: false }); }
-function countUnreadable(result) { return Object.values(result.results ?? {}).reduce((n, r) => n + (r?.unreadable_fields?.length ?? 0), 0); }
 // onE1Retake/onE1TypeMissing retired (D-039): both are now the generic
 // [data-goto] delegate (D-037) plus planS2Entry's clearing logic in the 's2'
 // render branch above — see the comment on the 'e1' render branch.
