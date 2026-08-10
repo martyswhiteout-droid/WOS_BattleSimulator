@@ -57,6 +57,20 @@ test('S2 disables Continue and shows the hint when only one side is covered', ()
   assert.match(html, /Now add the enemy's screenshot\./);
 });
 
+test('D-039: S2 renders the removal notice verbatim when supplied (arriving from E1 recovery), and nothing when not', () => {
+  const withNotice = renderS2({
+    types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false },
+    shots: { you: [], enemy: [] }, notice: 'We took that one out. Add a new screenshot.',
+  });
+  assert.match(withNotice, /We took that one out\. Add a new screenshot\./);
+
+  const withoutNotice = renderS2({
+    types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false },
+    shots: { you: [], enemy: [] },
+  });
+  assert.doesNotMatch(withoutNotice, /ocrf-s2-notice/);
+});
+
 test('E1 "wrong" uses the mock copy verbatim', () => {
   const html = renderE1('wrong');
   assert.match(html, /That doesn't look like the right screenshot/);

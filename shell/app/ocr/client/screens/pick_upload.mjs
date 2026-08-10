@@ -67,17 +67,21 @@ function sideSectionHtml(side, { type, covered, shotCount }) {
 </div>`.trim();
 }
 
-export function renderS2({ types, coverage, shots = { you: [], enemy: [] } }) {
+export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, notice = null }) {
   const you = sideSectionHtml('you',
     { type: types.you, covered: coverage.you && !shots.you.length, shotCount: shots.you.length });
   const enemy = sideSectionHtml('enemy',
     { type: types.enemy, covered: coverage.enemy && !shots.enemy.length, shotCount: shots.enemy.length });
   const state = computeS2ContinueState(coverage);
+  // D-039: the E1-recovery removal notice (mock's #s2Notice) — only rendered
+  // when actually supplied, never an empty placeholder element.
+  const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
   return `
 <section class="screen" data-screen="s2">
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
     <h1 tabindex="-1">Add your screenshots</h1></header>
   <div class="ocrf-scr-body">
+    ${noticeHtml}
     <div class="ocrf-s2-sides">${you}${enemy}</div>
     <div class="ocrf-hint-card"><span aria-hidden="true">&#128161;</span>
       <p>Long list? Take 2 screenshots that share a row. We'll join them.</p></div>

@@ -12,7 +12,7 @@
 // dropzone should say — was already built and tested in Task 6).
 import { mountEntry, wireEntry, renderUpgradeNote, wireUpgradeNote } from './screens/entry.mjs';
 import {
-  renderS1, renderS2, renderE1, wireS1, wireS2, wireE1,
+  renderS1, renderS2, renderE1, wireS1, wireS2,
   YOU_TYPES, ENEMY_TYPES, TYPE_LABEL,
 } from './screens/pick_upload.mjs';
 import { renderS3, driveScan, applyStepClasses, wireS3 } from './screens/reading.mjs';
@@ -22,7 +22,7 @@ import {
 } from './screens/review.mjs';
 import { renderS5, computeChipText, shouldShowUndo, buildFillPlan, applyFillPlan, wireS5 } from './screens/setup.mjs';
 import { createController } from './controller.mjs';
-import { classifyFields, ALL_FIELD_KEYS, buildSnapshot, fieldEngineForSide } from './fill_mapper.mjs';
+import { classifyFields, ALL_FIELD_KEYS, buildSnapshot } from './fill_mapper.mjs';
 
 function fetchMe() { return fetch('/shell/me', { credentials: 'same-origin' }).then((r) => r.json()); }
 async function checkAccess() {
@@ -47,7 +47,12 @@ function postPanel({ shotBytesList, side, panelType }) {
 // No recognizeImage: SERVER-ONLY v1 (COORDINATOR RULING 2026-08-10 #1) — every
 // read goes straight to /shell/ocr/panel's production ladder, nothing client-
 // side to inject here (engine_tesseract.mjs stays the future client tier).
-const controller = createController({ fetchMe, postPanel, storage: window.localStorage });
+// Created lazily inside boot() (not at module top level): this file must stay
+// importable under node:test (no `window` there) so the pure pieces below
+// (createDelegatedClickHandler, planS2Entry) are unit-testable — boot() only
+// ever runs in a real browser (guarded at the bottom of this file), so
+// window.localStorage is never reached outside one.
+let controller = null;
 
 const app = { history: ['entry'], screen: 'entry',
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array}]
@@ -65,31 +70,89 @@ function show(html) {
   root().innerHTML = html;
   const heading = root().querySelector('h1, h2[tabindex]');
   if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
-  // Every screen template's header carries the same data-back control
-  // (S3/S5 render none — optional chaining is the no-op there).
-  root().querySelector('[data-back]')?.addEventListener('click', back);
+  // [data-back] is handled by the single global delegate wired in boot()
+  // (D-037) — no per-render listener here, so it can never double-fire.
 }
 
-function goto(screen, { push = true } = {}) {
+function goto(screen, opts = {}) {
   if (app.resetTimer) { clearTimeout(app.resetTimer); app.resetTimer = null; }
+  const push = opts.push !== false;
   if (push) app.history.push(screen); else app.history[app.history.length - 1] = screen;
   app.screen = screen;
+  // Carries fromRecovery/showMissing (D-039) through to render()'s arrival
+  // handling for the target screen — always OVERWRITTEN on every call (never
+  // sticky), so a later plain navigation to the same screen never inherits a
+  // stale opt from an earlier E1 exit.
+  app.navOpts = opts;
   render();
 }
 function back() {
   if (app.history.length > 1) { app.history.pop(); app.screen = app.history[app.history.length - 1]; render(); }
 }
 
+// D-037 fix (single global click delegate, the mock's own pattern —
+// prototype/mocks/ocr_flow_mock.html's `document.addEventListener('click',
+// ...)` block): every screen template's [data-goto]/[data-back] controls are
+// bound here, ONE place, instead of per-screen wire*() functions — which is
+// exactly how S4's "Next" (data-goto="s5") ended up bound to nothing at all.
+// Exported and dependency-injected (goto/back passed in, never closed over)
+// so the actual branching is unit-testable without a real DOM (see
+// tests/ocr_flow.test.mjs) — the real listener below just wires this against
+// the module's own goto/back closures.
+export function createDelegatedClickHandler({ goto: gotoFn, back: backFn }) {
+  return function handleDelegatedClick(event) {
+    const target = event.target;
+    if (!target || typeof target.closest !== 'function') return;
+    const goEl = target.closest('[data-goto]');
+    if (goEl) {
+      event.preventDefault();
+      const opts = {};
+      if (goEl.dataset.recovery) opts.fromRecovery = true;
+      if (goEl.dataset.showMissing) opts.showMissing = true;
+      gotoFn(goEl.dataset.goto, opts);
+      return;
+    }
+    const backEl = target.closest('[data-back]');
+    if (backEl) { event.preventDefault(); backFn(); }
+  };
+}
+
+// D-039 fix: the pure decision behind E1's "Add a clearer screenshot" exit
+// (data-goto="s2" data-recovery="1", routed here by the delegate above).
+// Previously onE1Retake only cleared app.shots (the byte-holding array) and
+// never told controller.flow — so flow_state.mjs's own shotState (and
+// therefore coverage()) still reported the old shots as present: phantom
+// "covered" badges, Continue wrongly enabled with zero real shots, and (via
+// the old onReadDone's unreadable===0-vacuously-true bug, fixed separately
+// as D-038) a scan of nothing landing straight on S4. This returns exactly
+// what needs clearing — the CURRENT ids tracked by controller.flow for BOTH
+// sides, so the caller can remove every one of them from flow_state.mjs too
+// — plus the exact removal notice (mock copy verbatim, ocr_flow_mock.html's
+// enterAddPicture(fromRecovery)). Pure and DOM-free: testable without a real
+// DOM (see tests/ocr_flow.test.mjs).
+export function planS2Entry({ fromRecovery, shotsYou, shotsEnemy }) {
+  if (!fromRecovery) return { clearYou: [], clearEnemy: [], notice: null };
+  return {
+    clearYou: [...shotsYou],
+    clearEnemy: [...shotsEnemy],
+    notice: 'We took that one out. Add a new screenshot.',
+  };
+}
+
+// D-036 fix: reads app.lastRead.VIEWS (controller.mjs's deriveViews output),
+// never app.lastRead.results directly. A battle-covered side (no upload of
+// its own) has no entry in `results` at all — it only ever exists in
+// `views`, which deriveViews already builds correctly (documented "never a
+// second call") and is now enriched with fieldConf/fieldEngine (Ruling #2)
+// specifically so this function doesn't need its own field_engine
+// translation any more.
 function fieldStatesFor(side) {
-  const result = app.lastRead?.results?.[side];
+  const view = app.lastRead?.views?.[side];
   const classification = classifyFields({
     expectedKeys: ALL_FIELD_KEYS,
-    stats: result?.panel_type === 'battle' ? (side === 'you' ? result.stats_you : result.stats_enemy) ?? {} : result?.stats ?? {},
-    fieldConf: result?.panel_type === 'battle' ? (side === 'you' ? result.stats_you_conf : result.stats_enemy_conf) ?? {} : result?.field_conf ?? {},
-    // COORDINATOR RULING 2026-08-10 #2: tier comes from the server's own
-    // field_engine contract (Gemini gap-fills), translated to the bare-keyed,
-    // per-side shape classifyFields expects.
-    fieldEngine: result ? fieldEngineForSide(result, side) : {},
+    stats: view?.stats ?? {},
+    fieldConf: view?.fieldConf ?? {},
+    fieldEngine: view?.fieldEngine ?? {},
   });
   const out = {};
   for (const key of ALL_FIELD_KEYS) {
@@ -112,8 +175,23 @@ function render() {
   }
   if (app.screen === 's1') { show(renderS1()); wireS1(root(), { onPick: onPickKind }); return; }
   if (app.screen === 's2') {
+    // D-039: arriving via E1's "Add a clearer screenshot" (data-goto="s2"
+    // data-recovery="1") must actually clear the failed upload — from BOTH
+    // app.shots (the bytes) AND controller.flow (flow_state.mjs's own
+    // shotState, whose coverage()/isCovered() the phantom "covered" badge
+    // and Continue-enabled bug both traced back to).
+    const plan = planS2Entry({
+      fromRecovery: !!app.navOpts?.fromRecovery,
+      shotsYou: controller.flow.shots('you'),
+      shotsEnemy: controller.flow.shots('enemy'),
+    });
+    for (const id of plan.clearYou) controller.flow.removeShot('you', id);
+    for (const id of plan.clearEnemy) controller.flow.removeShot('enemy', id);
+    if (plan.clearYou.length || plan.clearEnemy.length) app.shots = { you: [], enemy: [] };
+    app.s2Notice = plan.notice;
+
     const coverage = controller.flow.coverage();
-    show(renderS2({ types: controller.flow.types(), coverage,
+    show(renderS2({ types: controller.flow.types(), coverage, notice: app.s2Notice,
       shots: { you: app.shots.you.map((s) => s.id), enemy: app.shots.enemy.map((s) => s.id) } }));
     wireS2(root(), { onDropzone, onTypeTag, onContinue: onS2Continue });
     return;
@@ -161,7 +239,12 @@ function render() {
     });
     return;
   }
-  if (app.screen === 'e1') { show(renderE1(app.e1Variant ?? 'wrong', app.e1Counts ?? {})); wireE1(root(), { onRetake: onE1Retake, onTypeMissing: onE1TypeMissing }); return; }
+  // E1's two exits (data-goto="s2" data-recovery="1" / data-goto="s4"
+  // data-show-missing="1") are handled entirely by the global delegate
+  // (D-037/D-039) — no per-screen wireE1() here any more; keeping both would
+  // double-fire goto() on every click (wireE1's own listener AND the
+  // document-level delegate both matching the same button).
+  if (app.screen === 'e1') { show(renderE1(app.e1Variant ?? 'wrong', app.e1Counts ?? {})); return; }
 }
 
 function onPickKind(kind) { controller.flow.pickKind(kind); goto('s2'); }
@@ -217,8 +300,9 @@ function onS2Continue() { goto('s3'); }   // PREP dropped entirely (Ruling #1) �
 function onReadDone(result) { app.lastRead = result; const unreadable = countUnreadable(result); if (unreadable === 0) goto('s4', { push: false }); else { app.e1Variant = 'partial'; app.e1Counts = { readCount: 24 - unreadable, totalCount: 24 }; goto('e1', { push: false }); } }
 function onReadError(err) { app.e1Variant = 'wrong'; goto('e1', { push: false }); }
 function countUnreadable(result) { return Object.values(result.results ?? {}).reduce((n, r) => n + (r?.unreadable_fields?.length ?? 0), 0); }
-function onE1Retake() { app.shots = { you: [], enemy: [] }; goto('s2', { push: false }); }
-function onE1TypeMissing() { goto('s4', { push: false }); }
+// onE1Retake/onE1TypeMissing retired (D-039): both are now the generic
+// [data-goto] delegate (D-037) plus planS2Entry's clearing logic in the 's2'
+// render branch above — see the comment on the 'e1' render branch.
 function onToggleS5Chip() { const chip = document.getElementById('ocrfS5Chip'); const body = document.getElementById('ocrfS5Body'); const open = chip.getAttribute('aria-expanded') === 'true'; chip.setAttribute('aria-expanded', String(!open)); body.hidden = open; }
 
 function doReset(screen) {
@@ -263,6 +347,9 @@ function openPicture() {
 }
 
 function boot() {
+  controller = createController({ fetchMe, postPanel, storage: window.localStorage });
+  document.addEventListener('click', createDelegatedClickHandler({ goto, back }));
+
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
   if (!entryNode) return;
   wireEntry(entryNode, {
