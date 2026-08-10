@@ -68,9 +68,17 @@ function fieldButtonHtml(side, key, fieldState) {
   </button>`;
 }
 
+// A key absent from statesForSide (e.g. a caller passing a deliberately
+// sparse/empty per-side object) reads exactly as "missing" — consistent with
+// fill_mapper.mjs's classifyFields, which already defaults an absent key to
+// FIELD_MISSING rather than throwing.
+function fieldOrMissing(statesForSide, key) {
+  return statesForSide[key] || { state: 'missing', value: null, typed: false };
+}
+
 function columnHtml(side, statesForSide) {
   const groups = CLASSES.map((cls) => {
-    const fields = STATS.map((stat) => fieldButtonHtml(side, `${cls}|${stat}`, statesForSide[`${cls}|${stat}`])).join('');
+    const fields = STATS.map((stat) => fieldButtonHtml(side, `${cls}|${stat}`, fieldOrMissing(statesForSide, `${cls}|${stat}`))).join('');
     return `<div class="ocrf-rv-group"><div class="ocrf-rv-group-head">${cls}</div><div class="ocrf-rv-stats">${fields}</div></div>`;
   }).join('');
   const headLabel = side === 'you' ? 'MY SIDE' : 'ENEMY';
@@ -129,7 +137,7 @@ export function renderEditorSheet() {
 export function renderPictureView(states) {
   const col = (side) => CLASSES.map((cls) => {
     const rows = STATS.map((stat) => {
-      const fs = states[side][`${cls}|${stat}`];
+      const fs = fieldOrMissing(states[side], `${cls}|${stat}`);
       if (fs.state === 'missing') {
         return `<div class="ocrf-game-row ocrf-dim"><span class="ocrf-gr-label">${stat}</span>`
           + '<span class="ocrf-gr-val ocrf-dim">Not captured</span></div>';
