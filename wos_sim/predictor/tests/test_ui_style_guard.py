@@ -27,7 +27,10 @@ RGB_RE = re.compile(r"rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*[\d
 URL_RE = re.compile(r"https?://[^\"'`\s)<>]+")
 FONTFACE_RE = re.compile(r"@font-face\s*\{[^}]*\}", re.S)
 
-ALLOWED_URLS = {"http://www.w3.org/2000/svg"}          # SVG xmlns only
+ALLOWED_URLS = {
+    "http://www.w3.org/2000/svg",           # SVG xmlns only
+    "https://cdn.vercel-insights.com/v1/script.js",  # Vercel Web Analytics
+}
 ALLOWED_FONT_FAMILIES = {"Chakra Petch", "IBM Plex Mono", "Inter"}
 FORBIDDEN_TOKENS = [
     "cdn.tailwindcss", "tailwind", "bootstrap", "fonts.googleapis",
