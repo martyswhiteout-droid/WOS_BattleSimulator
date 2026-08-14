@@ -46,9 +46,13 @@ Fixture screenshots live in `shell\tests\fixtures\panel_ocr\images\` (account C 
 [Lns]Marlinman capture set; the untouchable ground truth is `golden_vectors.json` next to them).
 
 1. Click **Fill from screenshots** → pick **Battle Report**.
-2. Upload **`C_battle_3.png` and `C_battle_4.png`** together (the two-part scroll of the battle
-   stat panel; the server stitches them). One battle upload feeds *both* sides — the panel has
-   My/Enemy columns.
+2. Upload **`C_battle_3.png` and `C_battle_4.png`** together. These are **two different screens**
+   (QA2 D-045 corrected an earlier version of this step): `C_battle_3` is the complete
+   "Stat Bonuses" class-stat panel (all 12 rows, both columns), and `C_battle_4` is the separate
+   **"Notes on Special Bonuses" popup**, reached in-game by tapping the small **!** icon next to
+   the "Stat Bonuses" title. **Both are required**: without the popup the app now refuses to
+   convert (D-043) and tells you so, instead of silently treating the account as specials-free.
+   One battle upload feeds *both* sides — the panel has My/Enemy columns.
 3. Continue → reading screen → review. Accept → the simulator form fills, exactly **one** network
    call to `/shell/ocr/panel` (check the Network tab if curious).
 4. **Expected — digit-exact.** “Stats are scouted values” (`#statsScouted`) is checked, and *My*
@@ -65,6 +69,11 @@ Fixture screenshots live in `shell\tests\fixtures\panel_ocr\images\` (account C 
    measurement is recorded in the L4 closure entry of `shell/EVAL_OCR_PANEL_QA1.md`.
 5. A provenance chip on the review/battle screen says the values came from screenshots; **Undo**
    reverts the fill.
+6. **Missing-popup variant (D-043/D-044 behavior):** run the same flow with **only
+   `C_battle_3.png`**. All 24 numbers read cleanly, but the completion chip reports
+   *"…not filled in — tap to check"* with a notice card per side explaining the Special Bonuses
+   popup is missing, and **no simulator field changes** (whatever was typed before stays). The
+   upload screen also warns up front that Battle Report needs both screenshots.
 
 **Any mismatch with the table above is a release blocker, not a rounding nit** — file it in the
 ledger and stop (no-fabrication rule: the feature must never present a confident wrong number).

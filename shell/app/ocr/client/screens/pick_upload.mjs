@@ -97,6 +97,15 @@ export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, noti
   // D-039: the E1-recovery removal notice (mock's #s2Notice) — only rendered
   // when actually supplied, never an empty placeholder element.
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
+  // D-045: the battle/scout specials live on a SEPARATE popup ("Notes on
+  // Special Bonuses", behind the ! icon next to the Stat Bonuses title) —
+  // without it the numbers can be read but not converted (D-043), so the
+  // upload screen must say so up front, not only after a refused conversion.
+  const needsPopup = [types.you, types.enemy].includes('battle');
+  const popupHintHtml = needsPopup
+    ? `<div class="ocrf-hint-card" data-popup-hint><span aria-hidden="true">&#10071;</span>
+      <p>Battle Report needs 2 screenshots: the Stat Bonuses list <strong>and</strong> the Special Bonuses popup &mdash; tap the <strong>!</strong> next to &ldquo;Stat Bonuses&rdquo; in the report.</p></div>`
+    : '';
   return `
 <section class="screen" data-screen="s2">
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
@@ -104,6 +113,7 @@ export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, noti
   <div class="ocrf-scr-body">
     ${noticeHtml}
     <div class="ocrf-s2-sides">${you}${enemy}</div>
+    ${popupHintHtml}
     <div class="ocrf-hint-card"><span aria-hidden="true">&#128161;</span>
       <p>Long list? Take 2 screenshots that share a row. We'll join them.</p></div>
   </div>

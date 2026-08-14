@@ -117,3 +117,20 @@ test('D-035: S2 actually renders thumb content into .ocrf-thumbs when a side has
   assert.match(html, /data-remove-thumb-side="you" data-remove-thumb="0"/);
   assert.doesNotMatch(html, /data-thumbs="you"[^>]*\shidden/);   // visible now that it has content
 });
+
+// ---- QA defect 045: the upload screen must say the specials popup is needed --
+test('QA defect 045: S2 shows the Special Bonuses popup hint for battle, and only for battle', () => {
+  const battle = renderS2({
+    types: { you: 'battle', enemy: 'battle' },
+    coverage: { you: false, enemy: false },
+  });
+  assert.match(battle, /data-popup-hint/);
+  assert.match(battle, /Special Bonuses popup/);
+  assert.match(battle, /next to &ldquo;Stat Bonuses&rdquo;/);
+
+  const scoutOnly = renderS2({
+    types: { you: 'scout', enemy: 'scout' },
+    coverage: { you: false, enemy: false },
+  });
+  assert.doesNotMatch(scoutOnly, /data-popup-hint/);
+});
