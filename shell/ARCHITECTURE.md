@@ -51,8 +51,15 @@ class UserCtx:
 
 # limits.py provides (Agent B):
 async def check_and_record(user: UserCtx, endpoint: str, body: dict | None, ip_hash: str) -> LimitVerdict
-# LimitVerdict = Allowed | Denied(status: int, code: str, message: str)
+# LimitVerdict = Allowed(allowed: bool = True, body: dict | None = None) | Denied(status: int, code: str, message: str)
 # Denials: 400 below_min_troops · 402 payment_required (OCR on free) · 429 quota_exhausted / burst
+# Allowed.body: non-None ONLY when check_and_record modified the request (today:
+# sim "n" clamped down to entitlements.max_runs, fix-round F4-b). Backward
+# compatible — existing `Allowed()` / `isinstance(verdict, Allowed)` callers are
+# unaffected. Callers that forward the request downstream MUST prefer this over
+# the original body when set (limits.LimitsMiddleware does; it is the
+# middleware main.py's create_app() actually wires, preferred over Agent A's
+# fallback adapter whenever shell.app.limits.LimitsMiddleware is importable).
 # MIN_TROOPS check: body["own"]["troops_total"] and body["enemy"]["troops_total"] >= settings.min_troops_per_side
 
 # db.py provides (Agent B):  get_pool(), record_usage(...), get_entitlements(plan) -> Entitlements

@@ -89,6 +89,67 @@ def test_denied_requests_consume_no_quota():
 
 
 # ---------------------------------------------------------------------------
+# Runs clamp (MORNING_BRIEF.md §Resume, Agent B / EVAL_ROUND_1.md F4-b):
+# n is clamped to entitlements.max_runs (seeded 1000 for both plans) instead
+# of being enforced by nothing. Both free and pro currently share max_runs,
+# so one plan is enough to cover the boundary; test_middleware_* below proves
+# the clamp is what actually reaches the downstream engine, not just the
+# verdict object (LimitsMiddleware.__call__ re-serializes verdict.body).
+# ---------------------------------------------------------------------------
+
+def test_runs_20000_clamped_to_max_runs_1000():
+    ent = run(db.get_entitlements("free"))
+    assert ent.max_runs == 1000  # pin the seed this test relies on
+    body = {**sim_body(), "n": 20000}
+    verdict = run(limits.check_and_record(FREE, "/api/predict", body, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    assert verdict.body is not None
+    assert verdict.body["n"] == 1000
+    # everything else about the body is preserved, only n changed
+    assert verdict.body["own"] == body["own"] and verdict.body["enemy"] == body["enemy"]
+    # the original dict passed in must not be mutated out from under the caller
+    assert body["n"] == 20000
+
+
+def test_runs_exactly_at_cap_not_clamped():
+    body = {**sim_body(), "n": 1000}
+    verdict = run(limits.check_and_record(FREE, "/api/predict", body, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    assert verdict.body is None  # unchanged -> no rewrite needed
+
+
+def test_runs_under_cap_not_modified():
+    body = {**sim_body(), "n": 50}
+    verdict = run(limits.check_and_record(FREE, "/api/predict", body, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    assert verdict.body is None
+
+
+def test_runs_missing_key_left_untouched():
+    body = sim_body()  # no "n" key at all — server.py defaults it downstream
+    verdict = run(limits.check_and_record(FREE, "/api/predict", body, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    assert verdict.body is None
+
+
+def test_runs_clamp_applies_on_battle_endpoint_too():
+    body = {**sim_body(), "n": 999999}
+    verdict = run(limits.check_and_record(PRO, "/api/battle", body, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    assert verdict.body["n"] == 1000
+
+
+def test_runs_non_numeric_n_left_for_downstream_validation():
+    # check_and_record enforces the ENTITLEMENT ceiling, not general n
+    # validity — malformed n (string/negative/etc.) is wos_sim's own 400
+    # InvalidInput territory (server.py), not this layer's job.
+    body = {**sim_body(), "n": "lots"}
+    verdict = run(limits.check_and_record(FREE, "/api/predict", body, "ip1"))
+    assert isinstance(verdict, limits.Allowed)
+    assert verdict.body is None
+
+
+# ---------------------------------------------------------------------------
 # Daily quota (D2): free plan exhausts at the 6th sim
 # ---------------------------------------------------------------------------
 
@@ -274,6 +335,38 @@ def test_middleware_restores_body_for_downstream(monkeypatch):
     resp = client.post("/api/predict", json=sim_body(own=7000, enemy=8000))
     assert resp.status_code == 200
     assert resp.json() == {"echo_own": 7000}
+
+
+def make_echo_n_client(monkeypatch) -> TestClient:
+    monkeypatch.setenv("DEV_BYPASS", "1")
+    app = FastAPI()
+
+    @app.post("/api/predict")
+    async def predict(request: Request):  # pragma: no cover - exercised via client
+        data = await request.json()
+        return {"n": data.get("n")}
+
+    return TestClient(limits.LimitsMiddleware(app))
+
+
+def test_middleware_forwards_clamped_runs_to_downstream(monkeypatch):
+    # The verdict alone isn't the fix — main.py's create_app() wires
+    # limits.LimitsMiddleware (this class) as the live app's limits layer
+    # (it is preferred over Agent A's fallback adapter whenever it's
+    # importable), so THIS is what must actually rewrite the outgoing body,
+    # or a clamped n never reaches wos_sim and the wedge-the-box hole (F4)
+    # stays open regardless of what check_and_record computes.
+    client = make_echo_n_client(monkeypatch)
+    resp = client.post("/api/predict", json={**sim_body(), "n": 20000})
+    assert resp.status_code == 200
+    assert resp.json() == {"n": 1000}
+
+
+def test_middleware_leaves_in_range_runs_untouched(monkeypatch):
+    client = make_echo_n_client(monkeypatch)
+    resp = client.post("/api/predict", json={**sim_body(), "n": 42})
+    assert resp.status_code == 200
+    assert resp.json() == {"n": 42}
 
 
 def test_middleware_denies_min_troops_with_json_error(monkeypatch):
