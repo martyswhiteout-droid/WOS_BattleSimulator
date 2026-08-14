@@ -4,15 +4,21 @@ Implements the composition model of shell/ARCHITECTURE.md and
 PRODUCTION_PLAN.md §2:
 
     Caddy (TLS) → shell.app.main:app
-      ├─ AuthMiddleware      (auth.py — outermost)
+      ├─ BodyLimitMiddleware (this file — outermost; 413 before anything buffers)
+      ├─ CorsLockMiddleware  (this file — locks CORS to BASE_URL outside dev)
+      ├─ DocsGuardMiddleware (this file — 404s /docs,/redoc,/openapi.json outside dev)
+      ├─ AuthMiddleware      (auth.py)
       ├─ LimitsMiddleware    (adapter around Agent B's limits.check_and_record)
       ├─ MinimizeMiddleware  (minimize.py — staging/prod response minimization)
       ├─ OverlayMiddleware   (overlay/ — script injection into the served UI)
-      ├─ /shell/* routes     (health, me, overlay assets; B's billing, C's ocr)
+      ├─ /shell/* routes     (health, me, signout, legal/*; B's billing, C's ocr)
       └─ mount("/"): wos_sim.predictor.server:app  (LAST — /api/* + static UI)
 
 Starlette runs the LAST-added middleware OUTERMOST, so add_middleware calls
-below are in reverse of the request-path order above.
+below are in reverse of the request-path order above. The three new
+outermost layers (F4/F5/F14, EVAL_ROUND_1.md) don't depend on auth/limits
+state, so they reject what they're going to reject before the app spends
+any work getting there.
 
 sys.path: importing ``shell.app.main`` already requires the REPO ROOT on
 sys.path — run from the repo root (``uvicorn shell.app.main:app --port 8200``
