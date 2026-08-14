@@ -3,6 +3,13 @@
 Covers the ARCHITECTURE.md response contract: ok / partial / failed statuses,
 unreadable_fields surfacing, image-hash cache hits (no second vision call),
 400s for oversized / wrong-type uploads, and 401 when unauthenticated.
+
+Isolation note: fixing EVAL_ROUND_1.md F21 (below) means check_and_record now
+actually records usage_events for every allowed request in this file, all
+under the same user_id. limits.py's burst window (D2, default 5/min) and
+daily quota are account-scoped in shell.app.db's process-wide singleton, so
+without a reset these would bleed across tests / files. _reset_shell_db makes
+every test in this file start from (and leave) a clean in-memory backend.
 """
 from __future__ import annotations
 
@@ -10,6 +17,7 @@ import io
 import sys
 from pathlib import Path
 
+import pytest
 from PIL import Image
 
 # Make `shell.app.ocr` importable regardless of pytest invocation directory.
@@ -20,11 +28,22 @@ if str(_REPO_ROOT) not in sys.path:
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
-from shell.app.ocr._shims import UserCtx  # noqa: E402
-from shell.app.ocr.cache import InMemoryOcrJobs  # noqa: E402
+from shell.app import db as real_db  # noqa: E402
+from shell.app.ocr._shims import SkillUnavailableError, UserCtx, _StubSettings  # noqa: E402
+from shell.app.ocr.cache import DbOcrJobs, InMemoryOcrJobs  # noqa: E402
 from shell.app.ocr.extract import MAX_IMAGE_BYTES, OcrService  # noqa: E402
 from shell.app.ocr.router import router as ocr_router  # noqa: E402
 from shell.app.ocr.vision import MockVision  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _reset_shell_db():
+    """Fresh InMemoryDB before and after every test in this file (see module
+    docstring) — check_and_record's burst/quota counters are per-user_id and
+    all tests here share user_id="test_user"."""
+    real_db.reset_db()
+    yield
+    real_db.reset_db()
 
 
 def make_png(color=(10, 20, 30)) -> bytes:
@@ -33,23 +52,36 @@ def make_png(color=(10, 20, 30)) -> bytes:
     return buf.getvalue()
 
 
-def build_client(fixture: str) -> tuple[TestClient, MockVision]:
-    """Test app: fake auth middleware (Agent A's contract) + injected OCR service."""
+def build_client(fixture: str, *, jobs=None, settings=None, plan: str = "pro",
+                  raise_server_exceptions: bool = True) -> tuple[TestClient, MockVision]:
+    """Test app: fake auth middleware (Agent A's contract) + injected OCR service.
+
+    ``jobs`` defaults to InMemoryOcrJobs (fast unit-test double); pass a
+    DbOcrJobs wired to the real shell.app.db module to exercise the app's
+    REAL store (see test_cache_hit_via_real_db_store_no_key_mismatch below).
+    ``settings`` defaults to the real get_settings(); pass a _StubSettings
+    override to exercise settings-driven behaviour (e.g. skill_ingestion_dir).
+    ``plan`` drives the real check_and_record's quota gate (F21 below).
+    """
     vision = MockVision(fixture=fixture)
-    service = OcrService(vision=vision, jobs=InMemoryOcrJobs())
+    service = OcrService(
+        vision=vision,
+        jobs=jobs if jobs is not None else InMemoryOcrJobs(),
+        settings=settings,
+    )
     app = FastAPI()
 
     @app.middleware("http")
     async def fake_auth(request, call_next):  # stands in for Agent A's AuthMiddleware
         if request.headers.get("x-test-anon") != "1":
             request.state.user = UserCtx(
-                user_id="test_user", email="t@example.invalid", plan="pro"
+                user_id="test_user", email="t@example.invalid", plan=plan
             )
         return await call_next(request)
 
     app.include_router(ocr_router)
     app.state.ocr_service = service
-    return TestClient(app), vision
+    return TestClient(app, raise_server_exceptions=raise_server_exceptions), vision
 
 
 def post_image(client: TestClient, data: bytes, filename="shot.png",
@@ -163,3 +195,114 @@ def test_unauthenticated_401():
     assert body["error"] == "auth_required"
     assert "sign_in_url" in body
     assert vision.calls == 0
+
+
+# --- regression: F21 (quota gate was dead code) -----------------------------
+
+def test_free_plan_upload_is_actually_gated_402():
+    """Regression for EVAL_ROUND_1.md F21: the router called
+    check_and_record(user, "ocr", ...), but limits.classify_endpoint("ocr")
+    normalizes to "/ocr", which is not in limits.OCR_ENDPOINTS
+    ({"/shell/ocr", "/shell/ocr/panel"}) — so classify_endpoint returned None
+    and check_and_record short-circuited to Allowed() unconditionally, before
+    ever checking plan. A free-plan user could use the paid OCR feature for
+    free. Must be 402 payment_required, and must not spend a vision call."""
+    client, vision = build_client("synthetic_valid_type1.json", plan="free")
+    resp = post_image(client, make_png())
+    assert resp.status_code == 402, resp.text
+    assert resp.json()["error"] == "payment_required"
+    assert vision.calls == 0, "a denied request must not spend a vision call"
+
+
+# --- regression: F2 (job_id/id cache-key mismatch) --------------------------
+#
+# The lesson (MORNING_BRIEF.md §Resume, Agent C brief): "tests must use the
+# app's REAL store" — a fully green suite still shipped a broken app because
+# every existing test above injects InMemoryOcrJobs(), whose records always
+# carry "job_id". Agent B's real store (Postgres ocr_jobs table AND its
+# InMemoryDB keyless fallback) keys the row "id" instead. cache.get_job_store()
+# prefers exactly this real store whenever shell.app.db exposes
+# get_ocr_job_by_hash/create_ocr_job — i.e. always, in this app. This test
+# wires DbOcrJobs to the real shell.app.db module (still keyless: no
+# DATABASE_URL means InMemoryDB, but it is the SAME adapter class and row
+# shape the app boots with in dev/staging/prod) instead of the test double.
+
+def test_cache_hit_via_real_db_store_no_key_mismatch():
+    """Regression for EVAL_ROUND_1.md F2: second upload of the same image
+    against the app's real store used to 500 with KeyError('job_id') because
+    the row's primary key is "id". Same image twice must be 200/200 with
+    exactly one vision call, and the returned job_id must never be empty."""
+    real_store = DbOcrJobs(real_db)
+    client, vision = build_client(
+        "synthetic_valid_type1.json", jobs=real_store, raise_server_exceptions=False
+    )
+    png = make_png()
+
+    first = post_image(client, png)
+    assert first.status_code == 200, first.text
+    first_body = first.json()
+    assert first_body["cached"] is False
+    assert first_body["job_id"], "job_id must be present on the first (uncached) response"
+
+    second = post_image(client, png)
+    assert second.status_code == 200, second.text  # <- was HTTP 500 pre-fix
+    second_body = second.json()
+
+    assert vision.calls == 1, "identical image must be served from the hash cache, not re-OCR'd"
+    assert second_body["cached"] is True
+    assert second_body["job_id"], "job_id must survive the real store's id-keyed row shape"
+    assert second_body["job_id"] == first_body["job_id"]
+    assert second_body["status"] == first_body["status"] == "ok"
+    assert second_body["profile"] == first_body["profile"]
+
+
+def test_cache_hit_via_real_db_store_preserves_failed_result():
+    """Same regression, failed-job branch: failures are cached too (cost
+    control), and the real store's row shape must not corrupt that path."""
+    real_store = DbOcrJobs(real_db)
+    client, vision = build_client(
+        "synthetic_invalid.json", jobs=real_store, raise_server_exceptions=False
+    )
+    png = make_png()
+
+    first = post_image(client, png)
+    assert first.status_code == 200, first.text
+    second = post_image(client, png)
+    assert second.status_code == 200, second.text
+
+    assert vision.calls == 1
+    assert second.json()["job_id"] == first.json()["job_id"]
+    assert second.json()["status"] == first.json()["status"] == "failed"
+
+
+# --- skill-directory-missing -> clean 503, never a bare 500 -----------------
+
+def test_skill_unavailable_returns_503_not_500(monkeypatch):
+    """Regression for EVAL_ROUND_1.md F1 (OCR-module half): if the
+    wos-battlereport-ingestion skill directory cannot be resolved (deploy
+    omitted .claude/, or SKILL_INGESTION_DIR points nowhere), the endpoint
+    must fail cleanly with 503 — never an unhandled 500."""
+    import shell.app.ocr.extract as extract_module
+
+    # The validator module is cached process-wide after first successful
+    # load (by earlier tests in this session) — force a fresh resolution so
+    # this test genuinely exercises the "missing" branch instead of hitting
+    # the warm cache.
+    monkeypatch.setattr(extract_module, "_validator_module", None)
+
+    broken_settings = _StubSettings(skill_ingestion_dir="/definitely/not/a/real/path/xyz")
+    client, vision = build_client(
+        "synthetic_valid_type1.json", settings=broken_settings,
+        raise_server_exceptions=False,
+    )
+    resp = post_image(client, make_png())
+    assert resp.status_code == 503, resp.text
+    body = resp.json()
+    assert body["error"] == "skill_unavailable"
+    assert "message" in body and body["message"]
+    # MockVision.extract() doesn't touch the skill dir (fixture-only), so the
+    # (free) mock call still happens; the error surfaces one step later, at
+    # the validator stage. A real Anthropic backend needs the skill dir to
+    # build the prompt itself, so it fails before spending any API cost —
+    # see test_ocr_shims.py for that path in isolation.
+    assert vision.calls == 1

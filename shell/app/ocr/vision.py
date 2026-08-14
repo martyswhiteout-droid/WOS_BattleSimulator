@@ -15,13 +15,17 @@ from __future__ import annotations
 
 import base64
 import os
-from functools import lru_cache
 from pathlib import Path
-from typing import Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from ._shims import SkillUnavailableError, resolve_skill_dir
 
 # Repo root: <root>/shell/app/ocr/vision.py -> parents[3] == <root>
 _REPO_ROOT = Path(__file__).resolve().parents[3]
-_SKILL_DIR = _REPO_ROOT / ".claude" / "skills" / "wos-battlereport-ingestion"
+# Module-level default (env-var/default resolution only). build_extraction_
+# prompt() re-resolves per-call via resolve_skill_dir(settings) so a
+# settings.skill_ingestion_dir override is honoured (EVAL_ROUND_1.md F1).
+_SKILL_DIR = resolve_skill_dir()
 SCHEMA_MD_PATH = _SKILL_DIR / "references" / "schema.md"
 # Synthetic mock-LLM outputs (plumbing tests only — NOT real battle data).
 FIXTURE_DIR = _REPO_ROOT / "shell" / "tests" / "fixtures" / "ocr"
@@ -33,21 +37,28 @@ NEVER_FABRICATE_RULE = (
 )
 
 
-@lru_cache(maxsize=1)
-def build_extraction_prompt() -> str:
+def build_extraction_prompt(settings: Any = None) -> str:
     """Build the extraction prompt with the v2 schema embedded verbatim.
 
     The schema text is read from the ingestion skill's references/schema.md at
-    runtime so the prompt can never drift from the canonical spec. Raises a
-    clear error if the skill file is missing (deployment must ship the repo).
+    runtime so the prompt can never drift from the canonical spec. Path
+    resolution goes through resolve_skill_dir(settings) (settings object >
+    SKILL_INGESTION_DIR env var > default) — not cached across calls, since
+    caching by settings identity is unsafe (pydantic Settings objects are not
+    guaranteed hashable) and a single extra file read is negligible next to
+    the vision API call this feeds. Raises SkillUnavailableError (never a
+    bare FileNotFoundError) if the skill file is missing, so the router can
+    map this to a clean 503 (EVAL_ROUND_1.md F1) instead of a bare 500.
     """
-    if not SCHEMA_MD_PATH.is_file():
-        raise FileNotFoundError(
-            f"Canonical v2 schema not found at {SCHEMA_MD_PATH}. The OCR "
+    schema_path = resolve_skill_dir(settings) / "references" / "schema.md"
+    if not schema_path.is_file():
+        raise SkillUnavailableError(
+            f"Canonical v2 schema not found at {schema_path}. The OCR "
             "extraction prompt embeds references/schema.md verbatim; deploy "
-            "must include the wos-battlereport-ingestion skill directory."
+            "must include the wos-battlereport-ingestion skill directory "
+            "(or set SKILL_INGESTION_DIR)."
         )
-    schema_text = SCHEMA_MD_PATH.read_text(encoding="utf-8")
+    schema_text = schema_path.read_text(encoding="utf-8")
     return (
         "You are a deterministic OCR extraction engine for Whiteout Survival "
         "(WoS) battle-report screenshots.\n"
@@ -94,12 +105,14 @@ class AnthropicVision:
 
     cost_estimate_usd = 0.03  # PRODUCTION_PLAN §2.3: ~US$0.01-0.05/screenshot
 
-    def __init__(self, api_key: str, model: str, max_tokens: int = 8000):
+    def __init__(self, api_key: str, model: str, max_tokens: int = 8000,
+                 settings: Any = None):
         import anthropic  # imported lazily so keyless/mock runs need no client
 
         self._client = anthropic.Anthropic(api_key=api_key)
         self.model = model
         self.max_tokens = max_tokens
+        self.settings = settings  # threaded into build_extraction_prompt()
 
     def extract(self, image_bytes: bytes, media_type: str) -> str:
         message = self._client.messages.create(
@@ -118,7 +131,7 @@ class AnthropicVision:
                                 "data": base64.b64encode(image_bytes).decode("ascii"),
                             },
                         },
-                        {"type": "text", "text": build_extraction_prompt()},
+                        {"type": "text", "text": build_extraction_prompt(self.settings)},
                     ],
                 }
             ],
@@ -163,4 +176,4 @@ def get_vision_client(settings=None) -> VisionClient:
     if ocr_mock or not api_key:
         return MockVision(fixture=getattr(settings, "ocr_mock_fixture", None))
     model = getattr(settings, "ocr_vision_model", None) or "claude-sonnet-4-5"
-    return AnthropicVision(api_key=api_key, model=model)
+    return AnthropicVision(api_key=api_key, model=model, settings=settings)

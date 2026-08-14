@@ -81,7 +81,19 @@ class DbOcrJobs:
         self._db = dbmod
 
     async def get_by_hash(self, image_hash: str) -> dict[str, Any] | None:
-        return await self._db.get_ocr_job_by_hash(image_hash)
+        row = await self._db.get_ocr_job_by_hash(image_hash)
+        if row is None:
+            return None
+        # Normalize to the OcrJobStore contract: a record always carries
+        # "job_id". Agent B's ocr_jobs table primary key is "id" (001_init.sql
+        # + InMemoryDB), not "job_id" — db.get_ocr_job_by_hash() back-fills
+        # "result"/"cost_estimate_usd" but not "job_id" (EVAL_ROUND_1.md F2:
+        # this exact gap produced a KeyError on the second upload of any
+        # image, hidden by tests that only ever exercised InMemoryOcrJobs,
+        # whose records already carry "job_id"). Accept either key shape.
+        row = dict(row)
+        row.setdefault("job_id", row.get("id"))
+        return row
 
     async def create_job(self, *, image_hash: str, user_id: str, status: str,
                          result: dict[str, Any], cost_estimate_usd: float) -> str:

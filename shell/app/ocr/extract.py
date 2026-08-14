@@ -28,6 +28,7 @@ from typing import Any
 
 from PIL import Image, ImageOps
 
+from ._shims import SkillUnavailableError, resolve_skill_dir
 from .cache import OcrJobStore, get_job_store
 from .vision import VisionClient, get_vision_client
 
@@ -42,14 +43,11 @@ ALLOWED_FORMATS = {"PNG": "image/png", "JPEG": "image/jpeg", "WEBP": "image/webp
 MAX_IMAGE_PIXELS = 64_000_000
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
-VALIDATOR_PATH = (
-    _REPO_ROOT
-    / ".claude"
-    / "skills"
-    / "wos-battlereport-ingestion"
-    / "scripts"
-    / "validate_report.py"
-)
+# Module-level default (env-var/default resolution only, no settings object
+# available yet at import time). OcrService.process() re-resolves per-call
+# via resolve_skill_dir(self.settings) so a settings.skill_ingestion_dir
+# override (e.g. in tests) is honoured without touching the environment.
+VALIDATOR_PATH = resolve_skill_dir() / "scripts" / "validate_report.py"
 
 CLASSES = ("Infantry", "Lancer", "Marksman")
 STATS = ("Attack", "Defense", "Lethality", "Health")
@@ -127,21 +125,30 @@ def prepare_image(raw: bytes) -> PreparedImage:
 _validator_module = None
 
 
-def _load_validator():
+def _load_validator(settings: Any = None):
     """importlib-load the ingestion skill's validate_report.py from its home.
 
     The skill file is the single source of validation truth (SKILL.md: "never
     hand-verify arithmetic"); we import it in place rather than copying logic.
+
+    Path resolution goes through resolve_skill_dir(settings) (settings object
+    > SKILL_INGESTION_DIR env var > default), not the frozen VALIDATOR_PATH
+    constant, so a deploy can relocate the skill directory without a code
+    change. Raises SkillUnavailableError (never a bare FileNotFoundError) so
+    the router can map this to a clean 503 — a missing skill directory is a
+    deploy/ops problem, not an application bug (EVAL_ROUND_1.md F1).
     """
     global _validator_module
     if _validator_module is None:
-        if not VALIDATOR_PATH.is_file():
-            raise FileNotFoundError(
-                f"Ingestion-skill validator not found at {VALIDATOR_PATH}; the "
-                "deploy must include the wos-battlereport-ingestion skill."
+        path = resolve_skill_dir(settings) / "scripts" / "validate_report.py"
+        if not path.is_file():
+            raise SkillUnavailableError(
+                f"Ingestion-skill validator not found at {path}; the deploy "
+                "must include the wos-battlereport-ingestion skill (or set "
+                "SKILL_INGESTION_DIR to its location)."
             )
         spec = importlib.util.spec_from_file_location(
-            "wos_ingestion_validate_report", VALIDATOR_PATH
+            "wos_ingestion_validate_report", path
         )
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)  # type: ignore[union-attr]
@@ -149,14 +156,14 @@ def _load_validator():
     return _validator_module
 
 
-def run_validator(doc: dict) -> tuple[list[str], list[str]]:
+def run_validator(doc: dict, settings: Any = None) -> tuple[list[str], list[str]]:
     """Run the skill validator's check() on an in-memory report dict.
 
     check() takes a file path, so the dict is round-tripped through a temp
     file — zero validator logic is duplicated or altered here.
     Returns (errors, warnings).
     """
-    module = _load_validator()
+    module = _load_validator(settings)
     tmp = tempfile.NamedTemporaryFile(
         mode="w", suffix=".json", delete=False, encoding="utf-8"
     )
@@ -424,7 +431,11 @@ class OcrService:
         cached = await self.jobs.get_by_hash(prepared.sha256)
         if cached is not None:
             out = dict(cached["result"])
-            out["job_id"] = cached["job_id"]
+            # Accept either cache-row key shape: Agent C's InMemoryOcrJobs
+            # writes "job_id"; Agent B's ocr_jobs table primary key is "id"
+            # (EVAL_ROUND_1.md F2 — cache.py's DbOcrJobs adapter normalizes
+            # this too; this is the defense-in-depth read-site fallback).
+            out["job_id"] = cached.get("job_id") or cached.get("id")
             out["cached"] = True
             return out
 
@@ -440,7 +451,7 @@ class OcrService:
                 "warnings": [],
             }
         else:
-            errors, warnings = run_validator(doc)
+            errors, warnings = run_validator(doc, settings=self.settings)
             if errors:
                 result = {
                     "status": "failed",
