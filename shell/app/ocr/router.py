@@ -13,7 +13,7 @@ import hashlib
 from fastapi import APIRouter, File, Form, Request, UploadFile
 from fastapi.responses import JSONResponse
 
-from ._shims import get_settings
+from ._shims import SkillUnavailableError, get_settings
 from .extract import ImageValidationError, OcrService, get_default_service
 
 try:  # Agent B's quota/rate layer (may not exist yet)
@@ -63,8 +63,12 @@ async def ocr_upload(
         )
 
     # Quota / plan gate (Agent B). Duck-typed: Denied carries status/code/message.
+    # NOTE (EVAL_ROUND_1.md F21): must be the full path "/shell/ocr", matching
+    # limits.OCR_ENDPOINTS — limits.classify_endpoint("ocr") normalizes to
+    # "/ocr", which is not in that set, so the bare string "ocr" made this
+    # gate silently dead code (always Allowed(), never actually metered).
     if check_and_record is not None:
-        verdict = await check_and_record(user, "ocr", None, _ip_hash(request))
+        verdict = await check_and_record(user, "/shell/ocr", None, _ip_hash(request))
         denied_status = getattr(verdict, "status", None)
         if isinstance(denied_status, int):
             return JSONResponse(
@@ -82,5 +86,12 @@ async def ocr_upload(
     except ImageValidationError as exc:
         return JSONResponse(
             status_code=400, content={"error": exc.code, "message": str(exc)}
+        )
+    except SkillUnavailableError as exc:
+        # Deploy/ops problem (missing .claude/skills/wos-battlereport-
+        # ingestion — EVAL_ROUND_1.md F1), never a bare 500: the client did
+        # nothing wrong and there is nothing for it to retry differently.
+        return JSONResponse(
+            status_code=503, content={"error": exc.code, "message": str(exc)}
         )
     return JSONResponse(status_code=200, content=result)
