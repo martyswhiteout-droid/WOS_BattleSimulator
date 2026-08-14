@@ -54,7 +54,7 @@ function postPanel({ shotBytesList, side, panelType }) {
 // window.localStorage is never reached outside one.
 let controller = null;
 
-const app = { history: ['entry'], screen: 'entry',
+const app = { history: ['entry'], screen: 'entry', navOpts: null,
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
@@ -80,11 +80,27 @@ function goto(screen, opts = {}) {
   if (push) app.history.push(screen); else app.history[app.history.length - 1] = screen;
   app.screen = screen;
   // Carries fromRecovery/showMissing (D-039) through to render()'s arrival
-  // handling for the target screen — always OVERWRITTEN on every call (never
-  // sticky), so a later plain navigation to the same screen never inherits a
-  // stale opt from an earlier E1 exit.
+  // handling for the target screen. MUST be consumed via takeNavOpts (D-041
+  // fix) by whichever render() branch reads it, not read directly — render()
+  // is also called by internal actions (onDropzone's upload callback,
+  // onTypeTag's selection) that are NOT a fresh navigation, and those calls
+  // must see null, never this same opts object again. D-041 was exactly
+  // this: nothing ever cleared it, so every post-upload re-render on s2
+  // still saw {fromRecovery:true} from the ORIGINAL recovery navigation and
+  // re-ran the "clear everything currently tracked" logic — wiping out the
+  // shot that upload had just added, every single time.
   app.navOpts = opts;
   render();
+}
+// D-041 fix: exactly-once consumption of app.navOpts. Returns the pending
+// opts (possibly {}, which is truthy — a plain goto() with no special opts
+// is still a fresh entry) and clears them; returns null when nothing is
+// pending, i.e. this render() call was NOT preceded by a fresh goto() —
+// an internal action (upload, type change) re-rendering the current screen.
+export function takeNavOpts(appLike) {
+  const opts = appLike.navOpts;
+  appLike.navOpts = null;
+  return opts;
 }
 function back() {
   if (app.history.length > 1) { app.history.pop(); app.screen = app.history[app.history.length - 1]; render(); }
@@ -99,7 +115,7 @@ function back() {
 // so the actual branching is unit-testable without a real DOM (see
 // tests/ocr_flow.test.mjs) — the real listener below just wires this against
 // the module's own goto/back closures.
-export function createDelegatedClickHandler({ goto: gotoFn, back: backFn, onRemoveThumb }) {
+export function createDelegatedClickHandler({ goto: gotoFn, back: backFn, onRemoveThumb, onOpenField }) {
   return function handleDelegatedClick(event) {
     const target = event.target;
     if (!target || typeof target.closest !== 'function') return;
@@ -120,6 +136,18 @@ export function createDelegatedClickHandler({ goto: gotoFn, back: backFn, onRemo
     if (removeEl && onRemoveThumb) {
       event.preventDefault();
       onRemoveThumb(removeEl.dataset.removeThumbSide, parseInt(removeEl.dataset.removeThumb, 10));
+      return;
+    }
+    // S5 field-editor fix: screens/review.mjs's renderReviewGrid is embedded
+    // identically in both renderS4's grid and renderS5's expanded stats
+    // body — wireS4 used to wire [data-field] with a PER-BUTTON listener
+    // (S4-only), and wireS5 never wired it at all, so a field tapped from
+    // S5's own expanded chip silently did nothing. Handled once here,
+    // uniformly, for whichever screen actually rendered the grid.
+    const fieldEl = target.closest('[data-field]');
+    if (fieldEl && onOpenField) {
+      event.preventDefault();
+      onOpenField(fieldEl.dataset.field);
     }
   };
 }
@@ -187,15 +215,27 @@ function render() {
     // app.shots (the bytes) AND controller.flow (flow_state.mjs's own
     // shotState, whose coverage()/isCovered() the phantom "covered" badge
     // and Continue-enabled bug both traced back to).
-    const plan = planS2Entry({
-      fromRecovery: !!app.navOpts?.fromRecovery,
-      shotsYou: controller.flow.shots('you'),
-      shotsEnemy: controller.flow.shots('enemy'),
-    });
-    for (const id of plan.clearYou) controller.flow.removeShot('you', id);
-    for (const id of plan.clearEnemy) controller.flow.removeShot('enemy', id);
-    if (plan.clearYou.length || plan.clearEnemy.length) app.shots = { you: [], enemy: [] };
-    app.s2Notice = plan.notice;
+    //
+    // D-041 fix: this block must run ONLY on a fresh navigation to s2 (a
+    // real goto() call), never on a re-render triggered by an internal
+    // action already ON s2 (onDropzone's upload callback, onTypeTag's
+    // selection both call render() directly). takeNavOpts returns null for
+    // those — the previous code read app.navOpts directly with nothing ever
+    // clearing it, so EVERY re-render after landing here via recovery still
+    // saw {fromRecovery:true} and re-cleared whatever the user had just
+    // uploaded, forever (the reported "permanently dead" dropzones).
+    const navOpts = takeNavOpts(app);
+    if (navOpts) {
+      const plan = planS2Entry({
+        fromRecovery: !!navOpts.fromRecovery,
+        shotsYou: controller.flow.shots('you'),
+        shotsEnemy: controller.flow.shots('enemy'),
+      });
+      for (const id of plan.clearYou) controller.flow.removeShot('you', id);
+      for (const id of plan.clearEnemy) controller.flow.removeShot('enemy', id);
+      if (plan.clearYou.length || plan.clearEnemy.length) app.shots = { you: [], enemy: [] };
+      app.s2Notice = plan.notice;
+    }
 
     const coverage = controller.flow.coverage();
     show(renderS2({ types: controller.flow.types(), coverage, notice: app.s2Notice,
@@ -216,14 +256,20 @@ function render() {
   if (app.screen === 's4') {
     const states = allFieldStates();
     show(renderS4({ states, tally: computeTally(flatTallyStates(states)) }));
-    wireS4(root(), { onOpenField: openEditor, onOpenPicture: openPicture, onReset: () => doReset('s4') });
+    wireS4(root(), { onOpenPicture: openPicture, onReset: () => doReset('s4') });
     return;
   }
   if (app.screen === 's5') {
     const states = allFieldStates();
     const tally = computeTally(flatTallyStates(states));
     const conversion = app.lastRead?.conversion ?? {};
-    const plan = buildFillPlan({ conversion, heroesMe: null, heroesFoe: null });   // hero-gen defaulting: dormant, Ruling #3
+    // D-042 fix: savedValues (S4's editor corrections, plus anything typed
+    // via the pure-manual "Type them in myself" path where conversion is
+    // never even attempted) now merges over conversion — previously this
+    // call only ever saw `conversion`, so the manual path filled nothing
+    // but statsScouted=true, and any S4 correction to an otherwise-ready
+    // side's conversion was silently dropped.
+    const plan = buildFillPlan({ conversion, savedValues: app.savedValues, heroesMe: null, heroesFoe: null });   // hero-gen defaulting: dormant, Ruling #3
     app.priorSnapshot = buildSnapshot({
       percentsMe: window.readInputPanelPct ? window.readInputPanelPct('me') : {},
       percentsFoe: window.readInputPanelPct ? window.readInputPanelPct('foe') : {},
@@ -487,7 +533,7 @@ function closeWhicheverIsOpen() {
 
 function boot() {
   controller = createController({ fetchMe, postPanel, storage: window.localStorage });
-  document.addEventListener('click', createDelegatedClickHandler({ goto, back, onRemoveThumb }));
+  document.addEventListener('click', createDelegatedClickHandler({ goto, back, onRemoveThumb, onOpenField: openEditor }));
   // D-040: Escape closes whichever sheet/menu is open (mock's own pattern).
   document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeWhicheverIsOpen(); });
 

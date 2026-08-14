@@ -167,10 +167,12 @@ export function renderPictureView(states) {
 
 /* ---- thin DOM wiring below: exercised by the Task 10 browser gate, not node:test ---- */
 
-export function wireS4(root, { onOpenField, onOpenPicture, onReset }) {
-  root.querySelectorAll('[data-field]').forEach((btn) => {
-    btn.addEventListener('click', () => onOpenField(btn.dataset.field));
-  });
+// S5 field-editor fix: [data-field] is now handled by the single global
+// delegate in ocr_flow.js (uniformly for both S4's grid and S5's identical
+// embedded grid, which had no equivalent wiring of its own at all) — no
+// longer wired here per-button, which would double-fire the editor on S4
+// once the delegate ALSO started handling it.
+export function wireS4(root, { onOpenPicture, onReset }) {
   root.querySelector('[data-open-picture]')?.addEventListener('click', onOpenPicture);
   root.querySelector('#ocrfResetS4')?.addEventListener('click', onReset);
 }

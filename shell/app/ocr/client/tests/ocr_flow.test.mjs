@@ -18,7 +18,7 @@
 // codebase already uses.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose } from '../ocr_flow.js';
+import { createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts } from '../ocr_flow.js';
 
 function fakeElement(dataset) {
   return { dataset };
@@ -103,13 +103,25 @@ test('D-035: a click that resolves [data-remove-thumb] calls the injected onRemo
   assert.equal(calls.back, 0);
 });
 
+test('S5 field-editor observation (confirmed real, not a probe artifact): a click resolving [data-field] calls the injected onOpenField with the field key, regardless of which screen rendered the button — wireS5 never wired this at all, only wireS4 did, per-button, with no equivalent for S5\'s own embedded review grid', () => {
+  const calls = [];
+  const handle = createDelegatedClickHandler({ goto: () => {}, back: () => {}, onOpenField: (key) => calls.push(key) });
+  // screens/review.mjs's renderReviewGrid (embedded identically in BOTH
+  // renderS4's grid and renderS5's expanded stats body) emits:
+  //   <button ... data-field="you-Infantry|Attack">...</button>
+  const fieldBtn = fakeElement({ field: 'you-Infantry|Attack' });
+  handle({ target: fakeTarget({ '[data-field]': fieldBtn }), preventDefault() {} });
+  assert.deepEqual(calls, ['you-Infantry|Attack']);
+});
+
 test('a click matching none of the delegate\'s selectors is a silent no-op (never throws, never calls anything)', () => {
-  const calls = { goto: 0, back: 0, removeThumb: 0 };
+  const calls = { goto: 0, back: 0, removeThumb: 0, openField: 0 };
   const handle = createDelegatedClickHandler({
-    goto: () => { calls.goto += 1; }, back: () => { calls.back += 1; }, onRemoveThumb: () => { calls.removeThumb += 1; },
+    goto: () => { calls.goto += 1; }, back: () => { calls.back += 1; },
+    onRemoveThumb: () => { calls.removeThumb += 1; }, onOpenField: () => { calls.openField += 1; },
   });
   assert.doesNotThrow(() => handle({ target: fakeTarget({}), preventDefault() {} }));
-  assert.deepEqual(calls, { goto: 0, back: 0, removeThumb: 0 });
+  assert.deepEqual(calls, { goto: 0, back: 0, removeThumb: 0, openField: 0 });
 });
 
 // --- D-039: planS2Entry — the pure decision behind "Add a clearer screenshot" ---
@@ -174,4 +186,30 @@ test('D-040 probe: decideSheetToClose falls through to editor, then menu, then n
   assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: true, menuOpen: true }), 'editor');
   assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: false, menuOpen: true }), 'menu');
   assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: false, menuOpen: false }), null);
+});
+
+// --- D-041 (blocker): post-recovery dropzones permanently dead. Root cause:
+// goto() sets app.navOpts on EVERY navigation but nothing ever cleared it —
+// so every subsequent render() call triggered by an internal action
+// (onDropzone's upload callback, onTypeTag's selection), NOT a fresh
+// goto(), re-read the SAME stale {fromRecovery:true} from the ORIGINAL
+// recovery navigation and re-ran planS2Entry's "clear everything currently
+// tracked" — wiping out the shot the user had just added, every single
+// time. takeNavOpts(app) makes consumption explicit and exactly-once. ---
+
+test('D-041 probe: takeNavOpts consumes navOpts exactly once — a re-render not preceded by a fresh goto() sees null, never a stale fromRecovery', () => {
+  const fakeApp = { navOpts: { fromRecovery: true } };
+  const first = takeNavOpts(fakeApp);
+  assert.deepEqual(first, { fromRecovery: true });
+  assert.equal(fakeApp.navOpts, null);
+  // THIS is the exact D-041 regression: a second read (modeling the
+  // re-render onDropzone's callback triggers after an upload) must not see
+  // fromRecovery again.
+  const second = takeNavOpts(fakeApp);
+  assert.equal(second, null);
+});
+
+test('D-041 probe: a plain goto() with no special opts is still a fresh entry ({} is truthy, distinct from null/"nothing pending")', () => {
+  const fakeApp = { navOpts: {} };
+  assert.deepEqual(takeNavOpts(fakeApp), {});
 });
