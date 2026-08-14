@@ -56,7 +56,9 @@ export function convertSide({
 
   if (panelType === 'battle') {
     if (specialsObserved !== 'read') {
-      return needsSpecials(stats, 'the Stat Bonuses screenshot for this side has not been fully read yet');
+      // D-045 copy fix (with D-043): the missing thing is the separate
+      // "Notes on Special Bonuses" popup, not the Stat Bonuses panel itself.
+      return needsSpecials(stats, 'the Special Bonuses screenshot for this side is missing — in the report, tap the ! next to "Stat Bonuses" and screenshot that popup');
     }
     try {
       const [sScout, sBattle, pEnemy] = foldSets(specialsOwn, specialsEnemy, { observed: specialsObserved });
@@ -71,7 +73,7 @@ export function convertSide({
 
   if (panelType === 'citystats') {
     if (specialsObserved !== 'read') {
-      return needsSpecials(null, 'the Stat Bonuses screenshot for this side has not been fully read yet');
+      return needsSpecials(null, 'the City Defenses part of the Bonus Overview has not been read yet — add the screenshot that shows those rows');
     }
     const boTroops = groupTroops(stats);
     const boClass = groupByClass(stats);

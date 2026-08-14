@@ -20,7 +20,7 @@ import {
   renderS4, renderEditorSheet, renderPictureView, renderPictureSheet, fieldRenderState, computeTally,
   validateEditorInput, editorContentFor, nextResetState, wireS4,
 } from './screens/review.mjs';
-import { renderS5, computeChipText, shouldShowUndo, buildFillPlan, applyFillPlan, wireS5 } from './screens/setup.mjs';
+import { renderS5, computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, applyFillPlan, wireS5 } from './screens/setup.mjs';
 import { createController } from './controller.mjs';
 import { classifyFields, ALL_FIELD_KEYS, buildSnapshot } from './fill_mapper.mjs';
 
@@ -270,13 +270,17 @@ function render() {
     // but statsScouted=true, and any S4 correction to an otherwise-ready
     // side's conversion was silently dropped.
     const plan = buildFillPlan({ conversion, savedValues: app.savedValues, heroesMe: null, heroesFoe: null });   // hero-gen defaulting: dormant, Ruling #3
+    // D-044: the chip and the fill must agree — a side whose conversion
+    // refused (needs_specials etc.) is left unfilled by the plan, so the
+    // chip may not claim completeness and the body must say why.
+    const notices = conversionNotices(conversion);
     app.priorSnapshot = buildSnapshot({
       percentsMe: window.readInputPanelPct ? window.readInputPanelPct('me') : {},
       percentsFoe: window.readInputPanelPct ? window.readInputPanelPct('foe') : {},
       heroesMe: null, heroesFoe: null, statsScoutedChecked: document.getElementById('statsScouted')?.checked ?? false,
     });
     applyFillPlan(plan);
-    show(renderS5({ chipText: computeChipText(tally), complete: tally.clear, states }));
+    show(renderS5({ chipText: computeChipText(tally, notices), complete: tally.clear && !notices.length, states, notices }));
     const undoChip = document.getElementById('ocrfUndoChip');
     if (undoChip) undoChip.hidden = !shouldShowUndo(app.priorSnapshot);
     wireS5(root(), {

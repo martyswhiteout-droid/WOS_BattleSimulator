@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { computeChipText, shouldShowUndo, buildFillPlan, renderS5 } from '../screens/setup.mjs';
+import { computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, renderS5 } from '../screens/setup.mjs';
 import { computeTally } from '../screens/review.mjs';
 
 test('computeChipText: complete', () => {
@@ -92,4 +92,50 @@ test('renderS5 shows the collapsed chip, a hidden expandable body, and a hidden 
   assert.match(html, /id="ocrfUndoChip" hidden/);
   assert.doesNotMatch(html, /Troops Formation/);   // formation is explicitly NOT part of this widget
   assert.doesNotMatch(html, /hero-grid|joiner-pill/i);   // neither are heroes/joiners — those are the real app's own DOM
+});
+
+// ---- QA defect 044: chip/tally must reflect conversion-readiness ----------
+// QA2's probe: 12 fields all read cleanly (tally.clear === true) while the
+// side's convertSide() outcome is needs_specials — the old chip said
+// "All 12 numbers in ✓" while buildFillPlan left the side untouched and
+// nothing on screen said why. The notices are derived from the same
+// `conversion` object buildFillPlan consumes, so they cannot disagree.
+
+test('QA defect 044: conversionNotices — ready sides and absent sides produce nothing', () => {
+  assert.deepEqual(conversionNotices({}), []);   // pure-manual path: no OCR promise to break
+  assert.deepEqual(conversionNotices({ you: { outcome: 'ready', percents: {} } }), []);
+});
+
+test('QA defect 044: a needs_specials side yields a notice that names the side, the reason, and the typed-values guarantee', () => {
+  const notices = conversionNotices({
+    you: { outcome: 'ready', percents: {} },
+    enemy: { outcome: 'needs_specials', reason: 'the Special Bonuses screenshot for this side is missing — in the report, tap the ! next to "Stat Bonuses" and screenshot that popup' },
+  });
+  assert.equal(notices.length, 1);
+  assert.equal(notices[0].side, 'enemy');
+  assert.equal(notices[0].outcome, 'needs_specials');
+  assert.match(notices[0].message, /the enemy side/);
+  assert.match(notices[0].message, /Special Bonuses screenshot/);
+  assert.match(notices[0].message, /Anything you typed yourself was kept/);
+});
+
+test('QA defect 044: the chip never claims completeness while a side is unconverted', () => {
+  const tally = computeTally(Array(24).fill('ok'));
+  assert.equal(tally.clear, true);
+  const notices = conversionNotices({ enemy: { outcome: 'needs_specials', reason: 'x' } });
+  const text = computeChipText(tally, notices);
+  assert.doesNotMatch(text, /numbers in </);            // the old "All N numbers in ✓" claim
+  assert.match(text, /All 24 numbers read · the enemy side not filled in — tap to check/);
+  // and with imperfect reads + a notice, both truths appear
+  const mixed = computeTally([...Array(20).fill('ok'), ...Array(4).fill('missing')]);
+  assert.match(computeChipText(mixed, notices), /20 of 24 in · the enemy side not filled in/);
+});
+
+test('QA defect 044: renderS5 shows the notice card inside the body and the chip drops the complete styling', () => {
+  const notices = conversionNotices({ you: { outcome: 'needs_specials', reason: 'popup missing' } });
+  const html = renderS5({ chipText: 'x', complete: false, states: { you: {}, enemy: {} }, notices });
+  assert.match(html, /data-conv-notice="you"/);
+  assert.match(html, /We read your side's numbers, but didn't fill them in: popup missing/);
+  assert.match(html, /ocrf-needs-attention/);
+  assert.doesNotMatch(html, /ocrf-complete/);
 });

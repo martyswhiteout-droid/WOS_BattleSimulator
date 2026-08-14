@@ -1,7 +1,36 @@
 import { renderReviewGrid } from './review.mjs';
 import { toApplyPanelPayload, toApplyHeroesPayload } from '../fill_mapper.mjs';
 
-export function computeChipText(tally) {
+// D-044: the chip (and S5 generally) must never claim completeness from raw
+// OCR readability alone — a side whose conversion refused (needs_specials /
+// needs_calibration / blocked) is left unfilled by buildFillPlan, and the
+// user has to be told that, on screen, with the reason. These notices are
+// derived from the same `conversion` object buildFillPlan consumes, so the
+// chip and the fill can never disagree again. A side with NO conversion
+// entry at all (nothing uploaded, or the pure-manual path) is not a notice —
+// there was never an OCR promise to break for that side.
+const SIDE_LABELS = { you: 'your side', enemy: "the enemy side" };
+
+export function conversionNotices(conversion = {}) {
+  const notices = [];
+  for (const side of ['you', 'enemy']) {
+    const entry = conversion[side];
+    if (!entry || entry.outcome === 'ready') continue;
+    const label = SIDE_LABELS[side];
+    const message = entry.outcome === 'needs_specials'
+      ? `We read ${label}'s numbers, but didn't fill them in: ${entry.reason}. Anything you typed yourself was kept.`
+      : `We didn't fill in ${label}: ${entry.reason}`;
+    notices.push({ side, outcome: entry.outcome, message });
+  }
+  return notices;
+}
+
+export function computeChipText(tally, notices = []) {
+  if (notices.length) {
+    const sides = notices.map((n) => SIDE_LABELS[n.side]).join(' and ');
+    const lead = tally.clear ? `All ${tally.total} numbers read` : `${tally.okCount} of ${tally.total} in`;
+    return `${lead} · ${sides} not filled in — tap to check`;
+  }
   if (tally.clear) {
     return `All ${tally.total} numbers in <span class="ocrf-chip-ok-ic" aria-hidden="true">&#10003;</span> — tap to check`;
   }
@@ -42,11 +71,15 @@ export function buildFillPlan({ conversion, savedValues = { you: {}, enemy: {} }
   return plan;
 }
 
-export function renderS5({ chipText, complete, states }) {
+export function renderS5({ chipText, complete, states, notices = [] }) {
   // Undo's own visibility is driven entirely by its `hidden` attribute (thin wiring,
   // via shouldShowUndo(snapshot), toggles that after mount) — the wrapping <p> is never
   // itself conditionally hidden, there is nothing else in it whose visibility depends on
   // anything this pure template knows.
+  // D-044: conversion notices render inside the expanded body, above the grid,
+  // reusing the neutral .ocrf-s2-notice card (no new CSS round needed).
+  const noticesHtml = notices.map((n) =>
+    `<p class="ocrf-s2-notice" data-conv-notice="${n.side}">${n.message}</p>`).join('');
   return `
 <section class="ocrf-s5" id="ocrfS5">
   <div class="ocrf-stats-accordion">
@@ -56,6 +89,7 @@ export function renderS5({ chipText, complete, states }) {
       <span class="ocrf-chip-caret" aria-hidden="true">&#8964;</span>
     </button>
     <div class="ocrf-stats-body" id="ocrfS5Body" hidden>
+      ${noticesHtml}
       <button type="button" class="ocrf-link-btn" data-open-picture>See my screenshot</button>
       <div class="ocrf-tally-actions"><button type="button" class="ocrf-reset-btn" id="ocrfResetS5">Reset</button></div>
       ${renderReviewGrid(states)}
@@ -72,10 +106,15 @@ export function renderS5({ chipText, complete, states }) {
 export function applyFillPlan(plan, { win = window } = {}) {
   if (plan.me && typeof win.applyPanel === 'function') win.applyPanel('me', plan.me);
   if (plan.foe && typeof win.applyPanel === 'function') win.applyPanel('foe', plan.foe);
-  const statsScouted = document.getElementById('statsScouted');
-  const statsBase = document.getElementById('statsBase');
-  if (statsScouted) statsScouted.checked = true;
-  if (statsBase) statsBase.checked = false;
+  // D-044 adjunct: only claim scouted-mode when something was actually
+  // applied — an all-refused plan (both sides unconverted, nothing typed)
+  // must not silently re-mode the user's untouched, pre-existing numbers.
+  if (plan.me || plan.foe) {
+    const statsScouted = document.getElementById('statsScouted');
+    const statsBase = document.getElementById('statsBase');
+    if (statsScouted) statsScouted.checked = true;
+    if (statsBase) statsBase.checked = false;
+  }
   if (plan.heroesMe && typeof win.applyHeroes === 'function') win.applyHeroes('#capMe', plan.heroesMe);
   if (plan.heroesFoe && typeof win.applyHeroes === 'function') win.applyHeroes('#capFoe', plan.heroesFoe);
   if (typeof win.updateFinalStats === 'function') win.updateFinalStats();
