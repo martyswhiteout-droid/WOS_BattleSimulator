@@ -32,6 +32,7 @@ def test_settings_declares_previously_missing_keys():
     assert s.OCR_VISION_MODEL == "claude-sonnet-4-5"
     assert s.OCR_MOCK_FIXTURE is None
     assert s.MAX_BODY_BYTES == 262_144
+    assert s.MAX_OCR_BODY_BYTES == 8 * 1024 * 1024 + 65_536
 
 
 def test_lowercase_aliases_match_the_architecture_md_contract_casing():
@@ -45,7 +46,7 @@ def test_lowercase_aliases_match_the_architecture_md_contract_casing():
 def test_env_example_documents_the_same_keys():
     text = (_REPO_ROOT / "shell" / ".env.example").read_text(encoding="utf-8")
     for key in ("IP_HASH_SALT", "SWEEP_MIN_EVENTS", "OCR_VISION_MODEL",
-                "OCR_MOCK_FIXTURE", "MAX_BODY_BYTES"):
+                "OCR_MOCK_FIXTURE", "MAX_BODY_BYTES", "MAX_OCR_BODY_BYTES"):
         assert key in text, f"{key} missing from shell/.env.example"
 
 

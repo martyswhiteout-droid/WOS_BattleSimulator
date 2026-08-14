@@ -74,6 +74,14 @@ class Settings(BaseSettings):
 
     # --- security / transport -----------------------------------------------
     MAX_BODY_BYTES: int = 262_144           # 256 KiB; mirrors shell/Caddyfile's cap
+    # Route-specific: OCR uploads are legitimately larger than any JSON body
+    # (real phone screenshots run hundreds of KB to a few MB — the corpus
+    # fixtures under shell/tests/fixtures/panel_ocr/images/ span 67KB-1.6MB).
+    # Sized to match shell/app/ocr/panel_router.py's OWN already-tested
+    # MAX_REQUEST_BYTES (8 MB image cap + 64 KiB multipart framing, QA
+    # D-014/D-024) so main.py's outer BodyLimitMiddleware never rejects a
+    # request Agent C's own (correct) OCR-specific validation would accept.
+    MAX_OCR_BODY_BYTES: int = 8 * 1024 * 1024 + 65_536
 
     # --- derived helpers (properties, not env keys) -----------------------
 
@@ -150,7 +158,7 @@ for _key in ("ENV", "BASE_URL", "CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY",
              "MIN_TROOPS_PER_SIDE", "FREE_SIMS_PER_DAY",
              "PRO_SIMS_PER_DAY", "PRO_OCR_PER_DAY", "BURST_PER_MIN",
              "GLOBAL_CONCURRENCY", "SWEEP_MIN_EVENTS", "IP_HASH_SALT",
-             "MAX_BODY_BYTES"):
+             "MAX_BODY_BYTES", "MAX_OCR_BODY_BYTES"):
     setattr(Settings, _key.lower(), _alias(_key))
 
 

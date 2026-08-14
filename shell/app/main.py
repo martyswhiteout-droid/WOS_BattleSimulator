@@ -160,31 +160,47 @@ async def _send_413(send) -> None:
     await send({"type": "http.response.body", "body": payload})
 
 
+_OCR_UPLOAD_PATHS = frozenset({"/shell/ocr", "/shell/ocr/panel"})
+
+
 class BodyLimitMiddleware:
-    """Outermost guard: rejects any request body larger than
-    ``settings.MAX_BODY_BYTES`` with 413, BEFORE any downstream layer
-    buffers it (F4, EVAL_ROUND_1.md — a 12 MB JSON body sailed through as a
-    200 in 9.55s because ``LimitsMiddleware``'s own buffering had no cap).
-    Applies in every ENV, not just staging/prod — a huge body is wasteful in
-    dev too, and this is independent of which limits implementation (Agent
-    B's own LimitsMiddleware, or this module's LimitsAdapterMiddleware
-    fallback) ends up active downstream. Complements shell/Caddyfile's
-    edge-level ``request_body { max_size }`` cap, so the limit still holds
-    when the app is reached directly (dev, tests, a misconfigured proxy)."""
+    """Outermost guard: rejects an oversized request body with 413 BEFORE
+    any downstream layer buffers it (F4, EVAL_ROUND_1.md — a 12 MB JSON
+    body sailed through as a 200 in 9.55s because ``LimitsMiddleware``'s
+    own buffering had no cap). Applies in every ENV, not just staging/prod,
+    and is independent of which limits implementation (Agent B's own
+    LimitsMiddleware, or this module's LimitsAdapterMiddleware fallback)
+    ends up active downstream. Complements shell/Caddyfile's edge-level
+    ``request_body { max_size }`` cap, so the limit still holds when the
+    app is reached directly (dev, tests, a misconfigured proxy).
+
+    Route-aware: /shell/ocr and /shell/ocr/panel get the LARGER
+    ``MAX_OCR_BODY_BYTES`` instead of the default ``MAX_BODY_BYTES`` — a
+    uniform tight cap would reject legitimate screenshot uploads (real
+    phone captures run hundreds of KB to a few MB; Agent C's own
+    ocr/panel_router.py already validates up to ~8 MB, QA D-014/D-024) long
+    before Agent C's own, already-correct, already-tested size check ever
+    ran. Every other path (in particular /api/predict and /api/battle,
+    which is what the eval's 12 MB reproduction actually hit) keeps the
+    tight default."""
 
     def __init__(self, app, settings: Settings):
         self.app = app
-        self.limit = settings.MAX_BODY_BYTES
+        self.default_limit = settings.MAX_BODY_BYTES
+        self.ocr_limit = settings.MAX_OCR_BODY_BYTES
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
 
+        limit = (self.ocr_limit if scope.get("path") in _OCR_UPLOAD_PATHS
+                 else self.default_limit)
+
         content_length = _scope_header(scope, b"content-length")
         if content_length is not None:
             try:
-                if int(content_length) > self.limit:
+                if int(content_length) > limit:
                     await _send_413(send)
                     return
             except ValueError:
@@ -198,7 +214,7 @@ class BodyLimitMiddleware:
             if message["type"] != "http.request":
                 break
             total += len(message.get("body", b""))
-            if total > self.limit:      # chunked / no Content-Length: bound it live
+            if total > limit:      # chunked / no Content-Length: bound it live
                 await _send_413(send)
                 return
             if not message.get("more_body"):

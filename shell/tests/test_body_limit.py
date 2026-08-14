@@ -58,10 +58,29 @@ def test_body_within_limit_passes_through(client):
     assert resp.status_code != 413
 
 
-def test_limit_applies_to_shell_ocr_path_too(client):
-    huge = b"x" * 5000
-    resp = client.post("/shell/ocr", content=huge,
-                       headers={"content-type": "application/octet-stream"})
+def test_ocr_paths_get_the_larger_ocr_limit_not_the_default(client):
+    """A real screenshot upload (hundreds of KB — see the corpus fixtures
+    under shell/tests/fixtures/panel_ocr/images/, 67KB-1.6MB) must NOT be
+    rejected by this generic guard before it ever reaches Agent C's own
+    OCR-specific validation (ocr/panel_router.py's own ~8MB cap, already
+    tested by QA D-014/D-024). The `client` fixture sets the DEFAULT limit
+    to 1024 bytes but leaves MAX_OCR_BODY_BYTES at its real (much larger)
+    default, so a 5000-byte body must sail through THIS layer for the OCR
+    paths specifically, even though the same size 413s on /api/predict."""
+    body = b"x" * 5000
+    for path in ("/shell/ocr", "/shell/ocr/panel"):
+        resp = client.post(path, content=body,
+                           headers={"content-type": "application/octet-stream"})
+        assert resp.status_code != 413, f"{path} should not be capped by the default limit"
+
+
+def test_ocr_paths_still_have_a_ceiling(client):
+    """Not unlimited: something far larger than any legitimate screenshot
+    (or Agent C's own ~8MB cap) still gets rejected by this outer guard."""
+    client_tight_ocr = TestClient(create_app(
+        Settings(_env_file=None, DEV_BYPASS=True, MAX_OCR_BODY_BYTES=1024)))
+    resp = client_tight_ocr.post("/shell/ocr/panel", content=b"x" * 5000,
+                                 headers={"content-type": "application/octet-stream"})
     assert resp.status_code == 413
 
 
@@ -75,6 +94,14 @@ def test_default_max_body_bytes_matches_caddyfile_cap():
     documented in shell/Caddyfile, so behavior is consistent whether the app
     is reached directly (dev, tests) or through Caddy."""
     assert Settings(_env_file=None).MAX_BODY_BYTES == 256 * 1024
+
+
+def test_max_ocr_body_bytes_covers_the_ocr_modules_own_cap():
+    """Sanity: this outer guard's OCR allowance must be >= Agent C's own
+    ocr/panel_router.MAX_REQUEST_BYTES, or a legitimate upload that
+    endpoint would accept could still 413 here first."""
+    from shell.app.ocr import panel_router
+    assert Settings(_env_file=None).MAX_OCR_BODY_BYTES >= panel_router.MAX_REQUEST_BYTES
 
 
 def test_oversized_body_without_content_length_header_still_rejected(client):
