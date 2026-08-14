@@ -1,6 +1,6 @@
 {
   "name": "huge_body",
-  "description": "~2 MiB body \u2014 must hit the body-size limit (E6), clean 4xx",
+  "description": "~2 MiB body, own+enemy VALID and above MIN_TROOPS (padding rides in an extra ignored field) \u2014 the ONLY possible rejection reason is raw size (E6); must be 413. The old generator omitted \"enemy\" entirely, so this always 400'd on below_min_troops and never actually exercised the size limit (EVAL_ROUND_1.md F12 false evidence).",
   "method": "POST",
   "path": "/api/predict",
   "content_type": "application/json",
@@ -8,6 +8,6 @@
     "type": "huge_body",
     "approx_bytes": 2097152
   },
-  "expected_status_min": 400,
-  "expected_status_max": 431
+  "expected_status_min": 413,
+  "expected_status_max": 413
 }
