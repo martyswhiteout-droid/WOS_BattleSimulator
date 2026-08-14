@@ -5,7 +5,18 @@ PRODUCTION_CRITERIA.md §C3: webhooks signature-verified; entitlement changes
 ONLY via verified webhook or admin action.
 
 Router (Agent A includes this in main.py):
-    POST /shell/billing/webhook   — Stripe events (idempotent via audit_log)
+    POST /shell/webhook/stripe    — Stripe events (idempotent via audit_log).
+                                     CANONICAL path — the ONLY one registered.
+                                     This is the literal string in Agent A's
+                                     auth.py EXEMPT_PATHS (Stripe posts
+                                     unauthenticated) and the ONLY URL to put
+                                     in the Stripe dashboard. An earlier build
+                                     also served /shell/billing/webhook as an
+                                     unexempt alias, which silently 401'd
+                                     every real delivery outside dev
+                                     (EVAL_ROUND_1.md F10) — do not re-add it;
+                                     if the path ever needs to change, change
+                                     EXEMPT_PATHS and this route together.
     POST /shell/billing/checkout  — start hosted checkout for the Pro plan
 
 Signature policy:
@@ -32,6 +43,7 @@ from fastapi.responses import JSONResponse
 
 from shell.app import db
 from shell.app.billing._contracts import UserCtx, get_settings
+from shell.app.billing.entitlements import invalidate_plan_cache
 from shell.app.billing.stripe_client import create_checkout_session
 
 router = APIRouter()
@@ -124,6 +136,7 @@ async def _handle_event(event: dict) -> str:
             current_period_end=None,  # authoritative value arrives with
             # customer.subscription.updated
         )
+        invalidate_plan_cache(user_id)
         return "applied"
 
     if event_type == "customer.subscription.updated":
@@ -135,6 +148,7 @@ async def _handle_event(event: dict) -> str:
             stripe_subscription_id=str(obj["id"]) if obj.get("id") else None,
             current_period_end=_epoch_to_dt(obj.get("current_period_end")),
         )
+        invalidate_plan_cache(user_id)
         return "applied"
 
     # customer.subscription.deleted
@@ -146,14 +160,17 @@ async def _handle_event(event: dict) -> str:
         stripe_subscription_id=str(obj["id"]) if obj.get("id") else None,
         current_period_end=_epoch_to_dt(obj.get("current_period_end")),
     )
+    invalidate_plan_cache(user_id)
     return "applied"
 
 
-@router.post("/shell/billing/webhook")
-@router.post("/shell/webhook/stripe")  # alias: the path Agent A's auth.py
-# exempts from authentication (EXEMPT_PATHS) — Stripe posts unauthenticated,
-# so this alias is what gets configured in the Stripe dashboard in real-auth
-# deployments. Same handler, same idempotency ledger.
+@router.post("/shell/webhook/stripe")  # CANONICAL — see module docstring.
+# EVAL_ROUND_1.md F10: an earlier build ALSO registered /shell/billing/webhook
+# here, unaliased in auth.py's EXEMPT_PATHS, so every real (non-dev)
+# delivery 401'd silently — no error anywhere except the access log, and
+# Stripe would retry for three days and give up with no subscription ever
+# activated. Register ONE path only; if it ever needs to move, EXEMPT_PATHS
+# in auth.py must move with it in the same change.
 async def stripe_webhook(request: Request) -> dict:
     event = await _verify_and_parse(request)
     event_id = event.get("id")

@@ -106,26 +106,71 @@ def test_checkout_route_requires_auth_outside_dev_bypass(monkeypatch):
 
 def test_unsigned_webhook_accepted_only_in_dev():
     client = make_client()  # ENV defaults to dev; no secret configured
-    resp = client.post("/shell/billing/webhook", json=checkout_completed_event())
+    resp = client.post("/shell/webhook/stripe", json=checkout_completed_event())
     assert resp.status_code == 200
 
 
 def test_unsigned_webhook_rejected_outside_dev(monkeypatch):
     monkeypatch.setenv("ENV", "staging")
     client = make_client()
-    resp = client.post("/shell/billing/webhook", json=checkout_completed_event())
+    resp = client.post("/shell/webhook/stripe", json=checkout_completed_event())
     assert resp.status_code == 503
+
+
+def test_unsigned_webhook_rejected_in_prod(monkeypatch):
+    # MORNING_BRIEF.md §Resume (Agent B): "missing STRIPE_WEBHOOK_SECRET in
+    # staging/prod -> refuse 503, never skip verification" — staging is
+    # covered above; this pins the other half explicitly (the code path is
+    # `settings.env != "dev"`, which already covers both, but the brief
+    # names both environments so both get their own regression test).
+    monkeypatch.setenv("ENV", "prod")
+    client = make_client()
+    resp = client.post("/shell/webhook/stripe", json=checkout_completed_event())
+    assert resp.status_code == 503
+    # and the event must NOT have been applied (verification was not skipped)
+    assert run(db.get_subscription("user_A")) is None
+
+
+def test_billing_webhook_alias_path_is_gone():
+    # EVAL_ROUND_1.md F10: /shell/billing/webhook used to be registered
+    # alongside the canonical path but was NOT in auth.py's EXEMPT_PATHS, so
+    # every real delivery silently 401'd. The alias is deleted outright
+    # (rather than also exempted) so there is exactly one webhook URL to ever
+    # configure in the Stripe dashboard.
+    client = make_client()
+    resp = client.post("/shell/billing/webhook", json=checkout_completed_event())
+    assert resp.status_code == 404
+
+
+def test_webhook_route_is_a_subset_of_auths_exempt_paths():
+    # Guards F10 from recurring: whatever POST paths this router registers
+    # under /shell/webhook or /shell/billing/webhook (Stripe posts
+    # unauthenticated) must all be paths Agent A's AuthMiddleware exempts.
+    from shell.app.auth import EXEMPT_PATHS
+
+    registered = {
+        r.path
+        for r in router.routes
+        if "POST" in getattr(r, "methods", set())
+        and ("webhook" in r.path)
+    }
+    assert registered, "expected at least the canonical webhook route"
+    assert registered <= EXEMPT_PATHS, (
+        f"webhook route(s) {registered} not fully covered by "
+        f"auth.EXEMPT_PATHS {EXEMPT_PATHS} — a real Stripe delivery would 401"
+    )
+    assert "/shell/webhook/stripe" in registered
 
 
 def test_bad_signature_rejected_when_secret_configured(monkeypatch):
     monkeypatch.setenv("STRIPE_WEBHOOK_SECRET", "whsec_test_secret")
     client = make_client()
     # no signature header
-    resp = client.post("/shell/billing/webhook", json=checkout_completed_event())
+    resp = client.post("/shell/webhook/stripe", json=checkout_completed_event())
     assert resp.status_code == 400
     # bogus signature header
     resp = client.post(
-        "/shell/billing/webhook",
+        "/shell/webhook/stripe",
         json=checkout_completed_event(),
         headers={"stripe-signature": "t=1,v1=deadbeef"},
     )
@@ -140,7 +185,7 @@ def test_webhook_idempotent_replay_is_noop():
     client = make_client()
     event = checkout_completed_event()
 
-    first = client.post("/shell/billing/webhook", json=event)
+    first = client.post("/shell/webhook/stripe", json=event)
     assert first.status_code == 200
     assert first.json()["duplicate"] is False
     sub = run(db.get_subscription("user_A"))
@@ -149,7 +194,7 @@ def test_webhook_idempotent_replay_is_noop():
     # Tamper with state between deliveries: a true replay must NOT re-apply.
     run(db.apply_subscription_update("user_A", plan="pro", status="canceled"))
 
-    second = client.post("/shell/billing/webhook", json=event)
+    second = client.post("/shell/webhook/stripe", json=event)
     assert second.status_code == 200
     assert second.json()["duplicate"] is True
     sub = run(db.get_subscription("user_A"))
@@ -165,13 +210,13 @@ def test_webhook_idempotent_replay_is_noop():
 
 def test_checkout_completed_grants_pro():
     client = make_client()
-    client.post("/shell/billing/webhook", json=checkout_completed_event())
+    client.post("/shell/webhook/stripe", json=checkout_completed_event())
     assert run(ent_mod.resolve_plan("user_A")) == "pro"
 
 
 def test_subscription_updated_sets_period_end_and_status():
     client = make_client()
-    client.post("/shell/billing/webhook", json=checkout_completed_event())
+    client.post("/shell/webhook/stripe", json=checkout_completed_event())
     future = int((datetime.now(timezone.utc) + timedelta(days=30)).timestamp())
     updated = {
         "id": "evt_2",
@@ -186,7 +231,7 @@ def test_subscription_updated_sets_period_end_and_status():
             }
         },
     }
-    resp = client.post("/shell/billing/webhook", json=updated)
+    resp = client.post("/shell/webhook/stripe", json=updated)
     assert resp.status_code == 200 and resp.json()["disposition"] == "applied"
     sub = run(db.get_subscription("user_A"))
     assert sub["current_period_end"] is not None
@@ -195,7 +240,7 @@ def test_subscription_updated_sets_period_end_and_status():
 
 def test_subscription_deleted_downgrades_to_free():
     client = make_client()
-    client.post("/shell/billing/webhook", json=checkout_completed_event())
+    client.post("/shell/webhook/stripe", json=checkout_completed_event())
     assert run(ent_mod.resolve_plan("user_A")) == "pro"
     deleted = {
         "id": "evt_3",
@@ -209,7 +254,7 @@ def test_subscription_deleted_downgrades_to_free():
             }
         },
     }
-    client.post("/shell/billing/webhook", json=deleted)
+    client.post("/shell/webhook/stripe", json=deleted)
     assert run(ent_mod.resolve_plan("user_A")) == "free"
 
 
@@ -235,7 +280,7 @@ def test_orphan_event_acknowledged_but_audited():
         "data": {"object": {"id": "sub_x", "customer": "cus_unknown",
                             "status": "active", "metadata": {}}},
     }
-    resp = client.post("/shell/billing/webhook", json=orphan)
+    resp = client.post("/shell/webhook/stripe", json=orphan)
     assert resp.status_code == 200
     assert resp.json()["disposition"] == "orphaned"
     assert run(db.get_audit_entries("stripe_webhook_orphan"))
@@ -244,7 +289,7 @@ def test_orphan_event_acknowledged_but_audited():
 def test_unhandled_event_type_ignored():
     client = make_client()
     resp = client.post(
-        "/shell/billing/webhook",
+        "/shell/webhook/stripe",
         json={"id": "evt_9", "type": "invoice.paid", "data": {"object": {}}},
     )
     assert resp.status_code == 200 and resp.json()["disposition"] == "ignored"
@@ -253,6 +298,6 @@ def test_unhandled_event_type_ignored():
 def test_event_without_id_rejected_400():
     client = make_client()
     resp = client.post(
-        "/shell/billing/webhook", json={"type": "checkout.session.completed"}
+        "/shell/webhook/stripe", json={"type": "checkout.session.completed"}
     )
     assert resp.status_code == 400
