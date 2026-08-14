@@ -18,7 +18,7 @@
 // codebase already uses.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDelegatedClickHandler, planS2Entry, decideAfterRead } from '../ocr_flow.js';
+import { createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose } from '../ocr_flow.js';
 
 function fakeElement(dataset) {
   return { dataset };
@@ -156,4 +156,22 @@ test('D-038: everything read routes straight to S4', () => {
 test('D-038: a "check" (Gemini gap-fill) field counts as read, not missing — only true missing routes away from S4', () => {
   const states = [...Array(20).fill('ok'), ...Array(4).fill('check')];
   assert.deepEqual(decideAfterRead(states), { screen: 's4' });
+});
+
+// --- D-040: Escape closes whichever sheet/menu is open — background gets
+// inert, focus cannot escape (mock's syncBackgroundInert pattern, ported
+// exactly: the picture/editor scrims' own inert/aria-hidden toggling is
+// thin DOM wiring exercised live, but the PRIORITY the mock's own keydown
+// OR-chain encodes — flowmap > picture > editor > tagMenu; this build has
+// no flow map, so picture > editor > menu — is a genuine decision, pulled
+// out the same way decideAfterRead (D-038) and planS2Entry (D-039) were. ---
+
+test('D-040 probe: decideSheetToClose picks the picture sheet first when more than one is (structurally shouldn\'t happen once inert is applied, but the chain stays defensive, matching the mock\'s own OR-chain shape)', () => {
+  assert.equal(decideSheetToClose({ pictureOpen: true, editorOpen: true, menuOpen: true }), 'picture');
+});
+
+test('D-040 probe: decideSheetToClose falls through to editor, then menu, then null (nothing open)', () => {
+  assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: true, menuOpen: true }), 'editor');
+  assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: false, menuOpen: true }), 'menu');
+  assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: false, menuOpen: false }), null);
 });

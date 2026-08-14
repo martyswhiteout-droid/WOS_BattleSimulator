@@ -456,17 +456,32 @@ function openPicture() {
 }
 
 // D-040: Escape closes whichever sheet/menu is currently open — same
-// priority-chain shape as the mock's own keydown listener. With
+// priority-chain shape as the mock's own keydown listener (its own OR-chain:
+// flowmap > picture > editor > tagMenu; this build has no flow map, so
+// picture > editor > menu). Split into a pure decision (exported, unit-
+// tested — see tests/ocr_flow.test.mjs) and a thin DOM executor, same
+// discipline as decideAfterRead (D-038) and planS2Entry (D-039): with
 // syncBackgroundInert correctly applied, at most one of these is ever
 // actually open at a time (everything else is inert, so nothing else is
 // reachable to open a second one), but the chain stays defensive.
+export function decideSheetToClose({ pictureOpen, editorOpen, menuOpen }) {
+  if (pictureOpen) return 'picture';
+  if (editorOpen) return 'editor';
+  if (menuOpen) return 'menu';
+  return null;
+}
 function closeWhicheverIsOpen() {
   const picture = document.getElementById('ocrfPictureScrim');
   const editor = document.getElementById('ocrfEditorScrim');
   const menu = document.querySelector('.ocrf-type-menu');
-  if (picture && picture.getAttribute('aria-hidden') === 'false') { closeScrim(picture); return true; }
-  if (editor && editor.getAttribute('aria-hidden') === 'false') { closeScrim(editor); return true; }
-  if (menu) { menu.remove(); syncBackgroundInert(); return true; }
+  const which = decideSheetToClose({
+    pictureOpen: !!picture && picture.getAttribute('aria-hidden') === 'false',
+    editorOpen: !!editor && editor.getAttribute('aria-hidden') === 'false',
+    menuOpen: !!menu,
+  });
+  if (which === 'picture') { closeScrim(picture); return true; }
+  if (which === 'editor') { closeScrim(editor); return true; }
+  if (which === 'menu') { menu.remove(); syncBackgroundInert(); return true; }
   return false;
 }
 
