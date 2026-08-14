@@ -349,4 +349,17 @@ process.stdout.write(JSON.stringify(output));
             gemini_report["model"] = sorted(model for model in gemini_models if model)
             reports.append(gemini_report)
         print("OCR_BENCHMARK_JSON=" + json.dumps(reports, sort_keys=True))
-        assert any(report.get("passed") for report in reports), reports
+        # QA D-046: the old gate was `any(passed)`, which let a fully-broken
+        # RapidOCR hide behind a passing Gemini report whenever a real API key
+        # was configured. Binding decision #6 says the D2 verdict must stand on
+        # RapidOCR — the free, local, unmetered production PRIMARY — on its
+        # own, so it is asserted by name. Gemini, when it actually ran (key
+        # present, not skipped), must ALSO clear the bar: it is the paid
+        # production fallback and a silent regression there is a real
+        # regression. Tesseract stays informational-only (benched engine,
+        # SERVER-ONLY v1 ruling; historically 64-76%).
+        by_engine = {report["engine"]: report for report in reports}
+        assert by_engine["rapidocr"].get("passed"), by_engine["rapidocr"]
+        gemini = by_engine["gemini"]
+        if not gemini.get("skipped"):
+            assert gemini.get("passed"), gemini
