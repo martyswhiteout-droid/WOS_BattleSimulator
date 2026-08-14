@@ -1,0 +1,3 @@
+# Preserve pinned third-party runtime bytes and do not apply repository source
+# whitespace rules to upstream vendored files.
+node_modules/** -text -whitespace

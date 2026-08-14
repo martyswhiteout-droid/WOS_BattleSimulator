@@ -1,0 +1,357 @@
+/* shell/app/ocr/client/ocr_flow.css — base tokens (Task 5) + one section per
+   screen module (Tasks 6-9), appended in task order. Palette-locked to
+   prototype/DESIGN_SYSTEM.md — every rule below is translated 1:1 from
+   prototype/mocks/ocr_flow_mock.html's own <style> block (the copy/visual
+   source of truth) onto this build's `ocrf-`-prefixed class names (the bare
+   `screen`/`[data-screen]` selectors are kept unprefixed, matching what the
+   screen templates themselves emit, so they never collide with the real
+   app's own global CSS once injected into the same page). Not unit-tested
+   (decision #6) — the Task 10 browser gate is the actual visual acceptance
+   bar; this is a faithful-to-the-mock functional pass, not a from-scratch
+   design exercise. */
+:root {
+  --ocrf-panel:#0B273D; --ocrf-raised:#123B59; --ocrf-raised2:#123f66; --ocrf-well:rgba(6,20,34,.38);
+  --ocrf-ink:#EAF6FF; --ocrf-ink-mute:#B9D2E5; --ocrf-ink-label:#cfe3f4;
+  --ocrf-tile:#f4faff; --ocrf-tile-2:#eef6fd; --ocrf-tile-border:#b3d0ea; --ocrf-tile-focus:#5AAEF3; --ocrf-tile-ink:#31506b;
+  --ocrf-cta-1:#8ED0FF; --ocrf-cta-2:#5AAEF3; --ocrf-cta-3:#3E97E8; --ocrf-cta-ledge:#235f9c;
+  --ocrf-ice-b:#55BFFF; --ocrf-ember-b:#FF8181; --ocrf-ember-d:#C94646;
+  --ocrf-ok:#57D3A3; --ocrf-gold:#D9A94F; --ocrf-gold-b:#E7C783; --ocrf-periwinkle-d:#6E7CA8;
+  --ocrf-shadow:0 18px 40px -24px rgba(0,0,0,.9);
+}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){
+  .ocrf-entry *,.ocrf-sheet *,#ocrfRoot *,.ocrf-modal-scrim *{transition:none!important;animation:none!important}
+}
+
+/* ============================================================
+   Task 5 — S0 entry CTA + upgrade note
+   ============================================================ */
+.ocrf-entry{margin:0 0 16px;text-align:center}
+.ocrf-cta{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:15px;color:#fff;
+  text-shadow:0 1px 2px rgba(10,52,96,.55);border:0;border-radius:16px;cursor:pointer;
+  padding:14px 22px;min-height:48px;display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,var(--ocrf-cta-1) 0%,var(--ocrf-cta-2) 46%,var(--ocrf-cta-3) 100%);
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+    0 2px 0 var(--ocrf-cta-ledge),0 3px 5px -2px rgba(4,22,44,.7)}
+.ocrf-cta-note{font-size:11.5px;color:var(--ocrf-ink-mute);margin:8px 0 0}
+
+.ocrf-modal-scrim{position:fixed;inset:0;background:rgba(4,10,17,.62);display:flex;align-items:center;
+  justify-content:center;z-index:2147483000;padding:20px}
+.ocrf-modal-scrim[aria-hidden="true"]{display:none}
+.ocrf-sheet{max-width:420px;background:linear-gradient(180deg,var(--ocrf-raised),var(--ocrf-panel));
+  border-radius:16px;padding:22px;color:var(--ocrf-ink);box-shadow:var(--ocrf-shadow)}
+.ocrf-sheet h2{font-family:'Chakra Petch',system-ui,sans-serif;margin:0 0 10px;font-size:17px}
+.ocrf-sheet p{margin:0 0 16px;font-size:13.5px;color:var(--ocrf-ink-mute);line-height:1.5}
+.ocrf-sheet-actions{display:flex;gap:10px}
+
+/* ============================================================
+   Shared screen shell + buttons — used by every screen from S1 on
+   (Tasks 6-9 all render inside this shell, translated from the mock's
+   .screen/.scr-head/.scr-body/.scr-foot/.btn-primary/.btn-ghost/.link-btn)
+   ============================================================ */
+#ocrfRoot{color:var(--ocrf-ink);font-family:'Inter',system-ui,sans-serif}
+#ocrfRoot .screen{display:flex;flex-direction:column;max-width:640px;margin:0 auto}
+#ocrfRoot .screen h1{margin:0;font-family:'Chakra Petch',system-ui,sans-serif;outline:none}
+.ocrf-scr-head{display:flex;align-items:center;gap:10px;padding:14px 4px 4px;min-height:38px}
+.ocrf-scr-head h1{font-size:19px;font-weight:600;letter-spacing:.01em;color:var(--ocrf-ink)}
+.ocrf-scr-head-eyebrow{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ocrf-ink-mute)}
+.ocrf-scr-body{padding:14px 4px 24px}
+.ocrf-scr-foot{position:sticky;bottom:0;padding:12px 4px calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(11,39,61,0),var(--ocrf-panel) 30%)}
+.ocrf-scr-foot-ghost{background:linear-gradient(180deg,rgba(11,39,61,0),var(--ocrf-panel) 55%)}
+.ocrf-foot-note{text-align:center;font-size:11.5px;color:var(--ocrf-ink-mute);margin-top:8px}
+.ocrf-sub{color:var(--ocrf-ink-mute);font-size:14px;line-height:1.5;margin:6px 0 16px}
+
+.ocrf-back-btn{width:46px;height:46px;min-width:46px;min-height:46px;border-radius:11px;
+  border:1px solid rgba(185,210,229,.25);background:rgba(255,255,255,.04);color:var(--ocrf-ink);
+  font-size:19px;display:grid;place-items:center;cursor:pointer;flex:none;line-height:1}
+.ocrf-back-btn:hover{background:rgba(255,255,255,.09);border-color:var(--ocrf-tile-focus)}
+
+.ocrf-btn-primary{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:14.5px;
+  letter-spacing:.02em;color:#fff;text-shadow:0 1px 2px rgba(10,52,96,.55);border:0;border-radius:16px;
+  cursor:pointer;padding:14px 20px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;background:linear-gradient(180deg,var(--ocrf-cta-1) 0%,var(--ocrf-cta-2) 46%,var(--ocrf-cta-3) 100%);
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+    0 2px 0 var(--ocrf-cta-ledge),0 3px 5px -2px rgba(4,22,44,.7)}
+.ocrf-btn-primary:hover:not(:disabled){filter:brightness(1.05)}
+.ocrf-btn-primary:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.5)}
+.ocrf-btn-block{width:100%}
+
+.ocrf-btn-ghost{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:600;font-size:13px;
+  color:var(--ocrf-ink-label);background:rgba(255,255,255,.04);border:1px solid rgba(185,210,229,.28);
+  border-radius:12px;padding:11px 16px;cursor:pointer;min-height:44px;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px}
+.ocrf-btn-ghost:hover{background:rgba(255,255,255,.08);border-color:var(--ocrf-tile-focus)}
+
+.ocrf-link-btn{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:13.5px;color:var(--ocrf-ice-b);
+  background:none;border:0;cursor:pointer;padding:11px 8px;min-height:44px;text-decoration:underline;
+  text-underline-offset:3px;display:inline-flex;align-items:center;justify-content:center}
+
+/* ============================================================
+   Task 6 — S1 pick cards / S2 add screenshots / E1 recovery
+   ============================================================ */
+.ocrf-pick-card{position:relative;isolation:isolate;border-radius:16px;cursor:pointer;text-align:left;border:0;
+  background:linear-gradient(180deg,#ddeffc 0%,#cfe6f9 55%,#c0dbf3 100%);
+  box-shadow:inset 0 1px rgba(255,255,255,.78),inset 0 -2px 3px rgba(49,80,107,.14),0 9px 18px -12px rgba(0,0,0,.62);
+  padding:16px;color:var(--ocrf-tile-ink);width:100%;display:block;margin-bottom:14px}
+.ocrf-pick-card:hover{transform:translateY(-1px)}
+.ocrf-pick-card.ocrf-promoted{box-shadow:inset 0 1px rgba(255,255,255,.78),inset 0 -2px 3px rgba(49,80,107,.14),
+  0 9px 18px -12px rgba(0,0,0,.62),0 0 0 2px var(--ocrf-gold)}
+.ocrf-pick-card.ocrf-muted{opacity:.86;padding:12px;transform:scale(.98)}
+.ocrf-ribbon{display:inline-block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;
+  letter-spacing:.14em;font-weight:700;background:linear-gradient(180deg,var(--ocrf-gold-b),var(--ocrf-gold));
+  color:#123B59;border-radius:6px;padding:4px 8px;margin-bottom:10px}
+.ocrf-pick-card .ocrf-tag{display:inline-block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9px;
+  letter-spacing:.16em;font-weight:700;background:rgba(110,124,168,.25);color:var(--ocrf-periwinkle-d);
+  border-radius:6px;padding:3px 7px;margin-bottom:8px}
+.ocrf-pick-card h2{font-size:16px;margin-bottom:2px;font-family:'Chakra Petch',system-ui,sans-serif}
+.ocrf-pick-card .ocrf-h2-sub{display:block;font-size:10.5px;font-weight:500;color:#7a94ab;margin-bottom:8px}
+.ocrf-pick-card p{font-size:12.5px;color:#4d6883;line-height:1.4;margin-top:6px}
+.ocrf-crumb{display:inline-block;margin-top:9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;
+  letter-spacing:.06em;color:#4d6883;background:rgba(49,80,107,.08);border-radius:6px;padding:4px 8px}
+
+.ocrf-s2-sides{display:flex;flex-direction:column}
+.ocrf-side-section{border-radius:14px;padding:14px;margin-bottom:16px;border:1px solid}
+.ocrf-side-section.ocrf-side-you{background:rgba(46,161,242,.06);border-color:rgba(46,161,242,.25)}
+.ocrf-side-section.ocrf-side-enemy{background:rgba(239,95,95,.06);border-color:rgba(239,95,95,.25)}
+.ocrf-side-section.ocrf-covered{opacity:.62}
+.ocrf-covered-note{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ocrf-ok);font-weight:600;margin-bottom:12px}
+.ocrf-covered-check{width:18px;height:18px;border-radius:50%;background:var(--ocrf-ok);color:#0B273D;
+  display:grid;place-items:center;font-size:10px;flex:none}
+.ocrf-side-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.ocrf-side-label{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:13px;letter-spacing:.08em}
+.ocrf-type-tag{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.03em;
+  color:var(--ocrf-ink-label);background:rgba(255,255,255,.06);border:1px solid rgba(185,210,229,.28);
+  border-radius:999px;padding:7px 12px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:5px}
+.ocrf-type-tag:hover{background:rgba(255,255,255,.1);border-color:var(--ocrf-tile-focus)}
+
+.ocrf-type-menu{position:absolute;z-index:70;min-width:180px;
+  background:linear-gradient(180deg,var(--ocrf-raised),var(--ocrf-panel));border:1px solid rgba(185,210,229,.25);
+  border-radius:12px;padding:6px;box-shadow:0 14px 30px -10px rgba(0,0,0,.6);margin-top:6px}
+.ocrf-type-menu button{display:flex;align-items:center;width:100%;text-align:left;background:none;border:0;
+  border-radius:8px;padding:11px 12px;cursor:pointer;color:var(--ocrf-ink-label);font-family:'Inter',system-ui,sans-serif;
+  font-size:13.5px;min-height:46px}
+.ocrf-type-menu button:hover{background:rgba(255,255,255,.08)}
+
+.ocrf-dropzone{width:100%;border:2px dashed rgba(185,210,229,.35);border-radius:18px;background:var(--ocrf-well);
+  padding:30px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  color:var(--ocrf-ink-label);min-height:150px;justify-content:center}
+.ocrf-dropzone:hover{border-color:var(--ocrf-tile-focus);background:rgba(90,174,243,.08)}
+.ocrf-dropzone--muted{min-height:60px;padding:10px 12px}
+.ocrf-dropzone b{font-size:14.5px;font-family:'Chakra Petch',system-ui,sans-serif;color:var(--ocrf-ink)}
+.ocrf-dropzone span{font-size:12px;color:var(--ocrf-ink-mute)}
+.ocrf-thumbs{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px}
+/* D-035: per-shot thumbnail + >=44px remove control, ported from the
+   mock's .thumb/.thumb-x */
+.ocrf-thumb{position:relative;width:64px;height:64px;border-radius:12px;
+  background:linear-gradient(180deg,#1b3350,#0f2233);border:1px solid rgba(185,210,229,.25);
+  display:grid;place-items:center;color:var(--ocrf-ice-b)}
+.ocrf-thumb svg{width:30px;height:30px}
+.ocrf-thumb-x{position:absolute;top:-15px;right:-15px;width:46px;height:46px;min-width:46px;min-height:46px;
+  border-radius:50%;background:var(--ocrf-panel);border:1px solid rgba(185,210,229,.35);color:var(--ocrf-ink);
+  font-size:15px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+.ocrf-thumb-x:hover{background:var(--ocrf-ember-d);border-color:var(--ocrf-ember-d)}
+
+.ocrf-hint-card{display:flex;gap:10px;align-items:flex-start;background:rgba(217,169,79,.1);
+  border:1px solid rgba(217,169,79,.3);border-radius:12px;padding:11px 13px;margin-top:18px}
+.ocrf-hint-card p{font-size:12.5px;color:var(--ocrf-ink-label);line-height:1.45}
+
+/* D-039: the E1-recovery removal notice ("We took that one out..."),
+   ported from the mock's .s2-notice */
+.ocrf-s2-notice{font-size:12.5px;color:var(--ocrf-ink-label);background:rgba(255,255,255,.04);
+  border:1px solid rgba(185,210,229,.18);border-radius:10px;padding:10px 12px;margin-bottom:14px}
+
+.ocrf-err-icon{width:56px;height:56px;border-radius:16px;background:rgba(217,169,79,.14);
+  border:1px solid rgba(217,169,79,.35);display:grid;place-items:center;font-size:26px;margin-bottom:14px}
+.ocrf-fix-caption{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:600;font-size:12.5px;
+  color:var(--ocrf-ink-label);margin:2px 0 8px}
+.ocrf-e1-actions{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+
+/* ============================================================
+   Task 7 — S3 reading/scanning driver
+   ============================================================ */
+.ocrf-scan-body{display:flex;flex-direction:column;justify-content:center;gap:22px;padding-top:14vh}
+.ocrf-scan-body h1{font-size:19px;text-align:center;margin-bottom:4px}
+.ocrf-scan-track{height:14px;border-radius:9px;background:#0a2438;border:1px solid rgba(255,255,255,.16);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+.ocrf-scan-fill{height:100%;width:66%;border-radius:8px;
+  background:linear-gradient(180deg,#7CC8FF,#2EA1F2 55%,#1682D8);
+  box-shadow:0 0 16px rgba(85,191,255,.55),inset 0 1px 0 rgba(255,255,255,.55);transition:width .3s linear}
+.ocrf-scan-steps{display:flex;flex-direction:column;gap:14px}
+.ocrf-scan-step{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ocrf-ink-mute);transition:color .2s}
+.ocrf-scan-step .ocrf-step-ic{width:22px;height:22px;border-radius:50%;border:2px solid rgba(185,210,229,.3);
+  flex:none;position:relative}
+.ocrf-scan-step.ocrf-active{color:var(--ocrf-ink)}
+.ocrf-scan-step.ocrf-active .ocrf-step-ic{border-color:var(--ocrf-ice-b)}
+.ocrf-scan-step.ocrf-done{color:var(--ocrf-ok)}
+.ocrf-scan-step.ocrf-done .ocrf-step-ic{border-color:var(--ocrf-ok);background:var(--ocrf-ok)}
+.ocrf-trust-line{display:flex;align-items:center;gap:8px;justify-content:center;font-size:11.5px;
+  color:var(--ocrf-ink-mute);margin-top:6px;text-align:center}
+
+/* ============================================================
+   Task 8 — S4 review grid, editor sheet, screenshot viewer, Reset
+   ============================================================ */
+.ocrf-tally-card{background:var(--ocrf-raised);border:1px solid rgba(185,210,229,.18);border-radius:14px;
+  padding:14px 16px;margin-bottom:16px}
+.ocrf-tally-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.ocrf-tally-num{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:22px;color:var(--ocrf-ink)}
+.ocrf-tally-status{font-size:13.5px;color:var(--ocrf-gold-b);font-weight:600}
+.ocrf-tally-status.ocrf-clear{color:var(--ocrf-ok)}
+.ocrf-tally-bar{display:flex;height:7px;border-radius:5px;overflow:hidden;margin-top:10px;background:var(--ocrf-well)}
+.ocrf-tally-bar i{display:block;height:100%}
+.ocrf-tally-bar .ocrf-b-ok{background:var(--ocrf-ok)}
+.ocrf-tally-bar .ocrf-b-check{background:var(--ocrf-gold)}
+.ocrf-tally-bar .ocrf-b-missing{background:var(--ocrf-ink-mute)}
+.ocrf-tally-actions{display:flex;justify-content:flex-end;margin:2px 0 12px}
+.ocrf-reset-btn{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.04em;
+  color:var(--ocrf-ink-mute);background:none;border:1px solid rgba(185,210,229,.25);border-radius:8px;
+  padding:8px 12px;cursor:pointer;min-height:44px}
+.ocrf-reset-btn:hover{color:var(--ocrf-ink);border-color:rgba(185,210,229,.4)}
+
+.ocrf-review-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative}
+.ocrf-review-grid::before{content:"";position:absolute;left:50%;top:4px;bottom:4px;width:1px;
+  background:rgba(185,210,229,.15)}
+.ocrf-rv-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ocrf-rv-col.ocrf-rv-me{padding-right:9px}
+.ocrf-rv-col.ocrf-rv-enemy{padding-left:9px}
+.ocrf-rv-col-head{font-family:'Chakra Petch',system-ui,sans-serif;font-size:12.5px;font-weight:700;
+  letter-spacing:.08em;text-align:center;padding-bottom:8px}
+.ocrf-rv-col.ocrf-rv-me .ocrf-rv-col-head{color:var(--ocrf-ice-b)}
+.ocrf-rv-col.ocrf-rv-enemy .ocrf-rv-col-head{color:var(--ocrf-ember-b)}
+.ocrf-rv-group-head{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ocrf-ink-mute);margin-bottom:5px}
+.ocrf-rv-group{margin-bottom:10px}
+.ocrf-rv-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ocrf-rv-field{position:relative;border-radius:10px;padding:6px;min-height:48px;display:flex;flex-direction:column;
+  justify-content:center;gap:2px;text-align:left;border:1px solid transparent;font-family:inherit;width:100%;cursor:pointer}
+.ocrf-rv-field .ocrf-rv-lab{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;line-height:1.15;opacity:.8}
+.ocrf-rv-field .ocrf-rv-val{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;font-weight:600}
+.ocrf-rv-field .ocrf-rv-ic{position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;
+  display:grid;place-items:center;font-size:8px;font-weight:800;line-height:1}
+.ocrf-rv-field.ocrf-rv-ok{background:linear-gradient(180deg,#fff,var(--ocrf-tile-2));border-color:var(--ocrf-tile-border);
+  color:var(--ocrf-tile-ink);box-shadow:inset 0 1px rgba(255,255,255,.85)}
+.ocrf-rv-field.ocrf-rv-ok .ocrf-rv-ic{background:var(--ocrf-ok);color:#0B273D}
+.ocrf-rv-field.ocrf-rv-check{background:linear-gradient(180deg,#fff,var(--ocrf-tile-2));border:1.5px solid var(--ocrf-gold);
+  color:var(--ocrf-tile-ink);box-shadow:inset 0 1px rgba(255,255,255,.85),0 0 0 3px rgba(217,169,79,.18)}
+.ocrf-rv-field.ocrf-rv-check .ocrf-rv-ic{background:var(--ocrf-gold);color:#123B59}
+.ocrf-rv-field.ocrf-rv-missing{background:var(--ocrf-well);border:1.5px dashed rgba(185,210,229,.45);color:var(--ocrf-ink-mute)}
+.ocrf-rv-field.ocrf-rv-missing .ocrf-rv-val{color:var(--ocrf-ink-mute)}
+.ocrf-rv-field.ocrf-rv-missing .ocrf-rv-ic{border:1.5px dashed rgba(185,210,229,.6);color:var(--ocrf-ink-mute)}
+.ocrf-rv-field:hover{transform:translateY(-1px)}
+
+.ocrf-editor{width:100%;max-width:420px;background:linear-gradient(180deg,var(--ocrf-raised),var(--ocrf-panel));
+  border-radius:16px;padding:16px 18px;box-shadow:var(--ocrf-shadow)}
+.ocrf-editor-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+.ocrf-editor-head h2{font-size:14.5px;color:var(--ocrf-ink);font-family:'Chakra Petch',system-ui,sans-serif}
+.ocrf-close-x{width:46px;height:46px;min-width:46px;min-height:46px;border-radius:12px;border:1px solid rgba(185,210,229,.25);
+  background:rgba(255,255,255,.04);color:var(--ocrf-ink);font-size:18px;display:grid;place-items:center;
+  cursor:pointer;padding:0;flex:none}
+.ocrf-crop-box{width:100%;min-height:78px;border-radius:12px;position:relative;overflow:hidden;margin-bottom:12px;
+  padding:24px 10px 10px;background:linear-gradient(180deg,#0f2233,#0a1826);border:1px solid rgba(185,210,229,.18);
+  color:var(--ocrf-ink-label);font-size:12px;display:flex;align-items:center;justify-content:center;text-align:center}
+.ocrf-editor-label{display:block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ocrf-ink-mute);margin-bottom:6px}
+.ocrf-big-input{width:100%;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:28px;font-weight:600;
+  text-align:center;color:var(--ocrf-tile-ink);background:linear-gradient(180deg,#fff,var(--ocrf-tile-2));
+  border:1px solid var(--ocrf-tile-border);border-radius:12px;padding:11px 10px;box-shadow:inset 0 1px rgba(255,255,255,.85)}
+.ocrf-big-input:focus{border-color:var(--ocrf-tile-focus);
+  box-shadow:inset 0 1px rgba(255,255,255,.85),0 0 0 3px rgba(90,174,243,.3);outline:0}
+.ocrf-editor-msg{font-size:12px;color:#123B59;background:linear-gradient(180deg,var(--ocrf-gold-b),#eecf94);
+  border:1px solid var(--ocrf-gold);border-radius:8px;padding:8px 10px;margin:8px 0;text-align:center;font-weight:600}
+.ocrf-editor-help{font-size:11.5px;color:var(--ocrf-ink-mute);margin:8px 0 12px;text-align:center}
+.ocrf-editor-actions{display:flex;gap:10px}
+.ocrf-editor-actions .ocrf-btn-ghost,.ocrf-editor-actions .ocrf-btn-primary{flex:1;padding-left:8px;padding-right:8px}
+
+.ocrf-picture-scroll{max-height:70vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:0 10px;
+  background:linear-gradient(180deg,var(--ocrf-raised),var(--ocrf-panel));border-radius:16px;padding:16px;
+  box-shadow:var(--ocrf-shadow)}
+/* D-040: the scrim shell around .ocrf-picture-scroll (already self-styled
+   as a card) — just needs a corner close control, same treatment as a thumb's
+   remove button */
+.ocrf-picture-wrap{position:relative;max-width:640px;width:100%}
+.ocrf-picture-close{position:absolute;top:-15px;right:-15px;z-index:1}
+.ocrf-game-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 11px;margin-bottom:6px}
+.ocrf-gr-label{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;letter-spacing:.03em;
+  color:var(--ocrf-ink-label);text-transform:uppercase}
+.ocrf-gr-val{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:14px;font-weight:700;color:var(--ocrf-ok)}
+.ocrf-game-row.ocrf-dim{opacity:.6;border-style:dashed}
+.ocrf-gr-val.ocrf-dim{color:var(--ocrf-ink-mute);font-weight:600}
+
+/* ============================================================
+   Task 9 — S5 collapsed stats chip (the app's own controls below it are
+   entirely prototype/index.html's own DOM/CSS, untouched by this file)
+   ============================================================ */
+.ocrf-s5{margin:16px 0}
+.ocrf-stats-accordion{margin-bottom:12px}
+.ocrf-stats-chip{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--ocrf-raised);border:1px solid rgba(185,210,229,.18);border-radius:14px;
+  padding:14px 16px;cursor:pointer;min-height:52px;text-align:left;color:var(--ocrf-ink)}
+.ocrf-stats-chip:hover{border-color:rgba(185,210,229,.35)}
+.ocrf-chip-text{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:600;font-size:13.5px}
+.ocrf-stats-chip.ocrf-complete .ocrf-chip-text{color:var(--ocrf-ok)}
+.ocrf-stats-chip.ocrf-needs-attention .ocrf-chip-text{color:var(--ocrf-gold-b)}
+.ocrf-chip-ok-ic{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;
+  background:var(--ocrf-ok);color:#0B273D;font-size:9px;font-weight:800;vertical-align:middle;margin:0 1px}
+.ocrf-chip-caret{color:var(--ocrf-ink-mute);font-size:14px;transition:transform .18s;flex:none}
+.ocrf-stats-chip[aria-expanded="true"] .ocrf-chip-caret{transform:rotate(180deg)}
+.ocrf-stats-body{margin-top:12px}
+.ocrf-s5-links{text-align:center;margin:4px 0 0}
+
+/* ============================================================
+   Desktop (>=1000px), ported from prototype/mocks/ocr_flow_mock.html's own
+   `@media (min-width:1000px)` block (lines 617-654) onto this build's
+   classes — per docs/OCR_UX_FLOW_SPEC.md §4 "Two presentations, one HTML:
+   mobile flow AND a slick desktop layout — responsive, not separate apps."
+   Deliberately SKIPPED: the mock's phone-frame chrome (.stage/.phone-wrap/
+   .phone/.notch/.statusbar — a demo-only device simulator, nothing in this
+   build renders inside a fake phone), the stepper rail (.rail/.stepper/
+   .step-item, mock lines 535-558), and the Flow Map overlay (.flowmap/
+   .fm-*) — both are owner/demo navigation tools with no equivalent in
+   OCR_UX_FLOW_SPEC.md §3's screen list; this build's real Back/Cancel
+   controls are the actual navigation.
+
+   Host-page isolation: #ocrfRoot is appended straight to <body> as a
+   sibling of prototype/index.html's own <main> (which caps at 1680px for
+   its own multi-panel dashboard) — nothing here inherits or fights that
+   layout, and no selector below reaches outside #ocrfRoot or the entry
+   card. The mock's per-screen habit of a `.phone-wrap{max-width:960px}`
+   OUTER bound plus a narrower `.scr-body{max-width:640px}` INNER default
+   doesn't map 1:1 onto this build's single-layer `.screen{max-width:640px}`
+   structure, so the desktop cap (mock's 900-960px values) is applied
+   directly to `.screen`/`.ocrf-s5` as one bound, simplified from the mock's
+   two-layer version rather than reproducing a narrower default for
+   E1/S3 specifically (neither is named in the brief; both stay legible at
+   this width — same as every other centered single-column screen here). */
+@media (min-width:1000px){
+  #ocrfRoot .screen{max-width:960px}
+  .ocrf-s5{max-width:960px;margin:0 auto}
+
+  .ocrf-scr-head{padding:26px 8px 10px}
+  .ocrf-scr-head h1{font-size:25px}
+  .ocrf-scr-body{padding:22px 8px 36px}
+  .ocrf-scr-foot{padding:18px 8px 24px}
+
+  /* S1: 3 cards across instead of stacked */
+  [data-screen="s1"] .ocrf-scr-body{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+  [data-screen="s1"] .ocrf-scr-body>.ocrf-sub{grid-column:1/-1;margin-bottom:2px}
+  [data-screen="s1"] .ocrf-pick-card{margin-bottom:0}
+
+  /* S2: side-by-side YOU/ENEMY panes, never a narrow single column */
+  .ocrf-s2-sides{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+  /* S4: roomy two-side grid (already simultaneous; just give it air) */
+  [data-screen="s4"] .ocrf-scr-body{max-width:900px;margin:0 auto}
+  .ocrf-review-grid{gap:0 36px}
+  .ocrf-rv-stats{gap:10px}
+
+  /* S5: this build's own S5 widget is only the collapsed stats chip (Task
+     9's own scope — Troops Formation/Heroes/Joiners/Role toggle are the
+     real app's own pre-existing DOM, never rendered or laid out by this
+     file), so the mock's chip-left/heroes-right two-pane split has no
+     direct equivalent to port here; carries the same wider breathing room
+     into the expanded review grid instead, when the chip is open. */
+  .ocrf-s5 .ocrf-review-grid{gap:0 36px}
+  .ocrf-s5 .ocrf-rv-stats{gap:10px}
+}

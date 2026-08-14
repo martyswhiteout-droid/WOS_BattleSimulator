@@ -7,7 +7,7 @@
 
 | Layer | Runner | What it proves |
 |---|---|---|
-| L1 Unit (per TDD plan Tasks 0–11) | `py -m pytest shell/tests -q` + `node --test shell/app/ocr/client/tests/` | parser/converter/flow logic, both languages, same golden vectors |
+| L1 Unit (per TDD plan Tasks 0–11) | `py -m pytest shell/tests -q` + `node --test shell/app/ocr/client/tests/panel_parser.test.mjs shell/app/ocr/client/tests/flow_state.test.mjs` (explicit files — a bare directory arg breaks on Windows Node) | parser/converter/flow logic, both languages, same golden vectors |
 | L2 Real-image benchmark (Task 12, gated on owner PNGs) | `py -m pytest -m benchmark` | engine accuracy ≥99% digits, ZERO false-confident |
 | L3 API contract & abuse | pytest against the shell app | gate/caps/sniff/quota/no-persist |
 | L4 Flow/UI (mock now, real overlay later) | browser walkthrough protocol (below) | no dead ends, honesty surfaces, both widths |
@@ -116,3 +116,4 @@
 - New fixture screenshots are added to the corpus whenever: the game UI updates, a new locale ships, a new device class appears in support requests, or ANY field misread reaches production (that misread becomes a permanent regression fixture — same philosophy as the engine's golden-anchor guardrail).
 - The label lexicon is versioned data (`lexicon.py` constants); a game UI rename = data patch + fixture + release-gate rerun, not a code refactor.
 - Any relaxation of `LOW_CONF`, the fuzzy-match bound (≤2), or value-range checks is an owner decision, never a convenience fix to make a test pass (no-fudge house rule applies to OCR too).
+- **QA-ing the paid flow in dev (L4 walkthrough):** `DEV_BYPASS` mode (no `CLERK_SECRET_KEY` configured) mints every request `UserCtx(user_id="dev_user", plan="free")` unless the request carries an `X-Dev-Plan` header (`shell/app/auth.py`), which is honored ONLY in bypass mode and never in real mode (hostile-client rule, COMPASS invariant 6) — so it is not a backdoor into production. To walk the F1–F13 gate as a paid account without a real Clerk session or product code change, add the header client-side for the duration of the browser session via a console fetch wrapper: `const f = window.fetch; window.fetch = (u, o) => f(u, { ...o, headers: { ...(o && o.headers), 'X-Dev-Plan': 'pro' } });`. This is the sanctioned technique — it exercises the real `/shell/me`, `/shell/ocr/panel`, and quota/entitlements paths under a genuine pro identity, unlike stubbing `fetch` to fake a response body (useful for isolating one screen, but bypasses the real server entirely).

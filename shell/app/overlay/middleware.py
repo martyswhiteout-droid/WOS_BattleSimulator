@@ -13,18 +13,25 @@ from __future__ import annotations
 from ..config import Settings
 
 SCRIPT_TAG = b'<script defer src="/shell/overlay.js"></script>'
+# shell/app/ocr/client/ocr_flow.{js,css} — the OCR overlay UI (docs/plans/
+# 2026-08-10-overlay-ui-tdd-plan.md Task 5). Injected alongside the account
+# chip's SCRIPT_TAG rather than served by this middleware itself; the actual
+# files are served by the static mount in shell/app/main.py.
+OCR_FLOW_CSS_TAG = b'<link rel="stylesheet" href="/shell/ocr/client/ocr_flow.css">'
+OCR_FLOW_SCRIPT_TAG = b'<script type="module" src="/shell/ocr/client/ocr_flow.js"></script>'
+INJECTED_TAGS = SCRIPT_TAG + OCR_FLOW_CSS_TAG + OCR_FLOW_SCRIPT_TAG
 
 # Only the app shell page gets the overlay — not arbitrary HTML assets.
 _INJECT_PATHS = frozenset({"/", "/index.html"})
 
 
 def inject(html: bytes) -> bytes:
-    """Insert the overlay script tag before the LAST ``</body>`` (case-
+    """Insert the overlay + ocr_flow tags before the LAST ``</body>`` (case-
     insensitive). No closing tag -> append (still a valid, working page)."""
     idx = html.lower().rfind(b"</body>")
     if idx == -1:
-        return html + SCRIPT_TAG
-    return html[:idx] + SCRIPT_TAG + html[idx:]
+        return html + INJECTED_TAGS
+    return html[:idx] + INJECTED_TAGS + html[idx:]
 
 
 class OverlayMiddleware:

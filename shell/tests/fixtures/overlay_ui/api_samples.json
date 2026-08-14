@@ -1,0 +1,130 @@
+{
+  "ok": {
+    "scout_you": {
+      "panel_type": "scout", "requested_side": "you", "specials": [], "specials_observed": "read",
+      "warnings": [],
+      "stats": {
+        "Infantry|Attack": 4491.6, "Infantry|Defense": 3979.1, "Infantry|Lethality": 2794.3, "Infantry|Health": 3197.4,
+        "Lancer|Attack": 4480.4, "Lancer|Defense": 3924.1, "Lancer|Lethality": 2786.7, "Lancer|Health": 3111.4,
+        "Marksman|Attack": 4451.6, "Marksman|Defense": 3924.1, "Marksman|Lethality": 2745.8, "Marksman|Health": 3101.6
+      },
+      "field_conf": {
+        "Infantry|Attack": 0.99, "Infantry|Defense": 0.99, "Infantry|Lethality": 0.99, "Infantry|Health": 0.99,
+        "Lancer|Attack": 0.99, "Lancer|Defense": 0.99, "Lancer|Lethality": 0.99, "Lancer|Health": 0.99,
+        "Marksman|Attack": 0.99, "Marksman|Defense": 0.99, "Marksman|Lethality": 0.99, "Marksman|Health": 0.99
+      },
+      "unreadable_fields": [], "status": "ok", "source": "mock"
+    },
+    "battle_specials_read": {
+      "panel_type": "battle", "requested_side": "you", "specials_observed": "read", "warnings": [],
+      "stats_left": {
+        "Infantry|Attack": 4859.0, "Infantry|Defense": 4098.0, "Infantry|Lethality": 2683.0, "Infantry|Health": 3040.4,
+        "Lancer|Attack": 4846.8, "Lancer|Defense": 4041.4, "Lancer|Lethality": 2675.6, "Lancer|Health": 2958.5,
+        "Marksman|Attack": 4815.8, "Marksman|Defense": 4041.4, "Marksman|Lethality": 2636.3, "Marksman|Health": 2949.2
+      },
+      "stats_right": {
+        "Infantry|Attack": 694.3, "Infantry|Defense": 545.6, "Infantry|Lethality": 495.7, "Infantry|Health": 416.4,
+        "Lancer|Attack": 740.5, "Lancer|Defense": 574.7, "Lancer|Lethality": 533.5, "Lancer|Health": 442.8,
+        "Marksman|Attack": 800.6, "Marksman|Defense": 626.6, "Marksman|Lethality": 587.1, "Marksman|Health": 499.0
+      },
+      "stats_you": {
+        "Infantry|Attack": 4859.0, "Infantry|Defense": 4098.0, "Infantry|Lethality": 2683.0, "Infantry|Health": 3040.4,
+        "Lancer|Attack": 4846.8, "Lancer|Defense": 4041.4, "Lancer|Lethality": 2675.6, "Lancer|Health": 2958.5,
+        "Marksman|Attack": 4815.8, "Marksman|Defense": 4041.4, "Marksman|Lethality": 2636.3, "Marksman|Health": 2949.2
+      },
+      "stats_enemy": {
+        "Infantry|Attack": 694.3, "Infantry|Defense": 545.6, "Infantry|Lethality": 495.7, "Infantry|Health": 416.4,
+        "Lancer|Attack": 740.5, "Lancer|Defense": 574.7, "Lancer|Lethality": 533.5, "Lancer|Health": 442.8,
+        "Marksman|Attack": 800.6, "Marksman|Defense": 626.6, "Marksman|Lethality": 587.1, "Marksman|Health": 499.0
+      },
+      "specials": [
+        {"label": "Defender Troops' Attack", "value": 15.0, "side": "left"},
+        {"label": "Defender Troops' Health", "value": 15.0, "side": "left"},
+        {"label": "Enemy Defense Penalty (Pet Skill)", "value": -10.0, "side": "left"},
+        {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -5.0, "side": "left"},
+        {"label": "Enemy Health Penalty (Pet Skill)", "value": -5.0, "side": "left"},
+        {"label": "Attack Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Defense Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Lethality Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Health Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Territory Defender Attack", "value": 10.0, "side": "left"},
+        {"label": "Territory Defender Defense", "value": 10.0, "side": "left"},
+        {"label": "Defender Troops Attack When Defending Own City", "value": 5.0, "side": "left"},
+        {"label": "Defender Troops Defense When Defending Own City", "value": 5.0, "side": "left"},
+        {"label": "Enemy Lethality Penalty (Expert Skill)", "value": -0.75, "side": "left"},
+        {"label": "Enemy Defense Penalty (Pet Skill)", "value": -6.0, "side": "right"},
+        {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -4.0, "side": "right"},
+        {"label": "Enemy Health Penalty (Pet Skill)", "value": -5.0, "side": "right"}
+      ],
+      "specials_you": [
+        {"label": "Defender Troops' Attack", "value": 15.0, "side": "left"},
+        {"label": "Defender Troops' Health", "value": 15.0, "side": "left"},
+        {"label": "Enemy Defense Penalty (Pet Skill)", "value": -10.0, "side": "left"},
+        {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -5.0, "side": "left"},
+        {"label": "Enemy Health Penalty (Pet Skill)", "value": -5.0, "side": "left"},
+        {"label": "Attack Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Defense Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Lethality Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Health Bonus (Pet Skill)", "value": 10.0, "side": "left"},
+        {"label": "Territory Defender Attack", "value": 10.0, "side": "left"},
+        {"label": "Territory Defender Defense", "value": 10.0, "side": "left"},
+        {"label": "Defender Troops Attack When Defending Own City", "value": 5.0, "side": "left"},
+        {"label": "Defender Troops Defense When Defending Own City", "value": 5.0, "side": "left"},
+        {"label": "Enemy Lethality Penalty (Expert Skill)", "value": -0.75, "side": "left"}
+      ],
+      "specials_enemy": [
+        {"label": "Enemy Defense Penalty (Pet Skill)", "value": -6.0, "side": "right"},
+        {"label": "Enemy Lethality Penalty (Pet Skill)", "value": -4.0, "side": "right"},
+        {"label": "Enemy Health Penalty (Pet Skill)", "value": -5.0, "side": "right"}
+      ],
+      "unreadable_fields": [], "status": "ok", "source": "mock"
+    },
+    "citystats_you": {
+      "panel_type": "citystats", "requested_side": "you", "specials": [], "specials_observed": "read", "warnings": [],
+      "stats": {
+        "Troops|Attack": 748.49, "Troops|Defense": 775.42, "Troops|Lethality": 238.84, "Troops|Health": 219.86,
+        "Infantry|Attack": 658.25, "Infantry|Defense": 666.25, "Infantry|Lethality": 1197.36, "Infantry|Health": 1223.08,
+        "Lancer|Attack": 649.25, "Lancer|Defense": 616.25, "Lancer|Lethality": 1190.39, "Lancer|Health": 1154.28,
+        "Marksman|Attack": 626.25, "Marksman|Defense": 616.25, "Marksman|Lethality": 1153.24, "Marksman|Health": 1146.45
+      },
+      "field_conf": {}, "unreadable_fields": [], "status": "ok", "source": "mock"
+    }
+  },
+  "partial": {
+    "scout_missing_fields": {
+      "panel_type": "scout", "requested_side": "enemy", "specials": [], "specials_observed": "none", "warnings": [],
+      "stats": {
+        "Infantry|Attack": 4491.6, "Infantry|Defense": 3979.1, "Infantry|Lethality": 2794.3,
+        "Lancer|Attack": 4480.4, "Lancer|Defense": 3924.1
+      },
+      "field_conf": {
+        "Infantry|Attack": 0.99, "Infantry|Defense": 0.99, "Infantry|Lethality": 0.99,
+        "Lancer|Attack": 0.99, "Lancer|Defense": 0.99
+      },
+      "unreadable_fields": [
+        "stats.Infantry|Health", "stats.Lancer|Lethality", "stats.Lancer|Health",
+        "stats.Marksman|Attack", "stats.Marksman|Defense", "stats.Marksman|Lethality", "stats.Marksman|Health"
+      ],
+      "status": "partial", "source": "mock"
+    }
+  },
+  "failed": {
+    "scout_failed": {
+      "panel_type": "unknown", "requested_side": "you", "specials": [], "specials_observed": "none", "warnings": [],
+      "stats": {}, "field_conf": {}, "unreadable_fields": [], "status": "failed", "source": "mock"
+    }
+  },
+  "denials": {
+    "401": {"status": 401, "body": {"error": "auth_required"}},
+    "402": {"status": 402, "body": {"error": "payment_required", "message": "Screenshot OCR is a Pro feature. Upgrade to use it."}},
+    "411": {"status": 411, "body": {"error": "length_required", "message": "chunked uploads are not accepted; send a Content-Length"}},
+    "413": {"status": 413, "body": {"error": "body_too_large"}},
+    "415": {"status": 415, "body": {"error": "unsupported_image_type"}},
+    "422_side": {"status": 422, "body": {"error": "invalid_side"}},
+    "422_panel": {"status": 422, "body": {"error": "invalid_panel"}},
+    "422_count": {"status": 422, "body": {"error": "invalid_file_count"}},
+    "429_quota": {"status": 429, "body": {"error": "quota_exhausted", "message": "Daily limit reached: 10 OCR uploads/day on the pro plan. Resets at midnight UTC."}},
+    "429_burst": {"status": 429, "body": {"error": "burst", "message": "Slow down: at most 20 requests per minute."}},
+    "503": {"status": 503, "body": {"error": "ocr_engine_unavailable"}}
+  }
+}

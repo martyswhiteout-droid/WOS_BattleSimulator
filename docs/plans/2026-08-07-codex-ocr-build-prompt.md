@@ -22,7 +22,7 @@ You are executing a pre-written, test-first implementation plan. Do not design, 
 **Scope:** Tasks 0–11 inclusive. **Task 12 is GATED**: if `shell/tests/fixtures/panel_ocr/images/` is missing or empty, STOP after Task 11 and say so — NEVER substitute synthetic or downloaded images.
 
 **Per-task protocol (strict TDD):**
-- Write the failing test exactly as given → run it → confirm it fails for the stated reason → implement minimally → run to green → run the FULL suite (`py -m pytest shell/tests -q`, plus `node --test shell/app/ocr/client/tests/` once it exists) → commit.
+- Write the failing test exactly as given → run it → confirm it fails for the stated reason → implement minimally → run to green → run the FULL suite (`py -m pytest shell/tests -q`, plus `node --test <explicit .test.mjs paths>` once they exist — never a bare directory, which Windows Node rejects) → commit.
 - Commits: the exact message from the task (`ocr:` prefix), staging ONLY that task's files with explicit `git add <path>` — never `git add -A` or `git commit -a` (the tree may contain unrelated work).
 - Touch only the files each task lists. NEVER modify: `prototype/index.html`, anything under `wos_sim/`, `prototype/mocks/`, `WOSTests.com`, or any doc.
 
