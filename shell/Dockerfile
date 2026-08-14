@@ -20,6 +20,17 @@ RUN pip install --no-cache-dir -r shell/requirements.txt numpy openpyxl
 COPY wos_sim/ wos_sim/
 COPY prototype/ prototype/
 COPY shell/ shell/
+# F1 (EVAL_ROUND_1.md): shell/app/ocr/extract.py + vision.py resolve the
+# ingestion skill's validator + v2 schema at runtime from
+# <repo_root>/.claude/skills/wos-battlereport-ingestion/ and hard-fail
+# without it — every OCR request (including the OCR_MOCK=1 path, which
+# still runs the validator) 500'd in this image before this line existed.
+COPY .claude/skills/wos-battlereport-ingestion/ .claude/skills/wos-battlereport-ingestion/
+
+# F28 (EVAL_ROUND_1.md, minor): don't run the app as root.
+RUN useradd --no-create-home --shell /usr/sbin/nologin wosshell \
+    && chown -R wosshell:wosshell /srv/wos
+USER wosshell
 
 EXPOSE 8200
 

@@ -4,15 +4,21 @@ Implements the composition model of shell/ARCHITECTURE.md and
 PRODUCTION_PLAN.md §2:
 
     Caddy (TLS) → shell.app.main:app
-      ├─ AuthMiddleware      (auth.py — outermost)
+      ├─ BodyLimitMiddleware (this file — outermost; 413 before anything buffers)
+      ├─ CorsLockMiddleware  (this file — locks CORS to BASE_URL outside dev)
+      ├─ DocsGuardMiddleware (this file — 404s /docs,/redoc,/openapi.json outside dev)
+      ├─ AuthMiddleware      (auth.py)
       ├─ LimitsMiddleware    (adapter around Agent B's limits.check_and_record)
       ├─ MinimizeMiddleware  (minimize.py — staging/prod response minimization)
       ├─ OverlayMiddleware   (overlay/ — script injection into the served UI)
-      ├─ /shell/* routes     (health, me, overlay assets; B's billing, C's ocr)
+      ├─ /shell/* routes     (health, me, signout, legal/*; B's billing, C's ocr)
       └─ mount("/"): wos_sim.predictor.server:app  (LAST — /api/* + static UI)
 
 Starlette runs the LAST-added middleware OUTERMOST, so add_middleware calls
-below are in reverse of the request-path order above.
+below are in reverse of the request-path order above. The three new
+outermost layers (F4/F5/F14, EVAL_ROUND_1.md) don't depend on auth/limits
+state, so they reject what they're going to reject before the app spends
+any work getting there.
 
 sys.path: importing ``shell.app.main`` already requires the REPO ROOT on
 sys.path — run from the repo root (``uvicorn shell.app.main:app --port 8200``
@@ -38,8 +44,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import httpx                                       # noqa: E402
+import jwt                                         # noqa: E402
 from fastapi import FastAPI, Request              # noqa: E402
-from fastapi.responses import JSONResponse        # noqa: E402
+from fastapi.responses import JSONResponse, PlainTextResponse  # noqa: E402
 
 from shell.app import overlay                     # noqa: E402
 from shell.app.auth import AuthMiddleware, UserCtx  # noqa: E402
@@ -140,6 +148,191 @@ class LimitsAdapterMiddleware:
         await self.app(scope, replayed_receive, send)
 
 
+def _scope_header(scope, name: bytes) -> str | None:
+    """One decoded request header value from a raw ASGI scope."""
+    for key, value in scope.get("headers") or []:
+        if key.lower() == name:
+            return value.decode("latin-1")
+    return None
+
+
+async def _send_413(send) -> None:
+    payload = json.dumps({"error": "payload_too_large",
+                          "message": "Request body exceeds the size limit."}).encode()
+    await send({"type": "http.response.start", "status": 413,
+                "headers": [(b"content-type", b"application/json"),
+                            (b"content-length", str(len(payload)).encode()),
+                            (b"cache-control", b"no-store")]})
+    await send({"type": "http.response.body", "body": payload})
+
+
+_OCR_UPLOAD_PATHS = frozenset({"/shell/ocr", "/shell/ocr/panel"})
+
+
+class BodyLimitMiddleware:
+    """Outermost guard: rejects an oversized request body with 413 BEFORE
+    any downstream layer buffers it (F4, EVAL_ROUND_1.md — a 12 MB JSON
+    body sailed through as a 200 in 9.55s because ``LimitsMiddleware``'s
+    own buffering had no cap). Applies in every ENV, not just staging/prod,
+    and is independent of which limits implementation (Agent B's own
+    LimitsMiddleware, or this module's LimitsAdapterMiddleware fallback)
+    ends up active downstream. Complements shell/Caddyfile's edge-level
+    ``request_body { max_size }`` cap, so the limit still holds when the
+    app is reached directly (dev, tests, a misconfigured proxy).
+
+    Route-aware: /shell/ocr and /shell/ocr/panel get the LARGER
+    ``MAX_OCR_BODY_BYTES`` instead of the default ``MAX_BODY_BYTES`` — a
+    uniform tight cap would reject legitimate screenshot uploads (real
+    phone captures run hundreds of KB to a few MB; Agent C's own
+    ocr/panel_router.py already validates up to ~8 MB, QA D-014/D-024) long
+    before Agent C's own, already-correct, already-tested size check ever
+    ran. Every other path (in particular /api/predict and /api/battle,
+    which is what the eval's 12 MB reproduction actually hit) keeps the
+    tight default."""
+
+    def __init__(self, app, settings: Settings):
+        self.app = app
+        self.default_limit = settings.MAX_BODY_BYTES
+        self.ocr_limit = settings.MAX_OCR_BODY_BYTES
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        limit = (self.ocr_limit if scope.get("path") in _OCR_UPLOAD_PATHS
+                 else self.default_limit)
+
+        content_length = _scope_header(scope, b"content-length")
+        if content_length is not None:
+            try:
+                if int(content_length) > limit:
+                    await _send_413(send)
+                    return
+            except ValueError:
+                pass   # malformed header: fall through to the byte-counted guard
+
+        messages = []
+        total = 0
+        while True:
+            message = await receive()
+            messages.append(message)
+            if message["type"] != "http.request":
+                break
+            total += len(message.get("body", b""))
+            if total > limit:      # chunked / no Content-Length: bound it live
+                await _send_413(send)
+                return
+            if not message.get("more_body"):
+                break
+
+        replay = iter(messages)
+
+        async def replayed_receive():
+            for message in replay:
+                return message
+            return await receive()
+
+        await self.app(scope, replayed_receive, send)
+
+
+_DOCS_PATHS = frozenset({"/docs", "/redoc", "/openapi.json"})
+
+
+class DocsGuardMiddleware:
+    """Blocks the MOUNTED sub-app's auto-generated docs outside dev (F5,
+    EVAL_ROUND_1.md). The shell's own FastAPI instance already sets
+    docs_url=None/redoc_url=None/openapi_url=None UNCONDITIONALLY (see
+    create_app below) — but wos_sim.predictor.server:app (mounted at "/")
+    sets no such override, and it is a READ-ONLY import (shell/ARCHITECTURE.md
+    boundary rule 1: wos_sim/ is never edited from here), so its copy of
+    /docs, /redoc, /openapi.json is closed at the shell boundary instead. A
+    promote.py gate reporting "debug endpoints: clean" while these were
+    live and public in staging is exactly the false-negative F5 flagged."""
+
+    def __init__(self, app, settings: Settings):
+        self.app = app
+        self.settings = settings
+
+    async def __call__(self, scope, receive, send):
+        path = scope.get("path", "") if scope["type"] == "http" else ""
+        if (scope["type"] != "http" or not self.settings.is_prodlike
+                or path not in _DOCS_PATHS):
+            await self.app(scope, receive, send)
+            return
+        payload = json.dumps({"detail": "Not Found"}).encode()
+        await send({"type": "http.response.start", "status": 404,
+                    "headers": [(b"content-type", b"application/json"),
+                                (b"content-length", str(len(payload)).encode())]})
+        await send({"type": "http.response.body", "body": payload})
+
+
+_CORS_HEADER_NAMES = frozenset({b"access-control-allow-origin",
+                                b"access-control-allow-credentials"})
+
+
+class CorsLockMiddleware:
+    """Outside dev, rewrites CORS response headers so only the configured
+    production origin (BASE_URL) is ever granted cross-origin access — no
+    matter which inner layer produced the header (F14, EVAL_ROUND_1.md).
+    wos_sim/predictor/server.py wires its OWN
+    ``CORSMiddleware(allow_origins=["*"], ...)`` for local dev convenience;
+    it is a READ-ONLY import (boundary rule 1) so it cannot be edited to be
+    env-aware — the lock is enforced here, at the outermost shell layer,
+    which sees (and can rewrite) every response regardless of origin."""
+
+    def __init__(self, app, settings: Settings):
+        self.app = app
+        self.settings = settings
+        origin = (settings.BASE_URL or "").rstrip("/")
+        self._allowed = origin or None
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or not self.settings.is_prodlike:
+            await self.app(scope, receive, send)
+            return
+
+        request_origin = _scope_header(scope, b"origin")
+        allow = self._allowed is not None and request_origin == self._allowed
+
+        async def send_wrapper(message):
+            if message["type"] == "http.response.start":
+                headers = [(n, v) for n, v in message.get("headers", [])
+                           if n.lower() not in _CORS_HEADER_NAMES]
+                if allow:
+                    headers.append((b"access-control-allow-origin",
+                                    self._allowed.encode("latin-1")))
+                    headers.append((b"access-control-allow-credentials", b"true"))
+                    headers.append((b"vary", b"Origin"))
+                message = {**message, "headers": headers}
+            await send(message)
+
+        await self.app(scope, receive, send_wrapper)
+
+
+async def _revoke_clerk_session(token: str, settings: Settings) -> None:
+    """Best-effort Clerk session revocation for POST /shell/signout (F6,
+    EVAL_ROUND_1.md extra credit beyond the binding "server-side cookie
+    expiry" scope). Never raises: the Set-Cookie clear on the /shell/signout
+    response is what actually ends the session for THIS browser, and that
+    must land even if Clerk is unreachable, misconfigured, or this call's
+    endpoint shape ever drifts from Clerk's API. Skips entirely (no network
+    call) when keyless — mock-first rule."""
+    if not settings.CLERK_SECRET_KEY:
+        return
+    try:
+        claims = jwt.decode(token, options={"verify_signature": False})
+        sid = claims.get("sid")
+        if not sid:
+            return
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            await client.post(
+                f"https://api.clerk.com/v1/sessions/{sid}/revoke",
+                headers={"Authorization": f"Bearer {settings.CLERK_SECRET_KEY}"})
+    except Exception:
+        log.warning("Clerk session revoke failed/skipped", exc_info=True)
+
+
 async def _entitlements_for(plan: str, settings: Settings) -> dict:
     """Daily quotas for a plan. Prefers Agent B's db.get_entitlements(plan)
     (single source of truth = entitlements table; sync or async accepted);
@@ -169,6 +362,19 @@ async def _entitlements_for(plan: str, settings: Settings) -> dict:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
+
+    # Fail-fast (F11, EVAL_ROUND_1.md): an unsalted IP hash
+    # (shell.app.limits.hash_ip) is a 2**32-entry rainbow table — minutes to
+    # reverse the whole address space. Refuse to assemble the app at all
+    # rather than silently downgrade a privacy control. Gated on
+    # is_prodlike alone (NOT also dev_bypass) — DEV_BYPASS is an escape
+    # hatch for auth, never for this.
+    if settings.is_prodlike and not settings.IP_HASH_SALT:
+        raise RuntimeError(
+            f"IP_HASH_SALT is empty while ENV={settings.ENV!r} (staging/prod). "
+            "An unsalted IP hash is reversible in minutes — refusing to boot. "
+            "Set IP_HASH_SALT to a long random secret (see shell/.env.example).")
+
     app = FastAPI(title="WoS Battle Simulator — production shell",
                   version="0.1", docs_url=None, redoc_url=None, openapi_url=None)
 
@@ -194,6 +400,44 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                          "plan": user.plan},
                 "entitlements": ent, "remaining": remaining,
                 "env": settings.ENV, "sign_in_url": settings.sign_in_url}
+
+    @app.post("/shell/signout", include_in_schema=False)
+    async def signout(request: Request):
+        """Server-side sign-out (F6, EVAL_ROUND_1.md): Clerk's __session
+        cookie is HttpOnly, so client-side `document.cookie = ...` can never
+        clear it — only a Set-Cookie RESPONSE header can (HttpOnly blocks
+        script access, not server-set headers). Idempotent: works even with
+        no/garbage cookie, so it never itself requires being authenticated
+        (see EXEMPT_PATHS in auth.py)."""
+        token = request.cookies.get("__session")
+        if token and settings.CLERK_SECRET_KEY:
+            try:
+                await _revoke_clerk_session(token, settings)
+            except Exception:
+                log.warning("Clerk session revoke raised; cookie clear still applies",
+                           exc_info=True)
+        resp = JSONResponse({"status": "signed_out"})
+        resp.delete_cookie("__session", path="/", secure=True, httponly=True,
+                           samesite="lax")
+        return resp
+
+    @app.get("/legal/tos", include_in_schema=False)
+    def legal_tos():
+        """Serves shell/legal/tos.md (Agent D's content; Agent A owns the
+        route). F8/F4 (EVAL_ROUND_1.md, PRODUCTION_CRITERIA F2/F4): the
+        overlay's disclaimer chip links here."""
+        path = _REPO_ROOT / "shell" / "legal" / "tos.md"
+        if not path.is_file():
+            return PlainTextResponse("Terms of Service not available.", status_code=404)
+        return PlainTextResponse(path.read_text(encoding="utf-8"), media_type="text/markdown")
+
+    @app.get("/legal/privacy", include_in_schema=False)
+    def legal_privacy():
+        """Serves shell/legal/privacy.md — see legal_tos() above."""
+        path = _REPO_ROOT / "shell" / "legal" / "privacy.md"
+        if not path.is_file():
+            return PlainTextResponse("Privacy Policy not available.", status_code=404)
+        return PlainTextResponse(path.read_text(encoding="utf-8"), media_type="text/markdown")
 
     app.include_router(overlay.router)
 
@@ -252,7 +496,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.add_middleware(_their_mw)
     else:
         app.add_middleware(LimitsAdapterMiddleware, settings=settings)
-    app.add_middleware(AuthMiddleware, settings=settings)              # outermost
+    app.add_middleware(AuthMiddleware, settings=settings)
+    # Outermost three: none of these depend on auth/limits state, and each
+    # closes a seam the eval reproduced live (F5/F14/F4 — EVAL_ROUND_1.md).
+    app.add_middleware(DocsGuardMiddleware, settings=settings)
+    app.add_middleware(CorsLockMiddleware, settings=settings)
+    app.add_middleware(BodyLimitMiddleware, settings=settings)         # outermost
 
     return app
 

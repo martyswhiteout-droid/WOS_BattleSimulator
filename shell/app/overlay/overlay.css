@@ -168,6 +168,22 @@
 
 #wos-shell-overlay .wos-sc-muted { color: #8FB0C9; }
 
+#wos-shell-overlay .wos-sc-legal {
+  padding: 6px 10px 8px;
+  border-top: 1px solid rgba(255, 255, 255, .07);
+  font-size: 9px;
+  line-height: 1.5;
+  color: #8FB0C9;
+}
+
+#wos-shell-overlay .wos-sc-legal a {
+  color: #8FB0C9;
+  text-decoration: underline;
+}
+
+#wos-shell-overlay .wos-sc-legal a:hover,
+#wos-shell-overlay .wos-sc-legal a:focus-visible { color: #B9D2E5; }
+
 @media (prefers-reduced-motion: reduce) {
   #wos-shell-overlay, #wos-shell-overlay * {
     transition: none !important;

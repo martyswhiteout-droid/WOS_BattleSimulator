@@ -2,6 +2,15 @@
 # Run from shell/:  docker compose up -d --build
 # Put real keys in shell/.env (copy .env.example). Staging runs the same file
 # as a second stack with its own .env (ENV=staging) per PRODUCTION_PLAN §2.1.
+#
+# F28 (EVAL_ROUND_1.md, minor): cheap hardening for a single-VPS deployment —
+# mem_limit/cpus bound one runaway container, no-new-privileges blocks
+# privilege escalation via setuid binaries. (The Dockerfile itself now also
+# drops to a non-root user before CMD, F28's other half.) read_only root
+# filesystem is deliberately NOT enabled here — it needs verifying against a
+# real container boot (PIL/rapidocr temp-file usage unconfirmed) that this
+# keyless, no-docker-daemon environment cannot do; left for a follow-up with
+# that verification.
 services:
   app:
     build:
@@ -11,6 +20,10 @@ services:
     restart: unless-stopped
     expose:
       - "8200"
+    mem_limit: 1g
+    cpus: 2.0
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8200/shell/health', timeout=3)"]
       interval: 30s

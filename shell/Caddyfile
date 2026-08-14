@@ -2,13 +2,42 @@
 # Caddy provisions/renews certificates automatically (DNS must point at the
 # VPS first). Each compose stack serves its own hostname; both blocks proxy
 # to that stack's app container.
+#
+# F4 (EVAL_ROUND_1.md): request_body { max_size } is the EDGE-level body
+# cap — a 12 MB JSON body previously sailed through as a 200 in 9.55s.
+# Mirrors shell/app/main.py's BodyLimitMiddleware (MAX_BODY_BYTES, same
+# 256 KiB default) so an oversized request never even reaches the app;
+# defense in depth if the two ever drift, either layer alone still rejects.
+# F14 (EVAL_ROUND_1.md): security headers Caddy does not add by default
+# (HSTS, nosniff, frame-deny, referrer policy). CORS-origin locking is
+# enforced app-side instead (CorsLockMiddleware, shell/app/main.py) since it
+# needs to see the per-request Origin header and rewrite whatever the
+# mounted sub-app's own CORS middleware already set.
 
 wostests.com {
 	encode gzip
+	request_body {
+		max_size 256KB
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
 	reverse_proxy app:8200
 }
 
 staging.wostests.com {
 	encode gzip
+	request_body {
+		max_size 256KB
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
 	reverse_proxy app:8200
 }
