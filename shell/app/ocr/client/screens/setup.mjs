@@ -15,14 +15,28 @@ export function shouldShowUndo(snapshot) {
   return !!snapshot;
 }
 
-export function buildFillPlan({ conversion, heroesMe = null, heroesFoe = null }) {
+// D-042 fix: previously built solely from `conversion` — a side with no
+// upload (or a totally-failed read, E1 "wrong") has no conversion entry at
+// all, and even a ready conversion's own percents never reflect whatever
+// the user corrected in S4's editor (savedValues), since that was never
+// read here. The fill plan now merges savedValues OVER conversion-derived
+// percents per side (user edits always win — the review screen's whole
+// point) and fills even when conversion is entirely absent, i.e. the
+// manual-only path ("Type them in myself"). A side stays unfilled (null)
+// only when BOTH are empty — conversion never fabricates a non-ready
+// side's own numbers (unchanged rule), it is only ever savedValues that can
+// rescue an otherwise-empty side.
+function mergedPercentsForSide(sideConversion, savedValuesForSide) {
+  const base = (sideConversion && sideConversion.outcome === 'ready') ? sideConversion.percents : {};
+  return { ...base, ...(savedValuesForSide || {}) };
+}
+
+export function buildFillPlan({ conversion, savedValues = { you: {}, enemy: {} }, heroesMe = null, heroesFoe = null }) {
   const plan = { me: null, foe: null, heroesMe: null, heroesFoe: null };
-  if (conversion.you && conversion.you.outcome === 'ready') {
-    plan.me = toApplyPanelPayload(conversion.you.percents);
-  }
-  if (conversion.enemy && conversion.enemy.outcome === 'ready') {
-    plan.foe = toApplyPanelPayload(conversion.enemy.percents);
-  }
+  const meMerged = mergedPercentsForSide(conversion.you, savedValues.you);
+  if (Object.keys(meMerged).length) plan.me = toApplyPanelPayload(meMerged);
+  const foeMerged = mergedPercentsForSide(conversion.enemy, savedValues.enemy);
+  if (Object.keys(foeMerged).length) plan.foe = toApplyPanelPayload(foeMerged);
   if (heroesMe) plan.heroesMe = toApplyHeroesPayload(heroesMe);
   if (heroesFoe) plan.heroesFoe = toApplyHeroesPayload(heroesFoe);
   return plan;
