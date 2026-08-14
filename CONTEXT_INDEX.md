@@ -32,6 +32,7 @@ Last audited: 2026-08-05.
 | How do I BUILD the OCR feature (executor-ready TDD tasks with code + golden vectors)? | `docs/plans/2026-08-06-ocr-panel-tdd-plan.md` (Tasks 0–12; Task 12 gated on owner PNGs) |
 | What do I paste into Codex to execute the OCR build plan? | `docs/plans/2026-08-07-codex-ocr-build-prompt.md` (verbatim prompt + owner pre-flight) |
 | How do I QA the OCR feature to production standard (edge cases, unhappy paths, release gate)? | `docs/OCR_QA_PLAN.md` |
+| How do I (Martin) hands-on test the shipped OCR feature (run command, pro-in-dev, fixture walkthroughs, expected values, suite commands)? | `docs/OCR_TEST_INSTRUCTIONS.md` (written at merge, 2026-08-15) |
 | Can we run OCR free on Google's Gemini API (1,500/day), and how do we set it up? | `docs/OCR_GEMINI_FREE_TIER.md` (verified 2026-08-06; setup walkthrough + caveats) |
 | What are the chief-gear / chief-charm / hero-gear / widget LADDERS, and does OCR need them? | `docs/GEAR_LADDERS.md` (2026-08-07: charm 1–16 + gear 110 rungs codified; law needs NO gear levels — proven on account C; Leth/HP non-max sub-question OPEN) |
 | Where is the FULL set of Type-1 deterministic battle data? (check here BEFORE asking Martin) | `wos_sim/data/experiments/_corpus/` — `TYPE1_CORPUS.md` (human table + coverage matrices), `TYPE1_CORPUS.json` + `corpus.py` (query CLI); OCR corrections pre-applied (`corrections.json`); rebuild with `build_corpus.py` after new ingestion |
