@@ -20,6 +20,8 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+import shell.app.ocr.extract as extract_module  # noqa: E402
+from shell.app.ocr._shims import SkillUnavailableError, _StubSettings  # noqa: E402
 from shell.app.ocr.extract import (  # noqa: E402
     MAX_IMAGE_BYTES,
     ImageValidationError,
@@ -32,6 +34,7 @@ from shell.app.ocr.extract import (  # noqa: E402
 from shell.app.ocr.vision import (  # noqa: E402
     FIXTURE_DIR,
     NEVER_FABRICATE_RULE,
+    AnthropicVision,
     MockVision,
     build_extraction_prompt,
     get_vision_client,
@@ -125,6 +128,42 @@ def test_validator_adapter_rejects_invalid_fixture():
     assert "'type' must be 1 or 2" in joined
 
 
+# --- skill-directory resolution (EVAL_ROUND_1.md F1) ------------------------
+#
+# The validator module is memoized process-wide in extract._validator_module
+# after first successful load (by design — the skill dir doesn't change at
+# runtime). Each test here forces a fresh resolution via monkeypatch so it
+# genuinely exercises the branch under test regardless of what earlier tests
+# in this session already warmed the cache with.
+
+def test_load_validator_raises_skill_unavailable_when_dir_missing(monkeypatch):
+    monkeypatch.setattr(extract_module, "_validator_module", None)
+    broken = _StubSettings(skill_ingestion_dir="/definitely/not/a/real/path/xyz")
+    with pytest.raises(SkillUnavailableError) as ei:
+        extract_module._load_validator(broken)
+    assert ei.value.code == "skill_unavailable"
+    # Path() normalizes separators per-OS, so match on components rather than
+    # the literal forward-slash string.
+    assert "definitely" in str(ei.value) and "xyz" in str(ei.value)
+
+
+def test_run_validator_threads_settings_through_to_the_loader(monkeypatch):
+    monkeypatch.setattr(extract_module, "_validator_module", None)
+    broken = _StubSettings(skill_ingestion_dir="/definitely/not/a/real/path/xyz")
+    with pytest.raises(SkillUnavailableError):
+        run_validator(VALID, settings=broken)
+
+
+def test_load_validator_succeeds_with_default_settings(monkeypatch):
+    """Sanity: resetting the cache and resolving with no override still finds
+    the real, repo-shipped skill directory (guards against the two tests
+    above accidentally leaving _validator_module poisoned for the rest of
+    the suite in some future refactor)."""
+    monkeypatch.setattr(extract_module, "_validator_module", None)
+    module = extract_module._load_validator(None)
+    assert hasattr(module, "check")
+
+
 # --- LLM output parsing ----------------------------------------------------
 
 def test_parse_llm_json_variants():
@@ -197,6 +236,20 @@ def test_extraction_prompt_embeds_schema_and_never_fabricate():
     assert "Arithmetic identities" in prompt
 
 
+def test_extraction_prompt_raises_skill_unavailable_when_schema_missing():
+    """EVAL_ROUND_1.md F1, vision-side: the real (Anthropic) backend builds
+    this prompt before making the API call, so a missing skill directory
+    must surface as SkillUnavailableError there — before any spend — not a
+    bare FileNotFoundError."""
+    broken = _StubSettings(skill_ingestion_dir="/definitely/not/a/real/path/xyz")
+    with pytest.raises(SkillUnavailableError) as ei:
+        build_extraction_prompt(broken)
+    assert ei.value.code == "skill_unavailable"
+    # Path() normalizes separators per-OS, so match on components rather than
+    # the literal forward-slash string.
+    assert "definitely" in str(ei.value) and "xyz" in str(ei.value)
+
+
 def test_get_vision_client_keyless_returns_mock(monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("OCR_MOCK", raising=False)
@@ -207,6 +260,19 @@ def test_get_vision_client_ocr_mock_overrides_key(monkeypatch):
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-fake-key-for-test")
     monkeypatch.setenv("OCR_MOCK", "1")
     assert isinstance(get_vision_client(), MockVision)
+
+
+def test_get_vision_client_real_backend_threads_settings_through():
+    """The real (Anthropic) backend must carry the settings object it was
+    built with, so build_extraction_prompt(self.settings) inside .extract()
+    honours the same skill_ingestion_dir resolution as the mock/validator
+    path. Uses an explicit settings object (not env vars) so this is not at
+    the mercy of shell.app.config.get_settings()'s process-wide @lru_cache
+    singleton, which may already be warm from an earlier test/import."""
+    settings = _StubSettings(anthropic_api_key="sk-fake-key-for-test", ocr_mock=False)
+    client = get_vision_client(settings)
+    assert isinstance(client, AnthropicVision)
+    assert client.settings is settings
 
 
 def test_mock_vision_returns_fixture_and_counts_calls():
