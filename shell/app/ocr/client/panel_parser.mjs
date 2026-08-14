@@ -34,13 +34,23 @@ const META = [
   'Deployment Capacity', 'March Queue', 'March Speed Up',
   'Training Capacity', 'Training Speed', 'Healing Speed',
 ];
-const HEADERS = ['Bonus Overview', 'Stat Bonuses', 'Military', 'Troops Total', 'Lootable'];
+const HEADERS = ['Bonus Overview', 'Stat Bonuses', 'Military', 'Troops Total', 'Lootable',
+  'Notes on Special Bonuses',
+  'Stats Bonuses include the following Special Bonuses'];
 
-// The header of the panel that actually LISTS the specials rows (QA D-022).
-// Seeing it with zero special rows is the legal "this account has no specials"
-// state â€” not the same as never having captured the panel. Deliberately narrow:
-// 'Bonus Overview' is the BO/city-stats screen.
-export const SPECIALS_PANEL_HEADERS = new Set(['header:Stat Bonuses']);
+// The headers of the popup that actually LISTS the specials rows (QA D-022
+// semantics, corrected by QA D-043). 'Stat Bonuses' is the MAIN class-stat
+// panel's own title: present on every scout/battle capture, so it says
+// nothing about whether the separate 'Notes on Special Bonuses' popup (the
+// '!' icon next to that title) was captured, and must NOT count as specials
+// evidence. Only the popup's own title/subtitle count (ground truth: RapidOCR
+// tokens of C_battle_4.png). Seeing one with zero special rows is the legal
+// "this account has no specials" state. 'Bonus Overview' stays excluded: the
+// BO screen's specials live in its own City Defenses rows, not this popup.
+export const SPECIALS_PANEL_HEADERS = new Set([
+  'header:Notes on Special Bonuses',
+  'header:Stats Bonuses include the following Special Bonuses',
+]);
 
 // Capture states for foldSets({ observed }) (QA D-022).
 export const OBSERVED_STATES = ['none', 'partial', 'read'];

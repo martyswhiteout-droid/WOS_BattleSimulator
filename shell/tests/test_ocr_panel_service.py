@@ -240,15 +240,56 @@ def test_qa_defect_022_partially_readable_specials_report_partial():
     assert r["specials_observed"] == "partial"
 
 def test_qa_defect_022_specials_panel_header_with_no_rows_reads_clean():
-    # The legal zero-specials account: the panel WAS captured and read.
+    # The legal zero-specials account: the POPUP was captured and read
+    # (its real title, per C_battle_4.png — QA D-043 corrected the earlier
+    # version of this test, which used the main panel's own "Stat Bonuses"
+    # title and thereby locked the D-043 bug in as intended behavior).
     shot = _shot_scout()
-    shot.append(_tok("Stat Bonuses", 0.05, 0.80, 0.40, 0.83))
+    shot.append(_tok("Notes on Special Bonuses", 0.05, 0.80, 0.40, 0.83))
     r = extract_panel([shot], side_hint="you", panel_hint=None)
     assert r["specials"] == [] and r["specials_observed"] == "read"
 
 def test_qa_defect_022_no_rows_and_no_header_is_none():
     assert extract_panel([_shot_scout()], side_hint="you",
                          panel_hint=None)["specials_observed"] == "none"
+
+def test_qa_defect_043_main_panel_title_is_not_specials_evidence():
+    # "Stat Bonuses" is the class-stat panel's OWN title — it appears on every
+    # scout/battle capture, so seeing it says nothing about the separate
+    # "Notes on Special Bonuses" popup. Before the D-043 fix this capture
+    # reported observed="read" and fold_sets silently folded an all-zero set
+    # (worst reproduced silent error: 367.4pp on account A).
+    shot = _shot_scout()
+    shot.append(_tok("Stat Bonuses", 0.30, 0.02, 0.70, 0.05))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [] and r["specials_observed"] == "none"
+
+def test_qa_defect_043_popup_subtitle_alone_counts_as_captured():
+    # A cropped popup capture can lose the title but keep the explainer line
+    # ("Stats Bonuses include the following Special Bonuses:") — either token
+    # is evidence the popup itself was photographed.
+    shot = _shot_scout()
+    shot.append(_tok("Stats Bonuses include the following Special Bonuses:",
+                     0.05, 0.80, 0.70, 0.83))
+    r = extract_panel([shot], side_hint="you", panel_hint=None)
+    assert r["specials"] == [] and r["specials_observed"] == "read"
+
+def test_qa_defect_043_conversion_refuses_main_panel_only_battle_capture():
+    # Full-path version of the QA2 reproduction: a battle capture consisting
+    # of ONLY the main panel (its own "Stat Bonuses" title, both value
+    # columns, no popup) must refuse to fold — never identity-convert.
+    from shell.app.ocr.panel.convert import MissingSpecialsError, fold_sets
+    toks, y = [_tok("Stat Bonuses", 0.30, 0.02, 0.70, 0.05)], 0.10
+    for cls in ("Infantry", "Lancer", "Marksman"):
+        for st in ("Attack", "Defense", "Lethality", "Health"):
+            toks.append(_tok(f"{cls} {st}", 0.38, y, 0.58, y + 0.03))
+            toks.append(_tok("+100.0%", 0.03, y, 0.23, y + 0.03, color="green"))
+            toks.append(_tok("+50.0%", 0.70, y, 0.90, y + 0.03, color="red"))
+            y += 0.05
+    r = extract_panel([toks], side_hint="you", panel_hint="battle")
+    assert r["specials_observed"] == "none"
+    with pytest.raises(MissingSpecialsError):
+        fold_sets(r["specials"], [], observed=r["specials_observed"])
 
 def test_qa_defect_022_all_readable_specials_report_read():
     shot = _shot_scout()

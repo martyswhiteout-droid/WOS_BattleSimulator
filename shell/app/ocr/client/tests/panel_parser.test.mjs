@@ -315,8 +315,10 @@ test('QA defect 022: service reports the tri-state capture verdict', () => {
   partial.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83, 0.20));
   assert.equal(extractPanel([partial], 'you', null).specials_observed, 'partial');
 
+  // QA D-043 corrected this case: popup title, not the main panel's own
+  // "Stat Bonuses" title, is what proves the specials popup was captured.
   const headerOnly = scoutShot();
-  headerOnly.push(tok('Stat Bonuses', 0.05, 0.80, 0.40, 0.83));
+  headerOnly.push(tok('Notes on Special Bonuses', 0.05, 0.80, 0.40, 0.83));
   const headerResult = extractPanel([headerOnly], 'you', null);
   assert.deepEqual(headerResult.specials, []);
   assert.equal(headerResult.specials_observed, 'read');
@@ -327,6 +329,25 @@ test('QA defect 022: service reports the tri-state capture verdict', () => {
   readable.push(tok('Attack Bonus (Pet Skill)', 0.05, 0.80, 0.40, 0.83));
   readable.push(tok('+10.0%', 0.70, 0.80, 0.95, 0.83));
   assert.equal(extractPanel([readable], 'you', null).specials_observed, 'read');
+});
+
+test('QA defect 043: main panel title alone is not specials evidence', () => {
+  // "Stat Bonuses" is the class-stat panel's OWN title, present on every
+  // scout/battle capture — before the fix it flipped specials_observed to
+  // 'read' with zero rows, silently folding an all-zero set downstream.
+  const mainOnly = scoutShot();
+  mainOnly.push(tok('Stat Bonuses', 0.30, 0.02, 0.70, 0.05));
+  const r = extractPanel([mainOnly], 'you', null);
+  assert.deepEqual(r.specials, []);
+  assert.equal(r.specials_observed, 'none');
+  assert.throws(() => foldSets(r.specials, [], { observed: r.specials_observed }),
+    (e) => e.code === 'missing_specials');
+
+  // The popup's explainer line alone (cropped capture) still counts.
+  const subtitleOnly = scoutShot();
+  subtitleOnly.push(tok('Stats Bonuses include the following Special Bonuses:',
+    0.05, 0.80, 0.70, 0.83));
+  assert.equal(extractPanel([subtitleOnly], 'you', null).specials_observed, 'read');
 });
 
 function cityStatsShot() {

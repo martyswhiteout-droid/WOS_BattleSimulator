@@ -28,14 +28,25 @@ PENALTY_LABELS = frozenset(
 # the value identically — only the provenance text differs. No exact-match
 # input can collide (their skeletons differ by 3 characters).
 _META = ("Deployment Capacity", "March Queue", "March Speed Up", "Training Capacity", "Training Speed", "Healing Speed")
-_HEADERS = ("Bonus Overview", "Stat Bonuses", "Military", "Troops Total", "Lootable")
+_HEADERS = ("Bonus Overview", "Stat Bonuses", "Military", "Troops Total", "Lootable",
+            "Notes on Special Bonuses",
+            "Stats Bonuses include the following Special Bonuses")
 
-# The header of the panel that actually LISTS the specials rows (QA D-022).
-# Seeing it with zero special rows is the legal "this account has no specials"
-# state — which is NOT the same as never having captured the panel. Deliberately
-# narrow: "Bonus Overview" is the BO/city-stats screen, where the absence of
-# special rows says nothing about the specials panel.
-SPECIALS_PANEL_HEADERS = frozenset({"header:Stat Bonuses"})
+# The headers of the popup that actually LISTS the specials rows (QA D-022
+# semantics, corrected by QA D-043). "Stat Bonuses" is the MAIN class-stat
+# panel's own title — it appears on every scout/battle capture and says nothing
+# about whether the separate "Notes on Special Bonuses" popup (the "!" icon
+# next to that title) was captured, so it must NOT count as specials evidence;
+# treating it as such silently identity-converts battle numbers (D-043, worst
+# reproduced error 367.4pp). Only the popup's own title/subtitle count
+# (ground truth: RapidOCR tokens of C_battle_4.png). Seeing one of these with
+# zero special rows is the legal "this account has no specials" state.
+# "Bonus Overview" stays excluded for the same reason as ever: the BO screen's
+# specials live in its own City Defenses rows, not behind this popup.
+SPECIALS_PANEL_HEADERS = frozenset({
+    "header:Notes on Special Bonuses",
+    "header:Stats Bonuses include the following Special Bonuses",
+})
 
 _NON_ALPHA = re.compile(r"[^a-z]", re.ASCII)  # QA D-009: ASCII-only, like the JS mirror
 
