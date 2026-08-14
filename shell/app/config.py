@@ -51,6 +51,8 @@ class Settings(BaseSettings):
     # --- OCR engine ladder (shell/app/ocr/panel/ladder.py) ----------------
     OCR_CPU_CONCURRENCY: int = 2           # concurrent RapidOCR executions (VPS cores)
     GEMINI_OCR_DAILY_BUDGET: int = 1200    # hard daily cap on Gemini gap-fill calls
+    OCR_VISION_MODEL: str = "claude-sonnet-4-5"   # Agent C's ocr/vision.py + _shims.py
+    OCR_MOCK_FIXTURE: str | None = None           # Agent C's ocr/vision.py MockVision
 
     # --- production limits (enforced by Agent B's limits.py; defaults here
     #     are the single source for keyless/dev fallbacks) ------------------
@@ -60,6 +62,18 @@ class Settings(BaseSettings):
     PRO_OCR_PER_DAY: int = 30
     BURST_PER_MIN: int = 5
     GLOBAL_CONCURRENCY: int = 8
+    SWEEP_MIN_EVENTS: int = 20              # Agent B's limits.sweep_scan threshold
+
+    # --- privacy (Agent B's limits.hash_ip) --------------------------------
+    # F11 (EVAL_ROUND_1.md): an UNSALTED sha256(ip) is a 2**32-entry rainbow
+    # table — minutes to reverse. Empty by default (dev-safe, matches every
+    # other key here); create_app() in main.py refuses to boot when this is
+    # empty AND settings.is_prodlike, so an empty salt can never reach real
+    # traffic silently. Never set to a short/guessable value in prod.
+    IP_HASH_SALT: str = ""
+
+    # --- security / transport -----------------------------------------------
+    MAX_BODY_BYTES: int = 262_144           # 256 KiB; mirrors shell/Caddyfile's cap
 
     # --- derived helpers (properties, not env keys) -----------------------
 
@@ -132,9 +146,11 @@ for _key in ("ENV", "BASE_URL", "CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY",
              "DATABASE_URL", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET",
              "STRIPE_PRICE_ID_PRO", "ANTHROPIC_API_KEY", "GEMINI_API_KEY",
              "OCR_MOCK", "OCR_CPU_CONCURRENCY", "GEMINI_OCR_DAILY_BUDGET",
+             "OCR_VISION_MODEL", "OCR_MOCK_FIXTURE",
              "MIN_TROOPS_PER_SIDE", "FREE_SIMS_PER_DAY",
              "PRO_SIMS_PER_DAY", "PRO_OCR_PER_DAY", "BURST_PER_MIN",
-             "GLOBAL_CONCURRENCY"):
+             "GLOBAL_CONCURRENCY", "SWEEP_MIN_EVENTS", "IP_HASH_SALT",
+             "MAX_BODY_BYTES"):
     setattr(Settings, _key.lower(), _alias(_key))
 
 

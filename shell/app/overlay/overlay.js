@@ -37,6 +37,26 @@
   var body = el("div", "wos-sc-body");
   root.appendChild(body);
 
+  // F8 / PRODUCTION_CRITERIA F2 (EVAL_ROUND_1.md): a visible disclaimer is
+  // required, and the overlay is the only place the shell can add one
+  // without editing the prototype (boundary rule 1). Kept OUTSIDE the
+  // collapsible body (not hidden by the –/+ toggle) since a compliance
+  // disclaimer should not be collapsible. Canonical wording, verbatim per
+  // shell/legal/disclaimer.md ("keep it verbatim wherever it is rendered").
+  // textContent only (hostile-client rule) — the two links are local,
+  // static paths, not user data.
+  var legal = el("div", "wos-sc-legal");
+  legal.appendChild(document.createTextNode(
+    "Fan-made tool. Not affiliated with or endorsed by Century Games. "));
+  var tosLink = el("a", null, "Terms");
+  tosLink.href = "/legal/tos";
+  legal.appendChild(tosLink);
+  legal.appendChild(document.createTextNode(" · "));
+  var privacyLink = el("a", null, "Privacy");
+  privacyLink.href = "/legal/privacy";
+  legal.appendChild(privacyLink);
+  root.appendChild(legal);
+
   toggle.addEventListener("click", function () {
     var collapsed = root.classList.toggle("wos-collapsed");
     toggle.textContent = collapsed ? "+" : "–";
@@ -117,8 +137,17 @@
     var out = el("button", "wos-sc-btn wos-sc-ghost", "Sign out");
     out.type = "button";
     out.addEventListener("click", function () {
-      document.cookie = "__session=; Max-Age=0; path=/";
-      window.location.href = me.sign_in_url || "/";
+      // F6 (EVAL_ROUND_1.md): Clerk's session cookie is HttpOnly, so a
+      // client-side assignment via the `document.cookie` setter can never
+      // clear it — the user stayed fully authenticated after "signing
+      // out". POST /shell/signout clears it server-side (Set-Cookie),
+      // which HttpOnly does not block. Redirect only AFTER the request
+      // settles (success or failure) so the clear has actually happened by
+      // the time navigation starts.
+      out.disabled = true;
+      fetch("/shell/signout", { method: "POST", credentials: "same-origin" })
+        .catch(function () {})
+        .then(function () { window.location.href = me.sign_in_url || "/"; });
     });
     row.appendChild(out);
     body.appendChild(row);

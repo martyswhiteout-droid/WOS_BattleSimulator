@@ -93,3 +93,25 @@ def test_non_index_responses_not_injected(client):
     """JSON from the API must never grow a script tag."""
     resp = client.get("/shell/health")
     assert TAG not in resp.text
+
+
+def test_overlay_js_carries_the_century_games_disclaimer(client):
+    """F8 / PRODUCTION_CRITERIA F2 (EVAL_ROUND_1.md): a visible disclaimer
+    is required; the canonical wording (shell/legal/disclaimer.md) must be
+    kept verbatim wherever it is rendered."""
+    resp = client.get("/shell/overlay.js")
+    assert resp.status_code == 200
+    assert ("Fan-made tool. Not affiliated with or endorsed by Century Games."
+            in resp.text)
+    assert "/legal/tos" in resp.text
+    assert "/legal/privacy" in resp.text
+
+
+def test_legal_routes_serve_the_real_drafts(client):
+    tos = client.get("/legal/tos")
+    assert tos.status_code == 200
+    assert "Terms" in tos.text or "TERMS" in tos.text.upper()
+
+    privacy = client.get("/legal/privacy")
+    assert privacy.status_code == 200
+    assert len(privacy.text) > 0
