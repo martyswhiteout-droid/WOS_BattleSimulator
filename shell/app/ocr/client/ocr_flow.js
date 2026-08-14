@@ -316,6 +316,9 @@ function onDropzone(side) {
       controller.flow.addShot(side, id);
       app.shots[side].push({ id, bytes });
     }
+    // The recovery removal notice has served its purpose once a replacement
+    // screenshot lands — leaving it up reads as stale (L4 closing nit).
+    if (input.files.length) app.s2Notice = null;
     render();
   });
   input.click();
