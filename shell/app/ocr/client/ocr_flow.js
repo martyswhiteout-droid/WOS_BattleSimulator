@@ -17,7 +17,7 @@ import {
 } from './screens/pick_upload.mjs';
 import { renderS3, driveScan, applyStepClasses, wireS3 } from './screens/reading.mjs';
 import {
-  renderS4, renderEditorSheet, renderPictureView, fieldRenderState, computeTally,
+  renderS4, renderEditorSheet, renderPictureView, renderPictureSheet, fieldRenderState, computeTally,
   validateEditorInput, editorContentFor, nextResetState, wireS4,
 } from './screens/review.mjs';
 import { renderS5, computeChipText, shouldShowUndo, buildFillPlan, applyFillPlan, wireS5 } from './screens/setup.mjs';
@@ -288,6 +288,52 @@ function onRemoveThumb(side, index) {
   render();
 }
 
+// D-040 fix (mock's own proven pattern, ocr_flow_mock.html's
+// syncBackgroundInert): whenever ANY sheet/menu is open, every OTHER direct
+// child of <body> — the host page's own <main>/<header> (Formation, hero
+// pickers, Run button, the account chip — none of them scoped by this file,
+// all of them real interactive elements once "the flow renders inside the
+// real app's page"), #ocrfRoot itself, and the entry card — becomes `inert`:
+// unfocusable and unclickable. Combined with a real DOM's native Tab order,
+// this is what makes "focus cannot escape" true without a hand-rolled
+// focus-trap loop — there is simply nowhere else for Tab to land. Removed
+// again the moment nothing is open.
+function openSheetEls() {
+  return [...document.querySelectorAll('.ocrf-modal-scrim, .ocrf-type-menu')]
+    .filter((el) => el.isConnected && el.getAttribute('aria-hidden') !== 'true');
+}
+function syncBackgroundInert() {
+  const open = openSheetEls();
+  for (const child of document.body.children) {
+    // CONTAINS, not just direct-child identity: the editor/picture scrims
+    // are appended straight to <body> (child === el matches), but the
+    // type-tag menu is inserted as a sibling deep inside #ocrfRoot's own
+    // rendered content (child.contains(el) matches instead) — checking
+    // identity alone would inert #ocrfRoot itself the moment the menu
+    // opened, and `inert` cascades to descendants, silently inerting the
+    // very menu it was supposed to keep interactive.
+    const keepsSomethingOpen = open.some((el) => child === el || child.contains(el));
+    if (keepsSomethingOpen || !open.length) child.removeAttribute('inert');
+    else child.setAttribute('inert', '');
+  }
+}
+
+let lastFocusBeforeSheet = null;
+function openScrim(scrim, focusTarget) {
+  lastFocusBeforeSheet = document.activeElement;
+  scrim.removeAttribute('inert');
+  scrim.setAttribute('aria-hidden', 'false');
+  syncBackgroundInert();
+  focusTarget.focus();
+}
+function closeScrim(scrim) {
+  if (scrim.contains(document.activeElement)) document.activeElement.blur();
+  scrim.remove();
+  syncBackgroundInert();
+  if (lastFocusBeforeSheet) { try { lastFocusBeforeSheet.focus(); } catch (err) { /* target gone */ } }
+  lastFocusBeforeSheet = null;
+}
+
 // Real anchored popover: no decision logic (Task 6's TYPE_LABEL/YOU_TYPES/
 // ENEMY_TYPES are the only source of truth for what's offered).
 function onTypeTag(side, tagElement) {
@@ -300,16 +346,19 @@ function onTypeTag(side, tagElement) {
     `<button type="button" role="menuitem" data-type="${type}">${TYPE_LABEL[type]}</button>`
   )).join('');
   tagElement.insertAdjacentElement('afterend', menu);
+  syncBackgroundInert();   // D-040: the menu counts as an open sheet too
   menu.querySelectorAll('button').forEach((btn) => {
     btn.addEventListener('click', () => {
       controller.flow.setSideType(side, btn.dataset.type);
       menu.remove();
+      syncBackgroundInert();
       render();
     });
   });
   const dismiss = (ev) => {
     if (!menu.contains(ev.target) && ev.target !== tagElement) {
       menu.remove();
+      syncBackgroundInert();
       document.removeEventListener('click', dismiss, true);
     }
   };
@@ -364,36 +413,68 @@ function doReset(screen) {
   }
 }
 
+// D-040 fix: previously appended via a throwaway wrapper div whose EMPTY
+// shell was never removed (scrim.remove() only ever removed the inner
+// element extracted via .firstElementChild) — a growing pile of empty <div>s
+// on every open/close cycle. insertAdjacentHTML has no such wrapper. Also
+// now tracks pre-open focus and runs syncBackgroundInert (D-040) instead of
+// only toggling this one scrim's own inert/aria-hidden.
 function openEditor(fieldKey) {
   const [side, key] = [fieldKey.split('-')[0], fieldKey.slice(fieldKey.indexOf('-') + 1)];
   const states = allFieldStates();
   const content = editorContentFor({ side, key, fieldState: states[side][key] });
-  const scrim = document.body.appendChild(Object.assign(document.createElement('div'), { innerHTML: renderEditorSheet() })).firstElementChild;
+  document.body.insertAdjacentHTML('beforeend', renderEditorSheet());
+  const scrim = document.getElementById('ocrfEditorScrim');
   scrim.querySelector('#ocrfEditorTitle').textContent = content.title;
   scrim.querySelector('#ocrfEditorCrop').textContent = content.cropBody;
   scrim.querySelector('#ocrfEditorInput').value = content.inputValue;
   scrim.querySelector('#ocrfEditorHelp').textContent = content.help;
-  scrim.removeAttribute('inert'); scrim.setAttribute('aria-hidden', 'false');
-  scrim.querySelector('#ocrfEditorInput').focus();
-  scrim.querySelector('#ocrfEditorCancel').addEventListener('click', () => scrim.remove());
-  scrim.querySelector('#ocrfEditorClose').addEventListener('click', () => scrim.remove());
+  const closeThis = () => closeScrim(scrim);
+  scrim.querySelector('#ocrfEditorCancel').addEventListener('click', closeThis);
+  scrim.querySelector('#ocrfEditorClose').addEventListener('click', closeThis);
+  scrim.addEventListener('click', (ev) => { if (ev.target === scrim) closeThis(); });
   scrim.querySelector('#ocrfEditorSave').addEventListener('click', () => {
     const result = validateEditorInput(scrim.querySelector('#ocrfEditorInput').value);
     const msg = scrim.querySelector('#ocrfEditorMsg');
     if (!result.ok) { if (!result.empty) { msg.textContent = result.message; msg.hidden = false; } return; }
     app.savedValues[side][key] = result.value; app.typedFields[side][key] = true;
-    scrim.remove(); render();
+    closeScrim(scrim); render();
   });
+  const input = scrim.querySelector('#ocrfEditorInput');
+  openScrim(scrim, input);
+  input.select();
 }
 function openPicture() {
   const states = allFieldStates();
-  const wrap = document.body.appendChild(Object.assign(document.createElement('div'), { innerHTML: renderPictureView(states) }));
-  wrap.querySelector('.ocrf-picture-scroll')?.scrollIntoView({ block: 'center' });
+  document.body.insertAdjacentHTML('beforeend', renderPictureSheet());
+  const scrim = document.getElementById('ocrfPictureScrim');
+  scrim.querySelector('#ocrfPictureBody').innerHTML = renderPictureView(states);
+  const closeThis = () => closeScrim(scrim);
+  scrim.querySelector('#ocrfPictureClose').addEventListener('click', closeThis);
+  scrim.addEventListener('click', (ev) => { if (ev.target === scrim) closeThis(); });
+  openScrim(scrim, scrim.querySelector('#ocrfPictureClose'));
+}
+
+// D-040: Escape closes whichever sheet/menu is currently open — same
+// priority-chain shape as the mock's own keydown listener. With
+// syncBackgroundInert correctly applied, at most one of these is ever
+// actually open at a time (everything else is inert, so nothing else is
+// reachable to open a second one), but the chain stays defensive.
+function closeWhicheverIsOpen() {
+  const picture = document.getElementById('ocrfPictureScrim');
+  const editor = document.getElementById('ocrfEditorScrim');
+  const menu = document.querySelector('.ocrf-type-menu');
+  if (picture && picture.getAttribute('aria-hidden') === 'false') { closeScrim(picture); return true; }
+  if (editor && editor.getAttribute('aria-hidden') === 'false') { closeScrim(editor); return true; }
+  if (menu) { menu.remove(); syncBackgroundInert(); return true; }
+  return false;
 }
 
 function boot() {
   controller = createController({ fetchMe, postPanel, storage: window.localStorage });
   document.addEventListener('click', createDelegatedClickHandler({ goto, back, onRemoveThumb }));
+  // D-040: Escape closes whichever sheet/menu is open (mock's own pattern).
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeWhicheverIsOpen(); });
 
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
   if (!entryNode) return;

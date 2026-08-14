@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   fieldRenderState, provenanceText, computeTally, validateEditorInput, editorContentFor,
-  nextResetState, renderReviewGrid, renderS4, renderPictureView,
+  nextResetState, renderReviewGrid, renderS4, renderPictureView, renderPictureSheet,
 } from '../screens/review.mjs';
 import { FIELD_OK, FIELD_CHECK, FIELD_MISSING } from '../fill_mapper.mjs';
 
@@ -113,4 +113,20 @@ test('S4 assembles the grid inside the full screen shell with Next always enable
   assert.match(html, /Check your numbers/);
   assert.match(html, /See my screenshot/);
   assert.doesNotMatch(html, /data-goto="s5"[^>]*disabled/);   // Next is never conditionally disabled
+});
+
+// --- D-040: the picture view had no scrim/close at all — renderPictureView
+// only ever returned the inner grid, appended straight into the page with
+// no way to dismiss it. A real sheet needs the same scrim+inert+close shell
+// the editor already has (renderEditorSheet), so Escape/inert have
+// something to act on. ---
+
+test('D-040 probe: renderPictureSheet is a real closeable sheet — starts inert/aria-hidden (mock\'s proven pattern) with a >=44px close control and a body mount point', () => {
+  const html = renderPictureSheet();
+  assert.match(html, /id="ocrfPictureScrim"/);
+  assert.match(html, /aria-hidden="true"/);
+  assert.match(html, /\binert\b/);
+  assert.match(html, /id="ocrfPictureClose"/);
+  assert.match(html, /aria-label="Close"/);
+  assert.match(html, /id="ocrfPictureBody"/);   // where renderPictureView's own HTML gets mounted
 });

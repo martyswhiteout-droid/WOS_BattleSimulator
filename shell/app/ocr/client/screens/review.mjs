@@ -134,6 +134,21 @@ export function renderEditorSheet() {
 </div>`.trim();
 }
 
+// D-040 fix: previously renderPictureView's HTML was appended straight into
+// the page with no scrim/close at all — no way to dismiss it, nothing for
+// inert/Escape to act on. This is the same scrim+inert shell as
+// renderEditorSheet, sized for the two-column grid (.ocrf-picture-scroll,
+// already self-styled) instead of the narrow editor card.
+export function renderPictureSheet() {
+  return `
+<div class="ocrf-modal-scrim" id="ocrfPictureScrim" aria-hidden="true" inert>
+  <div class="ocrf-picture-wrap">
+    <button type="button" class="ocrf-close-x ocrf-picture-close" id="ocrfPictureClose" aria-label="Close">&times;</button>
+    <div id="ocrfPictureBody"></div>
+  </div>
+</div>`.trim();
+}
+
 export function renderPictureView(states) {
   const col = (side) => CLASSES.map((cls) => {
     const rows = STATS.map((stat) => {
