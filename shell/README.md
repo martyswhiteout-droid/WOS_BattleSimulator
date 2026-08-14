@@ -30,6 +30,11 @@ Caddy terminates TLS for `wostests.com` / `staging.wostests.com` and proxies
 to the app on 8200. Staging is the same compose file as a second stack with
 its own `.env` (`ENV=staging`).
 
+**`IP_HASH_SALT` is required whenever `ENV=staging` or `ENV=prod`** — the
+app refuses to boot without it (an unsalted per-IP hash is reversible in
+minutes; see `.env.example`). Generate one with
+`python -c "import secrets;print(secrets.token_hex(32))"`.
+
 ## Tests
 
 ```
