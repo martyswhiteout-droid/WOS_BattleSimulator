@@ -752,9 +752,22 @@ def get_db() -> InMemoryDB | PostgresDB:
 
 def reset_db() -> None:
     """Drop the cached backend (tests; env changes). Postgres pool closure is
-    the caller's responsibility if one was opened."""
+    the caller's responsibility if one was opened.
+
+    Also drops entitlements.resolve_plan()'s in-process cache: it is keyed by
+    user_id, and user_ids are reused across test functions (e.g. "user_A" in
+    test_billing_webhook.py), so a stale cached plan could otherwise leak
+    from one test into the next. Deferred import to avoid a module-load-time
+    cycle (billing/__init__.py imports webhook.py imports this module);
+    best-effort — a pre-Agent-B-billing tree must still reset cleanly."""
     global _db_instance
     _db_instance = None
+    try:
+        from shell.app.billing.entitlements import invalidate_plan_cache
+
+        invalidate_plan_cache()
+    except Exception:
+        pass
 
 
 async def get_pool():
