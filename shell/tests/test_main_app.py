@@ -173,3 +173,60 @@ def test_prototype_static_ui_served(client):
     resp = client.get("/")
     assert resp.status_code == 200
     assert "text/html" in resp.headers["content-type"]
+
+
+# --- regression: M4 (EVAL_ROUND_1.md F19 / EVAL_ROUND_2.md M4) --------------
+# sweep_scan (limits.py) was solid, well-tested work that NOTHING called —
+# no cron, no docker-compose sidecar, no in-app task. create_app() now wires
+# limits.run_sweep_scheduler as a background task via a FastAPI lifespan.
+# TestClient only runs lifespan startup/shutdown when used as a context
+# manager (`with TestClient(app) as c:`) — none of the OTHER tests in this
+# suite do that (they use the bare module-scoped `client` fixture above), so
+# this is the first place the scheduler ever actually starts in the test
+# suite; every other test in the whole 480-test suite is unaffected by it.
+
+def test_sweep_scheduler_is_scheduled_at_app_startup(monkeypatch):
+    """Proves create_app() genuinely starts the scheduler at startup — not
+    just that the scheduler function exists somewhere and could be called."""
+    from shell.app import limits as _limits_module
+
+    calls = []
+
+    async def fast_stub(*, interval_s=None, stop_event=None):
+        calls.append(1)
+        # returns immediately instead of looping — this test only needs to
+        # prove create_app() STARTS the scheduler, not exercise the loop
+        # itself (run_sweep_scheduler's own loop/backoff/fail-safe behavior
+        # is covered directly in shell/tests/test_limits_sweep.py).
+
+    monkeypatch.setattr(_limits_module, "run_sweep_scheduler", fast_stub)
+    app = create_app(Settings(_env_file=None, DEV_BYPASS=True))
+    with TestClient(app) as c:
+        assert c.get("/shell/health").status_code == 200
+        assert calls == [1], "run_sweep_scheduler must be started at app startup"
+        assert app.state.sweep_task is not None
+
+
+def test_sweep_scheduler_task_is_cancelled_at_app_shutdown():
+    """A real (non-stub) scheduler task, still running (interval not yet
+    elapsed) when the app shuts down, must be cancelled — not leaked as a
+    dangling background task."""
+    app = create_app(Settings(_env_file=None, DEV_BYPASS=True))
+    with TestClient(app) as c:
+        c.get("/shell/health")
+        task = app.state.sweep_task
+        assert task is not None and not task.done()
+    assert task.cancelled() or task.done()
+
+
+def test_sweep_scheduler_absent_when_limits_module_missing(monkeypatch):
+    """Fail-open posture (same as every other _limits usage in main.py):
+    if shell.app.limits isn't importable, app startup must not crash — it
+    just doesn't schedule anything."""
+    from shell.app import main as main_module
+
+    monkeypatch.setattr(main_module, "_limits", None)
+    app = create_app(Settings(_env_file=None, DEV_BYPASS=True))
+    with TestClient(app) as c:
+        assert c.get("/shell/health").status_code == 200
+        assert app.state.sweep_task is None

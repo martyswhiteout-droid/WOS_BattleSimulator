@@ -162,6 +162,98 @@ def test_sweep_scan_rerun_does_not_duplicate_audit_entries():
     assert len(entries) == 1
 
 
+# ---------------------------------------------------------------------------
+# M4 (EVAL_ROUND_1.md F19 / EVAL_ROUND_2.md M4): sweep scheduler
+# ---------------------------------------------------------------------------
+
+def test_scheduler_calls_sweep_scan_and_stops_on_stop_event(monkeypatch):
+    """The scheduler must actually invoke sweep_scan (not just sleep), and a
+    stop_event must end the loop cleanly instead of blocking forever."""
+    calls = []
+
+    async def fake_sweep():
+        calls.append(1)
+
+    monkeypatch.setattr(limits, "sweep_scan", fake_sweep)
+    stop = asyncio.Event()
+    stop.set()   # already set: the loop must run sweep_scan exactly once, then exit
+    run(asyncio.wait_for(
+        limits.run_sweep_scheduler(interval_s=9999.0, stop_event=stop),
+        timeout=5.0))
+    assert calls == [1]
+
+
+def test_scheduler_runs_again_after_the_interval_elapses(monkeypatch):
+    """A stop_event that is NOT set must let the loop run sweep_scan more
+    than once, waiting no more than `interval_s` between runs."""
+    calls = []
+
+    async def fake_sweep():
+        calls.append(1)
+
+    monkeypatch.setattr(limits, "sweep_scan", fake_sweep)
+
+    async def scenario():
+        stop = asyncio.Event()
+        task = asyncio.create_task(
+            limits.run_sweep_scheduler(interval_s=0.01, stop_event=stop))
+        await asyncio.sleep(0.1)   # several 0.01s intervals must have elapsed
+        stop.set()
+        await asyncio.wait_for(task, timeout=5.0)
+
+    run(asyncio.wait_for(scenario(), timeout=5.0))
+    assert len(calls) >= 3, f"expected several sweep_scan runs, got {len(calls)}"
+
+
+def test_scheduler_survives_a_sweep_scan_exception():
+    """M4's fail-safe bar: a crashing sweep_scan must never kill the
+    scheduler loop (let alone the app). One failing run followed by one
+    successful run, both observed, proves the loop kept going."""
+    import shell.app.limits as limits_module
+
+    calls = []
+
+    async def flaky_sweep():
+        calls.append(1)
+        if len(calls) == 1:
+            raise RuntimeError("simulated db outage")
+
+    async def scenario():
+        original = limits_module.sweep_scan
+        limits_module.sweep_scan = flaky_sweep
+        try:
+            stop = asyncio.Event()
+            task = asyncio.create_task(
+                limits_module.run_sweep_scheduler(interval_s=0.01, stop_event=stop))
+            await asyncio.sleep(0.05)
+            stop.set()
+            await asyncio.wait_for(task, timeout=5.0)
+        finally:
+            limits_module.sweep_scan = original
+
+    run(asyncio.wait_for(scenario(), timeout=5.0))
+    assert len(calls) >= 2, (
+        "the scheduler must keep running sweep_scan after one raises, not "
+        f"stop — got {len(calls)} call(s)")
+
+
+def test_scheduler_propagates_real_cancellation():
+    """Task cancellation (how main.py's lifespan actually stops the
+    scheduler on app shutdown) must still work — the fail-safe exception
+    catch must not accidentally swallow CancelledError too."""
+    import shell.app.limits as limits_module
+
+    async def scenario():
+        task = asyncio.create_task(
+            limits_module.run_sweep_scheduler(interval_s=9999.0))
+        await asyncio.sleep(0.01)   # let it start sleeping in the loop
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+
+    run(asyncio.wait_for(scenario(), timeout=5.0))
+
+
 def test_end_to_end_fingerprints_from_check_and_record_feed_sweep(monkeypatch):
     # go through the real check_and_record path (pro user, backdated to
     # dodge burst): fingerprints recorded there must be sweep-scannable

@@ -38,12 +38,15 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import logging
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from typing import Any, Optional, Union
 
 from shell.app import db
 from shell.app.billing._contracts import UserCtx, get_settings, settings_extra
+
+log = logging.getLogger("wos.shell.limits")
 
 # ---------------------------------------------------------------------------
 # Verdict types (contract)
@@ -559,3 +562,54 @@ async def sweep_scan(day: Union[date, str, None] = None) -> list[dict]:
             dedup_key=f"sweep:{flag['day']}:{flag['user_id']}:{flag['pattern']}:{pattern_key}",
         )
     return flags
+
+
+# ---------------------------------------------------------------------------
+# Sweep scheduler (M4, EVAL_ROUND_1.md F19 / EVAL_ROUND_2.md M4): sweep_scan
+# above was solid, well-tested work that NOTHING called — no cron, no
+# docker-compose sidecar, no in-app task. shell/app/main.py's create_app()
+# starts run_sweep_scheduler as a background task at app startup (via a
+# FastAPI lifespan) and cancels it at shutdown; this is the scheduler
+# itself, kept here alongside the function it schedules.
+# ---------------------------------------------------------------------------
+
+#: sweep_scan's own docstring calls it a "nightly job" — 24h between runs.
+SWEEP_INTERVAL_S = 86400.0
+
+
+async def run_sweep_scheduler(
+    *, interval_s: float = SWEEP_INTERVAL_S,
+    stop_event: Optional[asyncio.Event] = None,
+) -> None:
+    """Runs sweep_scan on a fixed interval for as long as the caller keeps
+    this coroutine's task alive.
+
+    Fail-safe by construction — D3's own bar is "flag/throttle, never take
+    the product down": ANY exception sweep_scan raises (a DB hiccup, a bad
+    day argument, anything underneath it) is caught and logged, never
+    propagated. A crashing sweep must not kill the scheduler loop, let alone
+    the app.
+
+    ``stop_event``, when given, lets a caller (a test, or a future graceful-
+    shutdown path) end the loop between runs instead of blocking the full
+    interval; without one the loop runs until the task itself is cancelled.
+    ``asyncio.CancelledError`` is deliberately NOT caught by the broad
+    ``except Exception`` below (it is a BaseException subclass in modern
+    Python, so a bare ``except Exception`` would not catch it anyway) —
+    cancellation must propagate so the task actually stops.
+    """
+    while True:
+        try:
+            await sweep_scan()
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            log.exception("sweep_scan failed; scheduler continues")
+        if stop_event is not None:
+            try:
+                await asyncio.wait_for(stop_event.wait(), timeout=interval_s)
+            except asyncio.TimeoutError:
+                continue        # normal case: interval elapsed, run again
+            return              # stop_event was set — exit cleanly
+        else:
+            await asyncio.sleep(interval_s)

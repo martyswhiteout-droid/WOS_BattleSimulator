@@ -32,11 +32,13 @@ functional keyless and BEFORE those modules land.
 """
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import inspect
 import json
 import logging
 import sys
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 # --- repo root on sys.path (see module docstring) -------------------------
@@ -381,6 +383,33 @@ async def _usage_today_for(user_id: str, kind: str) -> int:
         return 0
 
 
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    """M4 (EVAL_ROUND_1.md F19 / EVAL_ROUND_2.md M4): starts
+    limits.run_sweep_scheduler as a background task for the life of the app
+    and cancels it cleanly at shutdown. Absent entirely (no-op — same
+    fail-open posture as every other _limits usage in this file) whenever
+    shell.app.limits isn't importable or doesn't expose the scheduler (a
+    keyless/pre-Agent-B degrade, not a real deployment state). The
+    scheduler itself is separately fail-safe (a crashing sweep never kills
+    the loop); this wrapper only handles STARTING and STOPPING that loop
+    alongside the app's own lifecycle."""
+    scheduler = getattr(_limits, "run_sweep_scheduler", None) if _limits else None
+    task = asyncio.create_task(scheduler()) if scheduler is not None else None
+    app.state.sweep_task = task
+    try:
+        yield
+    finally:
+        if task is not None:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+            except Exception:
+                log.exception("sweep scheduler task raised during shutdown")
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
 
@@ -397,7 +426,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "Set IP_HASH_SALT to a long random secret (see shell/.env.example).")
 
     app = FastAPI(title="WoS Battle Simulator — production shell",
-                  version="0.1", docs_url=None, redoc_url=None, openapi_url=None)
+                  version="0.1", docs_url=None, redoc_url=None, openapi_url=None,
+                  lifespan=_lifespan)
 
     # ---- /shell routes ---------------------------------------------------
 
