@@ -2,13 +2,12 @@
 response contract per shell/ARCHITECTURE.md).
 
 Flow: auth presence (request.state.user, set by Agent A's AuthMiddleware) →
-Agent B's limits.check_and_record (402 for free plan, 429 quota/burst) →
-OcrService pipeline (validate/strip → hash → cache → vision → validator →
-BRD §9 profile) → JSON result. Image-intake violations map to 400.
+shell.app.limits.LimitsMiddleware (402 for free plan, 429 quota/burst —
+metered BEFORE this handler ever runs; see the C2 note below) → OcrService
+pipeline (validate/strip → hash → cache → vision → validator → BRD §9
+profile) → JSON result. Image-intake violations map to 400.
 """
 from __future__ import annotations
-
-import hashlib
 
 from fastapi import APIRouter, File, Form, Request, UploadFile
 from fastapi.responses import JSONResponse
@@ -16,21 +15,7 @@ from fastapi.responses import JSONResponse
 from ._shims import SkillUnavailableError, get_settings
 from .extract import ImageValidationError, OcrService, get_default_service
 
-try:  # Agent B's quota/rate layer (may not exist yet)
-    from shell.app.limits import check_and_record  # type: ignore
-except Exception:  # pragma: no cover - exercised only pre-Agent-B
-    # TODO(Agent B): remove this no-op once shell/app/limits.py lands.
-    # Contract: async check_and_record(user, endpoint, body, ip_hash) -> LimitVerdict;
-    # Denied carries (status, code, message) — e.g. 402 payment_required for OCR
-    # on the free plan, 429 quota_exhausted/burst.
-    check_and_record = None
-
 router = APIRouter()
-
-
-def _ip_hash(request: Request) -> str:
-    host = request.client.host if request.client else "unknown"
-    return hashlib.sha256(host.encode("utf-8")).hexdigest()
 
 
 def _get_service(request: Request) -> OcrService:
@@ -62,22 +47,26 @@ async def ocr_upload(
                      "message": "side must be 'attacker' or 'defender'"},
         )
 
-    # Quota / plan gate (Agent B). Duck-typed: Denied carries status/code/message.
-    # NOTE (EVAL_ROUND_1.md F21): must be the full path "/shell/ocr", matching
-    # limits.OCR_ENDPOINTS — limits.classify_endpoint("ocr") normalizes to
-    # "/ocr", which is not in that set, so the bare string "ocr" made this
-    # gate silently dead code (always Allowed(), never actually metered).
-    if check_and_record is not None:
-        verdict = await check_and_record(user, "/shell/ocr", None, _ip_hash(request))
-        denied_status = getattr(verdict, "status", None)
-        if isinstance(denied_status, int):
-            return JSONResponse(
-                status_code=denied_status,
-                content={
-                    "error": getattr(verdict, "code", "denied"),
-                    "message": getattr(verdict, "message", ""),
-                },
-            )
+    # Quota / plan gate: EVAL_ROUND_2.md C2. This handler used to ALSO call
+    # limits.check_and_record itself (the EVAL_ROUND_1.md F21 fix — passing
+    # the full path "/shell/ocr" instead of the bare "ocr" string
+    # limits.classify_endpoint couldn't match). That fix was textually
+    # correct but created a second, simultaneously-live metering point:
+    # shell.app.main.create_app() always wires shell.app.limits.LimitsMiddleware
+    # as the app-wide limits layer, and LimitsMiddleware._metered() already
+    # matches POST /shell/ocr and already calls check_and_record itself,
+    # BEFORE the request ever reaches this route handler. Every allowed
+    # request was therefore recorded TWICE — a Pro user's 30/day quota
+    # became ~15 real uploads, and the 5/min burst window tripped after 2
+    # uploads instead of 5 (live-confirmed by the evaluator). There is now
+    # exactly ONE metering point for both OCR endpoints: LimitsMiddleware —
+    # matching shell/app/ocr/panel_router.py's own documented approach
+    # ("Plan gating is NOT done here ... a second in-route plan check could
+    # only ever disagree with it"). Denial responses (402/429) are therefore
+    # never produced by this file; they are handled by LimitsMiddleware
+    # before this handler runs at all — see shell/tests/test_ocr_router.py's
+    # test_free_plan_upload_is_actually_gated_402 for the "surviving layer"
+    # regression coverage this change requires.
 
     raw = await file.read()
     service = _get_service(request)
