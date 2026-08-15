@@ -27,6 +27,7 @@ spec.loader.exec_module(rp)
 MIN_TROOPS = 5000
 BURST_LIMIT = 5
 BODY_LIMIT = 1_000_000
+MAX_RUNS = 1000   # F4-b (limits.py _clamp_runs) / db.py _DEFAULT_MAX_RUNS
 
 
 def make_stub_wsgi():
@@ -78,7 +79,7 @@ def make_stub_wsgi():
         if t_own < MIN_TROOPS or t_enemy < MIN_TROOPS:
             return respond(400, {"error": "below_min_troops"})
         n = data.get("n")
-        if not isinstance(n, int) or isinstance(n, bool) or not 1 <= n <= 10000:
+        if not isinstance(n, int) or isinstance(n, bool) or n < 1:
             return respond(400, {"error": "invalid_n"})
         panel = own.get("panel") if isinstance(own, dict) else None
         if isinstance(panel, dict) and any("|" not in k for k in panel):
@@ -86,7 +87,10 @@ def make_stub_wsgi():
         counts[user] = counts.get(user, 0) + 1
         if counts[user] > BURST_LIMIT:
             return respond(429, {"error": "burst"})
-        return respond(200, {"verdict": "stub"})
+        # F4-b (limits.py _clamp_runs): an oversized n is silently clamped to
+        # entitlements.max_runs, never rejected — mirrors the real app so
+        # this stub models the SAME contract adv_absurd_n asserts against.
+        return respond(200, {"verdict": "stub", "n": min(n, MAX_RUNS)})
 
     return app
 
@@ -391,3 +395,75 @@ def test_ocr_panel_mock_200_probe_fails_on_200_without_source():
     with _mock_client(handler) as client:
         r = rp.probe_ocr_panel_mock_200(client, rp.ProbeOptions(dev_bypass=True))
     assert r.status == "FAIL"
+
+
+# --------------------------------------------- adversarial clamp check (M5)
+# EVAL_ROUND_2.md M5: absurd_n.json used to expect a 400/429 rejection, but
+# F4-b (limits.py _clamp_runs) silently clamps an oversized n to
+# entitlements.max_runs and answers 200 — the stale expectation false-FAILed
+# the correct, intended behavior (the exact failure class F12 was about:
+# a gate that fails a satisfied criterion corrupts the same evidence trail
+# as one that passes a violated one).
+
+def test_absurd_n_descriptor_expects_the_clamp_not_a_rejection():
+    descriptor = next(d for d in rp.load_payload_descriptors()
+                       if d["name"] == "absurd_n")
+    assert descriptor["expected_status_min"] == 200
+    assert descriptor["expected_status_max"] == 200
+    assert descriptor["expect_clamped_field"] == {"field": "n", "value": 1000}
+
+
+def _absurd_n_descriptor():
+    return next(d for d in rp.load_payload_descriptors() if d["name"] == "absurd_n")
+
+
+def test_adv_absurd_n_passes_when_the_response_shows_the_real_clamp():
+    def handler(request):
+        return httpx.Response(200, json={"n": 1000, "verdict": "clamped"})
+    with _mock_client(handler) as client:
+        r = rp.probe_adversarial(client, rp.ProbeOptions(), _absurd_n_descriptor())
+    assert r.status == "PASS", r.notes
+
+
+def test_adv_absurd_n_fails_on_an_unclamped_200():
+    """'Gates must not lie': a 200 alone is not proof the clamp happened —
+    an unclamped n=10000000 sailing through as 200 must still FAIL, not
+    false-PASS on status code alone."""
+    def handler(request):
+        return httpx.Response(200, json={"n": 10000000, "verdict": "unclamped"})
+    with _mock_client(handler) as client:
+        r = rp.probe_adversarial(client, rp.ProbeOptions(), _absurd_n_descriptor())
+    assert r.status == "FAIL"
+    assert "clamp" in r.notes.lower()
+
+
+def test_adv_absurd_n_fails_on_a_500():
+    def handler(request):
+        return httpx.Response(500, text="stack trace")
+    with _mock_client(handler) as client:
+        r = rp.probe_adversarial(client, rp.ProbeOptions(), _absurd_n_descriptor())
+    assert r.status == "FAIL"
+
+
+def test_adv_absurd_n_fails_on_a_400_rejection_too():
+    """The pre-fix 'reject with 4xx' behavior must ALSO now FAIL — a
+    real reversion to rejecting oversized n would not be F4-b's documented
+    contract either, so the probe must not silently accept it."""
+    def handler(request):
+        return httpx.Response(400, json={"error": "n_too_large"})
+    with _mock_client(handler) as client:
+        r = rp.probe_adversarial(client, rp.ProbeOptions(), _absurd_n_descriptor())
+    assert r.status == "FAIL"
+
+
+def test_probe_adversarial_without_clamp_field_is_unaffected():
+    """Non-regression: every OTHER descriptor (no expect_clamped_field) keeps
+    the original status-range-only behavior."""
+    descriptor = {"name": "plain", "expected_status_min": 400,
+                 "expected_status_max": 429, "body": {}}
+
+    def handler(request):
+        return httpx.Response(422, json={"error": "whatever"})
+    with _mock_client(handler) as client:
+        r = rp.probe_adversarial(client, rp.ProbeOptions(), descriptor)
+    assert r.status == "PASS"

@@ -445,9 +445,21 @@ def _materialize_body(d: dict, opts: ProbeOptions):
 
 
 def probe_adversarial(client, opts, descriptor: dict) -> ProbeResult:
+    """One adversarial payload: expected_status_min/max is checked first
+    (a 5xx is always a FAIL, regardless of the range), then — when the
+    descriptor carries an ``expect_clamped_field`` (M5, EVAL_ROUND_2.md) —
+    the response BODY is also checked, so a status code alone can't
+    false-PASS a request whose payload was supposed to be silently modified
+    (F4-b's runs-clamp) but wasn't. Kept generic (keyed off the descriptor,
+    not the payload's name) so any future clamp-style adversarial payload
+    gets the same real assertion for free."""
     name = f"adv_{descriptor['name']}"
     lo = int(descriptor.get("expected_status_min", 400))
     hi = int(descriptor.get("expected_status_max", 499))
+    clamp = descriptor.get("expect_clamped_field")
+    expected = f"{lo}-{hi}, never 5xx"
+    if clamp:
+        expected += f" and body.{clamp['field']}=={clamp['value']!r}"
     headers = dict(DEV_HEADERS) if opts.dev_bypass else {}
     kw = _materialize_body(descriptor, opts)
     hdr = kw.pop("headers", {})
@@ -456,16 +468,33 @@ def probe_adversarial(client, opts, descriptor: dict) -> ProbeResult:
                   descriptor.get("path", "/api/predict"),
                   headers=headers or None, timeout=opts.timeout, **kw)
     if err:
-        return ProbeResult(name, "B2/E2", f"{lo}-{hi}, never 5xx", err, "FAIL",
+        return ProbeResult(name, "B2/E2", expected, err, "FAIL",
                            "no clean HTTP error (hang/crash?)")
     if r.status_code >= 500:
-        return ProbeResult(name, "B2/E2", f"{lo}-{hi}, never 5xx",
+        return ProbeResult(name, "B2/E2", expected,
                            str(r.status_code), "FAIL",
                            f"SERVER 5xx on adversarial input: {_body_snip(r)}")
     ok = lo <= r.status_code <= hi
-    return ProbeResult(name, "B2/E2", f"{lo}-{hi}, never 5xx",
-                       str(r.status_code), "PASS" if ok else "FAIL",
-                       descriptor.get("description", "") if ok else _body_snip(r))
+    if not ok:
+        return ProbeResult(name, "B2/E2", expected, str(r.status_code), "FAIL",
+                           _body_snip(r))
+    if clamp:
+        try:
+            observed = r.json().get(clamp["field"])
+        except Exception:
+            observed = None
+        if observed != clamp["value"]:
+            return ProbeResult(
+                name, "B2/E2", expected,
+                f"{r.status_code} body.{clamp['field']}={observed!r}", "FAIL",
+                "status was in range but the clamp itself did not apply "
+                f"(a regression, not a stale expectation) — "
+                f"{descriptor.get('description', '')}")
+        return ProbeResult(name, "B2/E2", expected,
+                           f"{r.status_code} body.{clamp['field']}={observed!r}",
+                           "PASS", descriptor.get("description", ""))
+    return ProbeResult(name, "B2/E2", expected, str(r.status_code), "PASS",
+                       descriptor.get("description", ""))
 
 
 # ---------------------------------------------------------------- entry points
