@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     # --- mode ------------------------------------------------------------
     ENV: str = "dev"                       # dev | staging | prod
     DEV_BYPASS: bool | None = None         # None => auto (True iff no CLERK_SECRET_KEY)
+    DEV_DEFAULT_PLAN: str = "pro"          # bypass-mode default plan; ENV=dev ONLY (see property)
     BASE_URL: str = "http://localhost:8200"
 
     # --- Clerk (auth; verified server-side via JWKS) ----------------------
@@ -96,6 +97,20 @@ class Settings(BaseSettings):
     @property
     def is_prodlike(self) -> bool:
         return self.ENV.lower() in ("staging", "prod")
+
+    @property
+    def dev_default_plan(self) -> str:
+        """Plan minted for a bypass-mode request that carries no X-Dev-Plan
+        header. "pro" makes localhost dev directly usable (the OCR flow works
+        without the "see plans" gate), but it is honored ONLY when ENV=dev:
+        any other ENV collapses to "free" regardless of what the raw key
+        says, so a DEV_BYPASS that leaks into a prodlike environment still
+        serves the plan gate (PRODUCTION_CRITERIA.md gate; owner decision
+        2026-08-15). Like DEV_BYPASS, the lowercase form is this property —
+        never the raw field."""
+        if self.ENV.lower() == "dev" and self.DEV_DEFAULT_PLAN.strip().lower() == "pro":
+            return "pro"
+        return "free"
 
     @property
     def clerk_frontend_api(self) -> str | None:

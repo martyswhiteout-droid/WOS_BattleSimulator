@@ -54,13 +54,25 @@ def test_health_open_and_sim_mounted(client):
     assert body["env"] == "dev"
 
 
-def test_me_shape_and_free_quota_defaults(client):
+def test_me_shape_and_dev_default_pro_quotas(client):
+    # Localhost dev defaults to PRO (owner decision 2026-08-15,
+    # settings.dev_default_plan — ENV-gated to dev only).
     body = client.get("/shell/me").json()
-    assert body["user"] == {"user_id": "dev_user", "email": None, "plan": "free"}
+    assert body["user"] == {"user_id": "dev_user", "email": None, "plan": "pro"}
+    assert body["entitlements"]["daily_sim_quota"] == 100  # PRO_SIMS_PER_DAY
+    assert body["entitlements"]["daily_ocr_quota"] == 30   # PRO_OCR_PER_DAY
+    assert body["remaining"]["sims"] == 100
+    assert body["sign_in_url"]
+
+
+def test_me_free_quota_shape_via_dev_plan_header(client):
+    # The free tier's /shell/me shape stays covered — reached explicitly
+    # with the bypass-only header (how free-path QA works in dev now).
+    body = client.get("/shell/me", headers={"X-Dev-Plan": "free"}).json()
+    assert body["user"]["plan"] == "free"
     assert body["entitlements"]["daily_sim_quota"] == 5   # FREE_SIMS_PER_DAY
     assert body["entitlements"]["daily_ocr_quota"] == 0   # free tier: no OCR
     assert body["remaining"]["sims"] == 5
-    assert body["sign_in_url"]
 
 
 def test_me_pro_quota_via_dev_plan_header(client):

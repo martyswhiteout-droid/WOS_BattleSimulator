@@ -43,6 +43,7 @@
 - [ ] **C3.** Payments via a hosted provider (e.g. Stripe/Paddle/Airwallex hosted checkout) — we never touch or store card data; PCI burden stays with the provider. Webhooks signature-verified; entitlement changes only via verified webhook or admin action.
 - [ ] **C4.** Session/token security: expiring tokens, secure/httponly cookies or equivalent, logout works, no tokens in URLs or logs.
 - [ ] **C5.** Account creation is abuse-resistant: email verification at minimum; free-tier quota is per verified account AND per IP, so burner accounts don't multiply free quota.
+- [ ] **C6.** **Localhost pro-default is provably inert in production** (owner decision 2026-08-15). On localhost dev the app deliberately mints `plan="pro"` for bypass-mode requests so the OCR flow works without the "see plans" gate (`DEV_DEFAULT_PLAN` via `shell/app/config.py::dev_default_plan`, honored ONLY when `ENV=dev`). The gate agent must verify with evidence that this fork cannot reach production: (a) `dev_default_plan` returns `"free"` under `ENV=staging` and `ENV=prod` **even with `DEV_BYPASS=True` and `DEV_DEFAULT_PLAN=pro` explicitly set** (the leak-guard test `test_dev_default_plan_is_env_gated_never_pro_outside_dev` passes); (b) a live staging boot serves the plan gate — an unauthenticated/free request to `/shell/ocr/panel` gets 401/402, never a pro read; (c) the release artifact's env config sets `ENV=staging|prod` (a prodlike deploy with `ENV=dev` is an automatic FAIL of this item); (d) `X-Dev-Plan` remains dead in real-auth mode (existing hostile-client tests). The prototype/dev convenience must never be weakened to satisfy this item — the gate is the ENV, not the feature.
 
 ## D. Anti-distillation & engine protection
 
@@ -109,7 +110,8 @@ Evidence:
   A4 no-fudge:          PASS/FAIL (params diff reviewed)
   A5 honesty:           PASS/FAIL
   B  data model:        PASS/FAIL (schema_version, validation evidence)
-  C  paywall/auth:      PASS/FAIL (endpoints probed anonymously → 401?)
+  C  paywall/auth:      PASS/FAIL (endpoints probed anonymously → 401?;
+                        C6 dev-pro-default inert: ENV in artifact + staging probe)
   D  anti-distillation: PASS/FAIL (min-size probe, rate-limit probe, sweep-flag test)
   E  security/pentest:  PASS/FAIL (findings list + resolutions)
   F  IP/legal:          PASS/FAIL (asset audit list, disclaimers, ToS/Privacy live)

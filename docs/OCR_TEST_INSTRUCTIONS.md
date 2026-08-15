@@ -26,19 +26,24 @@ py -m uvicorn shell.app.main:app --port 8200 --env-file shell/.env
 - Open **http://localhost:8200/** — the normal predictor page, with a **“Fill from screenshots”**
   button above the input form. Stop the server later with `Ctrl+C`.
 
-## 2. Become a Pro user (dev-only technique)
+## 2. Plan handling on localhost (updated 2026-08-15)
 
-Free tier has no OCR (owner decision D1) — without this step you get the manual-entry path only.
-Paste this in the browser DevTools console (F12) once per browser session
-(sanctioned technique, `docs/OCR_QA_PLAN.md` §8; the header is honored **only** in
-`DEV_BYPASS` mode, never in production):
+**You are Pro by default on localhost — no setup needed.** Dev mode (`ENV=dev`, keyless
+`DEV_BYPASS`) now mints `plan="pro"` automatically (owner decision 2026-08-15;
+`dev_default_plan` in `shell/app/config.py`), so the OCR flow works directly without the
+"see plans" gate. This default is **ENV-gated**: in staging/prod it hard-collapses to
+"free" no matter what is configured, so production always serves the plan gate
+(`PRODUCTION_CRITERIA.md` item C6 verifies exactly this at release time).
+
+To test the **free-tier** experience (plan gate, manual-only path, 402), paste this in
+DevTools (F12) — the header works only in dev bypass mode, never in production:
 
 ```js
-const f = window.fetch; window.fetch = (u, o) => f(u, { ...o, headers: { ...(o && o.headers), 'X-Dev-Plan': 'pro' } });
+const f = window.fetch; window.fetch = (u, o) => f(u, { ...o, headers: { ...(o && o.headers), 'X-Dev-Plan': 'free' } });
 ```
 
-This exercises the real `/shell/me`, `/shell/ocr/panel`, and quota paths under a genuine pro
-identity. Pro OCR quota is 30 reads/day — each successful read consumes one.
+Pro OCR quota is 30 reads/day — each successful read consumes one; `/shell/me` shows the
+real remaining count.
 
 ## 3. Happy path — battle report, digit-exact fill
 
@@ -107,9 +112,9 @@ law in `docs/STAT_PANELS_FORMULA.md`.
 
 ## 7. Free tier / quota behavior
 
-- Reload without the console wrapper (fresh session = free tier): the flow offers **manual entry
-  only** — typing values by hand must work end-to-end with no network OCR call, and the manual
-  path fills the form the same way (user-typed values win).
+- Apply the `X-Dev-Plan: free` wrapper from §2 (localhost is pro by default now): the flow
+  offers **manual entry only** — typing values by hand must work end-to-end with no network
+  OCR call, and the manual path fills the form the same way (user-typed values win).
 - The 31st pro read of a (UTC) day returns the standardized `payment_required` signal (HTTP 402)
   and the UI degrades to manual — no crash, no half-filled form.
 

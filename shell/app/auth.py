@@ -7,9 +7,12 @@ shell/ARCHITECTURE.md:
 * ``UserCtx`` dataclass exposed to downstream layers as ``request.state.user``
   (``None`` when unauthenticated).
 * DEV_BYPASS mode (keyless): every request gets
-  ``UserCtx(user_id="dev_user", plan=<X-Dev-Plan header or "free">)``.
-  The X-Dev-Plan header is honored ONLY in bypass mode — never in real mode
-  (hostile-client rule, COMPASS invariant 6).
+  ``UserCtx(user_id="dev_user", plan=<X-Dev-Plan header or
+  settings.dev_default_plan>)`` — the default is "pro" in ENV=dev only
+  (localhost works without the plan gate) and hard-collapses to "free" in
+  any other ENV (config.py property). The X-Dev-Plan header is honored ONLY
+  in bypass mode — never in real mode (hostile-client rule, COMPASS
+  invariant 6).
 * Real mode: RS256 JWT from the ``__session`` cookie (or Authorization:
   Bearer), verified against Clerk's JWKS fetched with httpx and cached with a
   TTL. ``exp`` is verified (PyJWT default, small leeway); ``azp`` is checked
@@ -281,7 +284,16 @@ class AuthMiddleware:
 
         headers = _headers(scope)
         if self.settings.dev_bypass:
-            plan = headers.get("x-dev-plan", "free").strip().lower() or "free"
+            # Default plan when no X-Dev-Plan header is sent: the ENV-gated
+            # settings.dev_default_plan — "pro" on localhost dev (owner
+            # decision 2026-08-15: no "see plans" gate in the way of the OCR
+            # flow during development), ALWAYS "free" outside ENV=dev, so a
+            # DEV_BYPASS leaking into a prodlike environment still serves the
+            # plan gate. The header remains honored in bypass mode only, in
+            # BOTH directions — `X-Dev-Plan: free` is how the plan gate and
+            # 402 paths are QA'd in dev now (docs/OCR_QA_PLAN.md §8).
+            requested = headers.get("x-dev-plan", "").strip().lower()
+            plan = requested if requested in ("free", "pro") else self.settings.dev_default_plan
             # X-Dev-User (F22, EVAL_ROUND_1.md): honored ONLY in bypass mode,
             # same hostile-client posture as X-Dev-Plan just above — lets the
             # probe suite's "free user" and "pro user" be genuinely distinct

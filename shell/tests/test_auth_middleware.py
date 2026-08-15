@@ -46,12 +46,34 @@ def _fresh_limits_state():
 # ---------------------------------------------------------------- DEV_BYPASS
 
 def test_dev_bypass_injects_dev_user():
+    # Owner decision 2026-08-15: localhost dev defaults to PRO (no "see
+    # plans" gate in the way of the OCR flow during development). The
+    # default comes from settings.dev_default_plan, which is ENV-gated.
     client = TestClient(make_app(DEV_BYPASS=True))
     resp = client.get("/shell/me")
     assert resp.status_code == 200
     body = resp.json()
     assert body["user"]["user_id"] == "dev_user"
-    assert body["user"]["plan"] == "free"
+    assert body["user"]["plan"] == "pro"
+
+
+def test_dev_default_plan_is_env_gated_never_pro_outside_dev():
+    """The production-gate guarantee (PRODUCTION_CRITERIA.md): the localhost
+    pro default is structurally impossible outside ENV=dev — even a leaked
+    DEV_BYPASS in staging/prod, even with the raw key explicitly set to
+    "pro", still mints free (and therefore still serves the plan gate)."""
+    for env in ("staging", "prod"):
+        settings = Settings(_env_file=None, ENV=env,
+                            DEV_BYPASS=True, DEV_DEFAULT_PLAN="pro",
+                            IP_HASH_SALT="x" * 32)
+        assert settings.dev_default_plan == "free", env
+        client = TestClient(make_app(ENV=env, DEV_BYPASS=True,
+                                     DEV_DEFAULT_PLAN="pro",
+                                     IP_HASH_SALT="x" * 32))
+        assert client.get("/shell/me").json()["user"]["plan"] == "free", env
+    # and the property honors an explicit opt-out even in dev
+    assert Settings(_env_file=None, ENV="dev",
+                    DEV_DEFAULT_PLAN="free").dev_default_plan == "free"
 
 
 def test_dev_bypass_defaults_on_without_clerk_secret():
@@ -89,12 +111,16 @@ def test_dev_user_header_ignored_outside_bypass_mode(jwt_client, rsa_pair):
 
 
 def test_dev_plan_header_switches_plan():
+    # The header overrides the dev default in BOTH directions — sending
+    # "free" is how the plan gate / 402 paths are QA'd in dev now.
     client = TestClient(make_app(DEV_BYPASS=True))
+    body = client.get("/shell/me", headers={"X-Dev-Plan": "free"}).json()
+    assert body["user"]["plan"] == "free"
     body = client.get("/shell/me", headers={"X-Dev-Plan": "pro"}).json()
     assert body["user"]["plan"] == "pro"
-    # nonsense plans fall back to free (no invented tiers)
+    # nonsense plans fall back to the ENV-gated default (no invented tiers)
     body = client.get("/shell/me", headers={"X-Dev-Plan": "emperor"}).json()
-    assert body["user"]["plan"] == "free"
+    assert body["user"]["plan"] == "pro"   # dev default; "free" outside ENV=dev
 
 
 # ------------------------------------------------------- unauthed behavior
