@@ -308,11 +308,22 @@ function onPickKind(kind) { controller.flow.pickKind(kind); goto('s2'); }
 
 // Real file input: no decision logic (Task 6 already decided what's a valid
 // type/what the dropzone says) — just OS-picker plumbing + reading bytes.
+// The picker input must be ROOTED in the document while the OS dialog is
+// open: a detached element (the original implementation) can be garbage-
+// collected mid-pick, after which the change event simply never fires —
+// "I picked a file and nothing happened" (owner report 2026-08-15).
+// Synthetic-drive tests dispatch change directly and can't catch this, so
+// the rooting is the guard; a stale picker left by a cancelled dialog is
+// removed before creating the next one.
 function onDropzone(side) {
+  document.querySelector('input[data-ocrf-picker]')?.remove();
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/png,image/jpeg,image/webp';
   input.multiple = true;
+  input.hidden = true;
+  input.setAttribute('data-ocrf-picker', side);
+  document.body.appendChild(input);
   input.addEventListener('change', async () => {
     for (const file of input.files) {
       const bytes = new Uint8Array(await file.arrayBuffer());
@@ -323,6 +334,7 @@ function onDropzone(side) {
     // The recovery removal notice has served its purpose once a replacement
     // screenshot lands — leaving it up reads as stale (L4 closing nit).
     if (input.files.length) app.s2Notice = null;
+    input.remove();
     render();
   });
   input.click();

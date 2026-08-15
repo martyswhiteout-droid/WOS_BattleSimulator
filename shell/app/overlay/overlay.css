@@ -191,6 +191,65 @@
   }
 }
 
+/* --- Round 2 (2026-08-15, owner request): metric-first chip --------------
+ * Default is a single-line metric pill top-right ("PRO · Sims 100 · OCR 28");
+ * clicking expands the original panel; "–" collapses back. The disclaimer
+ * leaves the chip for its own fixed micro-footer (#wos-shell-legal) so it
+ * stays visible in metric mode (F8/F2: never collapsible). Same navy-world
+ * palette tokens as Round 1 above; append-only. */
+
+#wos-shell-overlay .wos-sc-metric { display: none; }
+
+#wos-shell-overlay.wos-metric-mode {
+  min-width: 0;
+  max-width: none;
+  border-radius: 999px;
+}
+
+#wos-shell-overlay.wos-metric-mode .wos-sc-head,
+#wos-shell-overlay.wos-metric-mode .wos-sc-body { display: none; }
+
+#wos-shell-overlay.wos-metric-mode .wos-sc-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #B9D2E5;
+  font-family: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+
+#wos-shell-overlay.wos-metric-mode .wos-sc-metric:hover { color: #EAF6FF; }
+
+#wos-shell-overlay .wos-sc-metric:focus-visible {
+  outline: 2px solid #5AAEF3;
+  outline-offset: 1px;
+  border-radius: 999px;
+}
+
+#wos-shell-legal {
+  position: fixed;
+  right: 10px;
+  bottom: 8px;
+  z-index: 2147483000;
+  max-width: 340px;
+  font-family: 'Inter', system-ui, 'Segoe UI', Arial, sans-serif;
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: right;
+  color: #8FB0C9;
+  opacity: .85;
+}
+
+#wos-shell-legal a { color: #8FB0C9; text-decoration: underline; }
+
+#wos-shell-legal a:hover, #wos-shell-legal a:focus-visible { color: #B9D2E5; }
+
 /* M3 (EVAL_ROUND_1.md F18 / EVAL_ROUND_2.md M3): text label shown in place
  * of a page image that 404'd in a promoted (art-stripped) bundle — see
  * overlay.js's asset-fallback listener. Scoped outside #wos-shell-overlay

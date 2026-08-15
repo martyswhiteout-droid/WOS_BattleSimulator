@@ -26,6 +26,19 @@
   root.id = "wos-shell-overlay";
   root.setAttribute("role", "status");
 
+  // Owner decision 2026-08-15: default presentation is a one-line METRIC in
+  // the top-right corner — the always-open account panel read as an
+  // "annoying hanging panel". Clicking the metric expands the full panel;
+  // the "–" toggle returns to the metric. The compliance disclaimer moves
+  // to its own always-visible micro-footer (created below) precisely so
+  // this collapse can never hide it (F8 / PRODUCTION_CRITERIA F2: the
+  // disclaimer must not be collapsible).
+  var metric = el("button", "wos-sc-metric", "…");
+  metric.type = "button";
+  metric.setAttribute("aria-label", "Expand account panel");
+  root.appendChild(metric);
+  root.classList.add("wos-metric-mode");
+
   var head = el("div", "wos-sc-head");
   head.appendChild(el("span", "wos-sc-eyebrow", "WOSTESTS"));
   var toggle = el("button", "wos-sc-toggle", "–");
@@ -46,6 +59,7 @@
   // textContent only (hostile-client rule) — the two links are local,
   // static paths, not user data.
   var legal = el("div", "wos-sc-legal");
+  legal.id = "wos-shell-legal";
   legal.appendChild(document.createTextNode(
     "Fan-made tool. Not affiliated with or endorsed by Century Games. "));
   var tosLink = el("a", null, "Terms");
@@ -55,19 +69,21 @@
   var privacyLink = el("a", null, "Privacy");
   privacyLink.href = "/legal/privacy";
   legal.appendChild(privacyLink);
-  root.appendChild(legal);
+  // NOT inside the chip any more (2026-08-15): mounted as its own fixed
+  // micro-footer in mount() below, so it stays visible in metric mode.
 
+  metric.addEventListener("click", function () {
+    root.classList.remove("wos-metric-mode");
+  });
   toggle.addEventListener("click", function () {
-    var collapsed = root.classList.toggle("wos-collapsed");
-    toggle.textContent = collapsed ? "+" : "–";
-    toggle.setAttribute("aria-label",
-      (collapsed ? "Expand" : "Collapse") + " account panel");
+    root.classList.add("wos-metric-mode");
   });
 
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
 
   function renderSignedOut(signInUrl) {
     clear(body);
+    metric.textContent = "Sign in";
     body.appendChild(el("div", "wos-sc-user", "Not signed in"));
     var a = el("a", "wos-sc-btn wos-sc-cta", "Sign in");
     a.href = signInUrl || "/";
@@ -76,6 +92,7 @@
 
   function renderError() {
     clear(body);
+    metric.textContent = "Account —";
     body.appendChild(el("div", "wos-sc-user wos-sc-muted", "Account status unavailable"));
   }
 
@@ -84,6 +101,16 @@
     var user = me.user || {};
     var remaining = me.remaining || {};
     var ent = me.entitlements || {};
+
+    var simsLeft = remaining.sims != null ? String(remaining.sims)
+      : String(ent.daily_sim_quota != null ? ent.daily_sim_quota : "—");
+    var ocrLeft = remaining.ocr != null ? String(remaining.ocr)
+      : String(ent.daily_ocr_quota != null ? ent.daily_ocr_quota : "—");
+
+    // The one-line metric (textContent only — hostile-client rule).
+    metric.textContent = (user.plan || "free").toUpperCase()
+      + " · Sims " + simsLeft
+      + (user.plan === "pro" ? " · OCR " + ocrLeft : "");
 
     var who = el("div", "wos-sc-user");
     who.appendChild(el("span", "wos-sc-name", user.email || user.user_id || "player"));
@@ -95,16 +122,12 @@
     var quota = el("div", "wos-sc-quota");
     var sims = el("div", "wos-sc-quota-row");
     sims.appendChild(el("span", "wos-sc-quota-label", "Sims left today"));
-    sims.appendChild(el("span", "wos-sc-quota-val",
-      remaining.sims != null ? String(remaining.sims)
-        : String(ent.daily_sim_quota != null ? ent.daily_sim_quota : "—")));
+    sims.appendChild(el("span", "wos-sc-quota-val", simsLeft));
     quota.appendChild(sims);
     if (user.plan === "pro") {
       var ocr = el("div", "wos-sc-quota-row");
       ocr.appendChild(el("span", "wos-sc-quota-label", "OCR left today"));
-      ocr.appendChild(el("span", "wos-sc-quota-val",
-        remaining.ocr != null ? String(remaining.ocr)
-          : String(ent.daily_ocr_quota != null ? ent.daily_ocr_quota : "—")));
+      ocr.appendChild(el("span", "wos-sc-quota-val", ocrLeft));
       quota.appendChild(ocr);
     }
     body.appendChild(quota);
@@ -162,7 +185,10 @@
     })
     .catch(renderError);
 
-  function mount() { document.body.appendChild(root); }
+  function mount() {
+    document.body.appendChild(root);
+    document.body.appendChild(legal);   // fixed micro-footer, never collapsible
+  }
   if (document.body) mount();
   else document.addEventListener("DOMContentLoaded", mount);
 })();

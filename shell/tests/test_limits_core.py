@@ -281,6 +281,39 @@ def test_burst_window_slides():
 
 
 # ---------------------------------------------------------------------------
+# ENV=dev interactive carve-out (owner decision 2026-08-15): the DEFAULT
+# bypass identity "dev_user" is never burst-limited on localhost — real
+# metering (F21/C2) made 5/min trip during ordinary local clicking and the
+# app read as broken. Identity-scoped: probe users (distinct X-Dev-User ids,
+# F22) and any prodlike ENV keep full burst enforcement — the two tests
+# directly above this block are the proof for non-dev_user identities.
+# ---------------------------------------------------------------------------
+
+def test_dev_user_is_never_burst_limited_in_dev():
+    dev = UserCtx(user_id="dev_user", email=None, plan="pro")
+    for i in range(12):   # far past BURST_PER_MIN=5, all inside one window
+        verdict = run(limits.check_and_record(
+            dev, "/api/predict", sim_body(own=50000 + i * 10000), "ip_dev"))
+        assert isinstance(verdict, limits.Allowed), f"request {i + 1} denied"
+
+
+def test_dev_user_burst_carveout_is_env_scoped(monkeypatch):
+    # Same identity, prodlike ENV: burst enforced exactly as for anyone else.
+    from shell.app.config import Settings
+    staging = Settings(_env_file=None, ENV="staging", DEV_BYPASS=True,
+                       IP_HASH_SALT="x" * 32)
+    monkeypatch.setattr(limits, "get_settings", lambda: staging)
+    dev = UserCtx(user_id="dev_user", email=None, plan="pro")
+    for i in range(5):
+        verdict = run(limits.check_and_record(
+            dev, "/api/predict", sim_body(own=50000 + i * 10000), "ip_dev2"))
+        assert isinstance(verdict, limits.Allowed)
+    sixth = run(limits.check_and_record(dev, "/api/predict", sim_body(), "ip_dev2"))
+    assert isinstance(sixth, limits.Denied)
+    assert sixth.status == 429 and sixth.code == "burst"
+
+
+# ---------------------------------------------------------------------------
 # Per-IP daily cap = 3x account cap (C5: burner accounts)
 # ---------------------------------------------------------------------------
 

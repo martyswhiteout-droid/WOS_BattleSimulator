@@ -527,8 +527,23 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # ocr_flow.js/.css, it does not serve any file itself.
     from pathlib import Path as _Path
     from starlette.staticfiles import StaticFiles as _StaticFiles
+
+    class _NoCacheStatic(_StaticFiles):
+        """ES-module graph must revalidate on every load. Browser heuristic
+        caching (no explicit Cache-Control = ~10% of file age) otherwise
+        keeps a STALE, mixed old/new module graph for tens of minutes after
+        any change/deploy — which is exactly how the owner's browser broke
+        the OCR flow on 2026-08-15. "no-cache" still permits conditional
+        304s, so steady-state cost is one revalidation round-trip per
+        module; overlay.js/.css already ship the same header."""
+
+        async def get_response(self, path, scope):
+            response = await super().get_response(path, scope)
+            response.headers["Cache-Control"] = "no-cache"
+            return response
+
     _ocr_client_dir = _Path(__file__).resolve().parent / "ocr" / "client"
-    app.mount("/shell/ocr/client", _StaticFiles(directory=str(_ocr_client_dir)),
+    app.mount("/shell/ocr/client", _NoCacheStatic(directory=str(_ocr_client_dir)),
               name="ocr_client_assets")
 
     # shell/assets_prod/ — the original SVG emblem pack (class/generation/

@@ -278,14 +278,31 @@ async def check_and_record(
             )
 
     # 6. Per-account burst: sliding 60s window across metered endpoints (D2).
-    burst_cap = int(settings.burst_per_min)
-    recent = await db.count_recent_events(user.user_id, 60)
-    if recent >= burst_cap:
-        return Denied(
-            429,
-            "burst",
-            f"Slow down: at most {burst_cap} requests per minute.",
-        )
+    # ENV=dev carve-out (owner decision 2026-08-15): the interactive
+    # localhost human — the DEFAULT bypass identity, "dev_user" — is never
+    # burst-limited. With metering real (F21/C2), page loads plus a couple
+    # of predicts/OCR reads trip 5/min instantly and read as "the app is
+    # broken" during development. Scoped three ways so it can never leak:
+    # ENV must be dev, bypass must be on, and the identity must be the
+    # default one — probe-suite users keep their distinct X-Dev-User ids
+    # (F22) and stay fully burst-limited, so burst behavior remains
+    # testable in dev; prodlike ENVs are untouched.
+    # settings_extra (not attribute access): a shim settings object may lack
+    # these fields, and a missing field must fail toward ENFORCING burst
+    # (env defaults to "", not "dev"; bypass defaults to False).
+    dev_interactive = (
+        str(settings_extra(settings, "env", "")).lower() == "dev"
+        and bool(settings_extra(settings, "dev_bypass", False))
+        and user.user_id == "dev_user")
+    if not dev_interactive:
+        burst_cap = int(settings.burst_per_min)
+        recent = await db.count_recent_events(user.user_id, 60)
+        if recent >= burst_cap:
+            return Denied(
+                429,
+                "burst",
+                f"Slow down: at most {burst_cap} requests per minute.",
+            )
 
     # 7. Record (allowed requests only). Fingerprint the ORIGINAL body, not
     # the clamped one — sweep detection should see what the client actually
