@@ -53,6 +53,28 @@ class TestServer(unittest.TestCase):
         self.assertEqual(r.json()["error"], "invalid_input")
         self.assertTrue(any("troops" in p.lower() for p in r.json()["problems"]))
 
+    def test_malformed_panel_key_returns_clean_400_not_500(self):
+        # Evaluator-2 C3: a panel key without the "Class|Stat" pipe crashed
+        # serialize.profile_from_dict (unguarded k.split("|")) into a 500 —
+        # previously masked because the probe suite's burst contamination hid
+        # the endpoint's true response. Deserialization now passes malformed
+        # entries through for validate.py's bad-panel-key check to 400.
+        for bad_key, bad_value in (
+                ("InfantryAttack", 5.0),          # no pipe
+                ("Infantry|Attack|extra", 5.0),   # too many pipes
+                ("Infantry|Attack", "not-a-number")):   # unparseable value
+            body = {
+                "own": {"role": "rally", "troops_total": 1_000_000, "formation": _FLAT,
+                        "panel": {bad_key: bad_value}},
+                "enemy": {"role": "garrison", "troops_total": 1_000_000, "formation": _FLAT},
+                "n": 10, "seed": 1,
+            }
+            r = client.post("/api/predict", json=body)
+            self.assertEqual(r.status_code, 400, f"{bad_key!r}/{bad_value!r} -> {r.status_code}")
+            self.assertEqual(r.json()["error"], "invalid_input")
+            self.assertTrue(any("bad panel key" in p for p in r.json()["problems"]),
+                            r.json()["problems"])
+
     def test_predict_rejects_runs_above_ceiling(self):
         body = {
             "own": {"role": "rally", "troops_total": 1_000, "formation": _FLAT},

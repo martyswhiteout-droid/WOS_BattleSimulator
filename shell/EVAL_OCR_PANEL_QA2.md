@@ -507,3 +507,21 @@ navigation); consider cache-busting module URLs as VPS-deploy hardening.
 
 An independent verification agent re-runs this round's probes + the full suites post-fix; its
 sign-off note is appended below when it lands.
+
+## Independent verification sign-off (2026-08-15, post-fix)
+
+A separate verification agent re-ran this round's probe scripts against fixed master
+(per the owner's explicit "QA scripts run by a sub-agent" requirement). **VERDICT: ALL
+FIXES HOLD.** Evidence highlights: D-043's probe now shows `specials_observed: none` +
+hard `MissingSpecialsError` (the 367.4pp silent path is closed); post-fix adapted probes
+(`*_postfix.*`) confirm the real chip wiring reports "not filled in" and the shipped
+by-name benchmark gate raises on the exact masking scenario D-046 described; D-047's new
+unit suite 8/8 with real-ONNX checks intentionally left to the gated benchmark; suites
+352/150(149+1)/7 (three clean reruns); gated benchmark rapidocr 1.0 / 0 false-confident
+PASS with gemini legitimately skipped keyless; live E2E battle_3-alone → "none",
+battle_3+4 → "read" with +7.5/+0.0 sided specials. Full detail was written to
+`shell/tmp_qa2/VERIFICATION_SIGNOFF.md` (scratch folder, deleted at closeout — this
+summary is the durable record). One transient observation explained: a single 393-count
+suite run was the coordinator's integration-branch checkout window (agents B+C merged on
+`shell-fix-round2`), not a code effect; three subsequent master runs reproduced 352
+exactly.
