@@ -13,6 +13,7 @@
 import { mountEntry, wireEntry, renderUpgradeNote, wireUpgradeNote } from './screens/entry.mjs';
 import {
   renderS1, renderS2, renderE1, wireS1, wireS2,
+  renderSampleFallback,
   YOU_TYPES, ENEMY_TYPES, TYPE_LABEL,
 } from './screens/pick_upload.mjs';
 import { renderS3, driveScan, applyStepClasses, wireS3 } from './screens/reading.mjs';
@@ -923,6 +924,17 @@ function boot() {
   document.addEventListener('click', (ev) => {
     if (ev.target && ev.target.id === 'ocrfRoot' && presentationFor(app.screen).modal) exitFlow();
   });
+  // Real-screenshot samples degrade to the hand-drawn mini-panels when their
+  // images can't load (a promoted bundle strips game-IP raster art —
+  // PRODUCTION_CRITERIA F1). Error events don't bubble; capture phase, same
+  // idiom as overlay.js's page-asset fallback.
+  document.addEventListener('error', (ev) => {
+    const img = ev.target;
+    if (!(img instanceof HTMLImageElement) || !img.classList.contains('ocrf-sample-img')) return;
+    const sample = img.closest('.ocrf-sample');
+    const type = sample?.getAttribute('data-sample');
+    if (sample && type) sample.outerHTML = renderSampleFallback(type);
+  }, true);
 
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
   if (!entryNode) return;

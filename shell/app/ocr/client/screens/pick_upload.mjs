@@ -27,7 +27,45 @@ const SAMPLES = {
   ],
 };
 
+// Owner request 2026-08-15 ("the samples need to look real... users will
+// resonate with the game screenshots"): the samples are now REAL crops of
+// the owner's own fixture captures, served from the mounted client tree
+// (shell/app/ocr/client/samples/, no-cache). Battle deliberately shows the
+// TWO required shots, numbered — the strongest possible cure for the
+// forget-the-popup trap (D-043/D-045): shot 1's crop even shows the real
+// "!" icon that opens shot 2. The hand-typed mini-panels below survive as
+// renderSampleFallback: a promoted bundle strips game-IP raster art
+// (PRODUCTION_CRITERIA F1 / promote.py), and the img error listener in
+// ocr_flow.js swaps the figures back to the drawn panels automatically.
+const SAMPLE_IMG_BASE = '/shell/ocr/client/samples';
+
 export function renderSample(type) {
+  const fig = (src, alt, badge, caption) => (
+    '<figure class="ocrf-sample-shot">'
+    + (badge ? `<span class="ocrf-sample-badge" aria-hidden="true">${badge}</span>` : '')
+    + `<img class="ocrf-sample-img" src="${SAMPLE_IMG_BASE}/${src}" alt="${alt}">`
+    + (caption ? `<figcaption class="ocrf-sample-cap">${caption}</figcaption>` : '')
+    + '</figure>');
+  if (type === 'battle') {
+    return `<div class="ocrf-sample ocrf-sample--pair" data-sample="battle">`
+      + fig('sample_battle_panel.jpg', "The battle report's Stat Bonuses panel", '1', 'Stat Bonuses list')
+      + fig('sample_battle_popup.jpg', 'The Notes on Special Bonuses popup', '2', 'The popup behind the ! icon')
+      + '</div>';
+  }
+  if (type === 'scout') {
+    return `<div class="ocrf-sample" data-sample="scout">`
+      + fig('sample_scout.jpg', "The scout report's Stat Bonuses panel", '', '')
+      + '</div>';
+  }
+  if (type === 'citystats') {
+    return `<div class="ocrf-sample" data-sample="citystats">`
+      + fig('sample_citystats.jpg', 'The Bonus Overview panel', '', '')
+      + '</div>';
+  }
+  return '';
+}
+
+export function renderSampleFallback(type) {
   if (type === 'battle') {
     const rows = SAMPLES.battle.map((r) => (
       `<div class="ocrf-mp-b-row"><span class="ocrf-mp-b-val ocrf-mp-b-me">${r.me}</span>`

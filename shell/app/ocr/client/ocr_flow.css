@@ -431,6 +431,34 @@
 .ocrf-s5-cta-row{margin:12px 0 0;display:flex}
 .ocrf-s5-cta-row .ocrf-btn-primary{flex:1;max-width:340px}
 
+/* --- Real-screenshot samples (owner request 2026-08-15) -------------------
+   Actual cropped game captures replace the hand-typed mini-panels on the S1
+   cards and S2 side-sections; battle shows the TWO required shots numbered.
+   The mini-panels remain the img-error fallback (art-stripped bundles). */
+.ocrf-sample{display:flex;gap:10px;margin:10px 0}
+.ocrf-sample--pair .ocrf-sample-shot{flex:1;min-width:0}
+.ocrf-sample-shot{position:relative;margin:0;flex:1;min-width:0}
+.ocrf-sample-img{display:block;width:100%;height:auto;border-radius:10px;
+  border:1px solid rgba(185,210,229,.22);
+  box-shadow:0 4px 12px -6px rgba(0,0,0,.55)}
+.ocrf-sample-badge{position:absolute;top:-9px;left:-9px;z-index:1;
+  width:26px;height:26px;display:grid;place-items:center;border-radius:50%;
+  background:linear-gradient(180deg,#8ED0FF 0%,#5AAEF3 46%,#3E97E8 100%);
+  border:1px solid #235f9c;color:#fff;
+  font:700 13px/1 'Chakra Petch',system-ui,sans-serif;
+  text-shadow:0 1px 2px rgba(10,52,96,.55);
+  box-shadow:0 2px 5px -1px rgba(4,22,44,.7)}
+.ocrf-sample-cap{margin-top:5px;font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ocrf-ink-label);
+  text-align:center}
+@media (max-width:560px){
+  .ocrf-sample--pair{flex-direction:column}
+}
+/* Inside the S1 pick-cards (~180px content width, three-across in the
+   dialog) a side-by-side pair would be 85px thumbnails — the pair stacks
+   vertically there so each real screenshot keeps the full card width. */
+.ocrf-pick-card .ocrf-sample--pair{flex-direction:column}
+
 .ocrf-scan-fill::after{content:"";position:absolute;inset:0;
   background-image:linear-gradient(-45deg,rgba(255,255,255,.25) 25%,transparent 25%,transparent 50%,
     rgba(255,255,255,.25) 50%,rgba(255,255,255,.25) 75%,transparent 75%,transparent);

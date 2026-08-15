@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   renderS1, renderS2, renderE1, dropzoneLabel, computeS2ContinueState, TYPE_LABEL, renderThumbs,
-  renderSample,
+  renderSample, renderSampleFallback,
 } from '../screens/pick_upload.mjs';
 
 test('S1 uses the real flow_state type vocabulary and the mock copy verbatim', () => {
@@ -164,53 +164,59 @@ test('D-035: S2 actually renders thumb content into .ocrf-thumbs when a side has
   assert.doesNotMatch(html, /data-thumbs="you"[^>]*\shidden/);   // visible now that it has content
 });
 
-// ---- UXJ-002 (EVAL_UX_JOURNEY.md round 1): S1's cards and S2's side-
-// sections were missing the mock's "faithful mini-renderings of the real
-// panels" (OCR_UX_FLOW_SPEC.md §3 S1), and the dropzone had no icon. ----
+// ---- UXJ-002 (EVAL_UX_JOURNEY.md round 1) + owner request 2026-08-15: the
+// samples are REAL cropped game screenshots (the owner's own fixture
+// captures, served from /shell/ocr/client/samples/); the hand-typed
+// mini-panels survive as renderSampleFallback for art-stripped bundles. ----
 
-test('UXJ-002 probe: renderSample renders a two-column battle mini-panel with the mock\'s exact sample numbers', () => {
+test('samples: battle renders the TWO required real screenshots, numbered (panel then popup)', () => {
   const html = renderSample('battle');
-  assert.match(html, /ocrf-mini-panel--battle/);
-  assert.match(html, /MY SIDE/);
-  assert.match(html, /ENEMY/);
-  assert.match(html, /\+4859\.0%/);   // My Infantry Attack
-  assert.match(html, /\+694\.3%/);    // Enemy Infantry Attack
-  assert.match(html, /Infantry Attack/);
+  assert.match(html, /ocrf-sample--pair/);
+  assert.match(html, /sample_battle_panel\.jpg/);
+  assert.match(html, /sample_battle_popup\.jpg/);
+  assert.match(html, /ocrf-sample-badge[^>]*>1</);
+  assert.match(html, /ocrf-sample-badge[^>]*>2</);
+  assert.match(html, /Stat Bonuses list/);
+  assert.match(html, /popup behind the ! icon/);
+  // both images carry honest alt text
+  assert.match(html, /alt="The battle report's Stat Bonuses panel"/);
+  assert.match(html, /alt="The Notes on Special Bonuses popup"/);
 });
 
-test('UXJ-002 probe: renderSample renders a single-column scout mini-panel', () => {
-  const html = renderSample('scout');
-  assert.match(html, /ocrf-mini-panel--scout/);
-  assert.match(html, /\+4491\.6%/);
-  assert.doesNotMatch(html, /MY SIDE/);   // scout has no two-sided head
+test('samples: scout and citystats render their single real screenshot; unknown keys render nothing', () => {
+  assert.match(renderSample('scout'), /sample_scout\.jpg/);
+  assert.match(renderSample('citystats'), /sample_citystats\.jpg/);
+  assert.doesNotMatch(renderSample('scout'), /ocrf-sample-badge/);
+  assert.equal(renderSample('city'), '');   // the mock's demo key is NOT this file's vocabulary
 });
 
-test('UXJ-002 probe: renderSample renders the City Stats mini-panel headed "Bonus Overview", keyed citystats (this file\'s real type vocabulary, not the mock\'s demo "city" key)', () => {
-  const html = renderSample('citystats');
-  assert.match(html, /ocrf-mini-panel--city/);
-  assert.match(html, /Bonus Overview/);
-  assert.match(html, /748\.49%/);
-  assert.equal(renderSample('city'), '');   // the mock's own demo key is NOT this file's vocabulary
+test('samples: renderSampleFallback keeps the hand-drawn mini-panels intact (the img-error path for art-stripped bundles)', () => {
+  assert.match(renderSampleFallback('battle'), /ocrf-mini-panel--battle/);
+  assert.match(renderSampleFallback('battle'), /\+4859\.0%/);
+  assert.match(renderSampleFallback('scout'), /ocrf-mini-panel--scout/);
+  assert.match(renderSampleFallback('citystats'), /ocrf-mini-panel--city/);
+  assert.match(renderSampleFallback('citystats'), /Bonus Overview/);
+  assert.equal(renderSampleFallback('city'), '');
 });
 
-test('UXJ-002: S1\'s three cards each carry their matching faithful mini-panel', () => {
+test('UXJ-002: S1\'s three cards each carry their matching real-screenshot sample', () => {
   const html = renderS1();
   const battleCard = html.slice(html.indexOf('data-pick-type="battle"'), html.indexOf('data-pick-type="scout"'));
-  assert.match(battleCard, /ocrf-mini-panel--battle/);
+  assert.match(battleCard, /sample_battle_panel\.jpg/);
   const scoutCard = html.slice(html.indexOf('data-pick-type="scout"'), html.indexOf('data-pick-type="citystats"'));
-  assert.match(scoutCard, /ocrf-mini-panel--scout/);
+  assert.match(scoutCard, /sample_scout\.jpg/);
   const cityCard = html.slice(html.indexOf('data-pick-type="citystats"'));
-  assert.match(cityCard, /ocrf-mini-panel--city/);
+  assert.match(cityCard, /sample_citystats\.jpg/);
 });
 
-test('UXJ-002: S2 renders the dropzone camera icon and, for an uncovered side, the type\'s mini-panel', () => {
+test('UXJ-002: S2 renders the dropzone camera icon and, for an uncovered side, the type\'s real sample', () => {
   const html = renderS2({
     types: { you: 'battle', enemy: 'scout' },
     coverage: { you: false, enemy: false },
   });
   assert.match(html, /ocrf-dz-icon/);
-  assert.match(html, /ocrf-mini-panel--battle/);   // you = battle
-  assert.match(html, /ocrf-mini-panel--scout/);    // enemy = scout
+  assert.match(html, /sample_battle_panel\.jpg/);   // you = battle
+  assert.match(html, /sample_scout\.jpg/);          // enemy = scout
 });
 
 test('UXJ-002: a COVERED side shows the covered-note, not a mini-panel (mutually exclusive, matching the mock)', () => {
@@ -221,7 +227,9 @@ test('UXJ-002: a COVERED side shows the covered-note, not a mini-panel (mutually
   });
   const enemySection = html.slice(html.indexOf('data-side="enemy"'));
   assert.match(enemySection, /Covered by your battle report/);
-  assert.doesNotMatch(enemySection.slice(0, enemySection.indexOf('ocrf-dropzone')), /ocrf-mini-panel/);
+  const beforeDropzone = enemySection.slice(0, enemySection.indexOf('ocrf-dropzone'));
+  assert.doesNotMatch(beforeDropzone, /ocrf-mini-panel/);
+  assert.doesNotMatch(beforeDropzone, /ocrf-sample-img/);   // no real sample either — covered needs no reference
   // the dropzone icon is still present even when covered/muted (mock parity)
   assert.match(html, /ocrf-dz-icon/);
 });
