@@ -369,9 +369,20 @@ function leaveScanIfRunning() {
 
 function render() {
   leaveScanIfRunning();
+  // UXJ-010 (round 4): inert bookkeeping BEFORE the branch as well — the two
+  // focus restorations inside renderScreen that target elements OUTSIDE
+  // #ocrfRoot (exit-to-entry's CTA, S4->S5's inline S5 heading, both living
+  // in the host page's <main>) must run against the NEW screen's inert
+  // state. syncBackgroundInert derives that from presentationFor(app.screen),
+  // which goto() has already updated — running it only after renderScreen
+  // left <main> carrying the PREVIOUS cycle's inert during those .focus()
+  // calls, which silently no-op on inert subtrees by spec (every modal exit
+  // parked focus on <body>; S4->S5 re-opened the closed UXJ-005).
+  syncBackgroundInert();
   renderScreen();
-  // UXJ-007 (round 3): inert bookkeeping AFTER the branch has built/removed
-  // whatever it builds, so the decision always sees the final DOM.
+  // UXJ-007 (round 3): and AFTER the branch has built/removed whatever it
+  // builds, so the decision always sees the final DOM. Idempotent, so the
+  // double pass is safe.
   syncBackgroundInert();
 }
 
@@ -486,32 +497,63 @@ function renderScreen() {
       percentsFoe: window.readInputPanelPct ? window.readInputPanelPct('foe') : {},
       heroesMe: null, heroesFoe: null, statsScoutedChecked: document.getElementById('statsScouted')?.checked ?? false,
     });
-    applyFillPlan(plan);
+    // UXJ-010 adjunct 2: #statPanel lives inside the prototype's runtime-
+    // tabbed input block — if the user's active tab is Troops Formation (the
+    // default), the fill writes .value into a HIDDEN panel (0-size rects)
+    // and the whole arrival is invisible. Activate the Stats tab the way a
+    // user would (its real tab button; prototype is read-only, there is no
+    // API) BEFORE the fill, so applyFillPlan's own scroll targets a panel
+    // that is actually laid out, and chip + freshly filled panel +
+    // See-who-wins land on screen together.
+    const statsTab = [...document.querySelectorAll('[role="tab"], .tab, button')]
+      .find((t) => t.textContent.trim().toLowerCase() === 'stats');
+    if (statsTab && statsTab.getAttribute('aria-selected') !== 'true') statsTab.click();
+    applyFillPlan(plan, { scroll: false });   // the branch anchors its own arrival scroll below
     // Takeover ends HERE, by design (owner escalation 2026-08-15 + the
     // mock's own S5): S5 is the app again — the modal closes (the class
     // toggle at the top of render() already dropped the backdrop) and the
-    // Battle-setup chip renders INLINE at the top of the form section,
-    // right next to the panel the fill just populated, replacing the
-    // hidden entry CTA's spot. #ocrfRoot is removed so nothing lingers at
-    // the bottom of the page.
+    // Battle-setup chip renders INLINE directly above the panel the fill
+    // just populated. #ocrfRoot is removed so nothing lingers at the
+    // bottom of the page.
     root()?.remove();
     let host = document.getElementById('ocrfS5Host');
     if (!host) {
       host = document.createElement('div');
       host.id = 'ocrfS5Host';
-      if (entryNode && entryNode.parentElement) {
+      // UXJ-010 adjunct (round 4 arrival geometry): the chip must sit
+      // DIRECTLY above the panel the fill populated. Mounting it at the
+      // entry CTA's spot left it ~1300px above where applyFillPlan scrolls
+      // the user (#statPanel), so the arrival moment showed the filled
+      // panel but never the Battle-setup chip — violating the charter's
+      // "chip + filled form + See-who-wins together in view". At S5-time
+      // the prototype's tab consolidation has long run, so anchoring off
+      // the live #statPanel is stable (unlike UXJ-001's mount-time anchor,
+      // which broke precisely because it ran before that consolidation).
+      const statPanel = document.getElementById('statPanel');
+      if (statPanel && statPanel.parentElement) {
+        statPanel.parentElement.insertBefore(host, statPanel);
+      } else if (entryNode && entryNode.parentElement) {
         entryNode.parentElement.insertBefore(host, entryNode);
       } else {
         document.body.prepend(host);
       }
     }
     host.innerHTML = renderS5({ chipText: computeChipText(tally, notices), complete: tally.clear && !notices.length, states, notices });
+    // Anchor the arrival scroll on the HOST — synchronous and INSTANT, as
+    // the branch's own scroll intent (applyFillPlan's was suppressed above).
+    // Instant, not smooth, deliberately: rAF/timers don't run in throttled
+    // or backgrounded tabs, deferred smooth scrolls lose races to async
+    // scrollers, and reduced-motion users get the same honest jump — the
+    // modal just closed, so an immediate reveal of chip + filled panel is
+    // the correct beat, not a second animation.
+    window.scrollTo({ top: Math.max(0, host.getBoundingClientRect().top + window.scrollY - 12), behavior: 'auto' });
     const s5Heading = host.querySelector('h1');
     if (s5Heading) { s5Heading.setAttribute('tabindex', '-1'); s5Heading.focus({ preventScroll: true }); }
     const undoChip = document.getElementById('ocrfUndoChip');
     if (undoChip) undoChip.hidden = !shouldShowUndo(app.priorSnapshot);
     wireS5(host, {
       onToggleChip: onToggleS5Chip, onOpenPicture: openPicture, onReset: () => doReset('s5'),
+      onRunForecast: () => document.getElementById('runBtn')?.click(),
       onUndo: () => {
         const snap = app.priorSnapshot;
         if (!snap) return;

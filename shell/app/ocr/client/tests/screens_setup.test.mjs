@@ -180,3 +180,10 @@ test('QA defect 044: renderS5 shows the notice card inside the body and the chip
   assert.match(html, /ocrf-needs-attention/);
   assert.doesNotMatch(html, /ocrf-complete/);
 });
+
+test('UXJ-010 adjunct: S5 carries its own See-who-wins primary CTA (the app #runBtn is ~1200px below the cluster)', () => {
+  const html = renderS5({ chipText: 'x', complete: true, states: { you: {}, enemy: {} } });
+  assert.match(html, /data-run-forecast/);
+  assert.match(html, /See who wins/);
+  assert.match(html, /ocrf-btn-primary/);
+});

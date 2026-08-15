@@ -425,6 +425,12 @@
    entry.
    ============================================================ */
 .ocrf-scan-fill{position:relative;overflow:hidden}
+/* UXJ-010 adjunct (round 4): S5's own primary CTA row — the cluster's
+   "See who wins" proxy for the app's distant #runBtn. Spacing only; the
+   button reuses .ocrf-btn-primary from Round 1. */
+.ocrf-s5-cta-row{margin:12px 0 0;display:flex}
+.ocrf-s5-cta-row .ocrf-btn-primary{flex:1;max-width:340px}
+
 .ocrf-scan-fill::after{content:"";position:absolute;inset:0;
   background-image:linear-gradient(-45deg,rgba(255,255,255,.25) 25%,transparent 25%,transparent 50%,
     rgba(255,255,255,.25) 50%,rgba(255,255,255,.25) 75%,transparent 75%,transparent);

@@ -105,6 +105,9 @@ export function renderS5({ chipText, complete, states, notices = [] }) {
   <p class="ocrf-s5-links" id="ocrfS5Links">
     <button type="button" class="ocrf-link-btn" id="ocrfUndoChip" hidden>Put my last numbers back</button>
   </p>
+  <p class="ocrf-s5-cta-row">
+    <button type="button" class="ocrf-btn-primary" id="ocrfS5Run" data-run-forecast>See who wins <span aria-hidden="true">&rarr;</span></button>
+  </p>
 </section>`.trim();
 }
 
@@ -126,7 +129,7 @@ export function relabelForecastCta({ doc = document } = {}) {
   return btn;
 }
 
-export function applyFillPlan(plan, { win = window } = {}) {
+export function applyFillPlan(plan, { win = window, scroll = true } = {}) {
   if (plan.me && typeof win.applyPanel === 'function') win.applyPanel('me', plan.me);
   if (plan.foe && typeof win.applyPanel === 'function') win.applyPanel('foe', plan.foe);
   // D-044 adjunct: only claim scouted-mode when something was actually
@@ -142,13 +145,25 @@ export function applyFillPlan(plan, { win = window } = {}) {
   if (plan.heroesFoe && typeof win.applyHeroes === 'function') win.applyHeroes('#capFoe', plan.heroesFoe);
   if (typeof win.updateFinalStats === 'function') win.updateFinalStats();
   relabelForecastCta();
-  const statPanel = document.getElementById('statPanel');
-  statPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // scroll:false on the S5-arrival path — the s5 branch anchors the viewport
+  // on its own chip+panel cluster instead (a competing smooth scroll here
+  // was one of the two authors of the UXJ-010 arrival-geometry fight).
+  // Undo and any other caller keep the original behavior.
+  if (scroll) {
+    const statPanel = document.getElementById('statPanel');
+    statPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
-export function wireS5(root, { onToggleChip, onOpenPicture, onReset, onUndo }) {
+export function wireS5(root, { onToggleChip, onOpenPicture, onReset, onUndo, onRunForecast }) {
   root.querySelector('#ocrfS5Chip')?.addEventListener('click', onToggleChip);
   root.querySelector('[data-open-picture]')?.addEventListener('click', onOpenPicture);
   root.querySelector('#ocrfResetS5')?.addEventListener('click', onReset);
   root.querySelector('#ocrfUndoChip')?.addEventListener('click', onUndo);
+  // UXJ-010 adjunct 3: the app's own #runBtn sits ~1200px below the chip
+  // (after the final-stats comparison), so "chip + panel + See who wins in
+  // one view" is physically impossible with that button alone. The S5
+  // cluster carries its own primary CTA (the mock's S5 did exactly this);
+  // it proxies the real button so the forecast pipeline stays the app's.
+  if (onRunForecast) root.querySelector('[data-run-forecast]')?.addEventListener('click', onRunForecast);
 }
