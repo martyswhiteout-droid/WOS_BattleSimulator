@@ -931,9 +931,20 @@ function boot() {
   document.addEventListener('error', (ev) => {
     const img = ev.target;
     if (!(img instanceof HTMLImageElement) || !img.classList.contains('ocrf-sample-img')) return;
+    // S1 cards: the whole sample container swaps to its hand-drawn panel.
     const sample = img.closest('.ocrf-sample');
     const type = sample?.getAttribute('data-sample');
-    if (sample && type) sample.outerHTML = renderSampleFallback(type);
+    if (sample && type) { sample.outerHTML = renderSampleFallback(type); return; }
+    // S2 rows: only the FIGURE degrades (the row's own dropzone stays).
+    // Rows with a drawn equivalent get it; the popup/heroes rows fall back
+    // to their alt text (no drawn equivalents exist — honest, not blank).
+    const row = img.closest('.ocrf-sample-row');
+    const rowKey = row?.getAttribute('data-sample-row');
+    if (!row || !rowKey) return;
+    const figure = img.closest('.ocrf-sample-shot');
+    const drawn = { battle_panel: 'battle', scout: 'scout', citystats: 'citystats' }[rowKey];
+    if (drawn) figure.outerHTML = `<div class="ocrf-sample-shot">${renderSampleFallback(drawn)}</div>`;
+    else figure.innerHTML = `<span class="ocrf-sample-alt">${img.alt}</span>`;
   }, true);
 
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())

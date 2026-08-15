@@ -44,3 +44,24 @@
 ## 5. Engineering patterns proven in the mock (carry into the real build)
 
 Auto-advance screens share ONE history slot (Back/Cancel always land on the last deliberate screen); `[hidden]{display:none!important}`; field state on a persistent store surviving navigation; grid and screenshot-view derive from the same field-state source (cannot disagree); undo = pre-run snapshot restore; strict numeric validation (format + 0–6000 range, distinct messages); focus-to-heading on navigation; sheets set inert/aria-hidden and trap focus.
+
+## Amendment 2026-08-15 — S2 row arrangement + the three battle inputs (owner decision)
+
+- **S2 upload layout is ROWS**: each row = the REAL sample screenshot on the left (cropped
+  from the owner's own fixture captures, `shell/app/ocr/client/samples/`) and that row's own
+  labeled add-zone on the right. Scout and City Stats sides show exactly ONE row each.
+- **Battle = THREE rows, in order**: **Heroes** (OPTIONAL — the report's hero strip;
+  capture-only for now: captain auto-set awaits the badge-reading derivation — the
+  2026-08-15 spike showed RapidOCR reads the star rows cleanly but mangles gen-badge digits,
+  and the portrait→class order convention is unproven; the row's copy says exactly this),
+  **Battle stats** (the Stat Bonuses list — fills all 24 numbers), and **Buffs** (NEEDED —
+  the "Notes on Special Bonuses" popup behind the ! icon; conversion refuses without it,
+  D-043). D-045's popup guarantee moved INTO the Buffs row; the separate hint card is gone.
+- Every row's zone feeds the SAME per-side shot set — the server sorts shots by content, so
+  there is no wrong slot. **What battle needs and deliberately does NOT need** (owner
+  question 2026-08-15): gear/charm/expert/pet screenshots are NOT inputs — the three-panel
+  law proves they are already folded into the panel numbers; troops/formation are set in the
+  app; hero screenshots become a live input the moment badge-reading ships.
+- Samples degrade per-row when their images can't load (promoted bundles strip game-IP art):
+  stats/scout/citystats rows fall back to the hand-drawn mini-panels, heroes/popup rows to
+  their alt text.

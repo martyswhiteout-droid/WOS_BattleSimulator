@@ -459,6 +459,33 @@
    vertically there so each real screenshot keeps the full card width. */
 .ocrf-pick-card .ocrf-sample--pair{flex-direction:column}
 
+/* --- S2 upload rows (owner arrangement 2026-08-15) ------------------------
+   Each row: [real sample | its own labeled add-zone]. Battle = three rows
+   (Heroes / Battle stats / Buffs); scout & citystats = one. */
+.ocrf-sample-row{display:flex;gap:10px;margin:10px 0;align-items:stretch}
+.ocrf-sample-row .ocrf-sample-shot{flex:0 0 44%;margin:0;display:flex;align-items:center}
+.ocrf-sample-row .ocrf-sample-img{width:100%}
+.ocrf-row-zone{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:center;gap:4px;text-align:left;padding:10px 12px}
+.ocrf-row-label{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;
+  font-size:13px;color:var(--ocrf-ink);display:flex;align-items:center;gap:6px}
+.ocrf-row-tag{padding:1px 7px;border-radius:999px;font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:8.5px;letter-spacing:.14em;color:#0B273D;
+  background:linear-gradient(180deg,#F4D06F,#D9A94F);border:1px solid rgba(217,169,79,.55)}
+.ocrf-row-tag--muted{background:rgba(6,20,34,.38);border:1px solid rgba(185,210,229,.28);
+  color:var(--ocrf-ink-label)}
+.ocrf-row-copy{font-size:11.5px;line-height:1.45;color:var(--ocrf-ink-label)}
+.ocrf-row-add{display:flex;align-items:center;gap:7px;margin-top:2px;
+  font-size:12px;color:var(--ocrf-ink)}
+.ocrf-row-add .ocrf-dz-icon{width:22px;height:22px}
+.ocrf-sample-alt{display:flex;align-items:center;justify-content:center;height:100%;
+  padding:10px;font-size:11px;color:var(--ocrf-ink-label);text-align:center;
+  border:1px dashed rgba(185,210,229,.25);border-radius:10px}
+@media (max-width:430px){
+  .ocrf-sample-row{flex-direction:column}
+  .ocrf-sample-row .ocrf-sample-shot{flex:none}
+}
+
 .ocrf-scan-fill::after{content:"";position:absolute;inset:0;
   background-image:linear-gradient(-45deg,rgba(255,255,255,.25) 25%,transparent 25%,transparent 50%,
     rgba(255,255,255,.25) 50%,rgba(255,255,255,.25) 75%,transparent 75%,transparent);

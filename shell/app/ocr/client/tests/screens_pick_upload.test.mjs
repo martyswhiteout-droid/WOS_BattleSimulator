@@ -209,14 +209,40 @@ test('UXJ-002: S1\'s three cards each carry their matching real-screenshot sampl
   assert.match(cityCard, /sample_citystats\.jpg/);
 });
 
-test('UXJ-002: S2 renders the dropzone camera icon and, for an uncovered side, the type\'s real sample', () => {
+test('UXJ-002 + owner arrangement: S2 renders labeled sample rows — three for battle, one for scout', () => {
   const html = renderS2({
     types: { you: 'battle', enemy: 'scout' },
     coverage: { you: false, enemy: false },
   });
   assert.match(html, /ocrf-dz-icon/);
-  assert.match(html, /sample_battle_panel\.jpg/);   // you = battle
-  assert.match(html, /sample_scout\.jpg/);          // enemy = scout
+  const youSection = html.slice(html.indexOf('data-side="you"'), html.indexOf('data-side="enemy"'));
+  // battle = THREE rows, in order: Heroes (optional) / Battle stats / Buffs (needed)
+  for (const key of ['battle_heroes', 'battle_panel', 'battle_popup']) {
+    assert.match(youSection, new RegExp(`data-sample-row="${key}"`));
+  }
+  assert.ok(youSection.indexOf('battle_heroes') < youSection.indexOf('battle_panel'));
+  assert.ok(youSection.indexOf('battle_panel') < youSection.indexOf('battle_popup'));
+  assert.match(youSection, />Heroes\s*<span class="ocrf-row-tag ocrf-row-tag--muted">OPTIONAL</);
+  assert.match(youSection, />Battle stats</);
+  assert.match(youSection, />Buffs\s*<span class="ocrf-row-tag">NEEDED</);
+  // every row carries its own add-zone feeding the SAME side shot set
+  assert.equal((youSection.match(/data-dropzone="you"/g) || []).length, 3);
+  // scout = exactly one row
+  const enemySection = html.slice(html.indexOf('data-side="enemy"'));
+  assert.equal((enemySection.match(/data-sample-row=/g) || []).length, 1);
+  assert.match(enemySection, /data-sample-row="scout"/);
+  assert.match(enemySection, /sample_scout\.jpg/);
+});
+
+test('owner arrangement: citystats side renders exactly one row with the City Defenses reminder', () => {
+  const html = renderS2({
+    types: { you: 'citystats', enemy: 'scout' },
+    coverage: { you: false, enemy: false },
+  });
+  const youSection = html.slice(html.indexOf('data-side="you"'), html.indexOf('data-side="enemy"'));
+  assert.equal((youSection.match(/data-sample-row=/g) || []).length, 1);
+  assert.match(youSection, /data-sample-row="citystats"/);
+  assert.match(youSection, /City Defenses rows/);
 });
 
 test('UXJ-002: a COVERED side shows the covered-note, not a mini-panel (mutually exclusive, matching the mock)', () => {
@@ -227,9 +253,10 @@ test('UXJ-002: a COVERED side shows the covered-note, not a mini-panel (mutually
   });
   const enemySection = html.slice(html.indexOf('data-side="enemy"'));
   assert.match(enemySection, /Covered by your battle report/);
-  const beforeDropzone = enemySection.slice(0, enemySection.indexOf('ocrf-dropzone'));
-  assert.doesNotMatch(beforeDropzone, /ocrf-mini-panel/);
-  assert.doesNotMatch(beforeDropzone, /ocrf-sample-img/);   // no real sample either — covered needs no reference
+  // a covered side shows NO sample rows at all — just the note + muted zone
+  assert.doesNotMatch(enemySection, /ocrf-sample-row/);
+  assert.doesNotMatch(enemySection, /ocrf-mini-panel/);
+  assert.match(enemySection, /ocrf-dropzone--muted/);
   // the dropzone icon is still present even when covered/muted (mock parity)
   assert.match(html, /ocrf-dz-icon/);
 });
@@ -240,13 +267,18 @@ test('QA defect 045: S2 shows the Special Bonuses popup hint for battle, and onl
     types: { you: 'battle', enemy: 'battle' },
     coverage: { you: false, enemy: false },
   });
-  assert.match(battle, /data-popup-hint/);
-  assert.match(battle, /Special Bonuses popup/);
-  assert.match(battle, /next to &ldquo;Stat Bonuses&rdquo;/);
+  // D-045's guarantee moved INTO the battle rows (owner arrangement
+  // 2026-08-15): the "Buffs · NEEDED" row with the real popup screenshot
+  // teaches the requirement where the action happens — the old separate
+  // hint card is gone, but the popup requirement must still be on screen.
+  assert.match(battle, /data-sample-row="battle_popup"/);
+  assert.match(battle, /NEEDED/);
+  assert.match(battle, /can&rsquo;t convert your numbers without this popup|can’t convert your numbers without this popup/);
 
   const scoutOnly = renderS2({
     types: { you: 'scout', enemy: 'scout' },
     coverage: { you: false, enemy: false },
   });
-  assert.doesNotMatch(scoutOnly, /data-popup-hint/);
+  assert.doesNotMatch(scoutOnly, /data-sample-row="battle_popup"/);
+  assert.doesNotMatch(scoutOnly, /NEEDED/);
 });

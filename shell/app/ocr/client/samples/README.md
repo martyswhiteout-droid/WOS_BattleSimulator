@@ -15,6 +15,7 @@ Regeneration (Pillow; fractions are normalized x0,y0,x1,y1 of the source):
 
 | file | source | crop box | width |
 |---|---|---|---|
+| sample_battle_heroes.jpg | C_battle_3.png | 0.00, 0.115, 1.00, 0.40 | 560 |
 | sample_battle_panel.jpg | C_battle_3.png | 0.00, 0.395, 1.00, 0.615 | 560 |
 | sample_battle_popup.jpg | C_battle_4.png | 0.02, 0.20, 0.98, 0.46 | 640 |
 | sample_scout.jpg | C_scout.png | 0.00, 0.505, 1.00, 0.685 | 560 |

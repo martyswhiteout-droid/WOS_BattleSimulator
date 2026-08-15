@@ -163,17 +163,64 @@ export function renderThumbs(side, ids) {
   )).join('');
 }
 
+// Owner arrangement 2026-08-15: the upload area is ROWS — each row a real
+// sample on the left and its OWN labeled add-button on the right, so it is
+// "very clear which is which". Battle = THREE rows (Heroes / Battle stats /
+// Buffs); scout and citystats = one row each. Every row's zone feeds the
+// SAME per-side shot set (the server sorts shots by content, so there is no
+// wrong slot to put a screenshot in). The Heroes row is capture-only today:
+// captain auto-set needs the badge-reading derivation (spike 2026-08-15:
+// RapidOCR reads the star rows cleanly but mangles gen-badge digits, and
+// the portrait->class order convention is unproven) — the copy says
+// exactly that, no dead-slot pretence.
+export const UPLOAD_ROWS = {
+  battle: [
+    { key: 'battle_heroes', img: 'sample_battle_heroes.jpg', alt: "The report's hero strip",
+      label: 'Heroes', tag: 'OPTIONAL',
+      copy: 'The hero part at the top. Captain auto-set is coming — adding it now future-proofs your upload.' },
+    { key: 'battle_panel', img: 'sample_battle_panel.jpg', alt: "The battle report's Stat Bonuses panel",
+      label: 'Battle stats', tag: '',
+      copy: 'The Stat Bonuses list — fills all 24 numbers, both sides.' },
+    { key: 'battle_popup', img: 'sample_battle_popup.jpg', alt: 'The Notes on Special Bonuses popup',
+      label: 'Buffs', tag: 'NEEDED',
+      copy: 'Tap the ! next to “Stat Bonuses” — we can’t convert your numbers without this popup.' },
+  ],
+  scout: [
+    { key: 'scout', img: 'sample_scout.jpg', alt: "The scout report's Stat Bonuses panel",
+      label: 'Scout stats', tag: '',
+      copy: 'The Stat Bonuses list from the scout report.' },
+  ],
+  citystats: [
+    { key: 'citystats', img: 'sample_citystats.jpg', alt: 'The Bonus Overview panel',
+      label: 'City Stats', tag: '',
+      copy: 'The Bonus Overview — scroll to include the City Defenses rows.' },
+  ],
+};
+
+function uploadRowsHtml(side, type) {
+  return (UPLOAD_ROWS[type] || []).map((row) => `
+<div class="ocrf-sample-row" data-sample-row="${row.key}">
+  <figure class="ocrf-sample-shot">
+    <img class="ocrf-sample-img" src="${SAMPLE_IMG_BASE}/${row.img}" alt="${row.alt}">
+  </figure>
+  <button type="button" class="ocrf-dropzone ocrf-row-zone" data-dropzone="${side}">
+    <span class="ocrf-row-label">${row.label}${row.tag ? ` <span class="ocrf-row-tag${row.tag === 'OPTIONAL' ? ' ocrf-row-tag--muted' : ''}">${row.tag}</span>` : ''}</span>
+    <span class="ocrf-row-copy">${row.copy}</span>
+    <span class="ocrf-row-add">${DZ_ICON}<b>Tap to add</b></span>
+  </button>
+</div>`).join('');
+}
+
 function sideSectionHtml(side, { type, covered, shotCount, ids = [] }) {
   const label = side === 'you' ? 'YOU' : 'ENEMY';
-  // UXJ-002 fix: the covered-note and the "what this looks like" mini-panel
-  // are mutually exclusive, same as the mock's own sideSectionHTML — a
-  // covered side needs no reference (there's nothing to upload here), an
-  // uncovered side gets the faithful mini-rendering for its CURRENT type.
+  // A covered side needs no reference rows (there's nothing to upload here);
+  // an uncovered side gets the per-row samples for its CURRENT type.
   const middleHtml = covered
     ? '<div class="ocrf-covered-note"><span class="ocrf-covered-check" aria-hidden="true">&#10003;</span>'
       + 'Covered by your battle report</div>'
-    : renderSample(type);
-  const subLabel = covered ? '' : '<span>or paste it here</span>';
+      + `<button type="button" class="ocrf-dropzone ocrf-dropzone--muted" data-dropzone="${side}">`
+      + `${DZ_ICON}<b>${dropzoneLabel({ side, covered })}</b></button>`
+    : uploadRowsHtml(side, type);
   return `
 <div class="ocrf-side-section ocrf-side-${side}${covered ? ' ocrf-covered' : ''}" data-side="${side}">
   <div class="ocrf-side-head">
@@ -181,11 +228,6 @@ function sideSectionHtml(side, { type, covered, shotCount, ids = [] }) {
     <button type="button" class="ocrf-type-tag" data-type-tag="${side}" aria-haspopup="menu">${TYPE_LABEL[type]} &#9662;</button>
   </div>
   ${middleHtml}
-  <button type="button" class="ocrf-dropzone${covered ? ' ocrf-dropzone--muted' : ''}" data-dropzone="${side}">
-    ${DZ_ICON}
-    <b>${dropzoneLabel({ side, covered })}</b>
-    ${subLabel}
-  </button>
   <div class="ocrf-thumbs" data-thumbs="${side}"${shotCount ? '' : ' hidden'}>${renderThumbs(side, ids)}</div>
 </div>`.trim();
 }
@@ -199,15 +241,10 @@ export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, noti
   // D-039: the E1-recovery removal notice (mock's #s2Notice) — only rendered
   // when actually supplied, never an empty placeholder element.
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
-  // D-045: the battle/scout specials live on a SEPARATE popup ("Notes on
-  // Special Bonuses", behind the ! icon next to the Stat Bonuses title) —
-  // without it the numbers can be read but not converted (D-043), so the
-  // upload screen must say so up front, not only after a refused conversion.
-  const needsPopup = [types.you, types.enemy].includes('battle');
-  const popupHintHtml = needsPopup
-    ? `<div class="ocrf-hint-card" data-popup-hint><span aria-hidden="true">&#10071;</span>
-      <p>Battle Report needs 2 screenshots: the Stat Bonuses list <strong>and</strong> the Special Bonuses popup &mdash; tap the <strong>!</strong> next to &ldquo;Stat Bonuses&rdquo; in the report.</p></div>`
-    : '';
+  // D-045's popup guarantee now lives IN the battle rows themselves — the
+  // "Buffs · NEEDED" row with the real popup screenshot teaches the
+  // requirement in place, so the old separate hint card is gone (one less
+  // thing to read; the same information, exactly where the action happens).
   return `
 <section class="screen" data-screen="s2">
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
@@ -215,7 +252,6 @@ export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, noti
   <div class="ocrf-scr-body">
     ${noticeHtml}
     <div class="ocrf-s2-sides">${you}${enemy}</div>
-    ${popupHintHtml}
     <div class="ocrf-hint-card"><span aria-hidden="true">&#128161;</span>
       <p>Long list? Take 2 screenshots that share a row. We'll join them.</p></div>
   </div>
