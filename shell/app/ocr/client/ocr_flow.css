@@ -527,3 +527,172 @@ body.ocrf-flow-open #ocrfRoot .screen {
   color: var(--ocrf-ink);
   outline: none;
 }
+
+/* --- Round: TAKEOVER polish — bounded dialog, entrance/exit motion, desktop
+   scale (2026-08-15, continued from the TAKEOVER round above; second owner
+   escalation: "terrible UX... you don't ask users to do OCR like this").
+   Live verification of the round above (getBoundingClientRect at 1280x720
+   and 375x812) found the position:fixed/scrim/scroll-lock architecture
+   itself is correct, but three things still fail the human-viewport bar:
+
+   1. UNBOUNDED DIALOG HEIGHT. `.screen` had no max-height, so on any
+      content-heavy screen (S2's two side-sections, S4's 24-field grid) it
+      grew TALLER than the viewport and #ocrfRoot (the whole backdrop+card)
+      scrolled as one block — measured S2 at 803.5px tall inside a 720px
+      #ocrfRoot on desktop, 1152.5px inside 812px on mobile. Because
+      .ocrf-flow-close/.ocrf-back-btn/the h1 all live INSIDE .screen (which
+      was the thing scrolling), scrolling down past the fold scrolled the
+      close button and heading away with it — unreachable without scrolling
+      back up. Fix: bound `.screen` to the available height (100% of
+      #ocrfRoot on mobile, matching #ocrfRoot's own 5vh/7vh padding on
+      desktop) and make ONLY `.ocrf-scr-body` scroll internally
+      (flex:1 1 auto + min-height:0, the standard trick to let a flex child
+      actually shrink instead of pushing its container taller). Header and
+      footer become flex:none — permanently visible, never scrolled away.
+      `.ocrf-scan-body` is `.ocrf-scr-body`'s own S3 modifier class on the
+      SAME element (screens/reading.mjs's renderS3: `class="ocrf-scr-body
+      ocrf-scan-body"`), so one rule covers every screen's body with no
+      per-screen exceptions. #ocrfRoot keeps its own overflow-y:auto as a
+      dormant fallback (never actually engaged once .screen is bounded —
+      cheap insurance, not a second scroll owner in the normal case).
+
+   2. ZERO ENTRANCE/EXIT MOTION. #ocrfRoot.getAnimations() returned []
+      on open — the takeover just snapped into existence and back out,
+      contradicting wos-emotional-design's product-register motion grammar
+      (150-250ms, state change not decoration) and DESIGN_SYSTEM.md §5's
+      120-250ms band. Scrim fade lives on #ocrfRoot itself (created fresh
+      exactly once per open — see ocr_flow.js's `pendingEnterAnimation` —
+      so a plain unconditional `animation:` rule here is correct with NO
+      JS class-juggling needed for the scrim half). The dialog rise/scale
+      lives on `.screen`, which — unlike #ocrfRoot — IS recreated on every
+      single navigation (show() replaces innerHTML every time), so playing
+      it unconditionally would replay a 200ms "arrival" flourish on every
+      S1->S2->S3->S4 click, which is NOT what "opening animates" means and
+      directly fights requirement 5 ("must not scroll-jump BETWEEN
+      screens" — internal steps should be quick and stable, not
+      re-choreographed). Scoped instead to a one-shot `.ocrf-dialog-enter`
+      class ocr_flow.js adds ONLY to the very first .screen shown after
+      onProceed(), consumed once. Close reverses via `.ocrf-flow-closing`
+      on #ocrfRoot (added by the new closeFlowLayer() helper before the
+      DOM teardown that used to happen synchronously) — CSS targets
+      `#ocrfRoot.ocrf-flow-closing .screen` so it fires regardless of which
+      screen happened to be open when the user closed (S1 via its own Back
+      button, or S2/S3/S4/E1 via Escape/backdrop/the (r) X — all four now
+      route through the same exitFlow()/back() close path). Reduced
+      motion: `.screen`'s two animations are descendants of #ocrfRoot, so
+      the PRE-EXISTING `#ocrfRoot *{animation:none!important}` kill-switch
+      at the top of this file already silences them — but #ocrfRoot's OWN
+      scrim animation is not a descendant of itself (a bare `*` never
+      matches the element it's scoped from, same reasoning the UXJ-003
+      round already documented for `::after`), so it needs its own explicit
+      entry below, same precedent.
+
+   3. DESKTOP SCALE: "three tiny boxes" was never actually about
+      POSITION (which the round above fixed) — the mini-panel previews
+      render real numbers at 6.8-8px, which read as illegible clutter no
+      matter where on the page they sit, especially once the surrounding
+      dialog is comfortably wide. Two sub-fixes: (a) narrow S1/S2/S3's OWN
+      dialog width to the spec's 680-760px band (E1 folded in too — it's
+      the same wizard's error-recovery step, sparse content that would
+      look like a layout bug ballooned to the review screen's 900-960px;
+      S4/S5 are explicitly named in the brief as keeping their existing
+      wider bounds, untouched here) — this OVERRIDES the desktop round's
+      unconditional `#ocrfRoot .screen{max-width:960px}` via a higher-
+      specificity selector (id + class + attribute vs. the earlier rule's
+      id + class), not source order, so it wins regardless of which
+      @media block either rule lives in; (b) scale up the mini-panel type
+      and the pick-card heading/body specifically — the eyebrow-style
+      labels (.ocrf-ribbon/.ocrf-tag/.ocrf-crumb, 9-9.5px) are left alone,
+      already inside DESIGN_SYSTEM.md §3's own 9-11px eyebrow band by
+      design; it is only the SIMULATED DATA rows (meant to read as real
+      numbers, not decoration) that were sized like eyebrows and needed a
+      real bump. Scoped to S1/S2 only, matching the brief precisely (S4/S5
+      typography is untouched — out of scope here).
+   ============================================================ */
+
+body.ocrf-flow-open #ocrfRoot {
+  animation: ocrf-scrim-in 200ms cubic-bezier(.25, 1, .5, 1) both;
+}
+body.ocrf-flow-open #ocrfRoot.ocrf-flow-closing {
+  animation: ocrf-scrim-out 140ms cubic-bezier(.5, 0, .75, 0) both;
+  pointer-events: none;
+}
+@keyframes ocrf-scrim-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ocrf-scrim-out { from { opacity: 1; } to { opacity: 0; } }
+
+body.ocrf-flow-open #ocrfRoot .screen.ocrf-dialog-enter {
+  animation: ocrf-dialog-in 200ms cubic-bezier(.25, 1, .5, 1) both;
+}
+body.ocrf-flow-open #ocrfRoot.ocrf-flow-closing .screen {
+  animation: ocrf-dialog-out 140ms cubic-bezier(.5, 0, .75, 0) both;
+}
+@keyframes ocrf-dialog-in {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes ocrf-dialog-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(10px) scale(.97); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #ocrfRoot, #ocrfRoot.ocrf-flow-closing { animation: none !important; }
+}
+
+/* Bounded dialog: never taller than the space #ocrfRoot actually gives it.
+   Mobile: 100% of #ocrfRoot's own (viewport-definite, position:fixed;inset:0)
+   height. Desktop: matches the 5vh top + 7vh bottom padding the round above
+   already puts on #ocrfRoot, so the card never collides with its own scrim
+   padding. */
+body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
+@media (min-width: 768px) {
+  body.ocrf-flow-open #ocrfRoot .screen { max-height: 88vh; }
+}
+#ocrfRoot .screen > .ocrf-scr-head,
+#ocrfRoot .screen > .ocrf-scr-foot {
+  flex: none;
+}
+#ocrfRoot .screen > .ocrf-scr-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Desktop dialog width: S1/S2/S3/E1 stay in the spec's comfortable
+   680-760px band (S4/S5 keep the existing wider 900-960px bounds — no rule
+   added for them here). Specificity (id+class+attribute) beats the earlier
+   rounds' (id+class) `max-width:640px`/`960px` outright, so this applies
+   from 768px up through and past the 1000px breakpoint uniformly — the
+   dialog never visibly resizes width as S1 crosses into its 3-column
+   layout at 1000px. */
+@media (min-width: 768px) {
+  #ocrfRoot .screen[data-screen="s1"],
+  #ocrfRoot .screen[data-screen="s2"],
+  #ocrfRoot .screen[data-screen="s3"],
+  #ocrfRoot .screen[data-screen="e1"] {
+    max-width: 760px;
+  }
+
+  /* Pick cards + mini-panels read as "three tiny boxes" at ANY position
+     once the dialog is roomy — the fix is type scale, not placement.
+     Ribbons/tags/crumbs are untouched (already inside DESIGN_SYSTEM.md's
+     9-11px eyebrow band by design); only the simulated DATA rows, which
+     are supposed to read as real numbers, get the bump. */
+  [data-screen="s1"] .ocrf-pick-card h2 { font-size: 18px; }
+  [data-screen="s1"] .ocrf-pick-card p { font-size: 13.5px; }
+
+  .ocrf-mini-panel { margin-bottom: 12px; }
+  .ocrf-mini-panel--battle { padding: 9px 8px; }
+  .ocrf-mp-b-row { padding: 4px 5px; }
+  .ocrf-mp-b-side { font-size: 9px; }
+  .ocrf-mp-b-val { font-size: 10.5px; }
+  .ocrf-mp-b-lab { font-size: 9px; }
+  .ocrf-mini-panel--scout { padding: 10px 12px; }
+  .ocrf-mp-s-row { padding: 4px 0; }
+  .ocrf-mp-s-lab { font-size: 10.5px; }
+  .ocrf-mp-s-val { font-size: 10.5px; }
+  .ocrf-mp-c-head { font-size: 9.5px; padding: 6px 8px; }
+  .ocrf-mp-c-row { padding: 5px 10px; font-size: 10.5px; }
+
+  [data-screen="s2"] .ocrf-side-label { font-size: 14.5px; }
+  [data-screen="s2"] .ocrf-type-tag { font-size: 11.5px; }
+}

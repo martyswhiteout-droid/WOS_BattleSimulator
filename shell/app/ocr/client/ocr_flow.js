@@ -76,11 +76,64 @@ export function presentationFor(screen) {
   return { modal: screen !== 'entry' && screen !== 's5' };
 }
 
+// Takeover polish round (2026-08-15, continued — live rect verification at
+// 1280x720/375x812 found the position:fixed architecture itself correct but
+// entrance/exit motion entirely absent: #ocrfRoot.getAnimations() returned
+// [] on open). Motion is JS-driven timing (WHEN the real teardown happens)
+// wired to purely-CSS animations (WHAT it looks like, ocr_flow.css) — the
+// design system's rule for JS-driven motion (see DESIGN_SYSTEM.md §2 rule 4,
+// "New JS-driven motion must ALSO check matchMedia... before running") is
+// about the JS side specifically: the CSS kill-switch alone silences the
+// ANIMATION under reduced motion, but without this check the close path
+// would still insert an artificial ~140ms delay with zero visual payoff —
+// worse than either instant or animated. Entrance has no such delay (the
+// class-add is fire-and-forget, CSS kill-switch is sufficient on its own),
+// so only the close path needs the JS-level check.
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && !!window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// True for exactly one show() call: set by boot()'s onProceed right before
+// the very first goto('s1') of a fresh open, consumed (and cleared) the next
+// time show() runs. #ocrfRoot itself is only ever created once per open (see
+// onProceed below), so its own scrim-fade animation is a plain unconditional
+// CSS rule with no JS bookkeeping — but `.screen` is recreated by EVERY
+// show() call (innerHTML swap on every navigation), so without this flag the
+// dialog rise/scale would replay on every single S1->S2->S3->S4 click, not
+// just the true "opening" moment (see the CSS round's own comment for why
+// that's wrong: it would fight requirement 5, "must not scroll-jump BETWEEN
+// screens").
+let pendingEnterAnimation = false;
+
+// Shared close-path timing for exitFlow()/back()-to-entry: both need the
+// SAME "let the close animation play, THEN do the real teardown" shape, so
+// this is the one place that owns it. #ocrfRoot must stay mounted (and
+// body.ocrf-flow-open must stay applied — that only happens inside render(),
+// deliberately deferred to onDone) for the FULL delay: removing the
+// ocrf-flow-open class early would drop #ocrfRoot's position:fixed/z-index
+// CSS mid-animation, collapsing it back into normal document flow for the
+// last ~140ms — precisely the original bug, replayed as a flicker on every
+// close. Reduced motion: skip the delay entirely (no class add, no timer) —
+// the CSS kill-switch would silence the animation anyway, so waiting would
+// only add a dead pause with no visual payoff.
+function closeFlowLayer(onDone) {
+  const layer = root();
+  if (layer && !prefersReducedMotion()) {
+    layer.classList.add('ocrf-flow-closing');
+    setTimeout(onDone, 140);
+  } else {
+    onDone();
+  }
+}
+
 function exitFlow() {
-  app.history = ['entry'];
-  app.screen = 'entry';
-  app.navOpts = null;
-  render();
+  closeFlowLayer(() => {
+    app.history = ['entry'];
+    app.screen = 'entry';
+    app.navOpts = null;
+    render();
+  });
 }
 
 // Set once by boot() — the S0 CTA card, hidden while the flow is open and
@@ -90,10 +143,26 @@ let entryNode = null;
 
 function show(html) {
   root().innerHTML = html;
+  // Takeover polish: #ocrfRoot is now the ONLY scroll owner across a
+  // navigation boundary (.ocrf-scr-body scrolls internally WITHIN a
+  // screen — see ocr_flow.css — but switching screens replaces the whole
+  // subtree). Without this, a browser may carry over whatever scrollTop
+  // the PREVIOUS screen left #ocrfRoot at, landing the next screen
+  // mid-scroll instead of at its own top — requirement 5's "each screen
+  // starts scrolled to top of the layer".
+  root().scrollTop = 0;
+  const card = root().querySelector('.screen, .ocrf-s5');
+  // One-shot dialog entrance (see pendingEnterAnimation's own comment):
+  // only the very first .screen shown after a fresh open gets the
+  // rise/scale class — every later navigation inside the same open flow
+  // swaps screens instantly, no replay.
+  if (pendingEnterAnimation) {
+    pendingEnterAnimation = false;
+    if (card) card.classList.add('ocrf-dialog-enter');
+  }
   // Modal chrome: every takeover screen gets an explicit ✕ (44px target)
   // that exits the whole flow — handled by the global delegate's
   // [data-close-flow] branch, same pattern as [data-back]/[data-goto].
-  const card = root().querySelector('.screen, .ocrf-s5');
   if (card && !card.querySelector('[data-close-flow]')) {
     const close = document.createElement('button');
     close.type = 'button';
@@ -103,8 +172,15 @@ function show(html) {
     close.innerHTML = '&times;';
     card.prepend(close);
   }
+  // preventScroll dropped (takeover polish): it was compensating for
+  // #ocrfRoot sitting in normal page flow at the bottom of a long page —
+  // focusing a heading down there would otherwise jerk the WHOLE PAGE to
+  // scroll it into view. Now that #ocrfRoot is position:fixed (never part
+  // of the page's own scroll flow), focus() cannot move the page at all;
+  // it only affects #ocrfRoot's own scrollTop, which the reset two lines
+  // up already pins to 0 before this runs.
   const heading = root().querySelector('h1, h2[tabindex]');
-  if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+  if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus(); }
   // [data-back] is handled by the single global delegate wired in boot()
   // (D-037) — no per-render listener here, so it can never double-fire.
 }
@@ -137,8 +213,25 @@ export function takeNavOpts(appLike) {
   appLike.navOpts = null;
   return opts;
 }
+// S1 is the only screen whose [data-back] pops all the way to 'entry' (it's
+// the first screen ever pushed after a fresh open — every other screen's
+// back button lands on another modal screen: S2->S1, S4->S2 via the read
+// pipeline's push:false replace, E1->wherever it replaced). That single
+// case is a real CLOSE of the takeover, same as the X/Escape/backdrop path,
+// so it gets the same animated closeFlowLayer() treatment — otherwise S1's
+// own Back button would be the one remaining way to exit with a hard snap.
+// Pure and exported (same split as decideAfterRead/planS2Entry/
+// decideSheetToClose): a plain array-index check, no DOM needed to prove it.
+export function backLandsOnEntry(history) {
+  return history.length > 1 && history[history.length - 2] === 'entry';
+}
 function back() {
-  if (app.history.length > 1) { app.history.pop(); app.screen = app.history[app.history.length - 1]; render(); }
+  if (app.history.length <= 1) return;
+  if (backLandsOnEntry(app.history)) {
+    closeFlowLayer(() => { app.history.pop(); app.screen = app.history[app.history.length - 1]; render(); });
+    return;
+  }
+  app.history.pop(); app.screen = app.history[app.history.length - 1]; render();
 }
 
 // D-037 fix (single global click delegate, the mock's own pattern —
@@ -727,6 +820,11 @@ function boot() {
       // Reuse an existing #ocrfRoot (e.g. after Back-to-entry then proceeding
       // again) rather than appending a second one with a duplicate id.
       const stack = root() || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'ocrfRoot' }));
+      // Takeover polish: flag the NEXT show() (S1's) as the true "opening"
+      // moment — see pendingEnterAnimation's own comment. Set here (not
+      // inside goto/show generally) because this is the one and only call
+      // site that starts a fresh flow open.
+      pendingEnterAnimation = true;
       goto('s1');
     },
     onNeedsUpgrade: () => {

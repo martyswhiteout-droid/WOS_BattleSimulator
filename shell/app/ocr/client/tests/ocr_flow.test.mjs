@@ -21,6 +21,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor,
+  backLandsOnEntry,
 } from '../ocr_flow.js';
 import { mapError } from '../error_copy.mjs';
 
@@ -336,4 +337,26 @@ test('takeover: without onCloseFlow injected, [data-close-flow] clicks fall thro
   const el = { closest: (sel) => (sel === '[data-close-flow]' ? { dataset: {} } : null) };
   handle({ target: el, preventDefault: () => {} });
   assert.deepEqual(calls, []);
+});
+
+// ---- Takeover polish (2026-08-15, continued) — bounded dialog, entrance/
+// exit motion, desktop scale. backLandsOnEntry is the one new PURE decision
+// this round adds (everything else — the scrollTop reset, the one-shot
+// .ocrf-dialog-enter class, the animated closeFlowLayer() delay — is DOM/
+// timing plumbing exercised live, same split the rest of this file already
+// uses for openScrim/closeScrim/syncBackgroundInert).
+
+test('backLandsOnEntry: S1\'s own Back button is the one case that pops all the way to entry (history=[entry,s1], popping lands two-from-top on entry)', () => {
+  assert.equal(backLandsOnEntry(['entry', 's1']), true);
+});
+
+test('backLandsOnEntry: every other screen\'s Back lands on another modal screen, never entry — S2->S1, S4->S2 (post read-pipeline replace), E1->S2', () => {
+  assert.equal(backLandsOnEntry(['entry', 's1', 's2']), false);
+  assert.equal(backLandsOnEntry(['entry', 's1', 's2', 's4']), false);
+  assert.equal(backLandsOnEntry(['entry', 's1', 's2', 'e1']), false);
+});
+
+test('backLandsOnEntry: a length-1 history (just entry, nothing pushed yet) is false — back() itself already guards this with its own early return, but the decision must not claim a close from an empty stack', () => {
+  assert.equal(backLandsOnEntry(['entry']), false);
+  assert.equal(backLandsOnEntry([]), false);
 });
