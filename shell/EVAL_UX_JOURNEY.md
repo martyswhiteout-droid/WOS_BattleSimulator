@@ -493,3 +493,265 @@ Verdict is SATISFIED — per the loop's instructions, both evaluator-owned serve
 mock static server on :8790 (background task `bwyqw9q8m`) and the CORS fixture server on :8791
 (background task `bilgloozp`). The loop ends here; no further rounds expected unless new work
 reopens the journey.
+
+---
+
+## ROUND 3 — 2026-08-15 (loop REOPENED — Presentation-container mandate)
+
+### Owning the miss
+
+Round 2's SATISFIED verdict was wrong in a way that mattered: the entire OCR flow was rendering
+as a phone-width column at the very bottom of the page on desktop. Every check in Rounds 1–2 —
+including UXJ-001's own CTA-position rect check — asserted DOM presence, text content, or a
+single element's coordinates, but never asked the one question that actually defines "did the
+user see this": is the thing they need to look at next inside the visual viewport, at the size a
+modal takeover implies. `offsetParent`/DOM-presence checks are provably insufficient (a
+`position:fixed` element has `offsetParent === null` by spec, and a phone-width column at
+`y=6000px` still "exists" and still has correct `innerText`). This round re-audits the full
+journey under the amended charter's binding rule: `getBoundingClientRect()` vs
+`innerWidth`/`innerHeight` after every user action, at both widths, no exceptions.
+
+### VERDICT: NOT SATISFIED
+
+**0 JOURNEY-BLOCKER · 2 MISMATCH (new) · 1 FRICTION (new) · 0 POLISH open · all 6 Round-1/2
+findings (UXJ-001..006) reconfirmed CLOSED under the new evidence standard**
+
+The takeover itself (commit `6f6c2bc`) and a same-day follow-up polish round (commit `00b7f3d`,
+which landed **while this round was in progress** — see note below) are a well-built, carefully
+reasoned piece of work. Every geometry claim in both commit messages was independently
+reproduced with rect-vs-viewport evidence at both widths: centered card, full-screen sheet,
+scroll-lock, bounded dialog height with internal-only scroll, entrance/exit motion, backdrop-click
+precision, non-destructive exit with CTA restoration. But the mandate's whole point is to hunt for
+what "the code looks right" doesn't catch, and adversarial testing of the specific seams the
+coordinator flagged (mid-read exit, re-entry, background inertness) found two real MISMATCHes and
+one FRICTION that a fresh look at "is this modal actually behaving like a modal" was always going
+to be the way to find.
+
+**Mid-session note on evidence freshness:** partway through this round, `git status` showed
+`shell/app/ocr/client/ocr_flow.js`/`ocr_flow.css` as uncommitted-modified — a polish round was
+landing live, in parallel with this evaluation (it addressed, among other things, exactly the
+"long-content screen scrolling within the overlay" item the coordinator asked to hammer, before I
+got to it independently). That work is now commit `00b7f3d`. Every finding below was verified (or
+re-verified) against the current `HEAD` (`00b7f3d`) as a final pass, specifically to avoid
+reporting against a state that had already moved. This is noted for transparency, not as a
+finding.
+
+---
+
+### Findings
+
+#### UXJ-007 — MISMATCH — the outer S1-S4/E1 modal does not make the background page inert; keyboard focus can escape into it
+
+**Charter citation:** amended mandate, "dialog semantics (role/aria-modal)" as part of the
+takeover contract; PRD §5's general pattern "sheets set inert/aria-hidden and trap focus."
+
+**What's wrong:** `#ocrfRoot` correctly carries `role="dialog"` / `aria-modal="true"` (confirmed),
+which is necessary but not sufficient for real keyboard containment — `aria-modal` is a hint for
+assistive-tech virtual cursors, not a mechanism that stops native Tab-key focus from reaching
+covered content. Live-verified: with the modal open on any of S1/S2/S3/S4/E1 and **no inner sheet
+open**, `document.querySelector('main.layout').inert` is `false`, and calling
+`.focus()` directly on the page's own `#runBtn` (the "See who wins →" / "Run forecast" button,
+visually underneath the backdrop) **succeeds** — `document.activeElement` becomes `#runBtn`.
+Reproduced against the final committed `HEAD` (`00b7f3d`), not a stale state.
+
+**Root cause, traced to source:** `shell/app/ocr/client/ocr_flow.js`'s `syncBackgroundInert()`
+(the D-040 machinery, comment: *"whenever ANY sheet/menu is open, every OTHER direct child of
+`<body>`... becomes inert"*) only fires from the editor/picture-sheet/type-menu open/close call
+sites, and its own `openSheetEls()` query (`'.ocrf-modal-scrim, .ocrf-type-menu'`) does not include
+`#ocrfRoot`. So the moment ONLY the outer takeover modal is open (the common case — no nested
+sheet), nothing ever calls `syncBackgroundInert()` for that state, and `<main>`/`<header>` stay
+exactly as tabbable as if no modal were open. **Contrast (confirmed working):** the moment an
+inner sheet DOES open on top (e.g. S4's field editor), `syncBackgroundInert()` correctly inerts
+BOTH `<main>` AND `#ocrfRoot` itself (verified: `mainInert:true`, `modalRootInert:true` while the
+editor sheet is open) — proving the mechanism is sound, it is simply never invoked for the "just
+the outer modal" state.
+
+**Reachability:** DOM order confirms this is reachable via ordinary Tab cycling in both
+directions, not just via my direct `.focus()` probe — `#ocrfRoot` is appended as the LAST child of
+`<body>` (`document.body.appendChild(...)` in `boot()`'s `onProceed`), so forward-Tabbing past the
+last focusable control inside the modal wraps to the top of the document (into the live page), and
+Shift+Tab from the modal's first control (the close button) lands on whatever precedes `#ocrfRoot`
+in the live page's own tab order. A screen-reader or keyboard-only user can tab straight through
+the "modal" into fully-interactive, visually-hidden background controls.
+
+**Expected vs observed:** expected the background page to be unreachable by keyboard/AT while any
+takeover screen is open (the charter's "dialog semantics" + PRD's own "trap focus" pattern);
+observed the background is only ever inerted when a SECOND, nested sheet is also open.
+
+---
+
+#### UXJ-008 — MISMATCH — exiting mid-read (Escape/✕/backdrop during S3) does not cancel the in-flight read; it silently races a torn-down DOM and repeatedly crashes
+
+**Charter citation:** amended mandate's "non-destructive exit"; general product honesty/robustness
+principle (§1.3 "never fabricate," extended here to "never silently misbehave").
+
+**What's wrong, in three parts, all reproduced against `HEAD` (`00b7f3d`) via a controlled-delay
+`fetch` stub on `/shell/ocr/panel` only (no real quota spent verifying this):**
+
+1. **The network request is never aborted.** `postPanel()` (`ocr_flow.js`) builds its `fetch()`
+   call with no `AbortController`/`signal` anywhere. Escaping S3 mid-read does not stop the
+   request; it completes (or fails) on the server regardless of the user having left. In a real
+   (non-stubbed) scenario this means **a real OCR-quota unit is silently spent on a read the user
+   explicitly walked away from**, with no way for the user to know it happened — this is the
+   direct answer to "what happens to the pending quota unit": it's gone.
+2. **The step-narration interval is never cleared.** `reading.mjs`'s `driveScan()` only calls
+   `clearInterval(timer)` inside the eventual `run().then(...)`/`.catch(...)` handlers — but
+   `exitFlow()` (Escape/✕/backdrop's shared handler) never calls the `handle.cancel()` that would
+   set the `cancelled` guard, unlike the pre-existing Cancel **button**, which does. Net effect:
+   the interval keeps firing every 900ms — for the entire remaining duration of the abandoned
+   read — and **every single tick throws an uncaught `TypeError: Cannot read properties of null
+   (reading 'querySelectorAll')`** at `reading.mjs:27` (`onStepChange` inside the interval) and
+   again at `reading.mjs:34` (the same call in the final resolve handler), because `onStepChange`
+   is wired to `applyStepClasses(root(), i)` and `root()` (`#ocrfRoot`) no longer exists — it was
+   torn down by the very `exitFlow()` that failed to cancel the timer. Reproduced live: a 20-25s
+   delayed stub produced 7+ repeated identical uncaught exceptions in the console before the
+   promise settled.
+3. **The only reason the user isn't unexpectedly yanked back into a reopened modal is the crash
+   itself, one line early.** `driveScan`'s success handler is `clearInterval(timer); if
+   (cancelled) return; onStepChange(...); onDone(result);` — since `cancelled` is never set on
+   this exit path, execution reaches `onStepChange`, which throws — and because it throws, the
+   NEXT line, `onDone(result)` (i.e. `onReadDone` → `goto('s4'/'e1', ...)`), **never runs**. The
+   visibly-benign outcome (user stays cleanly at 'entry', no surprise re-open) is an accident of
+   which line crashes first, not a guarded, designed behavior. This is fragile: any future change
+   to `onStepChange`/`applyStepClasses` (e.g. a defensive null-check, entirely plausible
+   "hardening") would silently remove the accidental guard and expose the real bug underneath —
+   `onReadDone` firing after the user left, attempting `show()` on a null `root()`, or worse,
+   successfully reopening the modal and jumping to S4/E1 out of nowhere.
+
+**Expected vs observed:** expected a mid-read exit to be genuinely non-destructive and clean (per
+the takeover contract's own wording); observed an unaborted network call (real quota cost), a
+runaway crashing interval, and a correct-looking end state that is a side effect of a crash, not
+of design.
+
+---
+
+#### UXJ-009 — FRICTION — re-entering after a mid-flow exit shows stale S2 state with no signal that it's carried over
+
+**What's wrong:** after uploading a screenshot on S2 and later exiting mid-read (Escape during
+S3), re-opening the flow via "Fill from screenshots" → "Battle Report" lands back on S2 with the
+**previous session's thumbnail already present** and **Continue already enabled** —
+`app.shots`/`app.savedValues` are never cleared by `exitFlow()` (by design — "non-destructive"),
+but nothing on screen distinguishes this from a screenshot the user just added in the current
+visit. A user who mentally treated the earlier exit as "starting over" has no way to tell they're
+looking at old data, and could click Continue straight through without realizing it's resubmitting
+a stale upload.
+
+**Expected vs observed:** expected either a fresh S2 (if exit is meant to reset) or an honest
+"picking up where you left off"-style signal (if preservation is the intended, PRD-aligned
+"never discard an upload" behavior, which is very plausibly correct here); observed silent
+carry-over with zero copy or visual distinction either way.
+
+---
+
+### Investigated and NOT filed (debunked alarms — reported for transparency, per this round's own standard of rigor)
+
+- **S5 rendering off-screen on arrival.** Mid-session, a stubbed S5 arrival measured
+  `#ocrfS5Host` at `top:-1258px` (definitively out of viewport) with `window.scrollY:1378`. Traced
+  the root cause: repeated `navigate {force:true}` reloads of the same URL across this long
+  session caused the browser to restore a stale scroll position each time (confirmed independently
+  — even a brand-new, never-scrolled tab loaded the same URL at `scrollY:2024` on first paint).
+  Re-tested cleanly: with `scrollY` pinned to 0 before opening the flow (the realistic starting
+  condition for a user who just loaded the page and clicked the near-top CTA), `scrollY` stayed
+  at exactly 0 through the ENTIRE S1→S2→S3→S4→S5 flow (scroll-lock holds, nothing leaks), and
+  `#ocrfS5Host` landed correctly in viewport (`top:120`, both widths) with focus on its heading.
+  **Not reachable under realistic single-session use** — filing this against the product would
+  have been exactly the kind of unearned alarm this round's rigor is supposed to prevent.
+  One real, smaller-scale observation kept for the record rather than filed: S5's heading focus
+  (`s5Heading.focus({ preventScroll: true })`, `ocr_flow.js`) is the one focus call in this whole
+  feature that still suppresses scroll-into-view with no compensating guarantee — every other
+  screen either lives inside the scroll-immune `position:fixed` modal (where the takeover-polish
+  commit explicitly reasoned through why dropping `preventScroll` is safe) or is this one
+  in-page exception, undocumented and untouched by either round. Worth a defensive
+  `scrollIntoView`/dropped `preventScroll` the same way the modal got one, but not something I can
+  currently demonstrate a real user hitting.
+
+---
+
+### Re-confirmation of UXJ-001..006 under the new evidence standard
+
+All six re-verified this round with rect-vs-viewport evidence (not mere presence), at both widths,
+against `HEAD` (`00b7f3d`):
+
+| id | Re-check this round |
+|---|---|
+| UXJ-001 | CTA is the first child of `section.input`; `top:110` desktop / `top:165` mobile, both inside the initial viewport with zero scroll; position stays fixed across Troops-Formation/Stats/Buffs tab switches. |
+| UXJ-002 | Mini-panels present on S1 (all 3 cards) + S2 (both sides) with byte-matching mock content; **and now legible** — the same-day polish round bumped mini-panel/pick-card type from the original 6.8-8px up to 9-18px at ≥768px, confirmed via computed `font-size`. |
+| UXJ-003 | S3's `ocrf-scan-stripes`/`ocrf-step-pulse` confirmed `playState:"running"` via `getAnimations()` during a real controlled-delay stuck read. |
+| UXJ-004 | All 5 HTTP error classes (402/429-quota/429-burst/503/401) re-verified via stub, now inside the dedicated `renderE1('error', mapped)` variant, card geometry confirmed in-viewport at both widths (760px band desktop, full-screen mobile) — a NEW check this round, not just content. |
+| UXJ-005 | Real S4→S5 transition (desktop AND mobile, real two-shot reads): `document.activeElement` = `#ocrfS5Heading`, confirmed in viewport both times. |
+| UXJ-006 | `#runBtn.textContent.trim() === "See who wins →"` at real S5 arrival, both widths; fired a genuine `/api/predict` once to confirm no functional regression. |
+
+---
+
+### What's new and confirmed working well this round (the takeover + polish, positively verified)
+
+- **Full takeover contract**, both widths, rect-vs-viewport evidence: backdrop (`rgba(4,16,28,.66)`
+  scrim, `z-index:2147482600`), `body.ocrf-flow-open{overflow:hidden}` scroll-lock, centered card
+  (`leftGap≈rightGap`, desktop) / full-bleed sheet (mobile), `role="dialog" aria-modal="true"`,
+  44×44px close button always in viewport, focus-to-heading on open.
+- **Backdrop-click precision**, both widths: clicking anywhere inside `.screen` (including bare
+  padding, corners, near the close button) never closes; clicking the true backdrop
+  (`event.target.id === 'ocrfRoot'`) always does. Verified by direct coordinate + `elementFromPoint`
+  checks, not just "it seemed to work."
+  All three exits (Escape, ✕, backdrop) restore focus to `#ocrfCtaScreenshots`, confirmed actually
+  inside the viewport (not just focused) under realistic scroll conditions.
+- **Bounded dialog + internal-only scroll** (the same-day polish round, landed as `00b7f3d`):
+  tested at a deliberately short 1280×600 viewport with a 24-field S4 grid — `.screen` correctly
+  caps at `88vh`, only `.ocrf-scr-body` scrolls (`overflow-y:auto`), and the header/close-button/
+  footer/Next-button rects are **byte-identical before and after** scrolling the body to full
+  depth. This is exactly coordinator item (b) — confirmed fixed, not just claimed.
+- **Entrance/exit motion**: `#ocrfRoot`/`,screen` animations (`ocrf-scrim-in`/`ocrf-dialog-in` on
+  open, `ocrf-scrim-out`/`ocrf-dialog-out` on close) confirmed `playState:"running"` via
+  `getAnimations()`; reduced-motion correctly silences both the pre-existing kill-switch's targets
+  AND the two new animations living outside it (`#ocrfRoot`'s own scrim animation isn't a
+  descendant of itself, so it needed and got its own explicit reduced-motion rule — same pattern
+  UXJ-003 already established, correctly reused).
+- **Editor sheet nested inside the modal** (coordinator item (a)): confirmed `z-index:2147483000`
+  correctly layers above the modal's `2147482600`; confirmed the D-040 `syncBackgroundInert`
+  machinery correctly inerts BOTH the live background page AND `#ocrfRoot` itself while the sheet
+  is open (contrast with UXJ-007's gap for the outer modal alone); focus correctly enters
+  `#ocrfEditorInput` and, on close, lands on the screen's own heading (a safe, if not
+  pixel-perfect, fallback — not investigated further given higher-priority findings).
+- **Type-tag menu inside the modal**: in-viewport at both widths, correct internal z-index (`70`,
+  relative to the modal's own stacking context), closes on outside click.
+- **Digit-exact happy path**, full re-verification with rect evidence at every single transition,
+  both widths, two REAL two-shot reads (not stubs): desktop and mobile both landed
+  `#statPanel` digit-exact, `scrollY` confirmed to stay at 0 throughout, S5 confirmed in viewport,
+  "See who wins →" confirmed correct and functional.
+- **Free-tier gate**: upgrade sheet confirmed centered and in-viewport (desktop).
+
+---
+
+### Coverage log
+
+| Area | How verified |
+|---|---|
+| Viewport-rect evidence mandate | Applied to every screen transition tested this round: S0 CTA, S1 card, S2 (dropzones/mini-panels/hint/type-menu), S3 (card + stuck-read animation), S4 (card, bounded-height/internal-scroll, editor sheet), S5 (host, both widths), E1 (all variants' container geometry). |
+| Takeover contract (backdrop/scroll-lock/card-vs-sheet/close/Escape/backdrop-click/dialog semantics) | Live, both widths, coordinate-precise backdrop-click test (inside-card vs true-backdrop). |
+| (a) type-tag menu / editor sheet / picture sheet inside the modal — inert machinery | Type-tag menu: viewport+z-index, both widths. Editor sheet: viewport+z-index+inert-chain (background AND outer modal), confirmed via direct `.inert` checks. Picture sheet: not independently re-driven this round (Round 1/2 already confirmed its content/structure; no code in this round's diff touched it) — flagged as the one coordinator item given lighter treatment, given UXJ-007/008's severity took priority. |
+| (b) long-content S4 grid scrolling within the overlay on a short viewport | Live at 1280×600 with a real 24-field grid: header/close/footer rects unchanged across a full internal scroll. Confirmed fixed by the same-day polish round. |
+| (c) exiting mid-read (Escape during S3) — in-flight read + quota fate | Live, controlled-delay `fetch` stub (20-25s), zero real quota spent. Finding UXJ-008. |
+| (d) re-entering after an exit — state preservation vs stale-notice confusion | Live. Finding UXJ-009. |
+| (e) S5 host coexistence with the entry CTA | Live: `entryHidden:true` while S5 shows; `#ocrfS5Host` removed and CTA restored on returning to entry. The "off-screen on arrival" alarm investigated and debunked — see dedicated section above. |
+| (f) backdrop click precision (inside-card must never exit) | Live, coordinate-precise, both widths — see "confirmed working well." |
+| UXJ-001..006 | Re-confirmed with rect evidence — see dedicated table above. |
+| E1 wrong / partial / error sub-variants | Content re-confirmed (Round 2); geometry NEWLY confirmed this round via the 429-quota case at both widths (screen-level CSS applies uniformly regardless of which copy variant is shown, so this generalizes to all 7 sub-variants without re-testing each individually). |
+| Free-tier gate | Re-confirmed with viewport-rect evidence, desktop (upgrade sheet centered, in-viewport). Not re-checked at mobile this round (already confirmed at both widths in Round 1/2; no code touched this path). |
+| Manual "Type them in myself" floor | Exercised as part of the E1 error-variant checks (same action button, same destination); not independently re-driven end-to-end to S5 this round given time/quota budget and zero code changes in that path. |
+| Console/network cleanliness | Checked throughout; the ONLY new errors this round are the UXJ-008 crash (expected, reproduced deliberately) and the same class of stale pre-existing 429/402 noise noted in Rounds 1-2 (not attributable to anything in this round's changes). |
+
+### Quota consumed
+
+`dev_user`: OCR reads went from ~20 (session start) to **16 remaining** this round — 2 real
+two-shot reads (desktop + mobile digit-exact re-verification, the only checks where real server
+behavior specifically mattered) plus incidental consumption reconciled to roughly 4 total; every
+other check in this round (takeover mechanics, all error classes, mid-read-exit, re-entry,
+bounded-height, animations, inert-background) used `fetch` stubs at zero additional quota, per the
+coordinator's explicit steer. `ux-eval` identity: untouched, still 30/30, available for a future
+round. Sim quota (`dev_user`) is at 0 (incidental, cumulative across all three rounds — not
+tracked by this charter).
+
+### Servers
+
+Left running (verdict is NOT SATISFIED, next round will need them): mock static server on :8790,
+CORS fixture server on :8791 (`C:\Users\Martin\AppData\Local\Temp\claude\...\scratchpad\fixture_server.py`).

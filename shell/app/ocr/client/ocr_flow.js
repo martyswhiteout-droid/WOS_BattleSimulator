@@ -33,12 +33,24 @@ async function checkAccess() {
     return { allowed: plan === 'pro', plan: plan ?? null, reachable: true, userId: me?.user?.user_id ?? null };
   } catch { return { allowed: false, plan: null, reachable: false, userId: null }; }
 }
+// UXJ-008 (round 3): the CURRENT scan's abort handle, set by render()'s s3
+// branch and fired by leaveScanIfRunning() on ANY departure from S3 that
+// isn't the read's own completion. Module-level (not threaded through
+// controller.readAll) deliberately: postPanel is already this file's own
+// injected dependency, and the controller seam's signature stays untouched.
+// Honesty note: the server pre-commits the metering BEFORE the engines run
+// (crash-proof quota, by design) — aborting the request stops the client
+// machinery and the connection, but the quota unit for an abandoned read is
+// already spent and is NOT refunded.
+let activeScanAbort = null;
+
 function postPanel({ shotBytesList, side, panelType }) {
   const form = new FormData();
   for (const bytes of shotBytesList) form.append('file', new Blob([bytes], { type: 'image/png' }), 'shot.png');
   form.append('side', side);
   if (panelType) form.append('panel', panelType);
-  return fetch('/shell/ocr/panel', { method: 'POST', body: form, credentials: 'same-origin' }).then(async (r) => {
+  return fetch('/shell/ocr/panel', { method: 'POST', body: form, credentials: 'same-origin',
+    signal: activeScanAbort ? activeScanAbort.signal : undefined }).then(async (r) => {
     if (r.ok) return r.json();
     const err = new Error('panel upload failed'); err.status = r.status; err.body = await r.json().catch(() => null);
     throw err;
@@ -74,6 +86,18 @@ function root() { return document.getElementById('ocrfRoot'); }
 // panel (see the s5 branch of render()). Pure so it's unit-testable.
 export function presentationFor(screen) {
   return { modal: screen !== 'entry' && screen !== 's5' };
+}
+
+// UXJ-009 (round 3): re-entering the flow after a mid-flow exit silently
+// showed the PREVIOUS session's uploads with Continue already enabled — the
+// non-destructive exit is deliberate (nothing is lost), but the carry-over
+// must be SAID. Pure so it's unit-testable; consumed by boot()'s onProceed,
+// rendered through the existing S2 notice slot (and cleared by the same
+// existing rule the moment a new screenshot lands).
+export function reentryNotice({ shotsYou = [], shotsEnemy = [] } = {}) {
+  if (!shotsYou.length && !shotsEnemy.length) return null;
+  return 'Picked up where you left off — your earlier screenshots are still here. '
+    + 'Tap the × on any of them if you want a fresh start.';
 }
 
 // Takeover polish round (2026-08-15, continued — live rect verification at
@@ -331,7 +355,27 @@ function flatTallyStates(states) {
   return [...Object.values(states.you), ...Object.values(states.enemy)].map((f) => f.state);
 }
 
+// UXJ-008 (round 3): ANY departure from S3 that isn't the read's own
+// completion tears the scan down — interval cleared, callbacks suppressed,
+// request aborted. Runs at the top of every render(): app.screen has
+// already been updated by goto()/back()/exitFlow() by the time we get
+// here, and the completion path nulls the handle BEFORE navigating, so
+// this can never cancel a read that just delivered.
+function leaveScanIfRunning() {
+  if (app.screen === 's3') return;
+  if (app.scanHandle) { app.scanHandle.cancel(); app.scanHandle = null; }
+  if (activeScanAbort) { try { activeScanAbort.abort(); } catch (err) { /* already settled */ } activeScanAbort = null; }
+}
+
 function render() {
+  leaveScanIfRunning();
+  renderScreen();
+  // UXJ-007 (round 3): inert bookkeeping AFTER the branch has built/removed
+  // whatever it builds, so the decision always sees the final DOM.
+  syncBackgroundInert();
+}
+
+function renderScreen() {
   // Takeover state first: the modal class + dialog semantics track the
   // CURRENT screen on every render, so no branch below can leave a stale
   // backdrop or a scroll-locked page behind.
@@ -383,7 +427,12 @@ function render() {
       for (const id of plan.clearYou) controller.flow.removeShot('you', id);
       for (const id of plan.clearEnemy) controller.flow.removeShot('enemy', id);
       if (plan.clearYou.length || plan.clearEnemy.length) app.shots = { you: [], enemy: [] };
-      app.s2Notice = plan.notice;
+      // UXJ-009: the re-entry notice (set by onProceed, consumed exactly
+      // once here) fills the slot only when the recovery plan has nothing
+      // to say — recovery wins when both apply, and any LATER fresh
+      // navigation to S2 clears the slot exactly as before.
+      app.s2Notice = plan.notice ?? app.reentryNotice ?? null;
+      app.reentryNotice = null;
     }
 
     const coverage = controller.flow.coverage();
@@ -394,12 +443,21 @@ function render() {
   }
   if (app.screen === 's3') {
     show(renderS3());
+    // UXJ-008: the abort controller + handle live in app/module state so
+    // EVERY way of leaving S3 (Cancel button, Escape, ✕, backdrop, back —
+    // all of which funnel through render() via leaveScanIfRunning below)
+    // tears the scan down: interval cleared (no more per-tick TypeErrors
+    // against a torn-down modal), callbacks suppressed (no surprise
+    // navigation when the request finally settles), request aborted.
+    activeScanAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const handle = driveScan({
       run: () => controller.readAll({ you: app.shots.you.map((s) => s.bytes), enemy: app.shots.enemy.map((s) => s.bytes) }),
-      onStepChange: (i) => applyStepClasses(root(), i),
-      onDone: onReadDone, onError: onReadError,
+      onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
+      onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
+      onError: (err) => { app.scanHandle = null; activeScanAbort = null; onReadError(err); },
     });
-    wireS3(root(), { onCancel: () => { handle.cancel(); goto('s2', { push: false }); } });
+    app.scanHandle = handle;
+    wireS3(root(), { onCancel: () => { goto('s2', { push: false }); } });
     return;
   }
   if (app.screen === 's4') {
@@ -568,6 +626,19 @@ function openSheetEls() {
 }
 function syncBackgroundInert() {
   const open = openSheetEls();
+  // UXJ-007 (round 3): the outer S1-S4/E1 modal is ALSO a focus boundary —
+  // with role=dialog/aria-modal set but no inert, Tab and .focus() leaked
+  // straight into the live background app. Three states now:
+  //   a sheet/menu is open  -> keep only the sheet (inerts the modal too —
+  //                            round 3 confirmed this nesting was already
+  //                            correct when D-040's machinery DID run);
+  //   only the modal is open-> keep only #ocrfRoot (background app inert;
+  //                            this also fixes the leak closeScrim used to
+  //                            reintroduce by clearing ALL inert on sheet
+  //                            close while the modal was still up);
+  //   nothing is open       -> clear everything.
+  const modalLayer = (!open.length && presentationFor(app.screen).modal) ? root() : null;
+  const keep = open.length ? open : (modalLayer ? [modalLayer] : []);
   for (const child of document.body.children) {
     // CONTAINS, not just direct-child identity: the editor/picture scrims
     // are appended straight to <body> (child === el matches), but the
@@ -576,8 +647,8 @@ function syncBackgroundInert() {
     // identity alone would inert #ocrfRoot itself the moment the menu
     // opened, and `inert` cascades to descendants, silently inerting the
     // very menu it was supposed to keep interactive.
-    const keepsSomethingOpen = open.some((el) => child === el || child.contains(el));
-    if (keepsSomethingOpen || !open.length) child.removeAttribute('inert');
+    const keepsSomethingOpen = keep.some((el) => child === el || child.contains(el));
+    if (keepsSomethingOpen || !keep.length) child.removeAttribute('inert');
     else child.setAttribute('inert', '');
   }
 }
@@ -817,6 +888,15 @@ function boot() {
     checkAccess,
     onProceed: () => {
       entryNode.hidden = true;
+      // UXJ-009: a re-entry with carried-over shots must SAY so on S2
+      // (the exit was non-destructive by design; the silence was the bug).
+      // Staged in its own slot and consumed exactly once by the s2
+      // branch's navOpts block — the recovery notice outranks it there,
+      // and the clear-on-new-upload rule applies to both the same way.
+      app.reentryNotice = reentryNotice({
+        shotsYou: controller.flow.shots('you'),
+        shotsEnemy: controller.flow.shots('enemy'),
+      });
       // Reuse an existing #ocrfRoot (e.g. after Back-to-entry then proceeding
       // again) rather than appending a second one with a duplicate id.
       const stack = root() || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'ocrfRoot' }));

@@ -20,7 +20,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor,
+  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor, reentryNotice,
   backLandsOnEntry,
 } from '../ocr_flow.js';
 import { mapError } from '../error_copy.mjs';
@@ -359,4 +359,15 @@ test('backLandsOnEntry: every other screen\'s Back lands on another modal screen
 test('backLandsOnEntry: a length-1 history (just entry, nothing pushed yet) is false — back() itself already guards this with its own early return, but the decision must not claim a close from an empty stack', () => {
   assert.equal(backLandsOnEntry(['entry']), false);
   assert.equal(backLandsOnEntry([]), false);
+});
+
+// ---- Round 3 fixes (UXJ-007/008/009) ---------------------------------------
+
+test('UXJ-009: reentryNotice speaks only when shots carried over, and says how to start fresh', () => {
+  assert.equal(reentryNotice({ shotsYou: [], shotsEnemy: [] }), null);
+  assert.equal(reentryNotice(), null);
+  const notice = reentryNotice({ shotsYou: ['a'], shotsEnemy: [] });
+  assert.match(notice, /Picked up where you left off/);
+  assert.match(notice, /fresh start/);
+  assert.match(reentryNotice({ shotsYou: [], shotsEnemy: ['b'] }), /still here/);
 });
