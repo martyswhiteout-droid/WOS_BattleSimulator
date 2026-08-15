@@ -27,14 +27,35 @@ export async function decideEntryAction(checkAccess) {
   return access.allowed ? 'proceed' : 'upgrade';
 }
 
+// UXJ-001 fix (EVAL_UX_JOURNEY.md round 1): the old anchor — whatever
+// `.iblock` CURRENTLY wraps #statPanel — is only stable at the instant this
+// runs. mountEntry() executes from ocr_flow.js's boot(), a `type="module"`
+// script that (per HTML module-script semantics) finishes BEFORE
+// DOMContentLoaded fires — i.e. before prototype/index.html's own
+// `initInputTabs()` (registered ON DOMContentLoaded) folds the Troops
+// Formation/Stats/Buffs `.iblock`s into one `.tabgroup.input-tabs`, removing
+// the small Stats `.iblock` this used to anchor on. The card itself is never
+// touched by that later reflow (it isn't one of the `.iblock`s that gets
+// removed), so it just stays wherever it landed — which turns out to be
+// AFTER the entire consolidated tabgroup once the dust settles: below the
+// whole manual form, on both desktop and mobile, instead of above it.
+// Anchoring on the FORM SECTION itself (`.input`, never renamed or removed
+// by initInputTabs()) and always inserting as its first child is stable no
+// matter what mutates inside that section afterwards. Exported/tested on its
+// own — same split as the pure decisions in ocr_flow.js (planS2Entry,
+// decideAfterRead): the actual bug WAS this decision, not the DOM mutation.
+export function findEntrySection(statPanel) {
+  return statPanel.closest('.input') || statPanel.parentElement;
+}
+
 export function mountEntry({ root = document } = {}) {
   const statPanel = root.getElementById('statPanel');
   if (!statPanel) return null;
-  const anchor = statPanel.closest('.iblock') || statPanel;
+  const section = findEntrySection(statPanel);
   const wrap = root.createElement('div');
   wrap.innerHTML = renderEntryCard();
   const node = wrap.firstElementChild;
-  anchor.parentNode.insertBefore(node, anchor);
+  section.insertBefore(node, section.firstElementChild);
   return node;
 }
 
