@@ -1,19 +1,27 @@
 # shell/requirements.txt — pinned base list from shell/ARCHITECTURE.md (Agent A).
 # Other agents ADD ONLY, never remove.
-fastapi
-uvicorn
-pydantic>=2
-pydantic-settings
-PyJWT[crypto]
-httpx
-stripe
-asyncpg
-anthropic
-pillow
-imagehash
-python-multipart
-pytest
-pytest-asyncio
+#
+# F15 (EVAL_ROUND_1.md): this file called itself "pinned" but carried exactly
+# one version constraint (pydantic>=2) out of 14 dependencies — an unpinned
+# `pip install` here makes the release image non-reproducible (a `docker
+# build` next month can silently ship a different FastAPI/stripe/anthropic
+# major). Every entry below is pinned to the exact version verified against
+# the full shell/tests suite (341+ passing). Re-pin deliberately (bump,
+# re-run the full suite, re-run pip-audit) — never widen back to a range.
+fastapi==0.141.1
+uvicorn==0.52.1
+pydantic==2.13.4
+pydantic-settings==2.14.2
+PyJWT[crypto]==2.13.0
+httpx==0.28.1
+stripe==15.4.0
+asyncpg==0.31.0
+anthropic==0.120.2
+pillow==12.3.0
+imagehash==4.3.2
+python-multipart==0.0.32
+pytest==9.0.3
+pytest-asyncio==1.4.0
 
 # Task 12 stat-panel OCR fallback. Exact pins keep model/runtime behavior
 # reproducible across the benchmark and production shell.

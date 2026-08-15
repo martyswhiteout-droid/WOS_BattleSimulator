@@ -63,6 +63,22 @@ def test_secret_scan_catches_db_url_with_password(bundle):
     assert any("db url" in f for f in promote.gate_secret_scan(bundle))
 
 
+def test_secret_scan_catches_extension_less_and_pem_key_files(bundle):
+    """F26: TEXT_EXTS used to omit extension-less files and .pem/.key/.crt/
+    .sh, so a planted id_rsa or server.key would be invisible to the scan
+    despite the private-key pattern being ready for it."""
+    (bundle / "id_rsa").write_text(
+        "-----BEGIN RSA PRIVATE KEY-----\nMIIFAKEnotarealkeybody\n"
+        "-----END RSA PRIVATE KEY-----\n", encoding="utf-8")
+    (bundle / "server.key").write_text(
+        "-----BEGIN PRIVATE KEY-----\nMIIFAKEnotarealkeyeither\n"
+        "-----END PRIVATE KEY-----\n", encoding="utf-8")
+    findings = promote.gate_secret_scan(bundle)
+    text = "\n".join(findings)
+    assert "id_rsa" in text
+    assert "server.key" in text
+
+
 # --------------------------------------------------------- debug endpoints
 
 def test_debug_endpoint_gate(bundle):

@@ -57,6 +57,15 @@ SHELL_DIR = Path(__file__).resolve().parent
 DEFAULT_REPO_ROOT = SHELL_DIR.parent
 DEFAULT_BLOCKLIST = SHELL_DIR / "tools" / "blocklist.json"
 
+# EVAL_ROUND_1.md F1: shell/app/ocr/extract.py's VALIDATOR_PATH and
+# shell/app/ocr/vision.py's SCHEMA_MD_PATH both resolve here at runtime and
+# hard-fail (FileNotFoundError, every request) if it is missing. Posix-style
+# string for `git archive` pathspecs; Path() joins work with it unchanged on
+# Windows (pathlib splits on "/" regardless of platform).
+INGESTION_SKILL_DIR = ".claude/skills/wos-battlereport-ingestion"
+INGESTION_SKILL_VALIDATOR_REL = f"{INGESTION_SKILL_DIR}/scripts/validate_report.py"
+INGESTION_SKILL_SCHEMA_REL = f"{INGESTION_SKILL_DIR}/references/schema.md"
+
 SIGNOFF_PHRASE = "yes-I-approve"
 PASS_VERDICT_RE = re.compile(r"^VERDICT:\s*PASS\s*$", re.MULTILINE)
 FORBIDDEN_WRITE_MARKER = "wostests.com"   # the production folder, any casing
@@ -65,6 +74,17 @@ DRAFT_VERDICT = ("DRAFT — machine evidence only; awaiting independent QA "
 
 # Files/dirs of the shell source that belong in a release bundle. Pipeline-side
 # tooling (this script, probes, tests, phash tool, build output) does not ship.
+#
+# Mn4 (EVAL_ROUND_2.md): "tests" here is a DELIBERATE exclusion, not an
+# oversight — reviewed and kept. Test code (fixtures, mocks, dev-only
+# helpers) has no business on a production host; MockVision's FIXTURE_DIR
+# (shell/tests/fixtures/ocr/) would go missing from THIS bundle if a
+# deployment ever ran with OCR_MOCK=1 left on, but this scp/VPS bundle is a
+# SECONDARY deploy path — the primary one (shell/Dockerfile, confirmed by
+# docker-compose.yml's healthcheck/restart-policy/TLS-sidecar) does an
+# unconditional `COPY shell/ shell/`, so it ships tests/ (and the fixtures)
+# regardless. step3_assemble's own evidence string calls this exclusion out
+# explicitly so a gate reviewer sees it documented, not silently absent.
 BUNDLE_EXCLUDE_DIRS = {"build", "tests", "probes", "tools", "__pycache__",
                        ".pytest_cache", ".mypy_cache"}
 BUNDLE_EXCLUDE_FILES = {"promote.py", ".env", "BUILD_LOG.md"}
@@ -93,7 +113,8 @@ DEBUG_PATTERNS = [
     re.compile(r"\bset_trace\("), re.compile(r"\bbreakpoint\("),
 ]
 TEXT_EXTS = {".py", ".html", ".js", ".css", ".json", ".md", ".txt", ".env",
-             ".yml", ".yaml", ".toml", ".cfg", ".ini", ".sql", ".example"}
+             ".yml", ".yaml", ".toml", ".cfg", ".ini", ".sql", ".example",
+             ".pem", ".key", ".crt", ".sh"}
 
 DEPLOY_COMMANDS = """\
 # Real deploy commands (run by the operator from a machine with the deploy key;
@@ -234,6 +255,31 @@ def _tail(text: str, lines: int = 6) -> str:
 
 # ---------------------------------------------------------------- steps 1–8
 
+def _archive_extra_path(pl: Pipeline, rel_path: str) -> bool:
+    """Best-effort: extract one extra path from the tag into artifact_dir, on
+    top of the main archive already extracted by step1_checkout. A missing
+    path here is NOT a step1 failure — it surfaces instead as a step4
+    completeness-gate FAIL (F1), the actionable signal ("the release doesn't
+    carry a required directory") rather than a checkout-step crash on what
+    might be an old tag predating the requirement."""
+    with tempfile.NamedTemporaryFile(suffix=".tar", delete=False) as tf:
+        tar_path = Path(tf.name)
+    try:
+        p = subprocess.run(["git", "-C", str(pl.repo_root), "archive",
+                            "--format=tar", "-o", str(tar_path), pl.tag,
+                            "--", rel_path],
+                           capture_output=True, text=True, timeout=120)
+        if p.returncode != 0:
+            return False
+        with tarfile.open(tar_path) as t:
+            t.extractall(pl.artifact_dir)
+        return True
+    except (OSError, subprocess.SubprocessError, tarfile.TarError):
+        return False
+    finally:
+        tar_path.unlink(missing_ok=True)
+
+
 def step1_checkout(pl: Pipeline) -> StepResult:
     """Step 1–2 of the plan: pull the tagged artifact into the build dir."""
     assert_safe_write_path(pl.artifact_dir)
@@ -256,12 +302,16 @@ def step1_checkout(pl: Pipeline) -> StepResult:
                                   f"git archive {pl.tag} failed: {p.stderr[:400]}")
             with tarfile.open(tar_path) as t:
                 t.extractall(pl.artifact_dir)
-            n = sum(1 for f in pl.artifact_dir.rglob("*") if f.is_file())
-            return StepResult("1 checkout", "PASS",
-                              f"git archive of tag `{pl.tag}` -> "
-                              f"{n} files (clean tagged tree, H2)")
         finally:
             tar_path.unlink(missing_ok=True)
+        skill_ok = _archive_extra_path(pl, INGESTION_SKILL_DIR)
+        n = sum(1 for f in pl.artifact_dir.rglob("*") if f.is_file())
+        skill_note = "ingestion skill included" if skill_ok else (
+            "ingestion skill NOT found at this tag — step 4's completeness "
+            "gate (F1) will FAIL")
+        return StepResult("1 checkout", "PASS",
+                          f"git archive of tag `{pl.tag}` -> "
+                          f"{n} files (clean tagged tree, H2) · {skill_note}")
     if not pl.dry_run:
         return StepResult("1 checkout", "FAIL",
                           f"tag `{pl.tag}` not found in {pl.repo_root} — a "
@@ -279,11 +329,22 @@ def step1_checkout(pl: Pipeline) -> StepResult:
                                                           exist_ok=True)
         shutil.copy2(av, pl.artifact_dir / "prototype" / "avatars" /
                      "manifest.json")
+    skill_src = pl.repo_root / INGESTION_SKILL_DIR
+    skill_ok = skill_src.is_dir()
+    if skill_ok:
+        _copytree(skill_src, pl.artifact_dir / INGESTION_SKILL_DIR,
+                  exclude_dirs={"__pycache__"})
+    skill_note = "ingestion skill included" if skill_ok else (
+        "ingestion skill NOT found in the working tree — step 4's "
+        "completeness gate (F1) will FAIL")
     n = sum(1 for f in pl.artifact_dir.rglob("*") if f.is_file())
-    return StepResult("1 checkout", "PASS",
+    # F20: this is a working-tree fallback, not a release-grade checkout —
+    # SKIP (not PASS) so the gate report cannot be skim-read as "H: PASS".
+    return StepResult("1 checkout", "SKIP",
                       f"tag `{pl.tag}` not found; DRY-RUN fallback copied the "
                       f"WORKING TREE ({n} files). NOT release-grade evidence "
-                      "for H2 — tag the release before a real promotion.")
+                      f"for H2 — tag the release before a real promotion. · "
+                      f"{skill_note}", required=False)
 
 
 def step2_prototype_checks(pl: Pipeline, skip: bool) -> StepResult:
@@ -360,7 +421,12 @@ def step3_assemble(pl: Pipeline) -> StepResult:
                       f"stripped {stripped} raster images from the artifact "
                       f"(scraped art never ships, F1) · assets_prod manifest "
                       f"{'present' if has_assets else 'MISSING'} · "
-                      f"config/{pl.target}.env written (template, no secrets)")
+                      f"config/{pl.target}.env written (template, no secrets) · "
+                      f"shell/tests/ EXCLUDED from this bundle (INTENDED, "
+                      f"Mn4 EVAL_ROUND_2.md — test code/fixtures don't ship; "
+                      f"the primary Docker deploy path ships them via "
+                      f"Dockerfile's unconditional COPY shell/ shell/, this "
+                      f"scp bundle is the secondary path only)")
 
 
 # -- step 4 static gates (each returns findings; empty list = clean) ---------
@@ -390,8 +456,38 @@ def _iter_text_files(bundle: Path):
     for p in sorted(bundle.rglob("*")):
         if not p.is_file():
             continue
-        if p.suffix.lower() in TEXT_EXTS or p.name in SECRET_SKIP_FILENAMES:
+        # F26: extension-less files (id_rsa, a bare "Dockerfile"-style name,
+        # etc.) used to be invisible to both the secret and debug scans even
+        # though the secret patterns (e.g. "-----BEGIN ... PRIVATE KEY-----")
+        # are ready for them. Scan them too — read_text below already
+        # tolerates binary noise via errors="ignore".
+        if (p.suffix.lower() in TEXT_EXTS or p.suffix == ""
+                or p.name in SECRET_SKIP_FILENAMES):
             yield p
+
+
+def gate_ingestion_skill(bundle: Path) -> list[str]:
+    """EVAL_ROUND_1.md F1: shell/app/ocr/extract.py's VALIDATOR_PATH and
+    shell/app/ocr/vision.py's SCHEMA_MD_PATH both resolve to files inside
+    .claude/skills/wos-battlereport-ingestion/ at runtime and hard-fail
+    (FileNotFoundError) on every request when absent — reproduced live in the
+    eval as an HTTP 500 on every OCR upload in the actual deploy layout. This
+    is a completeness ASSERT, not just a presence check: both files the app
+    code actually opens must exist in the bundle, not merely the directory."""
+    findings = []
+    validator = bundle / INGESTION_SKILL_VALIDATOR_REL
+    schema = bundle / INGESTION_SKILL_SCHEMA_REL
+    if not validator.is_file():
+        findings.append(
+            f"missing ingestion-skill validator: {validator} — "
+            "shell/app/ocr/extract.py:VALIDATOR_PATH will raise "
+            "FileNotFoundError on every /shell/ocr request (EVAL F1)")
+    if not schema.is_file():
+        findings.append(
+            f"missing ingestion-skill schema doc: {schema} — "
+            "shell/app/ocr/vision.py:SCHEMA_MD_PATH will raise "
+            "FileNotFoundError on every real-key OCR extraction (EVAL F1)")
+    return findings
 
 
 def gate_debug_endpoints(bundle: Path) -> list[str]:
@@ -451,6 +547,7 @@ def step4_static_gates(pl: Pipeline, blocklist: Path,
     gates = {
         "phash blocklist (F1)": gate_phash(pl.bundle_dir, blocklist,
                                            max_distance),
+        "ingestion skill bundle (EVAL F1)": gate_ingestion_skill(pl.bundle_dir),
         "debug endpoints (D4)": gate_debug_endpoints(pl.bundle_dir),
         "secret scan (E4)": gate_secret_scan(pl.bundle_dir),
         "UTF-8 index.html (G2)": gate_utf8_index(pl.bundle_dir),

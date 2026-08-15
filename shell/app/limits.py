@@ -10,11 +10,16 @@ PRODUCTION_CRITERIA.md §D1–D3 via the shell/ARCHITECTURE.md contract:
 
 Check order (deliberate):
     1. MIN_TROOPS on /api/predict + /api/battle bodies      -> 400
-    2. OCR on free plan                                     -> 402
-    3. Per-account daily quota (entitlements table)         -> 429 quota_exhausted
-    4. Per-IP daily cap (3x the account's plan cap)         -> 429 quota_exhausted
-    5. Per-account burst, sliding 60s window <= BURST_PER_MIN -> 429 burst
-    6. Record usage_events (fingerprint feeds sweep detection)
+    2. Runs clamp: sim "n" > entitlements.max_runs is silently reduced to
+       max_runs (never rejected) — a single free-tier n=20000 must not be
+       able to wedge a worker (EVAL_ROUND_1.md F4-b). The clamped body comes
+       back on Allowed.body; LimitsMiddleware forwards THAT, not the
+       original bytes, to the mounted engine.
+    3. OCR on free plan                                     -> 402
+    4. Per-account daily quota (entitlements table)         -> 429 quota_exhausted
+    5. Per-IP daily cap (3x the account's plan cap)         -> 429 quota_exhausted
+    6. Per-account burst, sliding 60s window <= BURST_PER_MIN -> 429 burst
+    7. Record usage_events (fingerprint feeds sweep detection)
 
 Only ALLOWED requests are recorded — denials must not consume quota, and
 probe traffic must not poison the sweep corpus.
@@ -33,12 +38,15 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import logging
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from typing import Any, Optional, Union
 
 from shell.app import db
 from shell.app.billing._contracts import UserCtx, get_settings, settings_extra
+
+log = logging.getLogger("wos.shell.limits")
 
 # ---------------------------------------------------------------------------
 # Verdict types (contract)
@@ -48,6 +56,12 @@ from shell.app.billing._contracts import UserCtx, get_settings, settings_extra
 @dataclass(frozen=True)
 class Allowed:
     allowed: bool = True
+    #: Non-None ONLY when check_and_record modified the request body (today:
+    #: "n" clamped down to entitlements.max_runs, EVAL_ROUND_1.md F4-b).
+    #: Callers that forward the request downstream (LimitsMiddleware) must
+    #: prefer this over the original body when it is set — the original,
+    #: unmodified bytes are otherwise what gets replayed.
+    body: Optional[dict] = None
 
 
 @dataclass(frozen=True)
@@ -161,6 +175,29 @@ def _extract_troops(body: Optional[dict]) -> tuple[Optional[int], Optional[int]]
     return grab("own"), grab("enemy")
 
 
+def _clamp_runs(body: Optional[dict], max_runs: int) -> Optional[dict]:
+    """If body["n"] is a real number over max_runs, return a shallow COPY
+    with "n" reduced to max_runs. Returns None when nothing needs to change
+    (no cap configured, no/invalid "n", or already within range) — the
+    caller uses None to mean "forward the original body unchanged".
+
+    Deliberately narrow: this enforces the ENTITLEMENT ceiling only. A
+    malformed "n" (string, negative, missing) is left for wos_sim's own
+    validation (server.py's InvalidInput -> clean 400) rather than guessed
+    at here.
+    """
+    if max_runs <= 0 or not isinstance(body, dict):
+        return None
+    requested = body.get("n")
+    if isinstance(requested, bool) or not isinstance(requested, (int, float)):
+        return None
+    if requested <= max_runs:
+        return None
+    clamped = dict(body)
+    clamped["n"] = max_runs
+    return clamped
+
+
 # ---------------------------------------------------------------------------
 # The contract function
 # ---------------------------------------------------------------------------
@@ -197,7 +234,19 @@ async def check_and_record(
 
     ent = await db.get_entitlements(plan)
 
-    # 2. OCR is a paid feature (402 payment_required on free).
+    # 2. Runs clamp (D2/E6) — silently cap "n" at entitlements.max_runs
+    # rather than reject, so a request for more runs than the plan allows
+    # still gets an answer (a smaller one) instead of an error. This is what
+    # actually closes F4-b: main.py's create_app() wires THIS module's
+    # LimitsMiddleware as the live limits layer, and it forwards
+    # effective_body (below) downstream instead of the raw request bytes.
+    effective_body = body
+    if kind == "sim":
+        clamped = _clamp_runs(body, int(ent.max_runs))
+        if clamped is not None:
+            effective_body = clamped
+
+    # 3. OCR is a paid feature (402 payment_required on free).
     if kind == "ocr" and (plan == "free" or ent.daily_ocr_quota <= 0):
         return Denied(
             402,
@@ -205,7 +254,7 @@ async def check_and_record(
             "Screenshot OCR is a Pro feature. Upgrade to use it.",
         )
 
-    # 3. Per-account daily quota (entitlements = single source of truth, D2).
+    # 4. Per-account daily quota (entitlements = single source of truth, D2).
     daily_cap = ent.daily_sim_quota if kind == "sim" else ent.daily_ocr_quota
     used = await db.get_usage_today(user.user_id, kind)
     if used >= daily_cap:
@@ -217,7 +266,7 @@ async def check_and_record(
             "Resets at midnight UTC.",
         )
 
-    # 4. Per-IP daily cap = 3x the account cap (C5: burner accounts don't
+    # 5. Per-IP daily cap = 3x the account cap (C5: burner accounts don't
     #    multiply free quota).
     if ip_hash:
         ip_used = await db.get_ip_usage_today(ip_hash, kind)
@@ -228,7 +277,7 @@ async def check_and_record(
                 "Daily limit for this network reached. Resets at midnight UTC.",
             )
 
-    # 5. Per-account burst: sliding 60s window across metered endpoints (D2).
+    # 6. Per-account burst: sliding 60s window across metered endpoints (D2).
     burst_cap = int(settings.burst_per_min)
     recent = await db.count_recent_events(user.user_id, 60)
     if recent >= burst_cap:
@@ -238,7 +287,10 @@ async def check_and_record(
             f"Slow down: at most {burst_cap} requests per minute.",
         )
 
-    # 6. Record (allowed requests only).
+    # 7. Record (allowed requests only). Fingerprint the ORIGINAL body, not
+    # the clamped one — sweep detection should see what the client actually
+    # sent, and "n" already isn't part of the troops-rounding identity the
+    # fingerprint is built around.
     fingerprint, fp_fields = compute_fingerprint(body)
     await db.record_usage(
         user.user_id,
@@ -250,7 +302,7 @@ async def check_and_record(
         troops_own=troops_own,
         troops_enemy=troops_enemy,
     )
-    return Allowed()
+    return Allowed(body=effective_body if effective_body is not body else None)
 
 
 # ---------------------------------------------------------------------------
@@ -312,6 +364,17 @@ class LimitsMiddleware:
             body = None
 
         # ---- resolve identity (auth middleware runs OUTSIDE this one) ----
+        # EVAL_ROUND_1.md F22 (minor, Agents B/D): in the live app this
+        # branch never fires — main.py wires AuthMiddleware OUTERMOST, and
+        # it unconditionally sets scope["state"]["user"] first (dev bypass
+        # included, hardcoded user_id="dev_user", NOT reading X-Dev-User —
+        # that's auth.py, out of this file's ownership). The X-Dev-User read
+        # below only matters for tests that exercise LimitsMiddleware
+        # standalone (test_limits_core.py's make_client()); it does not
+        # cause and cannot fix the probe suite's same-account bleed (F12),
+        # whose root cause is auth.py. Investigated 2026-08-15, left as-is:
+        # removing it would only change this file's own test scaffolding,
+        # not the reported behavior.
         user = (scope.get("state") or {}).get("user")
         if user is None and settings.dev_bypass:
             headers = {
@@ -358,9 +421,18 @@ class LimitsMiddleware:
             await send({"type": "http.response.body", "body": payload})
             return
 
+        # An Allowed verdict may carry a modified body (today: "n" clamped to
+        # entitlements.max_runs, F4-b) — forward THAT to the wrapped app
+        # instead of the client's original bytes. re-encoding here (rather
+        # than mutating body_bytes above) keeps the common, unmodified case
+        # a plain passthrough with zero extra encode/decode work.
+        outgoing_bytes = body_bytes
+        if isinstance(verdict, Allowed) and verdict.body is not None:
+            outgoing_bytes = json.dumps(verdict.body).encode("utf-8")
+
         semaphore = self._get_semaphore(int(settings.global_concurrency))
         async with semaphore:
-            await self.app(scope, self._replay(body_bytes, receive), send)
+            await self.app(scope, self._replay(outgoing_bytes, receive), send)
 
     @staticmethod
     def _replay(body_bytes: bytes, receive):
@@ -490,3 +562,54 @@ async def sweep_scan(day: Union[date, str, None] = None) -> list[dict]:
             dedup_key=f"sweep:{flag['day']}:{flag['user_id']}:{flag['pattern']}:{pattern_key}",
         )
     return flags
+
+
+# ---------------------------------------------------------------------------
+# Sweep scheduler (M4, EVAL_ROUND_1.md F19 / EVAL_ROUND_2.md M4): sweep_scan
+# above was solid, well-tested work that NOTHING called — no cron, no
+# docker-compose sidecar, no in-app task. shell/app/main.py's create_app()
+# starts run_sweep_scheduler as a background task at app startup (via a
+# FastAPI lifespan) and cancels it at shutdown; this is the scheduler
+# itself, kept here alongside the function it schedules.
+# ---------------------------------------------------------------------------
+
+#: sweep_scan's own docstring calls it a "nightly job" — 24h between runs.
+SWEEP_INTERVAL_S = 86400.0
+
+
+async def run_sweep_scheduler(
+    *, interval_s: float = SWEEP_INTERVAL_S,
+    stop_event: Optional[asyncio.Event] = None,
+) -> None:
+    """Runs sweep_scan on a fixed interval for as long as the caller keeps
+    this coroutine's task alive.
+
+    Fail-safe by construction — D3's own bar is "flag/throttle, never take
+    the product down": ANY exception sweep_scan raises (a DB hiccup, a bad
+    day argument, anything underneath it) is caught and logged, never
+    propagated. A crashing sweep must not kill the scheduler loop, let alone
+    the app.
+
+    ``stop_event``, when given, lets a caller (a test, or a future graceful-
+    shutdown path) end the loop between runs instead of blocking the full
+    interval; without one the loop runs until the task itself is cancelled.
+    ``asyncio.CancelledError`` is deliberately NOT caught by the broad
+    ``except Exception`` below (it is a BaseException subclass in modern
+    Python, so a bare ``except Exception`` would not catch it anyway) —
+    cancellation must propagate so the task actually stops.
+    """
+    while True:
+        try:
+            await sweep_scan()
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            log.exception("sweep_scan failed; scheduler continues")
+        if stop_event is not None:
+            try:
+                await asyncio.wait_for(stop_event.wait(), timeout=interval_s)
+            except asyncio.TimeoutError:
+                continue        # normal case: interval elapsed, run again
+            return              # stop_event was set — exit cleanly
+        else:
+            await asyncio.sleep(interval_s)

@@ -24,17 +24,17 @@
       "quality": {
         "Infantry": {
           "tier": 10,
-          "fc": 0,
+          "fc": 1,
           "t12_stack": 0
         },
         "Lancer": {
           "tier": 10,
-          "fc": 0,
+          "fc": 1,
           "t12_stack": 0
         },
         "Marksman": {
           "tier": 10,
-          "fc": 0,
+          "fc": 1,
           "t12_stack": 0
         }
       }

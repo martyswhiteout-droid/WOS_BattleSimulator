@@ -168,9 +168,37 @@
 
 #wos-shell-overlay .wos-sc-muted { color: #8FB0C9; }
 
+#wos-shell-overlay .wos-sc-legal {
+  padding: 6px 10px 8px;
+  border-top: 1px solid rgba(255, 255, 255, .07);
+  font-size: 9px;
+  line-height: 1.5;
+  color: #8FB0C9;
+}
+
+#wos-shell-overlay .wos-sc-legal a {
+  color: #8FB0C9;
+  text-decoration: underline;
+}
+
+#wos-shell-overlay .wos-sc-legal a:hover,
+#wos-shell-overlay .wos-sc-legal a:focus-visible { color: #B9D2E5; }
+
 @media (prefers-reduced-motion: reduce) {
   #wos-shell-overlay, #wos-shell-overlay * {
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* M3 (EVAL_ROUND_1.md F18 / EVAL_ROUND_2.md M3): text label shown in place
+ * of a page image that 404'd in a promoted (art-stripped) bundle — see
+ * overlay.js's asset-fallback listener. Scoped outside #wos-shell-overlay
+ * (it replaces PAGE content, not the chip); deliberately muted so it never
+ * competes with real prototype UI — same palette as .wos-sc-legal above. */
+.wos-asset-fallback-label {
+  display: inline-block;
+  font-family: 'Inter', system-ui, 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  color: #8FB0C9;
 }

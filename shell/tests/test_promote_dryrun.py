@@ -32,6 +32,16 @@ def mini_repo(tmp_path: Path) -> Path:
         encoding="utf-8")
     (repo / "prototype" / "avatars" / "manifest.json").write_text(
         "{}", encoding="utf-8")
+    # F1: a synthetic stand-in for .claude/skills/wos-battlereport-ingestion/
+    # so the completeness gate (gate_ingestion_skill) sees a complete bundle
+    # on this mini-repo, same as a real release must.
+    skill = repo / promote.INGESTION_SKILL_DIR
+    (skill / "scripts").mkdir(parents=True)
+    (skill / "references").mkdir(parents=True)
+    (skill / "scripts" / "validate_report.py").write_text(
+        "# mini stand-in for the real validator\n", encoding="utf-8")
+    (skill / "references" / "schema.md").write_text(
+        "# mini stand-in for the real v2 schema\n", encoding="utf-8")
     return repo
 
 
@@ -64,9 +74,18 @@ def test_dry_run_end_to_end_produces_draft_gate_report(mini_repo, tmp_path):
 
     # Step evidence made it in
     assert "phash blocklist (F1): clean" in text
+    assert "ingestion skill bundle (EVAL F1): clean" in text
     assert "secret scan (E4): clean" in text
     assert "UTF-8 index.html (G2): clean" in text
     assert "WORKING TREE" in text  # untagged dry-run fallback is recorded
+    assert "ingestion skill included" in text
+
+    # Step 1's honest status for an untagged dry-run: SKIP, never PASS (F20 —
+    # a reviewer skimming the report must not read this as release-grade).
+    # ev() renders "{status} — {first evidence line}"; check that directly
+    # rather than the report's column spacing.
+    assert "SKIP — tag `release-test` not found" in text
+    assert "PASS — tag `release-test` not found" not in text
 
     # Bundle shape: shell runtime + artifact + assets + env config template
     bundle = build_root / "release-test" / "bundle"
@@ -74,6 +93,10 @@ def test_dry_run_end_to_end_produces_draft_gate_report(mini_repo, tmp_path):
     assert (bundle / "shell" / "legal" / "tos.md").is_file()
     assert (bundle / "wos_sim" / "__init__.py").is_file()
     assert (bundle / "prototype" / "index.html").is_file()
+    # F1: the ingestion skill ships at the exact path extract.py/vision.py
+    # resolve at runtime.
+    assert (bundle / promote.INGESTION_SKILL_VALIDATOR_REL).is_file()
+    assert (bundle / promote.INGESTION_SKILL_SCHEMA_REL).is_file()
     cfg = (bundle / "config" / "staging.env").read_text(encoding="utf-8")
     assert "ENV=staging" in cfg and "DEV_BYPASS=0" in cfg
     assert "MIN_TROOPS_PER_SIDE=5000" in cfg
@@ -81,6 +104,26 @@ def test_dry_run_end_to_end_produces_draft_gate_report(mini_repo, tmp_path):
     assert not (bundle / "shell" / "promote.py").exists()
     assert not (bundle / "shell" / "tests").exists()
     assert not (bundle / "shell" / "probes").exists()
+
+
+def test_dry_run_fails_when_ingestion_skill_is_missing(mini_repo, tmp_path):
+    """F1 regression: a release whose tree does not carry the ingestion skill
+    must be caught by the gate, not silently shipped to 500 on first OCR
+    request (EVAL_ROUND_1.md F1 — reproduced live via a Docker-layout boot)."""
+    import shutil as _shutil
+    _shutil.rmtree(mini_repo / promote.INGESTION_SKILL_DIR)
+    rc = promote.main([
+        "--tag", "release-test", "--target", "staging", "--dry-run",
+        "--skip-prototype-checks",
+        "--repo-root", str(mini_repo),
+        "--build-root", str(tmp_path / "build_missing_skill"),
+    ])
+    assert rc == 1, "a bundle missing the ingestion skill must fail the pipeline"
+    text = (tmp_path / "build_missing_skill" / "release-test" /
+            "GATE_REPORT_DRAFT_release-test.md").read_text(encoding="utf-8")
+    assert "ingestion skill bundle (EVAL F1): FAIL" in text
+    assert "missing ingestion-skill validator" in text
+    assert "missing ingestion-skill schema doc" in text
 
 
 def test_dry_run_fails_on_planted_secret(mini_repo, tmp_path):
@@ -96,6 +139,29 @@ def test_dry_run_fails_on_planted_secret(mini_repo, tmp_path):
     text = (tmp_path / "build2" / "release-test" /
             "GATE_REPORT_DRAFT_release-test.md").read_text(encoding="utf-8")
     assert "secret scan (E4): FAIL" in text
+
+
+def test_gate_report_documents_the_tests_exclusion_as_intended(mini_repo, tmp_path):
+    """Mn4 (EVAL_ROUND_2.md): shell/tests/ has always been excluded from this
+    scp/VPS bundle (see the assertion in
+    test_dry_run_end_to_end_produces_draft_gate_report above), but the
+    exclusion used to be silent — nothing in the gate report said so, which
+    reads exactly like the F20-style "a reviewer skims past something
+    load-bearing" failure class this pipeline exists to avoid. step3_assemble's
+    own evidence string must now document it explicitly."""
+    build_root = tmp_path / "build_mn4"
+    rc = promote.main([
+        "--tag", "release-test", "--target", "staging", "--dry-run",
+        "--skip-prototype-checks",
+        "--repo-root", str(mini_repo),
+        "--build-root", str(build_root),
+    ])
+    assert rc == 0
+    text = (build_root / "release-test" /
+            "GATE_REPORT_DRAFT_release-test.md").read_text(encoding="utf-8")
+    assert "shell/tests/ EXCLUDED from this bundle (INTENDED" in text
+    assert "Mn4" in text
+    assert "Docker" in text   # names the mitigating (primary) deploy path
 
 
 def test_dry_run_fails_on_scraped_image_in_artifact(mini_repo, tmp_path):

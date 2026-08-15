@@ -11,9 +11,11 @@
 ## 1. The short version
 
 We store as little as we can: your email (through our sign-in provider),
-your subscription state (through Stripe), the battle setups you run, and —
-if you use screenshot import — your uploaded screenshots for a limited time.
-We do not sell personal data. We do not show your uploads to anyone else.
+your subscription state (through Stripe), and the battle setups you run. If
+you use screenshot import, the image itself is never stored anywhere — we
+read the data out of it and discard the bytes; only the fields we extracted
+are kept, with your scenario. We do not sell personal data. We do not show
+your uploads to anyone else.
 
 ## 2. What we collect and why
 
@@ -23,7 +25,7 @@ We do not sell personal data. We do not show your uploads to anyone else.
 | Subscription and payment status (plan, period end, Stripe customer ID) | **Stripe** and our database | Billing, entitlements. **We never see or store card numbers** — Stripe handles all card data | Life of the account + statutory accounting periods |
 | Usage events (endpoint called, timestamp, hashed IP, hashed request fingerprint, troop totals) | Our database (Supabase Postgres) | Quota enforcement, abuse and model-extraction detection (ToS §6), service health | [12] months, then aggregated or deleted |
 | Battle setups / saved scenarios you create | Our database | So the tool works and you can revisit your scenarios | Until you delete them or close the account |
-| Uploaded battle-report screenshots + extracted fields | Our storage + database | To read the battle data out of the image for you (the OCR feature) | **Screenshots deleted after [30] days** ("N days" — final number set at launch and stated here); extracted fields kept with your scenario |
+| Uploaded battle-report screenshots + extracted fields | Not stored — see below; extracted fields kept in our database with your scenario | To read the battle data out of the image for you (the OCR feature) | **We do not keep your screenshot.** The image is hashed (so a repeat upload of the exact same screenshot does not have to be re-processed) and the bytes are discarded once extraction finishes; nothing is written to disk or kept in the database. Only the fields we successfully read out of it are kept, with your scenario |
 | Basic server logs (IP, user agent, status codes) | Our VPS | Security, debugging | [30] days |
 
 We do **not** collect: card numbers, precise location, contacts, advertising
@@ -86,8 +88,11 @@ or by email at least 14 days in advance.
 ---
 
 *Draft notes for counsel (delete before publication):*
-- *Replace bracketed retention numbers with final values; "N days" for
-  screenshots must match the implemented deletion job before launch.*
+- *Replace bracketed retention numbers with final values (email, usage
+  events, server logs). Screenshots are NOT retained at all as implemented
+  (shell/app/ocr/extract.py hashes the bytes and discards them; no upload
+  is ever written to disk or the database) — if that changes before launch,
+  this row and this note both need to change together.*
 - *Confirm PDPO data-user identification requirements and whether a formal
   Personal Information Collection Statement (PICS) must be shown at signup.*
 - *Verify Anthropic/Google API data-use terms still say no-training at
