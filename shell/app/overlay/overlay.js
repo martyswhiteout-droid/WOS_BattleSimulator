@@ -166,3 +166,90 @@
   if (document.body) mount();
   else document.addEventListener("DOMContentLoaded", mount);
 })();
+
+/* Asset fallback (M3, EVAL_ROUND_1.md F18 / EVAL_ROUND_2.md M3): a promoted
+ * bundle strips ALL raster art (Century Games IP) from prototype/ and
+ * wos_sim/ before it ships (shell/promote.py step3_assemble) — but the
+ * mounted prototype's own JS still emits <img src="avatars/...">,
+ * "assets/Icons/*.png", "assets/ui/*.png" unconditionally, so those
+ * requests 404 in that exact deployment. prototype/ is READ-ONLY from
+ * shell/ (ARCHITECTURE.md boundary rule 1), so this reacts to the browser's
+ * own "error" event on an <img> instead — which fires ONLY when a src
+ * actually fails to load, so an ordinary dev checkout with the raster art
+ * still in place never triggers any of this. On a real failure: swap in
+ * the matching original-art SVG shipped at /shell/assets/ (mounted by
+ * main.py from shell/assets_prod/) when a 1:1 replacement exists (class
+ * icons, rally/garrison role icons); otherwise hide the broken image and
+ * show its `alt` text instead — assets_prod's manifest has only 22
+ * abstract category keys (no per-hero or per-skill entries), so per-hero
+ * avatars and skill/proc icons fall back to "accept text-only ... and
+ * suppress the <img>", the alternative F18 explicitly sanctions. */
+(function () {
+  "use strict";
+  if (window.__wosAssetFallback) return;   // double-injection guard
+  window.__wosAssetFallback = true;
+
+  // Path fragment (matched case-insensitively) -> shell/assets_prod/
+  // manifest.json key. Only the categories the prototype's own JS actually
+  // emits as <img src> today are listed — everything else (per-hero
+  // avatars, per-skill icons) has no 1:1 replacement and is suppressed.
+  var PATTERNS = [
+    { test: /icons\/infantry\.png(?:[?#]|$)/i, key: "class.infantry" },
+    { test: /icons\/lancer\.png(?:[?#]|$)/i, key: "class.lancer" },
+    { test: /icons\/marksman\.png(?:[?#]|$)/i, key: "class.marksman" },
+    { test: /assets\/ui\/rally-swords\.png(?:[?#]|$)/i, key: "role.rally" },
+    { test: /assets\/ui\/garrison-shield\.png(?:[?#]|$)/i, key: "role.garrison" }
+  ];
+
+  var manifestPromise = null;
+  function loadManifest() {
+    if (!manifestPromise) {
+      manifestPromise = fetch("/shell/assets/manifest.json", { credentials: "same-origin" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    }
+    return manifestPromise;
+  }
+
+  function keyFor(src) {
+    for (var i = 0; i < PATTERNS.length; i++) {
+      if (PATTERNS[i].test.test(src)) return PATTERNS[i].key;
+    }
+    return null;
+  }
+
+  // Hides the broken image and, if it carries alt text, inserts that text
+  // as a plain visible label right after it (textContent only — hostile-
+  // client rule; the alt text originates from the prototype's own trusted
+  // markup, not remote user data, but there is no reason to ever use
+  // innerHTML here).
+  function suppress(el) {
+    el.style.visibility = "hidden";
+    el.setAttribute("aria-hidden", "true");
+    var alt = el.getAttribute("alt");
+    if (alt && !el.dataset.wosAssetLabel) {
+      el.dataset.wosAssetLabel = "1";
+      var label = document.createElement("span");
+      label.className = "wos-asset-fallback-label";
+      label.textContent = alt;
+      if (el.parentNode) el.parentNode.insertBefore(label, el.nextSibling);
+    }
+  }
+
+  document.addEventListener("error", function (ev) {
+    var el = ev.target;
+    if (!el || el.tagName !== "IMG") return;
+    if (el.dataset.wosAssetFallback) {   // the swapped-in replacement ALSO failed
+      suppress(el);
+      return;
+    }
+    el.dataset.wosAssetFallback = "1";
+    var key = keyFor(el.getAttribute("src") || "");
+    if (!key) { suppress(el); return; }
+    loadManifest().then(function (manifest) {
+      var file = manifest && manifest.assets && manifest.assets[key];
+      if (file) { el.src = "/shell/assets/" + file; }
+      else { suppress(el); }
+    });
+  }, true);
+})();

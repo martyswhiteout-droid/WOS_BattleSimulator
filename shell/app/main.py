@@ -474,6 +474,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.mount("/shell/ocr/client", _StaticFiles(directory=str(_ocr_client_dir)),
               name="ocr_client_assets")
 
+    # shell/assets_prod/ — the original SVG emblem pack (class/generation/
+    # rarity/role badges), mounted at /shell/assets/ (M3, EVAL_ROUND_1.md
+    # F18 / EVAL_ROUND_2.md M3). A promoted bundle strips ALL raster art from
+    # prototype/ and wos_sim/ before it ships (promote.py step3_assemble —
+    # Century Games IP never ships), but the mounted prototype's own JS still
+    # emits <img src="avatars/...">, "assets/Icons/*.png" etc unconditionally,
+    # so those requests 404 in that exact deployment. prototype/ is READ-ONLY
+    # from shell/ (ARCHITECTURE.md boundary rule 1), so the replacement pack
+    # is served here and overlay.js's asset-fallback listener swaps broken
+    # <img> tags onto it (or hides them) at runtime instead of editing the
+    # prototype. Guarded on the directory existing so a stripped/missing
+    # assets_prod never takes the boot down (fail-safe, same posture as the
+    # sim mount below).
+    _assets_prod_dir = _REPO_ROOT / "shell" / "assets_prod"
+    if _assets_prod_dir.is_dir():
+        app.mount("/shell/assets", _StaticFiles(directory=str(_assets_prod_dir)),
+                  name="assets_prod")
+
     # ---- mount the untouched prototype app LAST (so /shell/* wins) -------
     sim_mounted = False
     try:

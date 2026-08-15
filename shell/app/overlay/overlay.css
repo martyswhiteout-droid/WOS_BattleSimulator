@@ -190,3 +190,15 @@
     animation: none !important;
   }
 }
+
+/* M3 (EVAL_ROUND_1.md F18 / EVAL_ROUND_2.md M3): text label shown in place
+ * of a page image that 404'd in a promoted (art-stripped) bundle — see
+ * overlay.js's asset-fallback listener. Scoped outside #wos-shell-overlay
+ * (it replaces PAGE content, not the chip); deliberately muted so it never
+ * competes with real prototype UI — same palette as .wos-sc-legal above. */
+.wos-asset-fallback-label {
+  display: inline-block;
+  font-family: 'Inter', system-ui, 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  color: #8FB0C9;
+}
