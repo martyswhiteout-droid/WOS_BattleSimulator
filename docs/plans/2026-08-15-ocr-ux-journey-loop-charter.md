@@ -49,6 +49,29 @@ refusal (chip + notices + no phantom fill), manual "Type them in myself" floor, 
 plan gate (`X-Dev-Plan: free`), and quota-exhaustion messaging. Mobile-width pass
 (`resize_window` 375px) on at least the happy path each round.
 
+## Presentation-container mandate (amendment, 2026-08-15 — after the owner
+## caught what two SATISFIED-bound rounds missed)
+
+The rounds 1–2 evaluation verified screen CONTENT but never the flow's
+PRESENTATION CONTAINER — the flow was rendering as a phone-width column at
+the very bottom of the page on desktop, and no check caught it because every
+assertion was DOM-presence-based, not viewport-based. Binding from round 3:
+
+- **Viewport-visibility evidence is mandatory after EVERY user action, at
+  BOTH widths** (≥1280px and 375px): the element the user must see next
+  (heading, dropzone, error, chip) must be shown IN the visual viewport via
+  `getBoundingClientRect()` against `innerWidth/innerHeight` — DOM presence
+  or `offsetParent` alone is not evidence. (`position: fixed` elements have
+  `offsetParent === null` by spec; rect-vs-viewport is the only honest
+  check.)
+- **The takeover contract:** S1–S4/E1 are a modal dialog — backdropped,
+  scroll-locked, centered card ≥768px / full-screen sheet below, explicit
+  close (✕), Escape and backdrop-click exit, dialog semantics
+  (role/aria-modal), non-destructive exit. S5 is deliberately NOT modal: it
+  renders inline at the top of the form section, chip + filled form + "See
+  who wins →" together in view. Judge the container itself — entry,
+  during-flow, and after-exit states — as part of every round.
+
 ## Report
 
 `shell/EVAL_UX_JOURNEY.md` — append one section per round: verdict first, then findings

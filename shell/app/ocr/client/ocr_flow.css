@@ -447,3 +447,83 @@
    ============================================================ */
 .ocrf-s5 h1{margin:0 0 14px;font-family:'Chakra Petch',system-ui,sans-serif;font-size:19px;font-weight:600;
   letter-spacing:.01em;color:var(--ocrf-ink);outline:none}
+
+/* --- Round: TAKEOVER presentation (2026-08-15, owner escalation) ----------
+   #ocrfRoot used to sit in normal flow at the end of <body>: on desktop the
+   whole flow rendered as a phone-width column BELOW the entire app ("the
+   button just disappears"). S1-S4/E1 now present as a modal dialog — fixed,
+   backdropped, scroll-locked, centered card on desktop, full-screen sheet
+   under 768px. S5 is deliberately NOT modal (it renders inline in
+   #ocrfS5Host at the top of the form section — the mock's S5 is the app
+   itself). Palette: same navy-world tokens as every round above.
+   Append-only. */
+
+body.ocrf-flow-open { overflow: hidden; }
+
+body.ocrf-flow-open #ocrfRoot {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482600;   /* above the page, below the account chip's 2147483000 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(4, 16, 28, .66);
+  padding: 0;
+}
+
+body.ocrf-flow-open #ocrfRoot .screen {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  background: linear-gradient(180deg, var(--ocrf-raised), var(--ocrf-panel));
+  padding: 0 16px 20px;
+  box-sizing: border-box;
+}
+
+.ocrf-flow-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(185, 210, 229, .22);
+  border-radius: 12px;
+  background: rgba(6, 20, 34, .55);
+  color: var(--ocrf-ink-label);
+  font: 400 22px/1 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.ocrf-flow-close:hover { color: var(--ocrf-ink); border-color: rgba(185, 210, 229, .45); }
+
+.ocrf-flow-close:focus-visible { outline: 2px solid var(--ocrf-ice); outline-offset: 1px; }
+
+@media (min-width: 768px) {
+  body.ocrf-flow-open #ocrfRoot { padding: 5vh 24px 7vh; }
+  body.ocrf-flow-open #ocrfRoot .screen {
+    min-height: 0;
+    margin: 0 auto;
+    border: 1px solid rgba(185, 210, 229, .16);
+    border-radius: 16px;
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .85),
+                inset 0 1px 0 rgba(255, 255, 255, .08);
+    padding: 0 26px 26px;
+  }
+}
+
+/* S5's inline host sits where the entry CTA card sits (top of the form
+   section) — modest spacing, no card chrome of its own: .ocrf-s5 already
+   styles the chip/accordion block. */
+#ocrfS5Host { margin: 10px 0 14px; }
+
+#ocrfS5Host .ocrf-s5 h1 {
+  margin: 0 0 8px;
+  font-family: 'Chakra Petch', system-ui, sans-serif;
+  font-size: 17px;
+  color: var(--ocrf-ink);
+  outline: none;
+}

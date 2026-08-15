@@ -20,7 +20,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError,
+  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor,
 } from '../ocr_flow.js';
 import { mapError } from '../error_copy.mjs';
 
@@ -303,3 +303,37 @@ for (const [label, status, body, expectedCta] of ERROR_CLASSES) {
     assert.notEqual(decision.mapped.heading, "That doesn't look like the right screenshot");
   });
 }
+
+// ---- Takeover presentation (owner escalation 2026-08-15) -------------------
+// #ocrfRoot used to render in normal flow at the end of <body> — on desktop
+// the whole flow sat phone-width at the very bottom of the page, so clicking
+// the CTA looked like "the button just disappeared". S1-S4/E1 are now a
+// modal takeover; S5 deliberately is NOT (it renders inline in #ocrfS5Host —
+// the mock's S5 is the app itself, not a dialog).
+
+test('takeover: presentationFor is modal for every flow screen EXCEPT entry and s5', () => {
+  for (const screen of ['s1', 's2', 's3', 's4', 'e1']) {
+    assert.equal(presentationFor(screen).modal, true, screen);
+  }
+  assert.equal(presentationFor('entry').modal, false);
+  assert.equal(presentationFor('s5').modal, false);
+});
+
+test('takeover: a click resolving [data-close-flow] calls the injected onCloseFlow, never goto/back', () => {
+  const calls = [];
+  const handle = createDelegatedClickHandler({
+    goto: () => calls.push('goto'), back: () => calls.push('back'),
+    onCloseFlow: () => calls.push('close'),
+  });
+  const el = { closest: (sel) => (sel === '[data-close-flow]' ? { dataset: {} } : null) };
+  handle({ target: el, preventDefault: () => {} });
+  assert.deepEqual(calls, ['close']);
+});
+
+test('takeover: without onCloseFlow injected, [data-close-flow] clicks fall through harmlessly', () => {
+  const calls = [];
+  const handle = createDelegatedClickHandler({ goto: () => calls.push('goto'), back: () => calls.push('back') });
+  const el = { closest: (sel) => (sel === '[data-close-flow]' ? { dataset: {} } : null) };
+  handle({ target: el, preventDefault: () => {} });
+  assert.deepEqual(calls, []);
+});

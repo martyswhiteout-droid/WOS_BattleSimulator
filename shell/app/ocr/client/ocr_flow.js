@@ -62,6 +62,27 @@ const app = { history: ['entry'], screen: 'entry', navOpts: null,
 
 function root() { return document.getElementById('ocrfRoot'); }
 
+// Owner escalation 2026-08-15 ("these are way at the bottom of the page and
+// they are mobile size"): #ocrfRoot used to sit in NORMAL FLOW at the end of
+// <body>, so on desktop every screen rendered as a phone-width column below
+// the entire app — clicking the CTA looked like "the page flashed and the
+// button disappeared". The flow is now a TAKEOVER: S1-S4/E1 present as a
+// modal dialog (fixed, backdropped, centered card; full-screen sheet under
+// 768px — body.ocrf-flow-open in ocr_flow.css), while S5 deliberately is
+// NOT modal: per the mock, S5 IS the app again — the Battle-setup chip
+// renders inline at the top of the form section next to the freshly filled
+// panel (see the s5 branch of render()). Pure so it's unit-testable.
+export function presentationFor(screen) {
+  return { modal: screen !== 'entry' && screen !== 's5' };
+}
+
+function exitFlow() {
+  app.history = ['entry'];
+  app.screen = 'entry';
+  app.navOpts = null;
+  render();
+}
+
 // Set once by boot() — the S0 CTA card, hidden while the flow is open and
 // restored on Back-to-entry (the [hidden] show/hide pattern, per the global
 // constraints; the entry card is not itself part of the #ocrfRoot stack).
@@ -69,6 +90,19 @@ let entryNode = null;
 
 function show(html) {
   root().innerHTML = html;
+  // Modal chrome: every takeover screen gets an explicit ✕ (44px target)
+  // that exits the whole flow — handled by the global delegate's
+  // [data-close-flow] branch, same pattern as [data-back]/[data-goto].
+  const card = root().querySelector('.screen, .ocrf-s5');
+  if (card && !card.querySelector('[data-close-flow]')) {
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'ocrf-flow-close';
+    close.setAttribute('data-close-flow', '1');
+    close.setAttribute('aria-label', 'Close and go back to the app');
+    close.innerHTML = '&times;';
+    card.prepend(close);
+  }
   const heading = root().querySelector('h1, h2[tabindex]');
   if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
   // [data-back] is handled by the single global delegate wired in boot()
@@ -116,10 +150,13 @@ function back() {
 // so the actual branching is unit-testable without a real DOM (see
 // tests/ocr_flow.test.mjs) — the real listener below just wires this against
 // the module's own goto/back closures.
-export function createDelegatedClickHandler({ goto: gotoFn, back: backFn, onRemoveThumb, onOpenField }) {
+export function createDelegatedClickHandler({ goto: gotoFn, back: backFn, onRemoveThumb, onOpenField, onCloseFlow }) {
   return function handleDelegatedClick(event) {
     const target = event.target;
     if (!target || typeof target.closest !== 'function') return;
+    // Modal chrome ✕ (takeover fix, 2026-08-15): exits the whole flow.
+    const closeEl = target.closest('[data-close-flow]');
+    if (closeEl && onCloseFlow) { event.preventDefault(); onCloseFlow(); return; }
     const goEl = target.closest('[data-goto]');
     if (goEl) {
       event.preventDefault();
@@ -202,10 +239,28 @@ function flatTallyStates(states) {
 }
 
 function render() {
+  // Takeover state first: the modal class + dialog semantics track the
+  // CURRENT screen on every render, so no branch below can leave a stale
+  // backdrop or a scroll-locked page behind.
+  const { modal } = presentationFor(app.screen);
+  document.body.classList.toggle('ocrf-flow-open', modal);
+  const stack = root();
+  if (stack) {
+    if (modal) {
+      stack.setAttribute('role', 'dialog');
+      stack.setAttribute('aria-modal', 'true');
+      stack.setAttribute('aria-label', 'Fill from screenshots');
+    } else {
+      stack.removeAttribute('role');
+      stack.removeAttribute('aria-modal');
+      stack.removeAttribute('aria-label');
+    }
+  }
   if (app.screen === 'entry') {
     // Back from S1 lands here: restore the CTA, clear whatever the flow was
     // showing so a later "Fill from screenshots" tap starts clean.
     if (entryNode) { entryNode.hidden = false; entryNode.querySelector('#ocrfCtaScreenshots')?.focus({ preventScroll: true }); }
+    document.getElementById('ocrfS5Host')?.remove();
     root()?.remove();
     return;
   }
@@ -281,10 +336,30 @@ function render() {
       heroesMe: null, heroesFoe: null, statsScoutedChecked: document.getElementById('statsScouted')?.checked ?? false,
     });
     applyFillPlan(plan);
-    show(renderS5({ chipText: computeChipText(tally, notices), complete: tally.clear && !notices.length, states, notices }));
+    // Takeover ends HERE, by design (owner escalation 2026-08-15 + the
+    // mock's own S5): S5 is the app again — the modal closes (the class
+    // toggle at the top of render() already dropped the backdrop) and the
+    // Battle-setup chip renders INLINE at the top of the form section,
+    // right next to the panel the fill just populated, replacing the
+    // hidden entry CTA's spot. #ocrfRoot is removed so nothing lingers at
+    // the bottom of the page.
+    root()?.remove();
+    let host = document.getElementById('ocrfS5Host');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'ocrfS5Host';
+      if (entryNode && entryNode.parentElement) {
+        entryNode.parentElement.insertBefore(host, entryNode);
+      } else {
+        document.body.prepend(host);
+      }
+    }
+    host.innerHTML = renderS5({ chipText: computeChipText(tally, notices), complete: tally.clear && !notices.length, states, notices });
+    const s5Heading = host.querySelector('h1');
+    if (s5Heading) { s5Heading.setAttribute('tabindex', '-1'); s5Heading.focus({ preventScroll: true }); }
     const undoChip = document.getElementById('ocrfUndoChip');
     if (undoChip) undoChip.hidden = !shouldShowUndo(app.priorSnapshot);
-    wireS5(root(), {
+    wireS5(host, {
       onToggleChip: onToggleS5Chip, onOpenPicture: openPicture, onReset: () => doReset('s5'),
       onUndo: () => {
         const snap = app.priorSnapshot;
@@ -627,9 +702,21 @@ function closeWhicheverIsOpen() {
 
 function boot() {
   controller = createController({ fetchMe, postPanel, storage: window.localStorage });
-  document.addEventListener('click', createDelegatedClickHandler({ goto, back, onRemoveThumb, onOpenField: openEditor }));
+  document.addEventListener('click', createDelegatedClickHandler({ goto, back, onRemoveThumb, onOpenField: openEditor, onCloseFlow: exitFlow }));
   // D-040: Escape closes whichever sheet/menu is open (mock's own pattern).
-  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeWhicheverIsOpen(); });
+  // Takeover fix (2026-08-15): if nothing smaller is open, Escape closes the
+  // MODAL flow itself (standard dialog semantics; non-destructive — shots
+  // and read results live in `app` and survive re-entry). S5 is inline (not
+  // modal), so Escape does nothing there.
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key !== 'Escape') return;
+    if (closeWhicheverIsOpen()) return;
+    if (presentationFor(app.screen).modal) exitFlow();
+  });
+  // Backdrop click (the fixed #ocrfRoot itself, never its card) also exits.
+  document.addEventListener('click', (ev) => {
+    if (ev.target && ev.target.id === 'ocrfRoot' && presentationFor(app.screen).modal) exitFlow();
+  });
 
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
   if (!entryNode) return;
