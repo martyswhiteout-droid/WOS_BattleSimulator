@@ -301,3 +301,195 @@ journey checks).
 
 Both left running since this is an open loop (NOT SATISFIED) and the next round will need the
 same side-by-side setup.
+
+---
+
+## ROUND 2 — 2026-08-15
+
+### VERDICT: SATISFIED
+
+**0 JOURNEY-BLOCKER · 0 MISMATCH · 0 FRICTION · 0 POLISH (open) · 6/6 Round-1 findings CLOSED**
+
+All six Round-1 findings were independently re-verified as a user would experience them — real
+clicks, real navigation, real (or deliberately controlled) network conditions — not just "the
+code changed." A fresh sweep of the full journey coverage list (happy path at both widths, both
+E1 wrong/partial/error sub-variants, the D-043/D-044 missing-popup honesty chain, D-041
+recovery-dropzone survival, the free-tier gate) found nothing newly broken and no new findings.
+This is the exact optimized experience the charter asked for; the loop ends here.
+
+---
+
+### Per-finding verification
+
+#### UXJ-001 — CLOSED — CTA is now the first child of the stable `.input` section
+
+Live-verified at both widths on a fresh navigation (no-cache client code, confirmed by
+`fetch`-free DOM inspection of the freshly-loaded page):
+- **Desktop (1280×800):** `#ocrfEntry.previousElementSibling === null` — it is now the literal
+  first child of `section.input`, before the MY SIDE/ENEMY role toggle. Button top edge
+  `y=110px`, fully inside the initial viewport.
+- **Mobile (375×812):** button top edge `y=165px`, fully inside the initial viewport — no scroll
+  needed at all (Round 1 measured 1389px, 1.7 screens down).
+- **Stability check (new this round, not just a re-measurement):** clicked through Troops
+  Formation → Stats → Buffs → back to Troops Formation; the CTA's `y` position stayed at exactly
+  `110px` throughout. The fix is structurally anchored to the stable section, not to whichever tab
+  happens to be active — a more robust fix than "just move it," since it can't regress by tab
+  state alone.
+- No horizontal overflow at either width.
+
+#### UXJ-002 — CLOSED — mini-panels ported to S1 and S2, dropzone icon added
+
+Full `outerHTML` of the real app's S1 and S2 screens compared directly against the mock's
+equivalent markup (both pulled live, side by side):
+- S1: all three cards (`ocrf-mini-panel--battle`, `--scout`, `--city`) now render the same rows
+  with the **same values** as the mock (`+4859.0%`/`+694.3%` Infantry Attack, `748.49%` Troops'
+  Attack, etc.) — a byte-level content match, differing only by the expected `ocrf-` class prefix.
+- S2: both YOU and ENEMY side-sections carry the same battle mini-panel preview, and the dropzone
+  now includes the SVG camera icon (`ocrf-dz-icon`, same `viewBox`/path geometry as the mock's
+  `.dz-icon`) — confirmed present in the live DOM, not just in source.
+- No horizontal overflow at 375px with the mini-panels present.
+
+#### UXJ-003 — CLOSED — candy-stripe + step-pulse implemented, verified actively running during a real stuck read
+
+Set up a **controlled stuck read** (patched `window.fetch` to return a promise that never
+resolves for `/shell/ocr/panel` only — every other request untouched) so the S3 screen could be
+inspected mid-flight without waiting on a real Gemini timeout:
+- `ocrf-scan-fill::after`'s `getComputedStyle(...).animationName` = `ocrf-scan-stripes`;
+  `fill.getAnimations({subtree:true})` returned 2 animations, both `playState: "running"` — the
+  Web Animations API confirms both are genuinely active, not merely declared-but-idle.
+- The fill's inline `style.width` was `88%` (not 100%) while parked on the last step
+  ("Checking both sides…", marked active/not-done) — matches the claimed cap, correctly never
+  claims false completion.
+- **Caveat, noted honestly:** this evaluation harness's Browser pane does not appear to composite
+  frames in this environment (the same limitation that makes `computer{action:"screenshot"}`
+  time out, documented in both rounds) — sampling `::after`'s `background-position` twice, 9
+  seconds apart, returned an unchanged `"0% 0%"` both times, and `Animation.currentTime` stayed at
+  `0`. This reads as the render/compositor pipeline never being asked to paint a frame in this
+  harness, not as the animation being non-functional — `playState`/`animationName` (the DOM-level,
+  paint-independent source of truth) are unambiguous, and the CSS itself
+  (`animation: ocrf-scan-stripes .7s linear infinite`, a plain unconditional infinite loop) has no
+  logic that could make it stall in a real, rendering browser. Flagged here for transparency, not
+  as an open finding.
+- Reduced-motion: `@media (prefers-reduced-motion:reduce){ #ocrfRoot .ocrf-scan-fill::after{
+  animation:none!important} }` was added specifically for the pseudo-element — necessary because
+  the pre-existing broad `#ocrfRoot *{animation:none!important}` rule matches real elements but
+  not `::after` pseudo-elements, so this was a genuine gap-fill, not a redundant addition.
+
+#### UXJ-004 — CLOSED — all five HTTP error classes now render honest, class-specific copy
+
+Explicitly per the coordinator's instruction, verified via `fetch` stubs on `/shell/ocr/panel`
+only — **zero real quota spent on this finding**:
+
+| Stubbed response | Result screen | Heading | Actions offered |
+|---|---|---|---|
+| `429 {error:"quota_exceeded"}` | e1/error | "That's today's limit" | **only** "Type the numbers in myself" (no pointless retry) |
+| `429 {error:"burst"}` | e1/error | "Slow down a little" | "Try again" + "Type them in myself" |
+| `402 {error:"payment_required"}` | e1/error | "This needs a paid plan" | "See plans" + "Type it in myself" |
+| `503 {error:"engine_unavailable"}` | e1/error | "The reader is busy right now" | "Try again" + "Type them in myself" |
+| `401 {error:"unauthorized"}` | e1/error | "Please sign in" | "Try again" + "Type them in myself" (see note) |
+
+All five match `error_copy.mjs`'s `mapError()` exactly, each with the correct icon (⚠️, distinct
+from the wrong-screenshot 🔍) and — critically — the quota case correctly **omits** "Add a
+clearer screenshot" (retrying can't fix a quota limit; showing it would have repeated the original
+dishonesty in a new form). The "See plans" button was clicked and confirmed to be genuinely wired
+(not dead): it called the real checkout endpoint, got back a session id, and navigated to
+`/shell/billing/mock-checkout?session_id=...`, which 404s in this dev environment — that 404 is a
+**separate, out-of-scope billing/checkout stub gap**, not an OCR-flow regression, and is noted
+here only for completeness, not as a UXJ finding.
+
+Note on 401: its action is "Try again" rather than a sign-in-specific CTA. Read the code
+(`pick_upload.mjs`'s `e1ActionHtml`) and found this is a **deliberate, commented** grouping —
+"the screenshots themselves were never the problem — retry the exact same upload, or fall back to
+typing" — bucketing 401/503/429-burst as retry-worthy versus 402/429-quota as needing a different
+action. Reasonable, not a regression of the honesty problem UXJ-004 was about (it no longer claims
+the *screenshot* is the problem); not filed as a finding.
+
+**Regression check (this is what the fix could most plausibly have broken):** confirmed the
+pre-existing, unrelated "genuinely bad image" paths still work, both live and stubbed:
+- Real `C_battle_1.png` (a real wrong-variant screenshot, real RapidOCR+Gemini round trip) still
+  produces the 🔍 "That doesn't look like the right screenshot" copy, not the new ⚠️ error variant.
+- A stubbed `200 OK` with all 24 fields unreadable → same 🔍 "wrong" copy.
+- A stubbed `200 OK` with 3 of 24 fields readable → 🔍 "We read 3 of 24 numbers... Type the missing
+  numbers" (the "partial" sub-variant, correctly distinguished from both "wrong" and "error").
+- D-041 (post-recovery dropzone survival): "Add a clearer screenshot" from the wrong-variant path
+  still lands on S2 with the "We took that one out. Add a new screenshot." notice and a live,
+  clickable dropzone.
+
+#### UXJ-005 — CLOSED — S4→S5 now focuses a real heading
+
+Real S4→S5 transition (Next click after a genuine full OCR read, not a shortcut), checked
+immediately after the click: `document.activeElement` = `<h1 id="ocrfS5Heading" tabindex="-1">`
+containing "Battle setup" — confirmed at both desktop and mobile widths.
+
+#### UXJ-006 — CLOSED — S5's primary CTA reads "See who wins →"
+
+`#runBtn.textContent.trim()` = `"See who wins →"` at real S5 arrival, both widths. Clicked it once
+(desktop): fired a genuine `POST /api/predict` → 200, confirming the label change didn't disturb
+the underlying handler.
+
+---
+
+### Fresh sweep — regression/new-issue check beyond the six findings
+
+- **Digit-exact fill:** re-confirmed twice more this round (desktop + mobile, both against the
+  same `C_battle_3.png`+`C_battle_4.png` pair) — `#statPanel` still matches the server response to
+  the digit. No regression from the mini-panel/CTA/focus/label changes.
+- **D-043/D-044 missing-popup chain:** re-run live (`C_battle_3.png` alone) — chip still reads
+  "All 24 numbers read · your side and the enemy side not filled in — tap to check"
+  (`ocrf-needs-attention`), both per-side notices still present with the exact D-045 wording
+  ("tap the ! next to 'Stat Bonuses'"). No regression.
+- **D-041 recovery-dropzone survival:** re-confirmed (see UXJ-004 above). No regression.
+- **Free-tier gate:** re-confirmed at the entry point (`X-Dev-Plan: free` via a scoped `/shell/me`
+  fetch patch) — upgrade sheet still shows correctly. No regression.
+- **Undo:** clicked on the mobile happy-path run; restored the prior snapshot's values correctly
+  (the prior snapshot happened to equal the just-filled values in this specific test sequence,
+  since the same fixture pair was read twice back-to-back — not a bug, just means this spot-check
+  wasn't independently discriminating; Undo's mechanism was already thoroughly proven in Round 1
+  with a genuinely different before/after state and nothing in this round's commits touched
+  `buildFillPlan`/Undo logic).
+- **Console:** a fifth stale-shaped `429` appeared this round (Round 1 had exactly four, unchanging
+  all round). Most plausibly self-inflicted: this round drove **two browser tabs concurrently**
+  against the same `dev_user` identity, each independently hitting `/shell/me` and (once)
+  `/api/predict` in quick succession — endpoints outside the OCR-specific burst carve-out
+  (`OCR_ENDPOINTS`) — which is a harsher request pattern than any single real user would produce.
+  No corresponding UI symptom was observed anywhere alongside it (every screen checked immediately
+  around this rendered correctly). Not filed as a finding; noted for the record.
+- **Type dropdowns, Battle-covers-both-sides messaging, S1 copy for all 3 types:** spot-checked in
+  passing during the mini-panel and happy-path work above; unchanged from Round 1, no regressions.
+
+No UXJ-007+ findings this round.
+
+---
+
+### Coverage log
+
+| Area | How verified this round |
+|---|---|
+| UXJ-001 (CTA position) | Live DOM inspection, desktop + mobile, plus a tab-switch stability check not done in Round 1. No OCR read needed. |
+| UXJ-002 (mini-panels) | Live `outerHTML` diff against the mock, S1 (all 3 cards) + S2 (both sides + dropzone icon), both widths. No OCR read needed. |
+| UXJ-003 (animation) | Controlled stuck-read stub (`fetch` never resolves) + `getAnimations()`/computed-style inspection. Zero quota spent. |
+| UXJ-004 (error copy) | Five stubbed HTTP responses (402/429-quota/429-burst/503/401) on `/shell/ocr/panel` only. Zero quota spent. Regression side confirmed with 1 real wrong-variant read + 2 stubbed (zero-field, partial-field) responses. |
+| UXJ-005 (focus) | Real S4→S5 transition, both widths, `document.activeElement` checked immediately post-click. |
+| UXJ-006 (CTA label) | Real S5 arrival, both widths; clicked once to confirm functional continuity. |
+| Happy path, full journey, both widths | 2 real reads (desktop `C_battle_3`+`C_battle_4`, mobile same pair): digit-exact fill, tally, chip, focus, label, no overflow, clean console (aside from the noted pre-existing/self-inflicted 429s). |
+| E1 wrong / partial / error sub-variants | 1 real read (wrong) + 2 stubbed (zero-field "wrong", 3-of-24 "partial") + 5 stubbed (error classes). All three visually/textually distinct, none cross-contaminated by the others' fix. |
+| Missing-popup (D-043/D-044) | 1 real read (`C_battle_3.png` alone). Unaffected by this round's changes. |
+| D-041 (recovery dropzone) | Exercised twice (once via real wrong-variant, once via stub). Both alive. |
+| Free-tier gate | 1 scoped `/shell/me` header patch, no real OCR spent. |
+| Undo, Reset, editor, provenance | Not re-driven end-to-end this round (untouched by any Round-2 commit; thoroughly proven in Round 1); Undo spot-checked in passing (see Fresh sweep). |
+| Quota-exhaustion / burst copy | Covered by UXJ-004's stubbed 429-quota/429-burst cases above — stronger evidence than Round 1's pure-code-read, at zero real-quota cost. |
+
+### Quota consumed
+
+`dev_user`: **4 real OCR reads** this round (25 → 21 remaining) — 1 wrong-variant, 1 happy-path
+desktop, 1 happy-path mobile, 1 missing-popup. All five HTTP-error-class checks and both
+zero-field/partial-field regression checks used `fetch` stubs — **zero additional quota**.
+`ux-eval`: still untouched, 30/30. Sim quota (`dev_user`) is now at 0 (incidental, from forecast
+clicks across both rounds) — not part of this charter's tracked resource, noted for awareness only.
+
+### Servers stopped
+
+Verdict is SATISFIED — per the loop's instructions, both evaluator-owned servers were stopped:
+mock static server on :8790 (background task `bwyqw9q8m`) and the CORS fixture server on :8791
+(background task `bilgloozp`). The loop ends here; no further rounds expected unless new work
+reopens the journey.
