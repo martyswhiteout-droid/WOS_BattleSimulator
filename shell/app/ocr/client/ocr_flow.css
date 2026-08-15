@@ -435,3 +435,15 @@
 @media (prefers-reduced-motion:reduce){
   #ocrfRoot .ocrf-scan-fill::after{animation:none!important}
 }
+
+/* ============================================================
+   Round UXJ-005 (EVAL_UX_JOURNEY.md round 1) — #ocrfS5 had no
+   heading at all, so the S4->S5 transition never moved focus
+   anywhere meaningful. setup.mjs's renderS5 now emits an
+   `<h1 tabindex="-1">Battle setup</h1>` as its first child (same
+   convention as every other screen's `.ocrf-scr-head h1`); this is
+   its styling, since `.ocrf-s5` doesn't share the `.ocrf-scr-head`
+   wrapper the other screens use.
+   ============================================================ */
+.ocrf-s5 h1{margin:0 0 14px;font-family:'Chakra Petch',system-ui,sans-serif;font-size:19px;font-weight:600;
+  letter-spacing:.01em;color:var(--ocrf-ink);outline:none}

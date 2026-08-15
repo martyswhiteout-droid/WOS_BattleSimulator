@@ -80,8 +80,15 @@ export function renderS5({ chipText, complete, states, notices = [] }) {
   // reusing the neutral .ocrf-s2-notice card (no new CSS round needed).
   const noticesHtml = notices.map((n) =>
     `<p class="ocrf-s2-notice" data-conv-notice="${n.side}">${n.message}</p>`).join('');
+  // UXJ-005 fix (EVAL_UX_JOURNEY.md round 1): S4->S5 never moved focus to a
+  // heading — #ocrfS5 had no heading element at all, so ocr_flow.js's show()
+  // (which auto-focuses whatever `h1, h2[tabindex]` it finds after
+  // rendering, the same generic mechanism every other screen already relies
+  // on) found nothing and left focus on <body>. Same convention as S1-S4:
+  // an `<h1 tabindex="-1">`, no bespoke focus-handling code needed here.
   return `
 <section class="ocrf-s5" id="ocrfS5">
+  <h1 tabindex="-1" id="ocrfS5Heading">Battle setup</h1>
   <div class="ocrf-stats-accordion">
     <button type="button" class="ocrf-stats-chip${complete ? ' ocrf-complete' : ' ocrf-needs-attention'}"
       id="ocrfS5Chip" aria-expanded="false" aria-controls="ocrfS5Body">

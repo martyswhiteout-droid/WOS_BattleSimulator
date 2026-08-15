@@ -94,6 +94,25 @@ test('renderS5 shows the collapsed chip, a hidden expandable body, and a hidden 
   assert.doesNotMatch(html, /hero-grid|joiner-pill/i);   // neither are heroes/joiners — those are the real app's own DOM
 });
 
+// --- UXJ-005 (EVAL_UX_JOURNEY.md round 1): S4->S5 never moved focus to a
+// heading — #ocrfS5 had no heading element at all, so ocr_flow.js's generic
+// show() (root().querySelector('h1, h2[tabindex]') -> focus) found nothing
+// and left focus on <body>. Same convention as every other screen. ---
+
+test('UXJ-005 probe: renderS5 carries a focusable h1 (same convention as S1-S4), so the generic show() focus mechanism has something to find', () => {
+  const html = renderS5({ chipText: 'x', complete: true, states: { you: {}, enemy: {} } });
+  assert.match(html, /<h1 tabindex="-1"[^>]*>Battle setup<\/h1>/);
+});
+
+test('UXJ-005 probe: the heading is the FIRST thing in #ocrfS5 — before the stats accordion, notices, or anything else', () => {
+  const html = renderS5({ chipText: 'x', complete: true, states: { you: {}, enemy: {} } });
+  const sectionOpen = html.indexOf('<section class="ocrf-s5"');
+  const heading = html.indexOf('<h1');
+  const accordion = html.indexOf('ocrf-stats-accordion');
+  assert.ok(sectionOpen !== -1 && heading !== -1 && accordion !== -1);
+  assert.ok(sectionOpen < heading && heading < accordion);
+});
+
 // ---- QA defect 044: chip/tally must reflect conversion-readiness ----------
 // QA2's probe: 12 fields all read cleanly (tally.clear === true) while the
 // side's convertSide() outcome is needs_specials — the old chip said
