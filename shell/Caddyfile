@@ -13,10 +13,33 @@
 # enforced app-side instead (CorsLockMiddleware, shell/app/main.py) since it
 # needs to see the per-request Origin header and rewrite whatever the
 # mounted sub-app's own CORS middleware already set.
+#
+# C1 (EVAL_ROUND_2.md): the single unscoped 256 KiB cap above used to apply
+# to EVERY path, including /shell/ocr and /shell/ocr/panel — so 6 of 7 real
+# screenshot fixtures (67 KB-1.6 MB) 413'd at THIS edge layer before they
+# could ever reach shell/app/main.py's BodyLimitMiddleware, which already
+# gives those two routes a much larger, already-tested allowance
+# (MAX_OCR_BODY_BYTES, shell/app/config.py). Fix: split request_body into
+# two mutually-exclusive, matcher-scoped blocks per host — one for the OCR
+# upload routes with a cap that MIRRORS the app constant exactly (8*1024*1024
+# + 65536 = 8454144 bytes; Caddy's max_size with no unit suffix is parsed as
+# a literal byte count, per go-humanize's ParseBytes — no unit-rounding
+# ambiguity), one for everything else at the original small cap. The two
+# matchers (`path ...` / `not path ...`) are complements by construction, so
+# exactly one request_body block ever applies to a given request — never
+# both stacked (which would silently re-impose the smaller cap via a second
+# http.MaxBytesReader wrap and reopen this exact bug).
 
 wostests.com {
 	encode gzip
-	request_body {
+	@ocr_upload path /shell/ocr /shell/ocr/panel
+	request_body @ocr_upload {
+		max_size 8454144
+	}
+	@default_body {
+		not path /shell/ocr /shell/ocr/panel
+	}
+	request_body @default_body {
 		max_size 256KB
 	}
 	header {
@@ -30,7 +53,14 @@ wostests.com {
 
 staging.wostests.com {
 	encode gzip
-	request_body {
+	@ocr_upload path /shell/ocr /shell/ocr/panel
+	request_body @ocr_upload {
+		max_size 8454144
+	}
+	@default_body {
+		not path /shell/ocr /shell/ocr/panel
+	}
+	request_body @default_body {
 		max_size 256KB
 	}
 	header {
