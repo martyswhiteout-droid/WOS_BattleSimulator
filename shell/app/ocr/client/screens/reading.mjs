@@ -62,6 +62,24 @@ export function renderS3() {
 </section>`.trim();
 }
 
+// UXJ-003 fix (EVAL_UX_JOURNEY.md round 1): the progress bar was a flat,
+// static width forever (no JS ever touched it) — one half of "the reading
+// screen goes completely static during long reads" (the CSS candy-stripe
+// overlay, ocr_flow.css, is the other half). Discrete per-step checkpoints,
+// deliberately NEVER 100 here: onStepChange(SCAN_STEPS.length-1) fires both
+// when the interval timer naturally reaches the last step (real work may
+// still be running for the documented 45-70s Gemini gap-fill long tail) AND
+// as part of driveScan's own completion branch (one last onStepChange right
+// before onDone) — the two are indistinguishable from the index alone, so
+// claiming 100% at that index would fabricate "done" while a read is, per
+// this very finding, still genuinely in flight. Actual completion navigates
+// away (S4/E1) before any width would need to reach 100 anyway.
+const STEP_FILL_PCT = [30, 62, 88];
+
+export function stepFillPct(activeIndex) {
+  return STEP_FILL_PCT[activeIndex] ?? STEP_FILL_PCT[STEP_FILL_PCT.length - 1];
+}
+
 /* ---- thin DOM wiring below: exercised by the Task 10 browser gate, not node:test ---- */
 
 export function applyStepClasses(root, activeIndex) {
@@ -70,6 +88,8 @@ export function applyStepClasses(root, activeIndex) {
     li.classList.toggle('ocrf-active', i === activeIndex);
     li.classList.toggle('ocrf-done', i < activeIndex);
   });
+  const fill = root.querySelector('.ocrf-scan-fill');
+  if (fill) fill.style.width = `${stepFillPct(activeIndex)}%`;
 }
 
 export function wireS3(root, { onCancel }) {

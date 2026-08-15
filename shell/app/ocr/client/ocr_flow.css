@@ -401,3 +401,37 @@
 .ocrf-mp-c-lab{color:#0B273D;font-weight:600}
 .ocrf-mp-c-val{color:#0B273D;font-family:'IBM Plex Mono',ui-monospace,monospace}
 .ocrf-dz-icon{width:40px;height:40px;color:var(--ocrf-ice-b);margin-bottom:4px}
+
+/* ============================================================
+   Round UXJ-003 (EVAL_UX_JOURNEY.md round 1) — S3's candy-stripe
+   progress animation was entirely missing (zero @keyframes anywhere
+   in this file): the reading screen went fully static for the
+   documented 45-70s Gemini gap-fill long tail, with no "still
+   working" signal of any kind. Ported from the mock's
+   `.scan-fill::after` (a continuously-sliding diagonal stripe,
+   independent of the bar's current width) and `.scan-step.active
+   .step-ic` (a pulsing ring on whichever step is active — including
+   the LAST step, which stays active for the entire open-ended real
+   wait, per reading.mjs's stepFillPct comment). `position:relative;
+   overflow:hidden` is added to .ocrf-scan-fill here (a second rule
+   for an existing selector, same technique the desktop media query
+   above already uses) rather than editing the Task 7 rule in place —
+   required for the new ::after overlay to clip to the bar instead of
+   escaping to the nearest positioned ancestor.
+   Reduced motion: `.ocrf-step-ic` is a real element already covered
+   by the existing `#ocrfRoot *` kill-switch above; the new
+   `::after` pseudo-element is NOT reachable by that selector (a bare
+   `*` never matches generated content) and needs its own explicit
+   entry.
+   ============================================================ */
+.ocrf-scan-fill{position:relative;overflow:hidden}
+.ocrf-scan-fill::after{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(-45deg,rgba(255,255,255,.25) 25%,transparent 25%,transparent 50%,
+    rgba(255,255,255,.25) 50%,rgba(255,255,255,.25) 75%,transparent 75%,transparent);
+  background-size:22px 22px;animation:ocrf-scan-stripes .7s linear infinite}
+@keyframes ocrf-scan-stripes{to{background-position:22px 0}}
+.ocrf-scan-step.ocrf-active .ocrf-step-ic{animation:ocrf-step-pulse 1s ease-in-out infinite}
+@keyframes ocrf-step-pulse{0%,100%{box-shadow:0 0 0 0 rgba(85,191,255,.4)}50%{box-shadow:0 0 0 5px rgba(85,191,255,0)}}
+@media (prefers-reduced-motion:reduce){
+  #ocrfRoot .ocrf-scan-fill::after{animation:none!important}
+}

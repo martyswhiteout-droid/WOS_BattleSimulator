@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { driveScan, SCAN_STEPS, renderS3 } from '../screens/reading.mjs';
+import { driveScan, SCAN_STEPS, renderS3, stepFillPct } from '../screens/reading.mjs';
 
 test('driveScan advances steps on a timer while real work is pending, then completes on resolve', async (t) => {
   t.mock.timers.enable({ apis: ['setInterval'] });   // mocking setInterval covers its paired clearInterval too;
@@ -69,6 +69,28 @@ test('driveScan.cancel() suppresses the eventual onDone and stops advancing (QA 
   await Promise.resolve(); await Promise.resolve();
   assert.equal(done, null);
   assert.deepEqual(steps, [0, 1]);
+});
+
+// --- UXJ-003 (EVAL_UX_JOURNEY.md round 1): the progress bar's width never
+// moved at all (no JS touched it, ever) — one half of "the reading screen
+// goes completely static during long reads" (the CSS candy-stripe overlay
+// is the other half, verified live — see ocr_flow.css). stepFillPct must
+// advance per step but never reach 100: the LAST step's onStepChange fires
+// both mid-wait (work may still be running for the documented 45-70s
+// Gemini gap-fill long tail) and as part of actual completion — the two
+// are indistinguishable from the index alone, so 100% at that index would
+// fabricate "done" while a read may still be genuinely in flight. ---
+
+test('UXJ-003 probe: stepFillPct advances per step, strictly increasing, and never reaches 100 (only real completion, i.e. navigating away, may look "done")', () => {
+  assert.equal(stepFillPct(0), 30);
+  assert.equal(stepFillPct(1), 62);
+  assert.equal(stepFillPct(2), 88);
+  assert.ok(stepFillPct(0) < stepFillPct(1) && stepFillPct(1) < stepFillPct(2));
+  assert.ok(stepFillPct(2) < 100);
+});
+
+test('UXJ-003 probe: stepFillPct clamps to the last checkpoint for any out-of-range index (defensive — SCAN_STEPS is always length 3 today, but never throw)', () => {
+  assert.equal(stepFillPct(2), stepFillPct(5));
 });
 
 test('S3 renders the three narration steps and the server-only trust line (COORDINATOR RULING 2026-08-10 #1)', () => {
