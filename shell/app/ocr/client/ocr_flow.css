@@ -355,3 +355,49 @@
   .ocrf-s5 .ocrf-review-grid{gap:0 36px}
   .ocrf-s5 .ocrf-rv-stats{gap:10px}
 }
+
+/* ============================================================
+   Round UXJ-002 (EVAL_UX_JOURNEY.md round 1) — S1's cards and S2's
+   side-sections lacked the mock's "faithful mini-renderings of the
+   real panels" (OCR_UX_FLOW_SPEC.md §3 S1) and the dropzone had no
+   icon. Ported verbatim from the mock's .mini-panel/.mp-b-*/.mp-s-*/
+   .mp-c-* rules onto this file's `ocrf-`-prefixed selectors (same
+   structure, same sample numbers — the mock's originals are already
+   IP-safe hand-typed samples, never a captured game screenshot; no
+   CDN, no external asset). The mock's own parchment-world palette
+   (prototype/DESIGN_SYSTEM.md §3: #FDEFD3/#F7E3B9/#E7C783/#8d5b31,
+   plus a game-green #2C8F5F) is applied as literal hex here rather
+   than new `:root` custom properties — same precedent
+   .ocrf-mini-panel--city (below) already sets for its own one-off
+   blues, and avoids a second `:root{}` block (live-verification
+   found custom properties declared in a SECOND `:root` rule later in
+   this file do not reliably register at inspection time in the
+   preview tool used to verify this build, even though the rule
+   parses fine on its own — not worth depending on).
+   ============================================================ */
+.ocrf-mini-panel{width:100%;border-radius:9px;margin-bottom:10px;overflow:hidden}
+.ocrf-mini-panel--battle{background:linear-gradient(180deg,#FDEFD3,#F7E3B9);
+  border:1px solid #E7C783;padding:6px 5px}
+.ocrf-mp-b-head{display:flex;justify-content:space-between;padding:1px 4px 5px;margin-bottom:3px;
+  border-bottom:1px solid rgba(141,91,49,.22)}
+.ocrf-mp-b-side{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:7px;letter-spacing:.09em;font-weight:700}
+.ocrf-mp-b-side.ocrf-mp-b-me{color:#2C8F5F}
+.ocrf-mp-b-side.ocrf-mp-b-enemy{color:var(--ocrf-ember-d)}
+.ocrf-mp-b-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:3px;padding:2.5px 3px}
+.ocrf-mp-b-val{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:8px;font-weight:700}
+.ocrf-mp-b-val.ocrf-mp-b-me{color:#2C8F5F;text-align:right}
+.ocrf-mp-b-val.ocrf-mp-b-enemy{color:var(--ocrf-ember-d);text-align:left}
+.ocrf-mp-b-lab{font-family:'Inter',system-ui,sans-serif;color:#8d5b31;text-align:center;
+  font-size:6.8px;letter-spacing:.01em;line-height:1.15}
+.ocrf-mini-panel--scout{background:linear-gradient(180deg,#FDEFD3,#F7E3B9);
+  border:1px solid #E7C783;padding:7px 9px}
+.ocrf-mp-s-row{display:flex;justify-content:space-between;align-items:center;padding:2.5px 0}
+.ocrf-mp-s-lab{font-family:'Inter',system-ui,sans-serif;color:#8d5b31;font-size:8px}
+.ocrf-mp-s-val{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#2C8F5F;font-weight:700;font-size:8px}
+.ocrf-mini-panel--city{background:linear-gradient(180deg,#eaf5ff,#d9efff);border:1px solid var(--ocrf-tile-border)}
+.ocrf-mp-c-head{background:linear-gradient(180deg,#78B5EA,#5E9DDA);color:#fff;font-family:'Chakra Petch',system-ui,sans-serif;
+  font-weight:700;font-size:7.5px;letter-spacing:.06em;text-align:center;padding:4px 6px;text-shadow:0 1px 1px rgba(0,0,0,.2)}
+.ocrf-mp-c-row{display:flex;justify-content:space-between;padding:3.5px 9px;font-family:'Inter',system-ui,sans-serif;font-size:8px}
+.ocrf-mp-c-lab{color:#0B273D;font-weight:600}
+.ocrf-mp-c-val{color:#0B273D;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.ocrf-dz-icon{width:40px;height:40px;color:var(--ocrf-ice-b);margin-bottom:4px}

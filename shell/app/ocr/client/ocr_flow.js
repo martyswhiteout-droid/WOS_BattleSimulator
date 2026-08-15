@@ -23,6 +23,7 @@ import {
 import { renderS5, computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, applyFillPlan, wireS5 } from './screens/setup.mjs';
 import { createController } from './controller.mjs';
 import { classifyFields, ALL_FIELD_KEYS, buildSnapshot } from './fill_mapper.mjs';
+import { mapError } from './error_copy.mjs';
 
 function fetchMe() { return fetch('/shell/me', { credentials: 'same-origin' }).then((r) => r.json()); }
 async function checkAccess() {
@@ -301,7 +302,37 @@ function render() {
   // (D-037/D-039) — no per-screen wireE1() here any more; keeping both would
   // double-fire goto() on every click (wireE1's own listener AND the
   // document-level delegate both matching the same button).
-  if (app.screen === 'e1') { show(renderE1(app.e1Variant ?? 'wrong', app.e1Counts ?? {})); return; }
+  if (app.screen === 'e1') {
+    show(renderE1(app.e1Variant ?? 'wrong', app.e1Opts ?? {}));
+    // UXJ-004: the ONE error-recovery action with a real side effect (POST
+    // /shell/billing/checkout) — every other action pick_upload.mjs's
+    // e1ActionHtml renders is a plain data-goto the global delegate
+    // (D-037/D-039) already handles, nothing extra to wire here.
+    const upgradeBtn = document.getElementById('ocrfE1Upgrade');
+    if (upgradeBtn) wireE1Upgrade(upgradeBtn);
+    return;
+  }
+}
+
+// UXJ-004: the same checkout request entry.mjs's wireUpgradeNote already
+// makes for the entry-gate 402 — this is the mid-flow twin (a real 402
+// occurring DURING a read, after the entry gate already let the user in;
+// e.g. a plan lapsing mid-session), wired onto a bare E1 button rather than
+// a modal sheet.
+function wireE1Upgrade(button) {
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    button.textContent = 'Opening…';
+    try {
+      const r = await fetch('/shell/billing/checkout', { method: 'POST', credentials: 'same-origin' });
+      if (!r.ok) throw new Error('checkout unavailable');
+      const result = await r.json();
+      if (result && result.url) { window.location.href = result.url; return; }
+      throw new Error('no checkout url');
+    } catch (err) {
+      button.textContent = 'Try again from the account panel';
+    }
+  });
 }
 
 function onPickKind(kind) { controller.flow.pickKind(kind); goto('s2'); }
@@ -442,7 +473,13 @@ function onS2Continue() { goto('s3'); }   // PREP dropped entirely (Ruling #1) �
 // SAME allFieldStates()/flatTallyStates() pipeline S4 itself renders from
 // (Ruling #2's ok/check/missing tiers — a "check" field counts as read),
 // so E1's reported count can never disagree with what S4 would actually show.
-export function decideAfterRead(tallyStates) {
+// UXJ-004 fix (EVAL_UX_JOURNEY.md round 1): errorInfo (from pickReadError,
+// below) now takes priority over the tally-based read below it — a genuine
+// HTTP error during the read (quota, burst, payment lapsed mid-session,
+// engine busy, session expired) is NEVER an "unclear/wrong screenshot"
+// story, no matter how many fields it happens to leave missing.
+export function decideAfterRead(tallyStates, errorInfo = null) {
+  if (errorInfo) return { screen: 'e1', variant: 'error', mapped: errorInfo.mapped };
   const total = tallyStates.length;
   const missingCount = tallyStates.filter((s) => s === 'missing').length;
   const readCount = total - missingCount;
@@ -450,15 +487,53 @@ export function decideAfterRead(tallyStates) {
   if (readCount === 0) return { screen: 'e1', variant: 'wrong' };
   return { screen: 'e1', variant: 'partial', readCount, totalCount: total };
 }
+
+// UXJ-004 fix: controller.mjs's readAll() resolves with {results, views,
+// conversion}, where a failed side's `results[side]` carries {error:true,
+// mapped} (error_copy.mjs's mapError output, already computed by
+// controller.mjs's readSide) — but decideAfterRead previously only ever saw
+// tally states DERIVED from `views`, which is simply null for an errored
+// side (nothing to classify), collapsing every HTTP failure into the exact
+// same "0 read" shape as a genuinely wrong screenshot. Pure, exported,
+// tested on its own (same split as planS2Entry/decideSheetToClose): checks
+// 'you' before 'enemy' — deterministic, not an arbitrary pick, since both
+// sides hit the same account-level gate within milliseconds of each other
+// in virtually every real case (quota/burst/plan/busy are account- or
+// server-wide, not per-image) — and returns the first side's mapped copy,
+// or null when neither side actually errored. app.lastRead is always set
+// before this is consulted (onReadDone, below), so even when only ONE side
+// errored, the OTHER side's real read is never lost — S4/S5 still derive
+// from the real views for whichever side actually succeeded.
+export function pickReadError(results = {}) {
+  for (const side of ['you', 'enemy']) {
+    const r = results[side];
+    if (r && r.error) return { side, mapped: r.mapped };
+  }
+  return null;
+}
+
 function onReadDone(result) {
   app.lastRead = result;
-  const decision = decideAfterRead(flatTallyStates(allFieldStates()));
+  const errorInfo = pickReadError(result.results);
+  const decision = decideAfterRead(flatTallyStates(allFieldStates()), errorInfo);
   if (decision.screen === 's4') { goto('s4', { push: false }); return; }
   app.e1Variant = decision.variant;
-  app.e1Counts = decision.variant === 'partial' ? { readCount: decision.readCount, totalCount: decision.totalCount } : {};
+  app.e1Opts = decision.variant === 'partial' ? { readCount: decision.readCount, totalCount: decision.totalCount }
+    : decision.variant === 'error' ? { mapped: decision.mapped } : {};
   goto('e1', { push: false });
 }
-function onReadError(err) { app.e1Variant = 'wrong'; goto('e1', { push: false }); }
+// UXJ-004 fix: fires when readAll() ITSELF rejects (e.g. an unexpected throw
+// outside readSide's own try/catch, never observed in practice today but
+// still reachable in principle) — previously hardcoded 'wrong' regardless
+// of `err`, the same fabricated-cause bug decideAfterRead had. mapError(0,
+// null) degrades honestly ("Something went wrong on our end...") when
+// there's no real status/body to key off, exactly like controller.mjs's own
+// readSide does when postPanel itself is missing.
+function onReadError(err) {
+  app.e1Variant = 'error';
+  app.e1Opts = { mapped: mapError(err?.status ?? 0, err?.body ?? null) };
+  goto('e1', { push: false });
+}
 // onE1Retake/onE1TypeMissing retired (D-039): both are now the generic
 // [data-goto] delegate (D-037) plus planS2Entry's clearing logic in the 's2'
 // render branch above — see the comment on the 'e1' render branch.

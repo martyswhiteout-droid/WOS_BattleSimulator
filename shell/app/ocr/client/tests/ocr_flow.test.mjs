@@ -18,7 +18,18 @@
 // codebase already uses.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts } from '../ocr_flow.js';
+import { readFileSync } from 'node:fs';
+import {
+  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError,
+} from '../ocr_flow.js';
+import { mapError } from '../error_copy.mjs';
+
+// UXJ-004: the same real denial fixture error_copy.test.mjs/controller.test.mjs
+// already use — reusing it here (rather than hand-rolling status/body pairs)
+// keeps this integration-seam test honest to the real shapes the server
+// actually returns.
+const DENIALS = JSON.parse(readFileSync(
+  new URL('../../../../tests/fixtures/overlay_ui/api_samples.json', import.meta.url), 'utf8')).denials;
 
 function fakeElement(dataset) {
   return { dataset };
@@ -213,3 +224,82 @@ test('D-041 probe: a plain goto() with no special opts is still a fresh entry ({
   const fakeApp = { navOpts: {} };
   assert.deepEqual(takeNavOpts(fakeApp), {});
 });
+
+// --- UXJ-004 (EVAL_UX_JOURNEY.md round 1, most user-harmful finding of the
+// round): HTTP errors during a read (quota, burst, payment lapsed mid-
+// session, engine busy, session expired) previously ALL rendered as "that
+// doesn't look like the right screenshot" — a fabricated cause; the
+// screenshot was never the problem. controller.mjs's readAll() already
+// computes {error:true, mapped} per failed side (error_copy.mjs's mapError)
+// — pickReadError() surfaces it, and decideAfterRead now treats it as
+// controlling, ahead of whatever the (necessarily all-missing, for an
+// errored side) tally would otherwise say. ---
+
+test('UXJ-004 probe: pickReadError returns null when neither side errored', () => {
+  assert.equal(pickReadError({ you: { status: 'ok' }, enemy: { status: 'ok' } }), null);
+  assert.equal(pickReadError({}), null);
+  assert.equal(pickReadError(undefined), null);
+});
+
+test('UXJ-004 probe: pickReadError surfaces the errored side\'s mapped copy', () => {
+  const mapped = mapError(429, DENIALS['429_burst'].body);
+  const result = pickReadError({ you: { error: true, mapped }, enemy: { status: 'ok' } });
+  assert.deepEqual(result, { side: 'you', mapped });
+});
+
+test('UXJ-004 probe: pickReadError checks "you" before "enemy" — deterministic, since both sides hit the same account-level gate within milliseconds of each other in virtually every real case', () => {
+  const youMapped = mapError(402, DENIALS['402'].body);
+  const enemyMapped = mapError(429, DENIALS['429_quota'].body);
+  const result = pickReadError({ you: { error: true, mapped: youMapped }, enemy: { error: true, mapped: enemyMapped } });
+  assert.equal(result.side, 'you');
+  assert.equal(result.mapped, youMapped);
+});
+
+test('UXJ-004 probe: pickReadError finds an "enemy"-only error when "you" succeeded (or was never attempted)', () => {
+  const mapped = mapError(503, DENIALS['503'].body);
+  const result = pickReadError({ enemy: { error: true, mapped } });
+  assert.deepEqual(result, { side: 'enemy', mapped });
+});
+
+test('UXJ-004: decideAfterRead prioritizes a real HTTP error over the tally — even a tally that would otherwise be a clean 24/24 pass', () => {
+  const mapped = mapError(429, DENIALS['429_burst'].body);
+  const decision = decideAfterRead(Array(24).fill('ok'), { side: 'you', mapped });
+  assert.deepEqual(decision, { screen: 'e1', variant: 'error', mapped });
+});
+
+test('UXJ-004: decideAfterRead prioritizes a real HTTP error over an all-missing tally too (the exact live repro: a single covering upload fails, both sides read 0/24)', () => {
+  const mapped = mapError(0, null);   // a genuine network failure, no HTTP response at all
+  const decision = decideAfterRead(Array(24).fill('missing'), { side: 'you', mapped });
+  assert.deepEqual(decision, { screen: 'e1', variant: 'error', mapped });
+  assert.notEqual(decision.variant, 'wrong');   // never the old fabricated "wrong screenshot" story
+});
+
+test('UXJ-004: decideAfterRead behaves exactly as before when nothing actually errored (errorInfo null/omitted) — no regression to D-038\'s three-way branch', () => {
+  assert.deepEqual(decideAfterRead(Array(24).fill('ok'), null), { screen: 's4' });
+  assert.deepEqual(decideAfterRead(Array(24).fill('missing')), { screen: 'e1', variant: 'wrong' });   // 2-arg call still defaults errorInfo
+});
+
+// One assertion per real error class (fixture-driven — api_samples.json's
+// denials, the SAME fixture error_copy.test.mjs/controller.test.mjs use):
+// the E1 variant the user actually sees must carry THAT class's own honest
+// copy and cta, never a generic or wrong-screenshot substitute.
+const ERROR_CLASSES = [
+  ['402 payment lapsed mid-session', 402, DENIALS['402'].body, 'upgrade'],
+  ['429 burst-limited', 429, DENIALS['429_burst'].body, 'slow_down'],
+  ['429 quota exhausted', 429, DENIALS['429_quota'].body, 'wait'],
+  ['503 engine busy', 503, DENIALS['503'].body, 'retry_or_type'],
+  ['401 session expired', 401, DENIALS['401'].body, 'sign_in'],
+  ['413 file too large', 413, DENIALS['413'].body, 'retake'],
+];
+for (const [label, status, body, expectedCta] of ERROR_CLASSES) {
+  test(`UXJ-004: ${label} reaches the user as its OWN honest E1 copy, distinct cta "${expectedCta}", never the wrong-screenshot fallback`, () => {
+    const mapped = mapError(status, body);
+    assert.equal(mapped.cta, expectedCta);   // error_copy.mjs's own contract, re-asserted here at the integration seam
+    const errorInfo = pickReadError({ you: { error: true, mapped } });
+    const decision = decideAfterRead(Array(24).fill('missing'), errorInfo);
+    assert.equal(decision.screen, 'e1');
+    assert.equal(decision.variant, 'error');
+    assert.equal(decision.mapped.cta, expectedCta);
+    assert.notEqual(decision.mapped.heading, "That doesn't look like the right screenshot");
+  });
+}
