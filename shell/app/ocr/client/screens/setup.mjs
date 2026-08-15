@@ -110,6 +110,22 @@ export function renderS5({ chipText, complete, states, notices = [] }) {
 
 /* ---- thin DOM wiring below: exercised by the Task 10 browser gate, not node:test ---- */
 
+// UXJ-006 fix (EVAL_UX_JOURNEY.md round 1): OCR_UX_FLOW_SPEC.md §3 S5.4 —
+// "Primary CTA: 'See who wins →' = the existing forecast button" — but the
+// real button is prototype/index.html's own #runBtn ("Run forecast"), and
+// that file is READ-ONLY (CLAUDE.md: never touch prototype/). The relabel
+// happens the same way every other S5 side effect in applyFillPlan already
+// does (applyPanel/updateFinalStats/scrollIntoView): a runtime DOM write
+// from this injected module, scoped to the OCR-arrival context only — a
+// user who never touches the OCR flow never sees the button change. Exported
+// on its own (same split as the rest of this file's pure-ish decisions) so
+// the relabel itself is unit-testable without a real DOM.
+export function relabelForecastCta({ doc = document } = {}) {
+  const btn = doc.getElementById('runBtn');
+  if (btn) btn.innerHTML = 'See who wins <span aria-hidden="true">&rarr;</span>';
+  return btn;
+}
+
 export function applyFillPlan(plan, { win = window } = {}) {
   if (plan.me && typeof win.applyPanel === 'function') win.applyPanel('me', plan.me);
   if (plan.foe && typeof win.applyPanel === 'function') win.applyPanel('foe', plan.foe);
@@ -125,6 +141,7 @@ export function applyFillPlan(plan, { win = window } = {}) {
   if (plan.heroesMe && typeof win.applyHeroes === 'function') win.applyHeroes('#capMe', plan.heroesMe);
   if (plan.heroesFoe && typeof win.applyHeroes === 'function') win.applyHeroes('#capFoe', plan.heroesFoe);
   if (typeof win.updateFinalStats === 'function') win.updateFinalStats();
+  relabelForecastCta();
   const statPanel = document.getElementById('statPanel');
   statPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }

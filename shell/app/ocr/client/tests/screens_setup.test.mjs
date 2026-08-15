@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, renderS5 } from '../screens/setup.mjs';
+import {
+  computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, renderS5, relabelForecastCta,
+} from '../screens/setup.mjs';
 import { computeTally } from '../screens/review.mjs';
 
 test('computeChipText: complete', () => {
@@ -111,6 +113,26 @@ test('UXJ-005 probe: the heading is the FIRST thing in #ocrfS5 — before the st
   const accordion = html.indexOf('ocrf-stats-accordion');
   assert.ok(sectionOpen !== -1 && heading !== -1 && accordion !== -1);
   assert.ok(sectionOpen < heading && heading < accordion);
+});
+
+// --- UXJ-006 (EVAL_UX_JOURNEY.md round 1): the S5 primary CTA must read
+// "See who wins ->" per OCR_UX_FLOW_SPEC.md §3 S5.4 / the mock — but the
+// real button (prototype/index.html's #runBtn) can't be edited at the
+// source (CLAUDE.md: prototype/ is read-only), so the relabel is a runtime
+// DOM write, scoped to the OCR-arrival context (same mechanism as every
+// other applyFillPlan side effect). ---
+
+test('UXJ-006 probe: relabelForecastCta relabels the real forecast button to the PRD/mock wording', () => {
+  const btn = { innerHTML: 'Run forecast' };
+  const fakeDoc = { getElementById: (id) => (id === 'runBtn' ? btn : null) };
+  const returned = relabelForecastCta({ doc: fakeDoc });
+  assert.equal(btn.innerHTML, 'See who wins <span aria-hidden="true">&rarr;</span>');
+  assert.equal(returned, btn);
+});
+
+test('UXJ-006 probe: relabelForecastCta is a safe no-op when the button is not present', () => {
+  const fakeDoc = { getElementById: () => null };
+  assert.doesNotThrow(() => relabelForecastCta({ doc: fakeDoc }));
 });
 
 // ---- QA defect 044: chip/tally must reflect conversion-readiness ----------
