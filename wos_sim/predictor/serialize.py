@@ -15,8 +15,21 @@ def profile_from_dict(d: dict) -> SideProfile:
                for cls, q in (d.get("quality") or {}).items()}
     panel = {}
     for k, v in (d.get("panel") or {}).items():
-        cls, stat = k.split("|")
-        panel[(cls, stat)] = float(v)
+        parts = str(k).split("|")
+        try:
+            value = float(v)
+        except (TypeError, ValueError):
+            value = None
+        if len(parts) != 2 or value is None:
+            # Malformed wire entry (no/extra pipe, or a non-numeric value):
+            # deserialization must never 500 (evaluator-2 C3 — previously
+            # masked by the probe-burst bug). Keep the RAW key so
+            # validate.py's bad-panel-key check reports it in the clean 400;
+            # a string key can never match the engine's (Class, Stat) tuple
+            # lookups, so the placeholder value is unreachable beyond that.
+            panel[str(k)] = 0.0
+            continue
+        panel[(parts[0], parts[1])] = value
     return SideProfile(
         label=d.get("label", ""), role=d.get("role", "rally"),
         troops_total=int(d.get("troops_total", 1_000_000)),
