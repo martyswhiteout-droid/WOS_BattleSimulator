@@ -22,6 +22,7 @@ shell/ARCHITECTURE.md:
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import time
@@ -87,14 +88,52 @@ async def _fetch_jwks(url: str) -> dict:
 
 class JWKSCache:
     """kid -> PyJWK map with TTL refresh. A miss on an unknown kid triggers a
-    refetch at most every ``min_refresh_s`` (key rotation without hammering)."""
+    refetch at most every ``min_refresh_s`` (key rotation without hammering).
 
-    def __init__(self, url: str, ttl_s: float = 3600.0, min_refresh_s: float = 30.0):
+    M2 (EVAL_ROUND_1.md F16 / EVAL_ROUND_2.md M2 — carried over unfixed
+    across round 1): the ``or not self._keys`` clause used to bypass
+    ``min_refresh_s`` entirely whenever the cache was empty. A FAILED fetch
+    always leaves ``_keys`` empty, so a Clerk outage (or simply a fresh
+    process start hitting a slow/down JWKS endpoint) meant EVERY
+    authenticated request triggered a fresh ~5s httpx fetch, forever — no
+    backoff, and no protection against a thundering herd of concurrent
+    requests each starting their own fetch. Fixed with exponential backoff
+    tracked independently of ``_fetched_at`` (which only advances on
+    SUCCESS) via ``_last_attempt_at``/``_consecutive_failures``, plus an
+    ``asyncio.Lock`` serializing the actual fetch attempt so N concurrent
+    callers during a cold/failing cache produce exactly ONE underlying
+    fetch, not N. Auth still fails closed for unverifiable tokens regardless
+    of why the cache is stale — ``key_for`` never raises, and a missing key
+    for a given kid still returns None either way."""
+
+    def __init__(self, url: str, ttl_s: float = 3600.0, min_refresh_s: float = 30.0,
+                 backoff_cap_s: float = 300.0):
         self.url = url
         self.ttl_s = ttl_s
         self.min_refresh_s = min_refresh_s
+        self.backoff_cap_s = backoff_cap_s   # F16's suggested 30s -> 5min ceiling
         self._keys: dict = {}
         self._fetched_at: float = 0.0
+        self._last_attempt_at: float = 0.0
+        self._consecutive_failures: int = 0
+        self._lock = asyncio.Lock()
+
+    def _retry_delay(self) -> float:
+        """Backoff after N consecutive failures: min_refresh_s, then doubling
+        (min_refresh_s, 2x, 4x, ...), capped at backoff_cap_s. Only
+        meaningful once _consecutive_failures >= 1."""
+        delay = self.min_refresh_s * (2 ** max(0, self._consecutive_failures - 1))
+        return min(delay, self.backoff_cap_s)
+
+    def _due(self, kid: str, now: float) -> bool:
+        age = now - self._fetched_at
+        return (age > self.ttl_s
+                or (kid not in self._keys and age > self.min_refresh_s)
+                or not self._keys)
+
+    def _backed_off(self, now: float) -> bool:
+        return (self._consecutive_failures > 0
+                and now - self._last_attempt_at < self._retry_delay())
 
     async def _refresh(self) -> None:
         data = await _fetch_jwks(self.url)
@@ -109,17 +148,29 @@ class JWKSCache:
                 continue
         self._keys = keys
         self._fetched_at = time.monotonic()
+        self._consecutive_failures = 0
 
     async def key_for(self, kid: str | None):
         if not kid:
             return None
-        age = time.monotonic() - self._fetched_at
-        if age > self.ttl_s or (kid not in self._keys and age > self.min_refresh_s) \
-                or not self._keys:
-            try:
-                await self._refresh()
-            except Exception:
-                pass               # keep serving cached keys on transient fetch failure
+        now = time.monotonic()
+        # Fast path (no lock): the overwhelming common case is a warm cache
+        # where nothing is due — never pay lock overhead for that.
+        if self._due(kid, now) and not self._backed_off(now):
+            async with self._lock:
+                now = time.monotonic()   # time may have passed waiting for the lock
+                # Re-check inside the lock: another coroutine may have
+                # already refreshed (success) or just recorded a fresh
+                # failure (moved _last_attempt_at) while we were waiting —
+                # THIS is what caps a thundering herd at exactly one fetch.
+                if self._due(kid, now) and not self._backed_off(now):
+                    self._last_attempt_at = now
+                    try:
+                        await self._refresh()
+                    except Exception:
+                        self._consecutive_failures += 1
+                        # keep serving cached (possibly empty) keys on
+                        # failure — never raise out of key_for
         return self._keys.get(kid)
 
 

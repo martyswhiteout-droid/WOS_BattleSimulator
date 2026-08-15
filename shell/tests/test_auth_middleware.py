@@ -6,6 +6,7 @@ generated JWKS (Clerk itself is never contacted).
 """
 from __future__ import annotations
 
+import asyncio
 import sys
 import time
 from pathlib import Path
@@ -16,6 +17,7 @@ if str(_REPO_ROOT) not in sys.path:
 
 import json
 
+import httpx
 import jwt
 import pytest
 from fastapi.testclient import TestClient
@@ -298,3 +300,113 @@ def test_userctx_contract_fields():
     """Shared contract (shell/ARCHITECTURE.md): exactly these fields."""
     ctx = auth.UserCtx(user_id="u", email=None, plan="free")
     assert set(ctx.__dataclass_fields__) == {"user_id", "email", "plan"}
+
+
+# ------------------------------------------------- M2: JWKS failure backoff
+
+run = asyncio.run
+
+
+def _counting_failing_fetch(monkeypatch):
+    """Replaces auth._fetch_jwks with one that always raises and counts
+    calls — a fake transport standing in for a down/unreachable Clerk."""
+    calls = []
+
+    async def fetch(url):
+        calls.append(url)
+        raise httpx.ConnectError("connection refused")
+
+    monkeypatch.setattr(auth, "_fetch_jwks", fetch)
+    return calls
+
+
+def test_jwks_sequential_requests_during_failure_window_trigger_one_fetch(monkeypatch):
+    """EVAL_ROUND_1.md F16 / EVAL_ROUND_2.md M2: the `or not self._keys`
+    clause used to bypass min_refresh_s entirely whenever the cache was
+    empty, so EVERY request during an outage re-fetched. M=10 sequential
+    key_for() calls, all well inside the min_refresh_s backoff window
+    (30s default, calls take microseconds), must trigger exactly 1 fetch —
+    not 10 — and key_for must never raise even though every fetch fails."""
+    calls = _counting_failing_fetch(monkeypatch)
+    cache = auth.JWKSCache(JWKS_URL, min_refresh_s=30.0)
+    for _ in range(10):
+        result = run(cache.key_for(KID))
+        assert result is None   # fails closed: unknown/unfetchable key -> None
+    assert len(calls) == 1, f"expected exactly 1 fetch attempt, got {len(calls)}"
+
+
+def test_jwks_concurrent_requests_during_failure_trigger_one_fetch(monkeypatch):
+    """Same guarantee under real concurrency (asyncio.gather), which is what
+    actually exercises the asyncio.Lock — the thundering-herd scenario a
+    purely sequential test can't fully prove (multiple coroutines racing to
+    decide "a refresh is due" before any of them has recorded the attempt)."""
+    calls = _counting_failing_fetch(monkeypatch)
+    cache = auth.JWKSCache(JWKS_URL, min_refresh_s=30.0)
+
+    async def hammer():
+        await asyncio.gather(*(cache.key_for(KID) for _ in range(20)))
+
+    run(hammer())
+    assert len(calls) == 1, f"expected exactly 1 fetch attempt, got {len(calls)}"
+
+
+def test_jwks_retries_after_backoff_window_lapses(monkeypatch):
+    """Once the backoff window has passed, the NEXT call must attempt a
+    fresh fetch — this is backoff, not a permanent circuit-break."""
+    calls = _counting_failing_fetch(monkeypatch)
+    cache = auth.JWKSCache(JWKS_URL, min_refresh_s=30.0)
+
+    clock = {"t": 1_000.0}
+    monkeypatch.setattr(auth.time, "monotonic", lambda: clock["t"])
+
+    run(cache.key_for(KID))
+    assert len(calls) == 1
+    run(cache.key_for(KID))          # still inside the window
+    assert len(calls) == 1
+
+    clock["t"] += 30.0 + 0.01        # first backoff window (min_refresh_s) lapses
+    run(cache.key_for(KID))
+    assert len(calls) == 2
+
+    run(cache.key_for(KID))          # immediately again: inside the (now longer) 2nd window
+    assert len(calls) == 2
+
+    clock["t"] += 60.0 + 0.01        # 2nd window is 2x min_refresh_s (60s)
+    run(cache.key_for(KID))
+    assert len(calls) == 3
+
+
+def test_jwks_backoff_resets_after_a_successful_fetch(monkeypatch, rsa_pair):
+    """A recovered endpoint must not stay throttled by stale failure state —
+    once a fetch succeeds, _consecutive_failures resets, so a SUBSEQUENT
+    unknown-kid miss is governed by ordinary min_refresh_s again, not by
+    whatever backoff multiplier the outage had climbed to."""
+    _, jwk = rsa_pair
+    calls = {"n": 0}
+
+    async def flaky(url):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise httpx.ConnectError("connection refused")
+        return {"keys": [jwk]}
+
+    monkeypatch.setattr(auth, "_fetch_jwks", flaky)
+    clock = {"t": 1_000.0}
+    monkeypatch.setattr(auth.time, "monotonic", lambda: clock["t"])
+
+    cache = auth.JWKSCache(JWKS_URL, min_refresh_s=30.0)
+    assert run(cache.key_for(KID)) is None        # 1st: fails
+    assert cache._consecutive_failures == 1
+
+    clock["t"] += 30.01
+    result = run(cache.key_for(KID))              # 2nd: succeeds
+    assert result is not None
+    assert cache._consecutive_failures == 0
+    assert calls["n"] == 2
+
+
+def test_jwks_key_for_never_raises_on_persistent_failure(monkeypatch):
+    calls = _counting_failing_fetch(monkeypatch)
+    cache = auth.JWKSCache(JWKS_URL, min_refresh_s=0.001)
+    for _ in range(5):
+        assert run(cache.key_for(KID)) is None    # never raises
