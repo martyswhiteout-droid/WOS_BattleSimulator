@@ -755,3 +755,239 @@ tracked by this charter).
 
 Left running (verdict is NOT SATISFIED, next round will need them): mock static server on :8790,
 CORS fixture server on :8791 (`C:\Users\Martin\AppData\Local\Temp\claude\...\scratchpad\fixture_server.py`).
+
+---
+
+## ROUND 4 — 2026-08-15 (verifying the Round 3 fix commit)
+
+### Continuity note
+
+This is a fresh evaluator session (the prior one was cut off mid-round by a transient API auth
+error; per the loop's own rule, continuity comes from the written record, not a carried-over
+transcript). By the time this session started, Round 3's three findings (UXJ-007/008/009) had
+already been fixed and committed as `ed25604` ("ocr: fix UXJ-007/008/009 — modal inert boundary,
+mid-read exit teardown, re-entry notice"), landing live, in-progress, partway through this very
+session (the same "a fix round is landing while I evaluate" situation Round 3 itself documented).
+Everything below was verified against the final committed `HEAD` (`ed25604`), independently
+reproduced in the real browser — none of it is taken on the commit message's word, including the
+one place where its self-reported "live-verified" claim did not survive independent re-test on the
+first attempt (see UXJ-009 below).
+
+### VERDICT: NOT SATISFIED
+
+**0 JOURNEY-BLOCKER · 1 MISMATCH (new) · 0 FRICTION · 0 POLISH open · UXJ-007/008/009 all
+independently reconfirmed CLOSED**
+
+The `ed25604` fix is real and mostly solid: the background-inert boundary (UXJ-007), the mid-read
+abort-and-teardown (UXJ-008), and the re-entry notice (UXJ-009) all work correctly under live,
+adversarial, properly-paced testing — including one live false alarm on UXJ-009 that traced back to
+my own test harness racing the CTA's async access-check, not a product bug (details below, kept in
+for transparency the same way Round 3 kept its own debunked alarms). But the UXJ-007 fix introduced
+exactly the kind of integration seam the charter exists to catch: reordering `render()` to run
+`syncBackgroundInert()` *after* `renderScreen()` means the two focus-restoration calls inside
+`renderScreen()` (closing back to `entry`, and arriving at `S5`) now fire while the just-closed
+modal's stale `inert` attribute is still sitting on `<main>` — silently killing both calls and
+re-opening the previously-closed UXJ-005 (S4→S5 focus-to-heading) as a side effect of an unrelated
+fix. One new finding, UXJ-010, filed below.
+
+---
+
+### Per-finding verification (UXJ-007/008/009, fix commit `ed25604`)
+
+#### UXJ-007 — CLOSED — background is now genuinely inert while only the outer modal is open
+
+Live-verified at 1280×720 with the modal open on S1 and **no nested sheet**: every direct child of
+`<body>` — `<header class="bar">`, `<main class="layout">`, `#liveStatus`, the `wos-shell-*` chips,
+every `.hpick-pop` hero-picker popup, all scripts/links — carries a real `inert` attribute; only
+`#ocrfRoot` does not. The exact original repro (`document.getElementById('runBtn').focus()`) now
+**fails**: `document.activeElement` stays on the modal's own `H1`, not `#runBtn`. Re-confirmed at
+375×812 (`main.layout.inert === true` while S1 is open). Nested-sheet cases both re-verified and
+distinguished correctly by DOM structure, not just by intent:
+- Editor sheet / picture sheet (appended as siblings of `#ocrfRoot` directly on `<body>`): opening
+  either sets **both** `<main>` AND `#ocrfRoot` itself `inert` — confirmed live
+  (`modalRootInert:true, mainInert:true`, focus correctly inside the sheet). Escape closes only the
+  topmost sheet (priority chain), modal stays open underneath — confirmed.
+- Type-tag menu (inserted as a DOM **descendant** of `#ocrfRoot` via `insertAdjacentElement`, not a
+  body-level sibling): opening it correctly leaves `#ocrfRoot` interactive
+  (`modalRootInert:false`) while still inerting the true background (`mainInert:true`) — the
+  `child.contains(el)` branch in `syncBackgroundInert()` is exactly why, and this live result is
+  the first time this specific distinction was checked rather than asserted.
+
+#### UXJ-008 — CLOSED — mid-read exit now aborts the request and tears down cleanly
+
+Reproduced the original repro exactly: stubbed `window.fetch` to hang on `/shell/ocr/panel` (never
+resolving) with an `AbortSignal` listener recording whether abort fired; drove a real upload through
+to S3; pressed Escape mid-read. Result: `window.__abortSeen` flips `true` (the request genuinely
+aborts, confirmed via the signal's own `abort` event, not inferred) and the console gained **zero**
+new errors versus an 8-error pre-existing baseline (the same class of stale 429 noise every round
+has documented in this long-lived tab) — a clean before/after diff, where the original bug produced
+"7+ repeated identical uncaught exceptions." `#ocrfRoot` is confirmed gone and `body.ocrf-flow-open`
+confirmed cleared within the 140ms close-animation window, with no stray re-navigation afterward.
+
+#### UXJ-009 — CLOSED — re-entry notice appears correctly, but only after I ruled out a false alarm
+
+First attempt (chained rapid `dispatchEvent` calls with fixed short timeouts) showed the notice
+missing — traced this **before filing it** and found the cause was my own test pacing, not the
+product: `wireEntry`'s CTA click handler does a genuine `await checkAccess()` (a real `/shell/me`
+round trip) before `onProceed()` ever runs, so a script-dispatched Escape fired milliseconds later
+can land while the flow is still on `entry` (Escape is a no-op there) — leaving a stale intermediate
+state that made a *later* cycle's result look broken when it wasn't. Rebuilt the test with an actual
+polling helper (wait for the real DOM state to change, never a fixed timeout) and reproduced the
+**exact three-cycle sequence** that had failed: upload → Continue → Escape mid-read → open again,
+immediately escape from S1 with no S2 visited → open a third time → pick a type → land on S2.
+Properly paced, this passed cleanly and repeatably (3 independent runs, including the literal
+three-cycle sequence): `#ocrfS2Notice` reads *"Picked up where you left off — your earlier
+screenshots are still here. Tap the × on any of them if you want a fresh start."*, the prior
+thumbnail is present, Continue is enabled. This is the one place this round where a commit message's
+self-reported verification ("re-entry shows the notice with the carried thumbnail") did not survive
+my first independent pass — it does hold up under a correctly-paced repro, but the discrepancy is
+worth the coordinator knowing about rather than silently resolving.
+
+---
+
+### Findings
+
+#### UXJ-010 — MISMATCH — the UXJ-007 fix reordered `render()` so screen-arrival focus calls now fire against a stale `inert` background, breaking focus-restoration on every modal exit and re-opening UXJ-005
+
+**Charter citation:** PRD §5, "focus-to-heading on navigation" (the same carried-over pattern
+UXJ-005 was originally about); amended mandate's dialog-semantics/takeover-contract line.
+
+**What's wrong:** `ocr_flow.js`'s `render()` is now `leaveScanIfRunning(); renderScreen();
+syncBackgroundInert();` — `syncBackgroundInert()` moved to the END so its own decision (sheet open /
+modal-only open / nothing open) always sees the final DOM, which is the right call for UXJ-007
+itself. But `renderScreen()` **also** performs two focus-restoration calls, and both target elements
+that live *outside* `#ocrfRoot`, inside `<main class="layout">` — the exact element
+`syncBackgroundInert()` marks `inert` whenever the modal is open:
+- The `'entry'` branch: `entryNode.querySelector('#ocrfCtaScreenshots')?.focus(...)`.
+- The `'s5'` branch: `s5Heading.focus({ preventScroll: true })` on `#ocrfS5Host`'s own heading
+  (`#ocrfS5Host` is inserted as a sibling of `entryNode`, itself inside `section.input` inside
+  `<main>`).
+
+Both calls now fire **before** `syncBackgroundInert()` has cleared the *previous* cycle's `inert`
+flag on `<main>` (set while the modal that's now closing was still open) — an element is
+unfocusable while any ancestor carries `[inert]` (spec behavior, not a bug in `inert` itself), so
+`.focus()` silently no-ops and `document.activeElement` falls back to `<body>`.
+
+**Live evidence, both root-cause and reachability:**
+1. Minimal isolated repro: a bare `<button>` inside a `<div inert>` — `.focus()` returns without
+   moving `document.activeElement`, confirmed in this exact browser/engine.
+2. Instrumented `HTMLElement.prototype.focus` on the real page, real Escape-from-S1 exit (no read
+   involved, simplest possible case): the CTA's `.focus()` call fires with
+   `mainInertAtCallTime: true`; `document.activeElement` is `BODY` afterward, permanently (nothing
+   re-attempts the focus once it fails).
+3. Real S4→S5 transition, **desktop, with the actual digit-exact happy-path read** (not a stub):
+   clicking Next (`[data-goto="s5"]`) lands on S5 with chip/CTA text all correct, but
+   `document.activeElement` is `BODY`, not `#ocrfS5Heading` — confirmed the heading itself is
+   fine (`tabindex="-1"`, correct text, in-viewport at `top:120`) and a **manual** `.focus()` call
+   on it succeeds once the render cycle has fully settled — isolating the bug to timing, not a
+   broken target.
+4. Same S4→S5 check repeated at 375×812 (stubbed, for speed): identical result
+   (`activeElTag: "BODY"`) — not width-dependent.
+
+**Reachability:** this is not a corner case — it is **every single exit** from the modal back to
+`entry` (Escape, ✕, backdrop-click all funnel through the same `exitFlow()` → `render()` path) and
+**every single S4→S5 arrival** (the only way S5 is ever reached). A keyboard or screen-reader user
+gets no landmark signal on either transition; a sighted mouse user is unaffected (everything is
+still visible and clickable), which is why this survived the fix's own live-verification pass
+without being noticed.
+
+**Scope check (what this does NOT affect):** the internal S1→S2→S3→S4 transitions all target
+headings living *inside* `#ocrfRoot`, which is never itself the element `syncBackgroundInert()`
+inerts while it's the active layer — confirmed by re-testing S1's own opening
+heading-focus-on-modal-open, which still works correctly. This is specifically an
+"exiting-to-somewhere-outside-`#ocrfRoot`" bug.
+
+**Suggested fix direction (not prescriptive):** `syncBackgroundInert()`'s own decision already
+depends only on `app.screen` (already updated before `render()` runs) and a live `openSheetEls()`
+DOM query — neither depends on anything `renderScreen()` builds. Running it *before*
+`renderScreen()` (restoring the original two-step order, just with the corrected three-state
+decision logic UXJ-007 added) would very plausibly fix this without reintroducing UXJ-007, but that
+tradeoff is the builder's to verify, not this report's to mandate.
+
+**Severity:** MISMATCH, not JOURNEY-BLOCKER — no dead end, no lost work, the flow completes
+end-to-end for a mouse user (verified: the real happy-path read finished correctly with this bug
+present). Kept at the same class UXJ-005 originally carried, since this is materially a regression
+of that exact finding.
+
+---
+
+### Investigated and NOT filed (debunked alarms, for transparency)
+
+- **UXJ-009 "notice missing" on the first attempt.** Covered above under UXJ-009's own
+  verification — traced to a self-inflicted test-harness race (script-dispatched Escape outrunning
+  the CTA handler's `await checkAccess()`), not reproducible under realistic, properly-paced
+  interaction (3 independent clean reproductions, including the exact failing sequence redone with
+  polling instead of fixed timeouts). Not filed.
+- **Mobile S1 card bottom edge measuring 815.8px inside an 812px viewport.** First measurement
+  (immediately after the screen's heading text appeared) showed the card's `getBoundingClientRect()`
+  bottom at 815.8px — 3.8px past the viewport. Checked `card.getAnimations()`:
+  `playState:"running"`, `animationName:"ocrf-dialog-in"`, transform mid-flight at
+  `matrix(0.97, 0, 0, 0.97, 0, 16)`, and — critically — `Animation.currentTime` stayed at `0` even
+  400-900ms later, the identical symptom Round 3's own UXJ-003 investigation attributed to this
+  Browser pane not compositing/advancing animation clocks at all. Forcing the animation to its end
+  state (`anim.finish()`) settles the card to a **perfect** `{top:0, left:0, right:375, bottom:812}`
+  with `transform: matrix(1,0,0,1,0,0)` (identity) — exactly filling the viewport. This is the same
+  documented harness limitation, not a product overflow; not filed, consistent with how Round 3
+  handled its own instance of this exact caveat.
+
+---
+
+### Confirmed working well this round (fresh evidence, not re-asserted from prior rounds)
+
+- **Digit-exact happy path, real read (not stubbed), desktop:** uploaded real
+  `C_battle_3.png` + `C_battle_4.png` via the CORS-fixture-server + captured-picker technique, one
+  genuine `/shell/ocr/panel` round trip. All 24 fields — both the S4 review-grid display **and**
+  the actual `#statPanel` form inputs — match `docs/OCR_TEST_INSTRUCTIONS.md` §3's table to the
+  digit (Infantry 2269.7/2151.7/1126.5/1129.0, Lancer 2189.6/2064.1/1103.7/1058.4, Marksman
+  2385.8/2240.6/1263.9/1257.3, all marked ✓). S4 card height measured exactly `633.59375px` inside
+  a 720px-tall viewport — precisely `0.88 × 720`, confirming the `88vh` bound to the sub-pixel. S5
+  chip read *"All 24 numbers in ✓ — tap to check"*; CTA read *"See who wins →"* (UXJ-006 intact).
+- **Bounded dialog + internal-only scroll, both widths this round** (not just desktop as in prior
+  rounds): at 375×812, S4's close button measured pixel-identical (`top:10, left:321`) before and
+  after scrolling `.ocrf-scr-body` to its full depth.
+- **Editor sheet and picture sheet**, re-driven fresh this round (not just cited from Round 1/2):
+  both correctly enter focus on open, both correctly inert the full chain (`<main>` AND `#ocrfRoot`)
+  while open, both correctly release on close.
+- **S1 card visual substance** (the "stunning bar" checklist item, grounded in computed styles, not
+  impression): title `18px`, mini-panel content `13.33px`, card footprint 207–211px × 249–317px,
+  16px padding — legible, proportionate, not cramped; matches the mock's registered improvement
+  from Round 2/3 (mini-panel type raised from an original 6.8–8px).
+- **UXJ-001 (CTA position)** still holds at both widths this round (`top:110` desktop /
+  `top:165` mobile) — unaffected by any of this round's changes, spot-checked for regression only.
+- **Node suite:** 190 tests, 189 pass, 1 documented skip — matches the fix commit's own claim
+  exactly.
+
+---
+
+### Coverage log
+
+| Area | How verified this round |
+|---|---|
+| UXJ-007 (background inert) | Live, both widths: full `document.body.children` inert audit (not just `<main>`), the original `.focus()`-escape repro re-run and now blocked, both nested-sheet sub-cases (body-sibling scrims vs. `#ocrfRoot`-descendant type-menu) distinguished live. |
+| UXJ-008 (mid-read abort) | Live, controlled-hang `fetch` stub with a real `AbortSignal` listener (not inferred from behavior alone) — abort event genuinely fires; console-error diff (8 baseline → 8 after, zero new) replaces the prior round's qualitative "crashed" observation with an exact count. |
+| UXJ-009 (re-entry notice) | Live, 3 independent properly-paced repros (2× two-cycle, 1× three-cycle matching the exact sequence that first appeared to fail) using explicit DOM-state polling instead of fixed timeouts; one false alarm investigated to root cause and ruled out before being considered for filing. |
+| UXJ-010 (new) | Live: minimal isolated `inert`-blocks-`.focus()` repro, instrumented real Escape-from-S1 exit, real S4→S5 transition on the actual digit-exact happy-path read (desktop), stubbed S4→S5 repeat at mobile width. |
+| Digit-exact happy path | 1 real 2-shot read (`C_battle_3`+`C_battle_4`), desktop — both review-grid and raw `#statPanel` inputs checked against the documented table. Not repeated at mobile this round (stub used instead for the mobile S4/S5 geometry checks, to conserve quota — digit accuracy is server-side and width-independent, already proven here and in every prior round). |
+| Bounded dialog + internal scroll | Re-driven fresh at **both** widths this round (Round 3 had only re-driven desktop). |
+| Editor sheet / picture sheet | Re-driven fresh this round with the new 3-state `syncBackgroundInert()` in place — confirmed both still nest correctly. |
+| Type-tag menu | Re-driven fresh this round (not merely cited) — confirmed correct viewport position, z-index, and the `#ocrfRoot`-stays-active-because-descendant nesting case specifically, at mobile width. |
+| S1 card visual substance | Live computed-style pull (font-size, card dimensions, padding) grounding the "stunning bar" judgment in numbers rather than impression. |
+| Backdrop-click precision | **Not re-driven this round** — `boot()`'s backdrop-click listener is untouched by `ed25604`'s diff (confirmed via `git show`), and Round 3 already proved this mechanism with coordinate-precise, both-width evidence; re-asserting it without a code change to justify the re-spend of turns was judged lower-value than the checks above. |
+| Manual "Type them in myself" floor, free-tier gate | **Not re-driven this round** — untouched by `ed25604`, already thoroughly proven across Rounds 1–3. |
+| Console/network cleanliness | Checked throughout via exact before/after error counts (not just "looked clean") at each of the UXJ-007/008/010 live checks. |
+
+### Quota consumed
+
+`dev_user`: **1 real OCR read** this round (16 → 15 remaining, confirmed via `GET /shell/me`'s
+`remaining.ocr` directly, not estimated) — the desktop digit-exact happy-path re-verification.
+Every other check (UXJ-007/008/009/010, the mobile-width pass, the sheet/menu regression sweep, the
+S1 card-substance pull) used `fetch` stubs or pure DOM/CSS inspection at zero additional quota.
+`ux-eval` identity: untouched. Sim quota (`dev_user`): unchanged at 0 (not touched this round — no
+forecast button was clicked).
+
+### Servers
+
+Left running (verdict is NOT SATISFIED, next round will need them, consistent with how Rounds 1 and
+3 handled the same situation): mock static server on :8790, CORS fixture server on :8791. Neither
+was started by this session (both were already up when it began, left over from the prior
+interrupted session) — this session only used them.
