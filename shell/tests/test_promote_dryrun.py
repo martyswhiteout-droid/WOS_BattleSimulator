@@ -141,6 +141,29 @@ def test_dry_run_fails_on_planted_secret(mini_repo, tmp_path):
     assert "secret scan (E4): FAIL" in text
 
 
+def test_gate_report_documents_the_tests_exclusion_as_intended(mini_repo, tmp_path):
+    """Mn4 (EVAL_ROUND_2.md): shell/tests/ has always been excluded from this
+    scp/VPS bundle (see the assertion in
+    test_dry_run_end_to_end_produces_draft_gate_report above), but the
+    exclusion used to be silent — nothing in the gate report said so, which
+    reads exactly like the F20-style "a reviewer skims past something
+    load-bearing" failure class this pipeline exists to avoid. step3_assemble's
+    own evidence string must now document it explicitly."""
+    build_root = tmp_path / "build_mn4"
+    rc = promote.main([
+        "--tag", "release-test", "--target", "staging", "--dry-run",
+        "--skip-prototype-checks",
+        "--repo-root", str(mini_repo),
+        "--build-root", str(build_root),
+    ])
+    assert rc == 0
+    text = (build_root / "release-test" /
+            "GATE_REPORT_DRAFT_release-test.md").read_text(encoding="utf-8")
+    assert "shell/tests/ EXCLUDED from this bundle (INTENDED" in text
+    assert "Mn4" in text
+    assert "Docker" in text   # names the mitigating (primary) deploy path
+
+
 def test_dry_run_fails_on_scraped_image_in_artifact(mini_repo, tmp_path):
     avatars = SHELL_DIR.parent / "prototype" / "avatars"
     src = next((p for p in sorted(avatars.iterdir())

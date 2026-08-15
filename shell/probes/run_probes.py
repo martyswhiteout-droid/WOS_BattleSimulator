@@ -376,7 +376,16 @@ def probe_ocr_panel_mock_200(client, opts) -> ProbeResult:
     (panel_router._mock_enabled) — a deployment fact this probe cannot force,
     so it SKIPs rather than false-FAILing when the target isn't configured
     for it (no --dev-bypass), and SKIPs on a clean 503 too (engine
-    unavailable is a config/deployment fact, not a code defect)."""
+    unavailable is a config/deployment fact, not a code defect).
+
+    Mn1 (EVAL_ROUND_2.md): --dev-bypass alone does not prove the TARGET has
+    OCR_PANEL_MOCK=1 set — an entirely realistic mismatch (a dev-bypass
+    server with no mock flag). Against such a target, this probe's synthetic
+    non-image fixture reaches the REAL engine ladder, which correctly
+    rejects it with 422 unreadable_tokens — that used to report FAIL
+    (implying a code defect) when it is actually the same "deployment fact,
+    not a code defect" situation the existing 503 branch already SKIPs for.
+    Treated identically now."""
     if not opts.dev_bypass:
         return ProbeResult("ocr_panel_mock_200", "QA_PLAN §4", "200",
                            "not probed", "SKIP",
@@ -397,6 +406,18 @@ def probe_ocr_panel_mock_200(client, opts) -> ProbeResult:
                            "OCR engine unavailable on this target (mock not "
                            "enabled here, or no engine deps) — deployment "
                            "fact, not a code defect")
+    if r.status_code == 422:
+        try:
+            code = r.json().get("error")
+        except Exception:
+            code = None
+        if code == "unreadable_tokens":
+            return ProbeResult(
+                "ocr_panel_mock_200", "QA_PLAN §4", "200", "422", "SKIP",
+                "target's OCR_PANEL_MOCK is not enabled here (--dev-bypass "
+                "alone doesn't guarantee it) — the real engine correctly "
+                "rejected the probe's synthetic non-image fixture; "
+                "deployment/config fact, not a code defect (Mn1)")
     if r.status_code != 200:
         return ProbeResult("ocr_panel_mock_200", "QA_PLAN §4", "200",
                            str(r.status_code), "FAIL", _body_snip(r))

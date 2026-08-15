@@ -74,6 +74,17 @@ DRAFT_VERDICT = ("DRAFT — machine evidence only; awaiting independent QA "
 
 # Files/dirs of the shell source that belong in a release bundle. Pipeline-side
 # tooling (this script, probes, tests, phash tool, build output) does not ship.
+#
+# Mn4 (EVAL_ROUND_2.md): "tests" here is a DELIBERATE exclusion, not an
+# oversight — reviewed and kept. Test code (fixtures, mocks, dev-only
+# helpers) has no business on a production host; MockVision's FIXTURE_DIR
+# (shell/tests/fixtures/ocr/) would go missing from THIS bundle if a
+# deployment ever ran with OCR_MOCK=1 left on, but this scp/VPS bundle is a
+# SECONDARY deploy path — the primary one (shell/Dockerfile, confirmed by
+# docker-compose.yml's healthcheck/restart-policy/TLS-sidecar) does an
+# unconditional `COPY shell/ shell/`, so it ships tests/ (and the fixtures)
+# regardless. step3_assemble's own evidence string calls this exclusion out
+# explicitly so a gate reviewer sees it documented, not silently absent.
 BUNDLE_EXCLUDE_DIRS = {"build", "tests", "probes", "tools", "__pycache__",
                        ".pytest_cache", ".mypy_cache"}
 BUNDLE_EXCLUDE_FILES = {"promote.py", ".env", "BUILD_LOG.md"}
@@ -410,7 +421,12 @@ def step3_assemble(pl: Pipeline) -> StepResult:
                       f"stripped {stripped} raster images from the artifact "
                       f"(scraped art never ships, F1) · assets_prod manifest "
                       f"{'present' if has_assets else 'MISSING'} · "
-                      f"config/{pl.target}.env written (template, no secrets)")
+                      f"config/{pl.target}.env written (template, no secrets) · "
+                      f"shell/tests/ EXCLUDED from this bundle (INTENDED, "
+                      f"Mn4 EVAL_ROUND_2.md — test code/fixtures don't ship; "
+                      f"the primary Docker deploy path ships them via "
+                      f"Dockerfile's unconditional COPY shell/ shell/, this "
+                      f"scp bundle is the secondary path only)")
 
 
 # -- step 4 static gates (each returns findings; empty list = clean) ---------

@@ -397,6 +397,31 @@ def test_ocr_panel_mock_200_probe_fails_on_200_without_source():
     assert r.status == "FAIL"
 
 
+def test_ocr_panel_mock_200_probe_skips_on_real_engine_rejecting_the_fixture():
+    """Mn1 (EVAL_ROUND_2.md): a --dev-bypass target WITHOUT OCR_PANEL_MOCK=1
+    routes the probe's synthetic fixture to the real engine, which correctly
+    422s it as unreadable — a deployment/config fact (the mock isn't on
+    here), not a code defect, and must SKIP like the existing 503 branch,
+    not FAIL."""
+    def handler(request):
+        return httpx.Response(422, json={"error": "unreadable_tokens"})
+    with _mock_client(handler) as client:
+        r = rp.probe_ocr_panel_mock_200(client, rp.ProbeOptions(dev_bypass=True))
+    assert r.status == "SKIP"
+
+
+def test_ocr_panel_mock_200_probe_still_fails_on_a_different_422():
+    """Non-regression: only the specific 'unreadable_tokens' reason (the
+    real engine's honest rejection of a fake image) is treated as SKIP —
+    this is not a blanket "422 is fine" carve-out; any OTHER 422 must still
+    FAIL."""
+    def handler(request):
+        return httpx.Response(422, json={"error": "invalid_side"})
+    with _mock_client(handler) as client:
+        r = rp.probe_ocr_panel_mock_200(client, rp.ProbeOptions(dev_bypass=True))
+    assert r.status == "FAIL"
+
+
 # --------------------------------------------- adversarial clamp check (M5)
 # EVAL_ROUND_2.md M5: absurd_n.json used to expect a 400/429 rejection, but
 # F4-b (limits.py _clamp_runs) silently clamps an oversized n to
