@@ -991,3 +991,201 @@ Left running (verdict is NOT SATISFIED, next round will need them, consistent wi
 3 handled the same situation): mock static server on :8790, CORS fixture server on :8791. Neither
 was started by this session (both were already up when it began, left over from the prior
 interrupted session) — this session only used them.
+
+---
+
+## ROUND 5 — 2026-08-15 (the verdict round)
+
+### VERDICT: SATISFIED
+
+**0 JOURNEY-BLOCKER · 0 MISMATCH · 0 FRICTION · 0 POLISH open · UXJ-010 CLOSED · no new findings**
+
+Commit `62c29ff` fixes UXJ-010 correctly (`syncBackgroundInert()` now runs both before *and* after
+`renderScreen()`, so the two outside-the-layer focus calls see fresh inert state) and, in verifying
+it, closes a real arrival-visibility gap the charter's own mandate had been silently unable to catch
+until someone looked at the *filled* panel specifically: the fill was landing in a hidden tab. Both
+are independently reconfirmed below with the evaluator's own original repros plus a full real-data
+happy-path run. This round found nothing to file — an exhaustive, deliberately adversarial pass
+(a shorter-viewport stress test, an Undo-scroll-conflict investigation, a re-test of every
+sheet/menu under the new double-sync render path, a Formation-tab data-loss probe, a no-back-from-S5
+settle check, and a fresh-reload re-entry check) turned up nothing that reaches even FRICTION. The
+loop closes here.
+
+---
+
+### Re-verification of UXJ-010 (my own original repros, both widths)
+
+- **Modal-exit repro** (Escape from S1, no read involved — the simplest case, run first in Round 4):
+  desktop — `activeElId: "ocrfCtaScreenshots"`, `main.layout.inert === false`. Mobile (375×812) —
+  identical result. Both a clean pass: focus lands on the CTA, not `<body>`, and the background is
+  genuinely interactive again.
+- **S4→S5 repro**: desktop, stubbed — `activeElId: "ocrfS5Heading"`. Desktop, **real two-shot read**
+  (`C_battle_3`+`C_battle_4`) — same result, plus `headingRect.top: 12.09`, `scrollY: 319`, matching
+  the fix commit's own claimed measurement (`heading top 12`, `scrollY 319`) to two decimal places.
+  Mobile, stubbed — `activeElId: "ocrfS5Heading"` again, `scrollY: 353`. UXJ-005 (the finding UXJ-010
+  had silently reopened) is closed a second time, now under evidence from three independent runs
+  across two data sources and two widths.
+
+---
+
+### The arrival experience, judged as a first-time human (both widths, real + stubbed)
+
+**Mechanics, verified live:** clicking Next on S4 activates the real Stats tab (`aria-selected`
+flips `true` via the tab's own button, not a synthetic override) *before* the fill runs, so
+`applyFillPlan` writes into a panel that is actually laid out (non-zero rects) instead of the
+hidden Formation tab. The host mounts as `statPanel.parentElement.insertBefore(host, statPanel)` —
+live-confirmed directly above the panel, not at the old ~1150px-distant entry-CTA spot. A single
+synchronous `window.scrollTo({behavior:'auto'})` is the *only* scroll intent on this path
+(`applyFillPlan` is called with `{scroll:false}` here, confirmed in the diff and in the fact that
+`scrollY` never changed after the initial jump in any of my measurements).
+
+**Result, no scrolling from the user, both widths:**
+
+| | Desktop 1280×720 (real read) | Mobile 375×812 (stubbed) |
+|---|---|---|
+| Heading | top 12.1, "Battle setup", focused | top 11.5, focused |
+| Chip | top 45.6, "All 24 numbers in ✓ — tap to check" | top 45, same text pattern |
+| S5's own CTA | top 165.6, h 48, "See who wins →" | top 177, h 48, "See who wins →" |
+| Filled panel | Stats tab active, all 24 real values in view (last input bottom 716.6 of 720) | Stats tab active, all 24 stub values in view (last input bottom 766 of 812) |
+| scrollY | 319 (single instant jump, matches commit's own claim exactly) | 353 |
+
+Heading, chip, CTA, and the entire 24-field filled panel are simultaneously in view with **zero**
+user scrolling at both widths — the charter's "chip + filled form + See-who-wins together in view"
+line, which Round 3/4 had never actually been able to test (nothing was visible to test) is now
+demonstrably true. The S5 CTA was confirmed to be a genuine proxy, not a decoration: intercepting
+`#runBtn.click` and firing `#ocrfS5Run` shows the real button's handler runs, and a fresh
+`POST /api/predict` appears in the network log immediately after (429 only because this long
+session's `sims` quota was already exhausted by earlier rounds' incidental forecast clicks — an
+untracked resource per this charter, not a finding).
+
+**The beat, judged honestly:** the modal is not closed via `closeFlowLayer()` here — `root()?.remove()`
+fires synchronously in the same tick as the S5 cluster is built and scrolled into place, so there is
+no exit animation, only an instant cut from "modal" to "settled inline result." I think this is the
+*right* call, not a corner cut: an animated close on this specific transition would be animating a
+lie — a conventional modal-close implies "returning to what was behind you," but what's behind here
+is not what the user last saw (the CTA's spot is gone, a new chip+CTA cluster and a different active
+tab have taken its place). Committing instantly to the new, true state reads as more honest than
+staging a reveal of something that never existed. It also sidesteps the actual bug this round's
+predecessor was fixing — competing async scrolls that don't reliably fire in a throttled tab — with
+a mechanism (one synchronous call) that has no timing window to lose a race in. I could not visually
+confirm the "cut" (this harness's Browser pane does not composite frames — the same documented
+limitation as every prior round's animation checks — and `computer{screenshot}` timed out on this
+attempt, consistent with the standing caveat), but the DOM-level evidence (zero animation classes
+applied to the outgoing root, zero elapsed time between the click and the fully-settled measurement)
+supports that it is genuinely instant rather than merely fast, and the reasoning for why instant is
+correct here holds up under my own scrutiny, not just the commit message's.
+
+**One observation, not filed:** at exactly 1280×720 the last filled input's bottom measured 716.6px
+— about 3.4px of margin inside a 720px viewport. That's real, not a rounding artifact (verified by
+counting all 24 inputs individually: `fullyVisibleCount: 24`, none cut off). Curious whether this
+was a hair's-breadth coincidence, I stress-tested at a shorter, still-realistic 1280×680: the
+heading/chip/CTA cluster stayed fully in view unchanged (nothing in the fixed-position cluster
+depends on viewport height), and only the bottom rows of the 24-field panel required scrolling to
+see in full. That is ordinary, graceful responsive degradation — the mandate's "together in view"
+promise is about the arrival *beat* (chip + CTA + the fact that your data landed somewhere visible),
+not a guarantee that every browser height shows all 24 rows without scrolling — and the charter's
+own tested contract is 1280×720, where it holds with real (if slim) margin. Not filed; noted for
+whoever next touches this layout, since a couple more fields or a slightly taller notice card would
+tip it.
+
+---
+
+### Regression sweep
+
+- **Undo:** clicked from a settled S5 arrival. Functionally correct — restored a *different* value
+  set than what was just filled (the page's own persisted pre-fill values, not the stub's), proving
+  it's a genuine restore, not a no-op. Its retained "old" scroll call (`applyFillPlan` default
+  `scroll:true` → `statPanel.scrollIntoView({behavior:'smooth', block:'start'})`) produced **no
+  observable scrollY change** in this harness before/immediately/600ms-after. I can't fully rule out
+  smooth-scroll animation frames simply not advancing here (the same class of limitation documented
+  for CSS animations in Round 3/4), but structurally there is no race to lose either way: unlike the
+  original arrival bug (two competing async scrolls), Undo's path is a single scroll call with
+  nothing else contending for the viewport, so even unobserved, it has no counterpart to race against.
+- **Reset:** two-tap confirm still fires (`Reset` → `Really reset?`), spot-checked — untouched by
+  this round's commit, already thoroughly proven in Rounds 1–3.
+- **Chip expand/collapse:** `aria-expanded` toggles `false→true→false` correctly, body
+  shows/hides in step.
+- **Notices path** (stubbed `specials_observed:'none'`, reproducing the missing-popup case at S5
+  arrival): chip correctly reads *"All 24 numbers read · your side and the enemy side not filled
+  in — tap to check"* (`ocrf-needs-attention`, not `ocrf-complete`), heading/CTA geometry and focus
+  identical to the clean-complete case, 2 notice cards present with the exact D-045 wording, both
+  correctly 0-height while the accordion is collapsed and both fully in-viewport (top 110/183 of
+  720) once expanded.
+- **Formation-tab typed values:** set a Formation-tab range slider to a distinctive `77` before
+  clicking Next. After the auto tab-switch to Stats and the fill, re-read the same slider:
+  still `77`. The switch is a pure visibility toggle (the tab panels are hidden via CSS, not
+  destroyed/rebuilt), so nothing a user typed on Formation is at risk — confirmed, not just reasoned.
+- **No back from S5 (by design):** confirmed the settled state is genuinely clean, not merely
+  unreachable — `#ocrfEntry` is `hidden` with a `0×0` rect, `#ocrfRoot` is gone,
+  `body.ocrf-flow-open` is cleared. There is no way to re-trigger the OCR flow from S5 itself (the
+  CTA is hidden, not removed) — consistent with the PRD's own recovery story for "I don't like this
+  fill" being Undo/Reset, not a re-run, and with the coordinator's framing that this is deliberate.
+- **Re-entry after an S5 arrival:** a genuine fresh reload (not a same-session re-trigger, since
+  none exists) shows zero contamination — `#ocrfS5Host` does not exist, the entry CTA is restored to
+  its normal `top:110` position, and the Stats tab is back to its default unselected state. The flow
+  is exercisable again from a clean slate exactly as if S5 had never happened.
+- **Sheet/menu mechanics under the new double-`syncBackgroundInert()` render path** (genuinely new
+  code since Round 4's testing predates commit `62c29ff` — re-verified rather than assumed):
+  type-tag menu (`modalRootInert:false`, `mainInert:true`, in-viewport) and editor sheet
+  (`modalRootInert:true`, `mainInert:true`, focus in the input) both still nest exactly as Round 4
+  found, and settle cleanly on close (`modalRootInert` correctly flips back to `false` while `main`
+  correctly stays `true`, since the outer S4 modal is still open). No regression from calling the
+  sync twice per render.
+
+---
+
+### Stunning-bar final sweep
+
+- **S5 cluster vertical rhythm** (new this round, measured not eyeballed): heading (26px) → 8px gap
+  → chip (52px) → 12px gap → Undo-links row (44px — exactly the design system's touch-target
+  minimum, not an arbitrary number) → 12px gap → CTA row (48px) → 14px gap → filled panel. Consistent
+  8–14px rhythm throughout, a deliberate hierarchy (context → status → utility actions → primary
+  action → detail), not a stack of leftover margins.
+- **S5's own CTA** reuses `.ocrf-btn-primary` (Round 1's real primary-button treatment, not a
+  scaled-down or ghost variant) at `max-width:340px` — reads as a genuine primary action, not an
+  afterthought bolted on to solve a geometry problem.
+- **Digit-exact accuracy** holds under real data at the exact moment it now matters most (the visible
+  arrival, not just an off-screen fill): all 24 fields, both display and raw inputs, byte-match
+  `docs/OCR_TEST_INSTRUCTIONS.md` §3.
+- **Everything carried over from Rounds 1–4** (takeover contract, entrance/exit motion, bounded
+  dialog + internal scroll, backdrop-click precision, S1 card substance at 18px/13.3px type,
+  dialog semantics, error-copy honesty, D-043/044/045 chain) — untouched by this round's commits,
+  spot-checked in passing during this round's own drives through S1→S4 with no regressions observed.
+- Nothing surfaced in this pass reads as cheap, cramped, or half-hearted. The one genuine tightness
+  (the 720px-height margin, above) is a property of real content meeting a real viewport, not of
+  unfinished or careless work — it's documented, not hidden, and degrades gracefully.
+
+---
+
+### Coverage log
+
+| Area | How verified this round |
+|---|---|
+| UXJ-010 re-verification | Both widths, both my original repro shapes (plain Escape-from-S1; S4→S5), plus the S4→S5 case run a third time on a real two-shot read for a non-stubbed confirmation. |
+| Arrival geometry (heading/chip/CTA/panel together, zero scroll) | Live, both widths, both real and stubbed data: full rect table above, all 24 fields individually checked for in-viewport status (not just the container). |
+| Arrival beat/feel | Reasoned and cross-checked against DOM-level animation evidence (no animation classes on the outgoing root, zero elapsed time to settle); screenshot attempted once and timed out per the standing harness limitation, consistent with every prior round. |
+| Stress test: shorter viewport (1280×680) | Live — cluster stays fully visible, only the panel's tail needs scroll; treated as expected degradation, not filed. |
+| S5 CTA → real forecast proxy | Live: intercepted `#runBtn.click`, confirmed invoked; confirmed a fresh `POST /api/predict` fires immediately after. |
+| Undo | Live: value-restoration confirmed functionally correct (restored a distinct, non-stub value set); scroll-conflict investigated and reasoned to be structurally impossible (single scroll call, no competing scroll to race). |
+| Reset, chip expand | Live spot-checks, both pass, unchanged from prior rounds. |
+| Notices-path S5 arrival | Live, stubbed `specials_observed:'none'`; chip/notices/geometry/focus all correct, collapsed (0-height) and expanded (in-viewport) states both checked. |
+| Formation-tab data preservation | Live: a distinctive typed value set before the transition, confirmed unchanged after the auto tab-switch and fill. |
+| No-back-from-S5 / re-entry | Live: settled-state cleanliness confirmed (entry hidden, root gone, body unlocked); genuine fresh-reload re-entry confirmed contamination-free. |
+| Sheet/menu nesting under new double-sync render() | Live re-test (not assumed from Round 4, which predates this commit): type-tag menu and editor sheet both re-verified, both settle correctly on close. |
+| Digit-exact real read | 1 real 2-shot read (`C_battle_3`+`C_battle_4`), desktop — both S4 review grid and the S5 arrival's real `#statPanel` inputs checked. |
+| Stunning-bar sweep | S5 cluster rhythm measured; CTA treatment confirmed as genuine-primary, not decorative; carried-over mechanics from Rounds 1–4 spot-checked in passing, no regressions found. |
+
+### Quota consumed
+
+`dev_user`: **1 real OCR read** this round (15 → 14 remaining, confirmed via `GET /shell/me`) — the
+desktop real-data arrival verification, within the 1-read budget. Everything else (UXJ-010
+re-verification at both widths, the full regression sweep, the viewport stress test, the sheet/menu
+re-check) used `fetch` stubs or pure DOM/CSS inspection at zero additional quota. `ux-eval`
+identity: untouched. Sim quota (`dev_user`): unchanged (still exhausted from earlier rounds'
+incidental forecast clicks; not tracked by this charter).
+
+### Servers
+
+**Verdict is SATISFIED — the loop closes here.** Both evaluator-owned servers stopped: mock static
+server on :8790 and the CORS fixture server on :8791. The app on :8200 was left untouched, as
+always. No further rounds expected unless new work reopens the journey.
