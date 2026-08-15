@@ -6,6 +6,7 @@ wos_sim predictor app with a real scenario payload.
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import sys
 from pathlib import Path
@@ -17,6 +18,7 @@ if str(_REPO_ROOT) not in sys.path:
 import pytest
 from fastapi.testclient import TestClient
 
+from shell.app import db as _db_module
 from shell.app.config import Settings
 from shell.app.main import create_app
 
@@ -65,6 +67,82 @@ def test_me_pro_quota_via_dev_plan_header(client):
     body = client.get("/shell/me", headers={"X-Dev-Plan": "pro"}).json()
     assert body["entitlements"]["daily_sim_quota"] == 100  # PRO_SIMS_PER_DAY
     assert body["entitlements"]["daily_ocr_quota"] == 30   # PRO_OCR_PER_DAY
+
+
+# --- regression: M1 (EVAL_ROUND_2.md, round 1's F13) ------------------------
+# "remaining" used to always report the full daily quota — main.py:396-398
+# carried a literal "TODO(Agent B): subtract today's usage_events" comment —
+# so the overlay chip told a signed-in user "Sims left today: 5" right up to
+# the moment the 6th request actually 429'd. db.get_usage_today has existed
+# since before round 1 and is used by limits.py's own quota check; it just
+# was never wired into this endpoint's response.
+
+def test_me_remaining_drops_by_recorded_usage_for_both_kinds():
+    """Record N=3 sim uses and N=2 ocr uses directly against the real db
+    store (the same primitive limits.check_and_record itself calls after an
+    Allowed verdict), then assert /shell/me's remaining reflects EXACTLY
+    that drop for each kind independently — never a shared/miscounted total."""
+    _db_module.reset_db()
+    try:
+        app = create_app(Settings(_env_file=None, DEV_BYPASS=True))
+        c = TestClient(app)
+        headers = {"X-Dev-Plan": "pro", "X-Dev-User": "m1_user"}
+
+        before = c.get("/shell/me", headers=headers).json()
+        assert before["remaining"] == {"sims": 100, "ocr": 30}   # untouched baseline
+
+        for _ in range(3):
+            asyncio.run(_db_module.record_usage(
+                "m1_user", endpoint="/api/predict", kind="sim"))
+        for _ in range(2):
+            asyncio.run(_db_module.record_usage(
+                "m1_user", endpoint="/shell/ocr", kind="ocr"))
+
+        after = c.get("/shell/me", headers=headers).json()
+        assert after["remaining"]["sims"] == 100 - 3
+        assert after["remaining"]["ocr"] == 30 - 2
+    finally:
+        _db_module.reset_db()
+
+
+def test_me_remaining_drops_after_real_predict_calls(client, scenario):
+    """Stronger end-to-end version of the above for the sim kind: real
+    POST /api/predict calls through the full app (auth -> limits -> engine),
+    not a direct db.record_usage call — proves the observable chain the user
+    actually experiences, not just the read side."""
+    headers = {"X-Dev-Plan": "pro", "X-Dev-User": "m1_e2e_user"}
+    _db_module.reset_db()
+    try:
+        before = client.get("/shell/me", headers=headers).json()
+        assert before["remaining"]["sims"] == 100
+
+        for _ in range(3):
+            resp = client.post("/api/predict", json={**scenario, "n": 5, "seed": 1},
+                               headers=headers)
+            assert resp.status_code == 200
+
+        after = client.get("/shell/me", headers=headers).json()
+        assert after["remaining"]["sims"] == 100 - 3
+        assert after["remaining"]["ocr"] == 30   # sim usage must not touch ocr
+    finally:
+        _db_module.reset_db()
+
+
+def test_me_remaining_never_goes_negative_past_quota():
+    """max(0, quota - used): a user who somehow exceeds quota (e.g. via the
+    per-IP cap path, or a race) must see 0, never a negative number."""
+    _db_module.reset_db()
+    try:
+        app = create_app(Settings(_env_file=None, DEV_BYPASS=True))
+        c = TestClient(app)
+        headers = {"X-Dev-Plan": "free", "X-Dev-User": "m1_over_user"}
+        for _ in range(9):   # well past FREE_SIMS_PER_DAY=5
+            asyncio.run(_db_module.record_usage(
+                "m1_over_user", endpoint="/api/predict", kind="sim"))
+        body = c.get("/shell/me", headers=headers).json()
+        assert body["remaining"]["sims"] == 0
+    finally:
+        _db_module.reset_db()
 
 
 def test_authed_predict_reaches_sim(client, scenario):

@@ -360,6 +360,27 @@ async def _entitlements_for(plan: str, settings: Settings) -> dict:
     return {"daily_sim_quota": settings.FREE_SIMS_PER_DAY, "daily_ocr_quota": 0}
 
 
+async def _usage_today_for(user_id: str, kind: str) -> int:
+    """Today's recorded usage_events count for (user, kind) — "sim" | "ocr",
+    the same values limits.classify_endpoint() / db.record_usage() use (M1,
+    EVAL_ROUND_2.md — round 1's F13). Never raises: db.get_usage_today
+    missing or failing degrades to 0 (a wrong-but-safe "full quota shown"
+    display beats a broken /shell/me), same fail-open posture as
+    _entitlements_for above."""
+    getter = getattr(_db, "get_usage_today", None) if _db else None
+    if getter is None:
+        return 0
+    try:
+        used = getter(user_id, kind)
+        if inspect.isawaitable(used):
+            used = await used
+        return int(used or 0)
+    except Exception:
+        log.exception("db.get_usage_today failed; reporting 0 usage for %s/%s",
+                      user_id, kind)
+        return 0
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
 
@@ -393,9 +414,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                 content={"error": "auth_required",
                                          "sign_in_url": settings.sign_in_url})
         ent = await _entitlements_for(user.plan, settings)
-        # TODO(Agent B): subtract today's usage_events once db.py exposes a
-        # usage query; until then "remaining" reports the full daily quota.
-        remaining = {"sims": ent["daily_sim_quota"], "ocr": ent["daily_ocr_quota"]}
+        # M1 (EVAL_ROUND_2.md, round 1's F13): "remaining" used to always
+        # report the full daily quota regardless of recorded usage — the
+        # overlay chip told a signed-in user "Sims left today: 5" right up
+        # to the moment the 6th request 429'd. db.get_usage_today records
+        # the same "sim"/"ocr" kinds limits.py's check_and_record uses.
+        used_sims = await _usage_today_for(user.user_id, "sim")
+        used_ocr = await _usage_today_for(user.user_id, "ocr")
+        remaining = {"sims": max(0, ent["daily_sim_quota"] - used_sims),
+                    "ocr": max(0, ent["daily_ocr_quota"] - used_ocr)}
         return {"user": {"user_id": user.user_id, "email": user.email,
                          "plan": user.plan},
                 "entitlements": ent, "remaining": remaining,
