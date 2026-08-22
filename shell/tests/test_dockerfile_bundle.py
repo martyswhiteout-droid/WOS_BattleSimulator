@@ -75,3 +75,19 @@ def test_dockerfile_does_not_run_as_root():
     text = (_REPO_ROOT / "shell" / "Dockerfile").read_text(encoding="utf-8")
     assert re.search(r"^USER\s+\S+", text, re.MULTILINE), (
         "shell/Dockerfile never switches away from the root user (F28).")
+
+
+def test_dockerignore_keeps_secrets_and_sample_captures_out_of_the_image():
+    # Build context is the repo root (shell/docker-compose.yml `context: ..`)
+    # and the Dockerfile does `COPY shell/ shell/` — without a root
+    # .dockerignore a real shell/.env on the build machine is baked into the
+    # image (PRODUCTION_CRITERIA E4), and the real-game sample captures under
+    # shell/app/ocr/client/samples/ ship as Century Games IP (F1).
+    root = Path(__file__).resolve().parents[2]
+    ignore = root / ".dockerignore"
+    assert ignore.is_file(), "repo-root .dockerignore missing (build context is the root)"
+    lines = [ln.strip() for ln in ignore.read_text(encoding="utf-8").splitlines()
+             if ln.strip() and not ln.startswith("#")]
+    for required in ("shell/.env", ".env", "shell/app/ocr/client/samples/*.jpg"):
+        assert required in lines, f".dockerignore must list {required!r}"
+    assert "!shell/.env.example" in lines, "the template must still ship"

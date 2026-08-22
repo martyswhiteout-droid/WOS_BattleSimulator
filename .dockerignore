@@ -1,0 +1,19 @@
+# Build context is the repo root (shell/docker-compose.yml: context: ..).
+# Keep secrets and game-IP captures OUT of the image (PRODUCTION_CRITERIA E4 / F1).
+.git
+**/__pycache__
+**/*.pyc
+.env
+.env.*
+!.env.example
+shell/.env
+shell/.env.*
+!shell/.env.example
+shell/build/
+shell/tests/
+# Real game screenshots used only as dev-time upload guides (samples/README.md);
+# the client falls back to hand-drawn mini-panels when they are absent.
+shell/app/ocr/client/samples/*.jpg
+shell/app/ocr/client/samples/*.jpeg
+shell/app/ocr/client/samples/*.png
+shell/app/ocr/client/samples/*.webp

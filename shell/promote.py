@@ -395,7 +395,12 @@ def step3_assemble(pl: Pipeline) -> StepResult:
     # The phash gate (step 4) then verifies nothing slipped through.
     raster_exts = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"}
     stripped = 0
-    for sub in ("wos_sim", "prototype"):
+    # shell/app/ocr/client/samples/ holds REAL game screenshots used as S1/S2
+    # upload guides (owner request 2026-08-15) — Century Games captures, so
+    # they are stripped exactly like the prototype's scraped art; the client
+    # falls back to its hand-drawn mini-panels via the img-error listener
+    # (samples/README.md documents this as the expected promoted state).
+    for sub in ("wos_sim", "prototype", "shell/app/ocr/client/samples"):
         base = pl.bundle_dir / sub
         if base.is_dir():
             for p in base.rglob("*"):

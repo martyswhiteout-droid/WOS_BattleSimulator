@@ -187,8 +187,43 @@ def test_dry_run_fails_on_scraped_image_in_artifact(mini_repo, tmp_path):
     assert rc == 0
     text = (tmp_path / "build3" / "release-test" /
             "GATE_REPORT_DRAFT_release-test.md").read_text(encoding="utf-8")
-    # the asset swap removed it, and the phash gate confirms a clean bundle
-    assert "stripped 1 raster images" in text
+    # the asset swap removed it, and the phash gate confirms a clean bundle.
+    # The count also includes the real-game sample captures under
+    # shell/app/ocr/client/samples/ (stripped since 2026-08-16, F1) — computed
+    # from the real folder so this stays an EXACT assertion, not a >= 1.
+    real_samples = SHELL_DIR / "app" / "ocr" / "client" / "samples"
+    sample_rasters = [p for p in real_samples.iterdir()
+                      if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}]         if real_samples.is_dir() else []
+    assert f"stripped {1 + len(sample_rasters)} raster images" in text
     assert "phash blocklist (F1): clean" in text
     bundle = tmp_path / "build3" / "release-test" / "bundle"
     assert not (bundle / "wos_sim" / "data" / "avatars" / src.name).exists()
+
+
+def test_assemble_strips_the_real_screenshot_samples_from_the_bundle(mini_repo, tmp_path):
+    # 2026-08-15/16: shell/app/ocr/client/samples/ ships REAL game screenshots
+    # as upload guides (owner request). The bundle copies the real shell/ dir,
+    # so those captures would have shipped untouched — the strip loop only
+    # covered wos_sim/ and prototype/. They are Century Games IP (F1); the
+    # client degrades to its hand-drawn mini-panels when they are absent.
+    real_samples = SHELL_DIR / "app" / "ocr" / "client" / "samples"
+    rasters = [p for p in real_samples.iterdir()
+               if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}]
+    if not rasters:
+        pytest.skip("no real sample captures present in this checkout")
+    build_root = tmp_path / "build_samples"
+    rc = promote.main([
+        "--tag", "release-test", "--target", "staging", "--dry-run",
+        "--skip-prototype-checks",
+        "--repo-root", str(mini_repo),
+        "--build-root", str(build_root),
+    ])
+    assert rc == 0
+    bundled = build_root / "release-test" / "bundle" / "shell" / "app" / "ocr" / "client" / "samples"
+    assert bundled.is_dir(), "samples folder itself (README) still ships"
+    leaked = [p.name for p in bundled.iterdir()
+              if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}]
+    assert leaked == [], f"real game screenshots leaked into the bundle: {leaked}"
+    text = (build_root / "release-test" /
+            "GATE_REPORT_DRAFT_release-test.md").read_text(encoding="utf-8")
+    assert f"stripped {len(rasters)} raster images" in text
