@@ -1189,3 +1189,173 @@ incidental forecast clicks; not tracked by this charter).
 **Verdict is SATISFIED — the loop closes here.** Both evaluator-owned servers stopped: mock static
 server on :8790 and the CORS fixture server on :8791. The app on :8200 was left untouched, as
 always. No further rounds expected unless new work reopens the journey.
+
+---
+
+## ROUND 6 — 2026-08-16 (loop REOPENED — two post-close UI changes, no evaluator has seen either)
+
+**Context:** this evaluator was terminated mid-Round-4 by a transient auth error; a parallel
+session completed Rounds 4–5 (UXJ-007/008/009 closed, UXJ-010 found and fixed in `62c29ff`,
+SATISFIED at 20:11 on 2026-08-15). Rounds 4–5 were **not** redone here, per the coordinator's
+explicit instruction — this evaluator's Round 1–3 context (and the partial Round 4 work already
+in progress) is what made it the right agent to pick up what comes next. Two owner-requested
+changes landed **after** the loop closed and needed a first look: `5c12924` (real game screenshots
+as upload samples) and `dff9bf8` (S2 reworked into per-row Heroes/Battle-stats/Buffs zones). The
+app process had restarted (fresh state, quota reset to 30/30) and both evaluator-owned servers
+(:8790, :8791) had to be restarted before testing.
+
+### VERDICT: SATISFIED
+
+**0 JOURNEY-BLOCKER · 0 MISMATCH · 0 FRICTION · 0 POLISH open**
+
+Both changes were judged end-to-end against real server behavior, not assumed from the commit
+messages. The one genuinely open risk in this round's brief — whether the new optional Heroes
+zone could poison an otherwise-good battle read into a false E1 failure — was independently
+disproven with a real adversarial upload, not just re-read from the builder's own claim.
+
+---
+
+### Item (a) — real game screenshots as upload samples (`5c12924`)
+
+Judged live at both widths, S1 cards and S2 rows:
+
+- **Legibility / load:** all 5 sample JPEGs (`sample_battle_panel`, `sample_battle_popup`,
+  `sample_battle_heroes`, `sample_scout`, `sample_citystats`) confirmed genuinely loaded
+  (`naturalWidth` 560-640px, not broken images) on both S1 (numbered 1/2 pair for Battle Report,
+  single image for Scout/City Stats) and S2 (one image per row, beside that row's own zone).
+  Captions/badges present and correct ("1 Stat Bonuses list" / "2 The popup behind the ! icon").
+- **No layout breakage, no horizontal scroll at 375px:** confirmed via `document.body.scrollWidth`
+  vs `innerWidth` at every screen touched this round — zero overflow anywhere, at either width.
+  At mobile, the S1 pair correctly stacks vertically (`flex-direction: column`, matching the
+  commit's own "below 560px viewports" rule) rather than being forced side-by-side into
+  illegibility.
+- **Does it help matching:** yes — this is a clear win over the hand-drawn mini-panels it
+  replaces. A real screenshot of the actual "Stat Bonuses" list and the actual "!" popup is a much
+  more direct "does this match what's on my phone" reference than a stylized illustration, and the
+  numbered 1/2 pairing on the Battle Report card visually teaches the two-shot requirement (main
+  panel + popup) before the user ever reaches S2.
+- **No console errors** from any image load/fallback path during this round's testing.
+
+**Release-gate note (not a UX finding — the owner already made this call; flagging the mechanical
+fact for the record, independently verified rather than just repeated from the samples README's
+own hedge):** `shell/app/ocr/client/samples/*.jpg` are real Whiteout Survival client screenshots
+(Century Games IP). `shell/promote.py`'s raster-stripping step (`step_asset_swap`, the loop at
+line 398) iterates `for sub in ("wos_sim", "prototype")` only — confirmed by direct read of the
+current source — so `shell/app/ocr/client/samples/` is **not yet in that strip list** and these
+five files would ship as-is through a promotion run today. The samples' own `README.md` already
+flags this exact risk ("If promote's strip list doesn't yet cover this folder, add it there rather
+than shipping these") and the app has a working fallback for the stripped state
+(`renderSampleFallback`, confirmed wired to an `img error` listener that swaps in the hand-drawn
+mini-panels) — so nothing is broken today and nothing needs to break at release time, but
+`promote.py`'s strip loop does not yet cover this folder and PRODUCTION_CRITERIA F1's asset audit
+should catch that before this ships to `WOSTests.com`.
+
+---
+
+### Item (b) — S2 reworked into per-row Heroes / Battle stats / Buffs zones (`dff9bf8`)
+
+Read `docs/OCR_UX_FLOW_SPEC.md`'s 2026-08-15 amendment first, as instructed — it is the binding
+authority for this section and states plainly: *"Every row's zone feeds the SAME per-side shot
+set — the server sorts shots by content, so there is no wrong slot."* Confirmed at the DOM level
+before testing: all three of a side's row zones share the identical `data-dropzone="you"` /
+`data-dropzone="enemy"` target — there is no separate per-row upload channel to begin with, only a
+shared shot array with different cosmetic framing per row.
+
+**The critical question — does an unclassifiable "heroes" upload poison an otherwise-good read
+into a false E1 failure? Tested for real, not assumed:**
+
+Uploaded three real images to the "You" side across their three distinct row zones in one battle
+side: `C_battle_1.png` (the documented non-stat-panel stand-in for a heroes-shaped screenshot,
+per this round's fixture guidance) through the **Heroes** row, `C_battle_3.png` through **Battle
+stats**, `C_battle_4.png` through **Buffs**. One real `POST /shell/ocr/panel` call (all three
+files in a single multipart request — confirmed via network log), real RapidOCR, zero stubbing.
+**Result: landed cleanly on S4 with `24/24 · All 24 numbers are in.`, and the raw response body
+(pulled and inspected directly, not inferred) shows `"status":"ok"`, `specials_observed:"read"`,
+zero `unreadable_fields`, and every one of the 24 values digit-exact against the same golden
+reference used in every prior round** (`Infantry|Attack: 2269.7`, etc.). The response's own
+`warnings` array contains seven `"unmatched row near y=…"` entries — this is where the heroes
+image's unrecognized tokens went: absorbed by the extractor's existing orphan-token handling as
+internal telemetry, never surfaced to the user, never mis-attributed to a real field. **The
+dead-end risk does not materialize.** This independently reproduces (with a genuinely adversarial
+input, not the builder's own smoke-test image) the commit message's claim that "the heroes
+screenshot's tokens do not contaminate the parse."
+
+**Three-zone coverage/Continue logic:** Continue correctly starts disabled with zero uploads
+("Add a screenshot to continue"); a single upload to *any one* row (tested: Battle stats alone,
+Heroes+Battle-stats+Buffs together) correctly enables it; the "Battle covers both sides" note on
+the Enemy side (*"✓ Covered by your battle report"*) still fires correctly off a You-side-only
+upload, unchanged by the row rework.
+
+**Per-zone remove:** uploaded two distinguishably-named files through two different rows sharing
+one thumbnail strip (confirmed: rows share a single `data-thumbs="you"` display, not one per row);
+removing thumb index 0 correctly dropped to 1 remaining (Continue stayed enabled); removing the
+last one correctly hid the thumb strip, disabled Continue, and cleared the Enemy side's "Covered"
+note — full round-trip, no orphaned state.
+
+**D-043/044/045 honesty chain with Buffs skipped, under the new UI:** uploaded Battle stats only
+(Heroes and Buffs rows both left empty) and continued through to S5 on a real read. Chip correctly
+read *"All 24 numbers read · your side and the enemy side not filled in — tap to check"*
+(`ocrf-needs-attention`, not `ocrf-complete`); both per-side notices present with the exact D-045
+popup-icon wording; `#statPanel` confirmed **not** phantom-filled (still at its 1300 default). No
+regression from the row rework — the honesty chain lives in `setup.mjs`'s conversion logic, which
+this commit didn't touch, and the live behavior confirms that isolation held.
+
+**Heroes row's own honesty:** its copy — *"The hero part at the top. Captain auto-set is coming —
+adding it now future-proofs your upload."* — matches the PRD amendment's mandate precisely (says
+plainly that captain auto-set isn't wired yet) and matches Ruling #3 (hero-gen defaulting stays
+dormant). Not filed as a finding, but noted: a user who uploads *only* a heroes screenshot has no
+on-screen signal distinguishing "this did something" from "this is inert for now" — the thumb
+looks identical to any other. Given the row's own copy is upfront about the current limitation and
+the PRD amendment explicitly sanctions this as a deliberate, honestly-labeled placeholder
+("capture-only for now... the row's copy says exactly this"), this reads as accepted-by-design
+rather than a gap — mentioned for completeness, not raised to a POLISH item.
+
+**Row counts per type, confirmed directly:** Scout → 1 row (`scout`). City Stats → You gets 1 row
+(`citystats`), Enemy presets to Scout's 1 row (`scout`) — matching §3 S2's preset rule. Battle →
+3 rows both sides (`battle_heroes`, `battle_panel`, `battle_popup`), in the documented order.
+
+---
+
+### Fresh sweep (regression check for these two commits only — UXJ-001..010 were verified in
+Round 5 and are not being re-litigated in full here)
+
+| Check | Result |
+|---|---|
+| Takeover contract (centered card ≥768px, background scrim, scroll-lock) | Confirmed in viewport at both widths throughout this round's testing. |
+| UXJ-007 (background inert while modal-only open) | Re-confirmed: `main.inert === true`, `.focus()` on the live page's `#runBtn` blocked, while on the reworked S2. No regression from the new row markup. |
+| UXJ-010 (focus restored to the CTA, in viewport, on exit) | Re-confirmed via Escape from the reworked S2: `document.activeElement.id === 'ocrfCtaScreenshots'`, confirmed in viewport. |
+| Console errors | Zero, across the entire round (fresh app-restart session, no accumulated noise to discount this time). |
+| Horizontal overflow at 375px | Zero, on S1, S2 (all three battle rows, both sides), S4, S5. |
+
+No UXJ-011+ findings this round — both changes are clean.
+
+---
+
+### Coverage log
+
+| Area | How verified |
+|---|---|
+| Real-screenshot samples (S1 + S2), both widths | Live: `naturalWidth`, viewport-rect, overflow checks on all 5 images at 1280px and 375px. |
+| Heroes-zone dead-end risk | **1 real read**: `C_battle_1.png` (Heroes) + `C_battle_3.png` (Battle stats) + `C_battle_4.png` (Buffs), one multipart POST, raw response body inspected directly. |
+| D-043/044/045 chain, Buffs skipped, new UI | **1 real read**: Battle stats only, followed through to S5, chip/notices/statPanel all checked. |
+| Three-zone coverage/Continue | Live, both the empty-state and populated-state transitions. |
+| Per-zone remove | Live, two distinguishable uploads across two rows sharing one thumb strip, removed one at a time to empty. |
+| Row counts (Scout=1, City Stats=1+1, Battle=3+3) | Live, all four S1 type picks walked through to S2. |
+| Release-gate asset-strip claim | Verified by direct read of `shell/promote.py`'s strip loop (line 398) and the samples `README.md`, not just repeated from either. |
+| Takeover contract / UXJ-007 / UXJ-010 | Spot-checked live against the reworked S2 specifically (the surface these two commits actually touch), not a full Round 3-5 re-run. |
+| Console/overflow cleanliness | Checked after every screen transition this round; zero errors, zero overflow. |
+
+### Quota consumed
+
+`dev_user`: **2 real OCR reads** this round (30 → 28 remaining, fresh 30/30 pool after the app
+restart) — the Heroes-zone adversarial-mix test and the Buffs-skipped honesty-chain test, the two
+checks where genuine server-side content classification was specifically what was being judged.
+Three-zone coverage, per-zone remove, row counts, and the sample-image checks needed no OCR read
+at all (pure upload-state/DOM/CSS verification). Within the 3-read budget with one held in
+reserve and unused. `ux-eval` identity: not touched this round.
+
+### Servers
+
+**Verdict is SATISFIED — the loop closes here.** Both evaluator-owned servers (restarted at the
+start of this round after the app process reset killed them) were stopped again: mock static
+server on :8790, CORS fixture server on :8791. The app on :8200 was left untouched.
