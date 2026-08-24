@@ -65,3 +65,35 @@ Auto-advance screens share ONE history slot (Back/Cancel always land on the last
 - Samples degrade per-row when their images can't load (promoted bundles strip game-IP art):
   stats/scout/citystats rows fall back to the hand-drawn mini-panels, heroes/popup rows to
   their alt text.
+
+## Amendment 2026-08-25 — S2 ingestion channels, row relabels, buffs attestation (owner feedback)
+
+- **Every add-zone takes three equal channels**: tap (OS picker), **paste**, and **drag-drop**
+  (owner: "make it a copy/paste as well as a drop-image in widget"). Paste routes to the
+  focused zone, else the last-touched zone, else YOU. All channels accept png/jpeg/webp only
+  and funnel through one ingest path.
+- **Heroes row → "Heroes + Experts", no OPTIONAL tag, explainer sentence removed** (owner).
+  Engine reality unchanged: the row is capture-only until the badge-reading derivation ships
+  (2026-08-15 spike: star rows read cleanly, gen-badge digits mangle) — the REQUIRED
+  presentation is the owner's call and is recorded here; a heroes upload cannot poison a read
+  (round-6 adversarial proof, EVAL_UX_JOURNEY.md).
+- **Buffs row: NEEDED tag dropped** (hard to see); the row takes **1 or 2 screenshots** (long
+  popup lists scroll; stitch merges by (canonical,side) — pinned by
+  `test_owner_20260825_two_popup_screenshots_merge_into_one_specials_set`).
+- **Explicit "No buffs on either side" attestation** (battle only): a toggle under the battle
+  rows. Semantics are STRICT (honesty rule): the attestation upgrades ONLY a silent absence
+  (`specials_observed: "none"`) to the legal zero-specials read state (QA D-022's documented
+  legal state, attested by the user instead of a captured empty popup). It never overrides
+  `"partial"` (rows were SEEN but unreadable — the screen contradicts the claim) and never
+  overrides a real read. An APPLIED attestation is said out loud on S5 as an informational
+  note that never demotes the completion chip. Sticky across re-entry, like the shot set.
+- **Enemy X Penalty rows, conversion vs prediction** (owner question): conversion-side folding
+  is correct and now pinned by name (enemy-side rows → P[stat] as |value|, D-013 sign guard;
+  own-side rows never leak into own S sets) — but captured penalty rows are NOT yet propagated
+  into the prediction's `debuffs_on_enemy` (the app's Buffs tab). That propagation is a
+  PROPOSED follow-up awaiting the owner's call (it changes prediction inputs).
+- **Pending owner screenshots** (never guessed, per the no-fabrication rule): long-form scout
+  sample, long-form City Stats sample, the correct Heroes + Experts sample, the two buffs-popup
+  captures (exact "Appoint-based …" label text for the lexicon), and the Troop Power panel
+  (new capture type: troop type / quality / FC tier / T12 level / per-level counts → final
+  checks). Drop real captures into `shell/tests/fixtures/panel_ocr/images/`.

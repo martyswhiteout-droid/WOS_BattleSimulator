@@ -111,7 +111,17 @@ export function createController({ genTable = {}, postPanel, fetchMe, storage } 
     storage.setItem(`ocr_u_${userId}`, JSON.stringify(U));
   }
 
-  async function readAll(shotBytesBySide, userId = null) {
+  // Owner feedback 2026-08-25: an EXPLICIT user attestation ("no buffs on
+  // either side") upgrades a silent absence ('none') to the legal
+  // zero-specials read state (QA D-022's documented legal state, attested
+  // by the user instead of by a captured empty popup). It never overrides
+  // 'partial' (rows were SEEN but unreadable - the screen contradicts the
+  // claim) and never overrides a real 'read'. Pure; exported for tests.
+  function attestedObserved(observed, attested) {
+    return (attested && observed === 'none') ? 'read' : observed;
+  }
+
+  async function readAll(shotBytesBySide, userId = null, { noBuffsAttested = false } = {}) {
     const types = flow.types();
     const results = {};
     for (const side of SIDES) {
@@ -121,16 +131,19 @@ export function createController({ genTable = {}, postPanel, fetchMe, storage } 
     }
     const views = deriveViews(types, results);
     const conversion = {};
+    const attested = {};
     const cachedU = loadCachedU(userId);
     for (const side of SIDES) {
       if (!views[side]) continue;
       const extra = side === 'you' ? { calibratedU: cachedU } : {};
-      const outcome = convertSide({ ...views[side], ...extra });
+      const observed = attestedObserved(views[side].specialsObserved, noBuffsAttested);
+      attested[side] = observed !== views[side].specialsObserved;
+      const outcome = convertSide({ ...views[side], ...extra, specialsObserved: observed });
       conversion[side] = outcome;
       if (side === 'you' && outcome.calibratedU) saveCachedU(userId, outcome.calibratedU);
     }
-    return { results, views, conversion };
+    return { results, views, conversion, attested };
   }
 
-  return { flow, checkAccess, readAll };
+  return { flow, checkAccess, readAll, attestedObserved };
 }

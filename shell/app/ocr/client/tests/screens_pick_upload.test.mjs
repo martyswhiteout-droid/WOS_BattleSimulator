@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  UPLOAD_ROWS,
   renderS1, renderS2, renderE1, dropzoneLabel, computeS2ContinueState, TYPE_LABEL, renderThumbs,
   renderSample, renderSampleFallback,
 } from '../screens/pick_upload.mjs';
@@ -222,9 +223,12 @@ test('UXJ-002 + owner arrangement: S2 renders labeled sample rows — three for 
   }
   assert.ok(youSection.indexOf('battle_heroes') < youSection.indexOf('battle_panel'));
   assert.ok(youSection.indexOf('battle_panel') < youSection.indexOf('battle_popup'));
-  assert.match(youSection, />Heroes\s*<span class="ocrf-row-tag ocrf-row-tag--muted">OPTIONAL</);
+  // Owner feedback 2026-08-25: 'Heroes + Experts', and the OPTIONAL/NEEDED
+  // tags are gone (hard to see) — the rows carry their teaching in copy.
+  assert.match(youSection, />Heroes \+ Experts</);
   assert.match(youSection, />Battle stats</);
-  assert.match(youSection, />Buffs\s*<span class="ocrf-row-tag">NEEDED</);
+  assert.match(youSection, />Buffs</);
+  assert.doesNotMatch(youSection, /OPTIONAL|NEEDED/);
   // every row carries its own add-zone feeding the SAME side shot set
   assert.equal((youSection.match(/data-dropzone="you"/g) || []).length, 3);
   // scout = exactly one row
@@ -272,8 +276,10 @@ test('QA defect 045: S2 shows the Special Bonuses popup hint for battle, and onl
   // teaches the requirement where the action happens — the old separate
   // hint card is gone, but the popup requirement must still be on screen.
   assert.match(battle, /data-sample-row="battle_popup"/);
-  assert.match(battle, /NEEDED/);
-  assert.match(battle, /can&rsquo;t convert your numbers without this popup|can’t convert your numbers without this popup/);
+  // Owner feedback 2026-08-25: the NEEDED tag is gone; the popup teaching
+  // lives in the row copy (where to find it) + the honesty chain (D-043/44)
+  // still refuses and explains when it is missing.
+  assert.match(battle, /Tap the ! next to/);
 
   const scoutOnly = renderS2({
     types: { you: 'scout', enemy: 'scout' },
@@ -281,4 +287,35 @@ test('QA defect 045: S2 shows the Special Bonuses popup hint for battle, and onl
   });
   assert.doesNotMatch(scoutOnly, /data-sample-row="battle_popup"/);
   assert.doesNotMatch(scoutOnly, /NEEDED/);
+});
+
+
+// ---- Owner feedback 2026-08-25: rows relabel + attestation toggle ----------
+
+test('owner 2026-08-25: battle rows are Heroes + Experts (untagged) / Battle stats / Buffs (untagged, 1-2 shots)', () => {
+  const rows = UPLOAD_ROWS.battle;
+  assert.equal(rows[0].label, 'Heroes + Experts');
+  assert.equal(rows[0].tag, '');
+  assert.doesNotMatch(rows[0].copy, /Captain auto-set|hero part at the top/i);
+  assert.equal(rows[2].label, 'Buffs');
+  assert.equal(rows[2].tag, '');           // NEEDED dropped: hard to see
+  assert.match(rows[2].copy, /up to 2 screenshots/);
+});
+
+test('owner 2026-08-25: every add-zone teaches all three channels (tap / paste / drop)', () => {
+  const html = renderS2({ types: { you: 'battle', enemy: 'battle' }, coverage: { you: false, enemy: false } });
+  assert.match(html, /Tap \u00b7 paste \u00b7 drop|Tap · paste · drop/);
+  assert.doesNotMatch(html, /Tap to add</);
+});
+
+test('owner 2026-08-25: the no-buffs attestation toggle renders for battle only, with pressed state', () => {
+  const battle = renderS2({ types: { you: 'battle', enemy: 'battle' }, coverage: { you: false, enemy: false } });
+  assert.match(battle, /data-no-buffs="you"/);
+  assert.match(battle, /aria-pressed="false"/);
+  assert.match(battle, /No buffs on either side/);
+  const battleOn = renderS2({ types: { you: 'battle', enemy: 'battle' }, coverage: { you: false, enemy: false }, noBuffs: true });
+  assert.match(battleOn, /aria-pressed="true"/);
+  assert.match(battleOn, /ocrf-no-buffs--on/);
+  const scout = renderS2({ types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false } });
+  assert.doesNotMatch(scout, /data-no-buffs/);
 });

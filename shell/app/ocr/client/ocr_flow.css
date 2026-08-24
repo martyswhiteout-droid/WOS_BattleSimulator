@@ -757,3 +757,55 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   [data-screen="s2"] .ocrf-side-label { font-size: 14.5px; }
   [data-screen="s2"] .ocrf-type-tag { font-size: 11.5px; }
 }
+
+
+/* --- Round: owner feedback 2026-08-16 (S2 ingestion + attestation) --------
+   Drag-over highlight for the add-zones (tap/paste/drop are equal channels),
+   and the "No buffs on either side" attestation toggle under the battle
+   rows. Same navy-world tokens; append-only. */
+
+.ocrf-dropzone.ocrf-drag-over {
+  border-color: var(--ocrf-ice);
+  background: rgba(46, 161, 242, .10);
+}
+
+.ocrf-no-buffs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 10px 12px;
+  border: 1px dashed rgba(185, 210, 229, .30);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ocrf-ink-label);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ocrf-no-buffs:hover { border-color: rgba(185, 210, 229, .55); color: var(--ocrf-ink); }
+
+.ocrf-no-buffs:focus-visible { outline: 2px solid var(--ocrf-ice); outline-offset: 1px; }
+
+.ocrf-no-buffs-box {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(185, 210, 229, .45);
+  border-radius: 6px;
+  background: rgba(6, 20, 34, .38);
+  color: var(--ocrf-ice);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.ocrf-no-buffs--on {
+  border-style: solid;
+  border-color: rgba(46, 161, 242, .55);
+  color: var(--ocrf-ink);
+}

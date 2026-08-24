@@ -187,3 +187,15 @@ test('UXJ-010 adjunct: S5 carries its own See-who-wins primary CTA (the app #run
   assert.match(html, /See who wins/);
   assert.match(html, /ocrf-btn-primary/);
 });
+
+
+test('owner 2026-08-25: renderS5 infoNotes are informational — rendered, but complete styling is untouched', () => {
+  const html = renderS5({
+    chipText: 'x', complete: true, states: { you: {}, enemy: {} },
+    infoNotes: [{ kind: 'no-buffs', message: 'Converted with no special bonuses — you told us there are none on either side.' }],
+  });
+  assert.match(html, /data-info-note="no-buffs"/);
+  assert.match(html, /no special bonuses/);
+  assert.match(html, /ocrf-complete/);           // info never demotes the chip
+  assert.doesNotMatch(html, /ocrf-needs-attention/);
+});

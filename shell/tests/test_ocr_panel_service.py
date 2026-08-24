@@ -497,3 +497,31 @@ def test_qa_defect_034_one_sided_special_on_a_battle_panel_stays_flat():
     r = extract_panel([toks], side_hint="you", panel_hint=None)
     assert r["panel_type"] == "battle"
     assert r["specials"] == [{"label": SPECIAL_LABEL, "value": 10.0, "side": None}]
+
+
+def test_owner_20260825_two_popup_screenshots_merge_into_one_specials_set():
+    # Owner feedback 2026-08-25: the Buffs row takes 1 or 2 screenshots (a
+    # long popup list scrolls). Two popup shots — different special rows on
+    # each, one shared — must merge into ONE deduped specials set, observed
+    # "read", no conflicts. Stitch already keys rows by (canonical, side);
+    # this pins the two-popup case by name.
+    shot1 = [
+        _tok("Notes on Special Bonuses", 0.23, 0.05, 0.77, 0.08),
+        _tok("Attack Bonus (Pet Skill)", 0.05, 0.20, 0.40, 0.23),
+        _tok("+10.0%", 0.70, 0.20, 0.95, 0.23),
+        _tok("Defense Bonus (Pet Skill)", 0.05, 0.30, 0.40, 0.33),
+        _tok("+8.0%", 0.70, 0.30, 0.95, 0.33),
+    ]
+    shot2 = [
+        _tok("Notes on Special Bonuses", 0.23, 0.05, 0.77, 0.08),
+        _tok("Defense Bonus (Pet Skill)", 0.05, 0.20, 0.40, 0.23),   # shared row
+        _tok("+8.0%", 0.70, 0.20, 0.95, 0.23),
+        _tok("Health Bonus (Pet Skill)", 0.05, 0.30, 0.40, 0.33),
+        _tok("+6.0%", 0.70, 0.30, 0.95, 0.33),
+    ]
+    r = extract_panel([shot1, shot2], side_hint="you", panel_hint=None)
+    assert r["specials_observed"] == "read"
+    got = {(sp["label"], sp["value"]) for sp in r["specials"]}
+    assert got == {("Attack Bonus (Pet Skill)", 10.0),
+                   ("Defense Bonus (Pet Skill)", 8.0),
+                   ("Health Bonus (Pet Skill)", 6.0)}

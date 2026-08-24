@@ -143,3 +143,24 @@ def test_qa_defect_022_only_the_three_states_are_accepted():
         with pytest.raises(ValueError) as exc:
             fold_sets([], [], observed=bad)
         assert not isinstance(exc.value, MissingSpecialsError), bad
+
+
+def test_owner_20260825_enemy_lethality_penalty_folds_into_P_and_never_into_own_buffs():
+    # Owner question 2026-08-25: "the Enemy Lethality Penalty buff reduces the
+    # enemy's lethality — is it properly captured?" Conversion-side answer,
+    # pinned by name: as an ENEMY-side row it folds into P[Lethality] as
+    # |value| (D-013's sign guard); as an OWN-side row it must never leak
+    # into the own S sets (it acts on the opponent, not on you) — and
+    # battle_to_scoutnet credits P back when recovering the victim's true
+    # scout-net numbers.
+    from shell.app.ocr.panel.convert import battle_to_scoutnet, fold_sets
+    own = [{"label": "Enemy Lethality Penalty (Pet Skill)", "value": -25.0, "side": None}]
+    S_scout, S_battle, P = fold_sets(own, [], observed="read")
+    assert S_scout["Lethality"] == 0.0 and S_battle["Lethality"] == 0.0
+    assert P["Lethality"] == 0.0            # own outgoing penalty is not MY debuff
+
+    S_scout2, S_battle2, P2 = fold_sets([], own, observed="read")
+    assert P2["Lethality"] == 0.25          # |−25| / 100: the enemy's penalty on me
+    # a battle Lethality suppressed by that penalty converts back UP:
+    out = battle_to_scoutnet({"Infantry": {"Lethality": 100.0}}, S_scout2, S_battle2, P2)
+    assert abs(out["Infantry"]["Lethality"] - ((2.0 * 1.25) - 1) * 100.0) < 1e-9

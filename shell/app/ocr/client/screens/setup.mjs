@@ -71,7 +71,7 @@ export function buildFillPlan({ conversion, savedValues = { you: {}, enemy: {} }
   return plan;
 }
 
-export function renderS5({ chipText, complete, states, notices = [] }) {
+export function renderS5({ chipText, complete, states, notices = [], infoNotes = [] }) {
   // Undo's own visibility is driven entirely by its `hidden` attribute (thin wiring,
   // via shouldShowUndo(snapshot), toggles that after mount) — the wrapping <p> is never
   // itself conditionally hidden, there is nothing else in it whose visibility depends on
@@ -79,7 +79,9 @@ export function renderS5({ chipText, complete, states, notices = [] }) {
   // D-044: conversion notices render inside the expanded body, above the grid,
   // reusing the neutral .ocrf-s2-notice card (no new CSS round needed).
   const noticesHtml = notices.map((n) =>
-    `<p class="ocrf-s2-notice" data-conv-notice="${n.side}">${n.message}</p>`).join('');
+    `<p class="ocrf-s2-notice" data-conv-notice="${n.side}">${n.message}</p>`).join('')
+    + infoNotes.map((n) =>
+      `<p class="ocrf-s2-notice" data-info-note="${n.kind}">${n.message}</p>`).join('');
   // UXJ-005 fix (EVAL_UX_JOURNEY.md round 1): S4->S5 never moved focus to a
   // heading — #ocrfS5 had no heading element at all, so ocr_flow.js's show()
   // (which auto-focuses whatever `h1, h2[tabindex]` it finds after

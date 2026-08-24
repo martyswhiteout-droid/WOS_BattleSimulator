@@ -191,3 +191,66 @@ test('D-036 probe: a single full battle response (stats_you+stats_enemy, both 12
   assert.equal(allStates.length, 24);
   assert.ok(allStates.every((s) => s === 'ok'), `expected 24/24 ok (both columns fully classified), got: ${JSON.stringify(allStates)}`);
 });
+
+
+// ---- Owner feedback 2026-08-16: the no-buffs attestation ------------------
+// An explicit user claim "no buffs on either side" upgrades ONLY a silent
+// absence ('none') to the legal zero-specials read state (QA D-022, attested
+// by the user instead of a captured empty popup). 'partial' (rows SEEN but
+// unreadable) and a real 'read' are never overridden.
+
+test('attestedObserved: upgrades none, never partial, never read, never without the claim', () => {
+  const c = createController({});
+  assert.equal(c.attestedObserved('none', true), 'read');
+  assert.equal(c.attestedObserved('none', false), 'none');
+  assert.equal(c.attestedObserved('partial', true), 'partial');
+  assert.equal(c.attestedObserved('read', true), 'read');
+});
+
+test('readAll with noBuffsAttested: a popup-less battle read converts, and the attestation is reported per side', async () => {
+  const stats = {};
+  for (const cls of ['Infantry', 'Lancer', 'Marksman']) {
+    for (const st of ['Attack', 'Defense', 'Lethality', 'Health']) stats[`${cls}|${st}`] = 1000.0;
+  }
+  const fieldConf = Object.fromEntries(Object.keys(stats).map((k) => [k, 0.99]));
+  const postPanel = async () => ({
+    status: 'ok', panel_type: 'battle', requested_side: 'you',
+    stats_left: stats, stats_left_conf: fieldConf,
+    stats_right: stats, stats_right_conf: fieldConf,
+    stats_you: stats, stats_you_conf: fieldConf,
+    stats_enemy: stats, stats_enemy_conf: fieldConf,
+    specials: [], specials_you: [], specials_enemy: [],
+    specials_observed: 'none', unreadable_fields: [], warnings: [],
+    field_engine: {}, engines_used: ['rapidocr'],
+  });
+  const c = createController({ postPanel });
+  c.flow.pickKind('battle');
+  const without = await c.readAll({ you: [new Uint8Array([1])] });
+  assert.equal(without.conversion.you.outcome, 'needs_specials');
+  const withAtt = await c.readAll({ you: [new Uint8Array([1])] }, null, { noBuffsAttested: true });
+  assert.equal(withAtt.conversion.you.outcome, 'ready');
+  assert.equal(withAtt.attested.you, true);
+  // zero-specials fold is the identity: battle numbers pass through unchanged
+  assert.equal(withAtt.conversion.you.percents['Infantry|Attack'], 1000.0);
+});
+
+test('readAll attestation never overrides a partial read (the screen contradicts the claim)', async () => {
+  const stats = { 'Infantry|Attack': 1000.0 };
+  const conf = { 'Infantry|Attack': 0.99 };
+  const postPanel = async () => ({
+    status: 'partial', panel_type: 'battle', requested_side: 'you',
+    stats_left: stats, stats_left_conf: conf,
+    stats_right: stats, stats_right_conf: conf,
+    stats_you: stats, stats_you_conf: conf,
+    stats_enemy: stats, stats_enemy_conf: conf,
+    specials: [], specials_you: [], specials_enemy: [],
+    specials_observed: 'partial',
+    unreadable_fields: ['specials.Attack Bonus (Pet Skill)'], warnings: [],
+    field_engine: {}, engines_used: ['rapidocr'],
+  });
+  const c = createController({ postPanel });
+  c.flow.pickKind('battle');
+  const out = await c.readAll({ you: [new Uint8Array([1])] }, null, { noBuffsAttested: true });
+  assert.equal(out.conversion.you.outcome, 'needs_specials');
+  assert.equal(out.attested.you, false);
+});

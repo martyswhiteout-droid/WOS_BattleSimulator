@@ -69,6 +69,7 @@ function postPanel({ shotBytesList, side, panelType }) {
 let controller = null;
 
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
+  noBuffs: false, lastZoneSide: null,   // owner 2026-08-25: buffs attestation + paste routing
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
@@ -85,6 +86,14 @@ function root() { return document.getElementById('ocrfRoot'); }
 // NOT modal: per the mock, S5 IS the app again — the Battle-setup chip
 // renders inline at the top of the form section next to the freshly filled
 // panel (see the s5 branch of render()). Pure so it's unit-testable.
+// Owner feedback 2026-08-25 (paste/drop upload): a paste has no target
+// element, so the side is decided by, in order: the zone that HAS focus,
+// the zone the user last touched (click or drag-over), then 'you'.
+// Pure; exported for tests.
+export function pasteTargetSide({ focusedSide = null, lastZoneSide = null } = {}) {
+  return focusedSide || lastZoneSide || 'you';
+}
+
 export function presentationFor(screen) {
   return { modal: screen !== 'entry' && screen !== 's5' };
 }
@@ -448,9 +457,10 @@ function renderScreen() {
     }
 
     const coverage = controller.flow.coverage();
-    show(renderS2({ types: controller.flow.types(), coverage, notice: app.s2Notice,
+    show(renderS2({ types: controller.flow.types(), coverage, notice: app.s2Notice, noBuffs: app.noBuffs,
       shots: { you: app.shots.you.map((s) => s.id), enemy: app.shots.enemy.map((s) => s.id) } }));
-    wireS2(root(), { onDropzone, onTypeTag, onContinue: onS2Continue });
+    wireS2(root(), { onDropzone, onTypeTag, onContinue: onS2Continue,
+      onNoBuffs: () => { app.noBuffs = !app.noBuffs; render(); } });
     return;
   }
   if (app.screen === 's3') {
@@ -463,7 +473,9 @@ function renderScreen() {
     // navigation when the request finally settles), request aborted.
     activeScanAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const handle = driveScan({
-      run: () => controller.readAll({ you: app.shots.you.map((s) => s.bytes), enemy: app.shots.enemy.map((s) => s.bytes) }),
+      run: () => controller.readAll(
+        { you: app.shots.you.map((s) => s.bytes), enemy: app.shots.enemy.map((s) => s.bytes) },
+        null, { noBuffsAttested: app.noBuffs }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
       onError: (err) => { app.scanHandle = null; activeScanAbort = null; onReadError(err); },
@@ -493,6 +505,15 @@ function renderScreen() {
     // refused (needs_specials etc.) is left unfilled by the plan, so the
     // chip may not claim completeness and the body must say why.
     const notices = conversionNotices(conversion);
+    // Owner feedback 2026-08-25: an APPLIED no-buffs attestation is said
+    // out loud on S5 — informational only, it must never flip the chip
+    // (that is what conversionNotices' blocker list is for).
+    const infoNotes = [];
+    const att = app.lastRead?.attested ?? {};
+    if (att.you || att.enemy) {
+      infoNotes.push({ kind: 'no-buffs', message:
+        'Converted with no special bonuses \u2014 you told us there are none on either side.' });
+    }
     app.priorSnapshot = buildSnapshot({
       percentsMe: window.readInputPanelPct ? window.readInputPanelPct('me') : {},
       percentsFoe: window.readInputPanelPct ? window.readInputPanelPct('foe') : {},
@@ -539,7 +560,7 @@ function renderScreen() {
         document.body.prepend(host);
       }
     }
-    host.innerHTML = renderS5({ chipText: computeChipText(tally, notices), complete: tally.clear && !notices.length, states, notices });
+    host.innerHTML = renderS5({ chipText: computeChipText(tally, notices), complete: tally.clear && !notices.length, states, notices, infoNotes });
     // Anchor the arrival scroll on the HOST — synchronous and INSTANT, as
     // the branch's own scroll intent (applyFillPlan's was suppressed above).
     // Instant, not smooth, deliberately: rAF/timers don't run in throttled
@@ -625,19 +646,32 @@ function onDropzone(side) {
   input.setAttribute('data-ocrf-picker', side);
   document.body.appendChild(input);
   input.addEventListener('change', async () => {
-    for (const file of input.files) {
-      const bytes = new Uint8Array(await file.arrayBuffer());
-      const id = `${side}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      controller.flow.addShot(side, id);
-      app.shots[side].push({ id, bytes });
-    }
-    // The recovery removal notice has served its purpose once a replacement
-    // screenshot lands — leaving it up reads as stale (L4 closing nit).
-    if (input.files.length) app.s2Notice = null;
+    await addFilesToSide(side, input.files);
     input.remove();
-    render();
   });
+  app.lastZoneSide = side;   // paste routing: remember the last-touched zone
   input.click();
+}
+
+// Shared ingest for every upload channel — picker, drag-drop, paste (owner
+// feedback 2026-08-16: "Tap to add" alone is not enough). Accepts only the
+// image types the picker itself accepts; a call that adds nothing changes
+// nothing (no notice clear, no re-render churn).
+const UPLOAD_IMAGE_TYPES = /^image\/(png|jpe?g|webp)$/;
+async function addFilesToSide(side, fileList) {
+  const files = [...(fileList || [])].filter((f) => UPLOAD_IMAGE_TYPES.test(f.type));
+  if (!files.length) return 0;
+  for (const file of files) {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const id = `${side}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    controller.flow.addShot(side, id);
+    app.shots[side].push({ id, bytes });
+  }
+  // The recovery/re-entry notice has served its purpose once a screenshot
+  // lands — leaving it up reads as stale (L4 closing nit).
+  app.s2Notice = null;
+  render();
+  return files.length;
 }
 
 // D-035 fix: index into app.shots[side] (matches renderThumbs's own
@@ -923,6 +957,35 @@ function boot() {
   // Backdrop click (the fixed #ocrfRoot itself, never its card) also exits.
   document.addEventListener('click', (ev) => {
     if (ev.target && ev.target.id === 'ocrfRoot' && presentationFor(app.screen).modal) exitFlow();
+  });
+
+  // Owner feedback 2026-08-25: the add-zones take DRAG-DROP and PASTE, not
+  // just the OS picker. All three channels funnel into addFilesToSide.
+  const zoneOf = (ev) => (ev.target && typeof ev.target.closest === 'function')
+    ? ev.target.closest('[data-dropzone]') : null;
+  document.addEventListener('dragover', (ev) => {
+    if (app.screen !== 's2') return;
+    ev.preventDefault();                     // required for drop to fire; also
+    const zone = zoneOf(ev);                 // stops the browser navigating away
+    if (zone) { zone.classList.add('ocrf-drag-over'); app.lastZoneSide = zone.dataset.dropzone; }
+  });
+  document.addEventListener('dragleave', (ev) => { zoneOf(ev)?.classList.remove('ocrf-drag-over'); });
+  document.addEventListener('drop', (ev) => {
+    if (app.screen !== 's2') return;
+    ev.preventDefault();
+    const zone = zoneOf(ev);
+    if (!zone) return;
+    zone.classList.remove('ocrf-drag-over');
+    addFilesToSide(zone.dataset.dropzone, ev.dataTransfer && ev.dataTransfer.files);
+  });
+  document.addEventListener('paste', (ev) => {
+    if (app.screen !== 's2') return;
+    const files = [...((ev.clipboardData && ev.clipboardData.files) || [])];
+    if (!files.length) return;
+    ev.preventDefault();
+    const focusedSide = document.activeElement && typeof document.activeElement.closest === 'function'
+      ? document.activeElement.closest('[data-dropzone]')?.dataset?.dropzone ?? null : null;
+    addFilesToSide(pasteTargetSide({ focusedSide, lastZoneSide: app.lastZoneSide }), files);
   });
   // Real-screenshot samples degrade to the hand-drawn mini-panels when their
   // images can't load (a promoted bundle strips game-IP raster art —

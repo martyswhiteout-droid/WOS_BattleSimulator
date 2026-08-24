@@ -20,7 +20,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor, reentryNotice,
+  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor, reentryNotice, pasteTargetSide,
   backLandsOnEntry,
 } from '../ocr_flow.js';
 import { mapError } from '../error_copy.mjs';
@@ -370,4 +370,12 @@ test('UXJ-009: reentryNotice speaks only when shots carried over, and says how t
   assert.match(notice, /Picked up where you left off/);
   assert.match(notice, /fresh start/);
   assert.match(reentryNotice({ shotsYou: [], shotsEnemy: ['b'] }), /still here/);
+});
+
+
+test('owner 2026-08-25: pasteTargetSide precedence is focused zone, then last-touched zone, then you', () => {
+  assert.equal(pasteTargetSide({ focusedSide: 'enemy', lastZoneSide: 'you' }), 'enemy');
+  assert.equal(pasteTargetSide({ focusedSide: null, lastZoneSide: 'enemy' }), 'enemy');
+  assert.equal(pasteTargetSide({}), 'you');
+  assert.equal(pasteTargetSide(), 'you');
 });

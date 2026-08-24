@@ -175,15 +175,22 @@ export function renderThumbs(side, ids) {
 // exactly that, no dead-slot pretence.
 export const UPLOAD_ROWS = {
   battle: [
-    { key: 'battle_heroes', img: 'sample_battle_heroes.jpg', alt: "The report's hero strip",
-      label: 'Heroes', tag: 'OPTIONAL',
-      copy: 'The hero part at the top. Captain auto-set is coming — adding it now future-proofs your upload.' },
+    // Owner feedback 2026-08-25: 'Heroes + Experts', no OPTIONAL tag, and the
+    // capture-only explainer sentence removed. Still capture-only in the
+    // engine until badge-reading ships — the spec amendment records that the
+    // REQUIRED presentation is the owner's call.
+    { key: 'battle_heroes', img: 'sample_battle_heroes.jpg', alt: "The report's heroes and experts",
+      label: 'Heroes + Experts', tag: '',
+      copy: 'The heroes and experts shown on the report.' },
     { key: 'battle_panel', img: 'sample_battle_panel.jpg', alt: "The battle report's Stat Bonuses panel",
       label: 'Battle stats', tag: '',
       copy: 'The Stat Bonuses list — fills all 24 numbers, both sides.' },
+    // Owner feedback 2026-08-25: NEEDED tag dropped (hard to see); this row
+    // takes 1 or 2 screenshots; an explicit "no buffs" attestation replaces
+    // silent absence (rendered below the rows, battle only).
     { key: 'battle_popup', img: 'sample_battle_popup.jpg', alt: 'The Notes on Special Bonuses popup',
-      label: 'Buffs', tag: 'NEEDED',
-      copy: 'Tap the ! next to “Stat Bonuses” — we can’t convert your numbers without this popup.' },
+      label: 'Buffs', tag: '',
+      copy: 'Tap the ! next to “Stat Bonuses”. Long list? Add up to 2 screenshots.' },
   ],
   scout: [
     { key: 'scout', img: 'sample_scout.jpg', alt: "The scout report's Stat Bonuses panel",
@@ -197,8 +204,8 @@ export const UPLOAD_ROWS = {
   ],
 };
 
-function uploadRowsHtml(side, type) {
-  return (UPLOAD_ROWS[type] || []).map((row) => `
+function uploadRowsHtml(side, type, noBuffs = false) {
+  const rows = (UPLOAD_ROWS[type] || []).map((row) => `
 <div class="ocrf-sample-row" data-sample-row="${row.key}">
   <figure class="ocrf-sample-shot">
     <img class="ocrf-sample-img" src="${SAMPLE_IMG_BASE}/${row.img}" alt="${row.alt}">
@@ -206,12 +213,24 @@ function uploadRowsHtml(side, type) {
   <button type="button" class="ocrf-dropzone ocrf-row-zone" data-dropzone="${side}">
     <span class="ocrf-row-label">${row.label}${row.tag ? ` <span class="ocrf-row-tag${row.tag === 'OPTIONAL' ? ' ocrf-row-tag--muted' : ''}">${row.tag}</span>` : ''}</span>
     <span class="ocrf-row-copy">${row.copy}</span>
-    <span class="ocrf-row-add">${DZ_ICON}<b>Tap to add</b></span>
+    <span class="ocrf-row-add">${DZ_ICON}<b>Tap · paste · drop</b></span>
   </button>
-</div>`).join('');
+</div>`);
+  // Owner feedback 2026-08-25: explicit opt-out INSTEAD of silent absence -
+  // the user attests there are no special bonuses on either side. Battle
+  // only (the popup is a battle artifact; scout needs no conversion).
+  if (type === 'battle') {
+    rows.push(`
+<button type="button" class="ocrf-no-buffs${noBuffs ? ' ocrf-no-buffs--on' : ''}" data-no-buffs="${side}"
+  aria-pressed="${noBuffs ? 'true' : 'false'}">
+  <span class="ocrf-no-buffs-box" aria-hidden="true">${noBuffs ? '&#10003;' : ''}</span>
+  No buffs on either side — skip the popup
+</button>`);
+  }
+  return rows.join('');
 }
 
-function sideSectionHtml(side, { type, covered, shotCount, ids = [] }) {
+function sideSectionHtml(side, { type, covered, shotCount, ids = [], noBuffs = false }) {
   const label = side === 'you' ? 'YOU' : 'ENEMY';
   // A covered side needs no reference rows (there's nothing to upload here);
   // an uncovered side gets the per-row samples for its CURRENT type.
@@ -220,7 +239,7 @@ function sideSectionHtml(side, { type, covered, shotCount, ids = [] }) {
       + 'Covered by your battle report</div>'
       + `<button type="button" class="ocrf-dropzone ocrf-dropzone--muted" data-dropzone="${side}">`
       + `${DZ_ICON}<b>${dropzoneLabel({ side, covered })}</b></button>`
-    : uploadRowsHtml(side, type);
+    : uploadRowsHtml(side, type, noBuffs);
   return `
 <div class="ocrf-side-section ocrf-side-${side}${covered ? ' ocrf-covered' : ''}" data-side="${side}">
   <div class="ocrf-side-head">
@@ -232,11 +251,11 @@ function sideSectionHtml(side, { type, covered, shotCount, ids = [] }) {
 </div>`.trim();
 }
 
-export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, notice = null }) {
+export function renderS2({ types, coverage, shots = { you: [], enemy: [] }, notice = null, noBuffs = false }) {
   const you = sideSectionHtml('you',
-    { type: types.you, covered: coverage.you && !shots.you.length, shotCount: shots.you.length, ids: shots.you });
+    { type: types.you, covered: coverage.you && !shots.you.length, shotCount: shots.you.length, ids: shots.you, noBuffs });
   const enemy = sideSectionHtml('enemy',
-    { type: types.enemy, covered: coverage.enemy && !shots.enemy.length, shotCount: shots.enemy.length, ids: shots.enemy });
+    { type: types.enemy, covered: coverage.enemy && !shots.enemy.length, shotCount: shots.enemy.length, ids: shots.enemy, noBuffs });
   const state = computeS2ContinueState(coverage);
   // D-039: the E1-recovery removal notice (mock's #s2Notice) — only rendered
   // when actually supplied, never an empty placeholder element.
@@ -357,9 +376,12 @@ export function wireS1(root, { onPick }) {
   });
 }
 
-export function wireS2(root, { onDropzone, onTypeTag, onContinue }) {
+export function wireS2(root, { onDropzone, onTypeTag, onContinue, onNoBuffs }) {
   root.querySelectorAll('[data-dropzone]').forEach((zone) => {
     zone.addEventListener('click', () => onDropzone(zone.dataset.dropzone));
+  });
+  root.querySelectorAll('[data-no-buffs]').forEach((btn) => {
+    btn.addEventListener('click', () => onNoBuffs && onNoBuffs());
   });
   root.querySelectorAll('[data-type-tag]').forEach((tag) => {
     tag.addEventListener('click', () => onTypeTag(tag.dataset.typeTag, tag));
