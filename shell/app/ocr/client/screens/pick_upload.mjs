@@ -191,6 +191,14 @@ export const UPLOAD_ROWS = {
     { key: 'battle_popup', img: 'sample_battle_popup.jpg', alt: 'The Notes on Special Bonuses popup',
       label: 'Buffs', tag: '',
       copy: 'Tap the ! next to “Stat Bonuses”. Long list? Add up to 2 screenshots.' },
+    // Owner feedback 2026-08-25: an OPTIONAL Troop Power row — troop type,
+    // quality, FC tier, T12 level, and per-level counts for the final
+    // checks. Capture-only until the Troop Power parser ships (the sample
+    // image is PENDING an owner capture; the img-error fallback shows the
+    // alt text until then).
+    { key: 'battle_troop_power', img: 'sample_troop_power.jpg', alt: 'The Troop Power screen',
+      label: 'Troop Power', tag: 'OPTIONAL',
+      copy: 'Your Troop Power screen — troop counts and tiers for the final checks.' },
   ],
   scout: [
     { key: 'scout', img: 'sample_scout.jpg', alt: "The scout report's Stat Bonuses panel",

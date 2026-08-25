@@ -92,8 +92,21 @@ Auto-advance screens share ONE history slot (Back/Cancel always land on the last
   own-side rows never leak into own S sets) — but captured penalty rows are NOT yet propagated
   into the prediction's `debuffs_on_enemy` (the app's Buffs tab). That propagation is a
   PROPOSED follow-up awaiting the owner's call (it changes prediction inputs).
-- **Pending owner screenshots** (never guessed, per the no-fabrication rule): long-form scout
-  sample, long-form City Stats sample, the correct Heroes + Experts sample, the two buffs-popup
-  captures (exact "Appoint-based …" label text for the lexicon), and the Troop Power panel
-  (new capture type: troop type / quality / FC tier / T12 level / per-level counts → final
-  checks). Drop real captures into `shell/tests/fixtures/panel_ocr/images/`.
+- **Resolved without new screenshots (2026-08-25 double-check):** the long-form scout and
+  City Stats previews were regenerated from the owner's own fixtures (C_scout.png full
+  12-row panel; C_citystats_1.png full Bonus Overview); the Heroes + Experts preview is now
+  the report's Hero Comparison + Expert Comparison sections cropped from C_battle_1.png
+  (owner to confirm it matches his attachment 3). The four "Appoint-based Troop's
+  Attack/Defense/Lethality/Health" labels are in BOTH lexicons per the owner's typed
+  instruction (skeleton matching is alpha-only, so in-game apostrophe/hyphen variants
+  resolve identically); their fold bucket is plain-buff (S_scout) per the owner — one real
+  battle+scout capture pair from an appointed account will confirm scout-visible vs
+  battle-only, and the real popup captures will confirm the exact wording.
+- **Troop Power (owner 2026-08-25):** battle has a fourth, OPTIONAL row — the Troop Power
+  screen (troop type, quality, FC tier, T12 level, per-level counts -> the final checks).
+  Capture-only until the Troop Power parser ships; its sample image is PENDING an owner
+  capture (the row falls back to alt text meanwhile).
+- **Still pending owner screenshots** (never guessed): the two buffs-popup captures
+  (attachments 5-6 — fixtures + exact Appoint-based wording confirmation) and the Troop
+  Power screen (sample + parser ground truth). Drop into
+  `shell/tests/fixtures/panel_ocr/images/`.

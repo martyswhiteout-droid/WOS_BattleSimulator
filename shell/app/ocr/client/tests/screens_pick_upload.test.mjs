@@ -210,7 +210,7 @@ test('UXJ-002: S1\'s three cards each carry their matching real-screenshot sampl
   assert.match(cityCard, /sample_citystats\.jpg/);
 });
 
-test('UXJ-002 + owner arrangement: S2 renders labeled sample rows — three for battle, one for scout', () => {
+test('UXJ-002 + owner arrangement: S2 renders labeled sample rows — four for battle (owner 2026-08-25 added Troop Power), one for scout', () => {
   const html = renderS2({
     types: { you: 'battle', enemy: 'scout' },
     coverage: { you: false, enemy: false },
@@ -218,19 +218,23 @@ test('UXJ-002 + owner arrangement: S2 renders labeled sample rows — three for 
   assert.match(html, /ocrf-dz-icon/);
   const youSection = html.slice(html.indexOf('data-side="you"'), html.indexOf('data-side="enemy"'));
   // battle = THREE rows, in order: Heroes (optional) / Battle stats / Buffs (needed)
-  for (const key of ['battle_heroes', 'battle_panel', 'battle_popup']) {
+  for (const key of ['battle_heroes', 'battle_panel', 'battle_popup', 'battle_troop_power']) {
     assert.match(youSection, new RegExp(`data-sample-row="${key}"`));
   }
   assert.ok(youSection.indexOf('battle_heroes') < youSection.indexOf('battle_panel'));
   assert.ok(youSection.indexOf('battle_panel') < youSection.indexOf('battle_popup'));
+  assert.ok(youSection.indexOf('battle_popup') < youSection.indexOf('battle_troop_power'));
   // Owner feedback 2026-08-25: 'Heroes + Experts', and the OPTIONAL/NEEDED
   // tags are gone (hard to see) — the rows carry their teaching in copy.
   assert.match(youSection, />Heroes \+ Experts</);
   assert.match(youSection, />Battle stats</);
   assert.match(youSection, />Buffs</);
-  assert.doesNotMatch(youSection, /OPTIONAL|NEEDED/);
+  // Heroes/Buffs carry no tags (owner 2026-08-25); Troop Power is the one
+  // deliberately OPTIONAL-tagged row.
+  assert.doesNotMatch(youSection, /NEEDED/);
+  assert.equal((youSection.match(/OPTIONAL/g) || []).length, 1);
   // every row carries its own add-zone feeding the SAME side shot set
-  assert.equal((youSection.match(/data-dropzone="you"/g) || []).length, 3);
+  assert.equal((youSection.match(/data-dropzone="you"/g) || []).length, 4);
   // scout = exactly one row
   const enemySection = html.slice(html.indexOf('data-side="enemy"'));
   assert.equal((enemySection.match(/data-sample-row=/g) || []).length, 1);
@@ -318,4 +322,14 @@ test('owner 2026-08-25: the no-buffs attestation toggle renders for battle only,
   assert.match(battleOn, /ocrf-no-buffs--on/);
   const scout = renderS2({ types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false } });
   assert.doesNotMatch(scout, /data-no-buffs/);
+});
+
+
+test('owner 2026-08-25: the Troop Power row is the fourth battle row, OPTIONAL, capture-only copy', () => {
+  const rows = UPLOAD_ROWS.battle;
+  assert.equal(rows.length, 4);
+  assert.equal(rows[3].key, 'battle_troop_power');
+  assert.equal(rows[3].label, 'Troop Power');
+  assert.equal(rows[3].tag, 'OPTIONAL');
+  assert.match(rows[3].copy, /final checks/);
 });

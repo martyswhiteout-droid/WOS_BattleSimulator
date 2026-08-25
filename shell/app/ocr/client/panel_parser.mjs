@@ -14,6 +14,9 @@ const SPECIALS = [
   'Enemy Lethality Penalty (Expert Skill)', 'Enemy Attack Penalty (Pet Skill)',
   'Attack Bonus', 'Defense Bonus', 'Lethality Bonus', 'Health Bonus',
   'Enemy Attack Reduction', 'Enemy Defense Reduction',
+  // Owner 2026-08-25: appointment buffs — plain stat buffs (see lexicon.py).
+  "Appoint-based Troop's Attack", "Appoint-based Troop's Defense",
+  "Appoint-based Troop's Lethality", "Appoint-based Troop's Health",
 ];
 // Specials that describe damage done to the ENEMY's stats (QA D-013). Penalty
 // classification is by canonical label â€” never by a 'Penalty' substring (which

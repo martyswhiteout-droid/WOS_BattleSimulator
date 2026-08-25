@@ -10,6 +10,15 @@ _SPECIALS = (
     "Enemy Lethality Penalty (Expert Skill)", "Enemy Attack Penalty (Pet Skill)",
     "Attack Bonus", "Defense Bonus", "Lethality Bonus", "Health Bonus",
     "Enemy Attack Reduction", "Enemy Defense Reduction",
+    # Owner 2026-08-25: appointment (mayor/vice) buffs, typed by the owner —
+    # treated as plain stat buffs (S_scout bucket via the stat-word branch).
+    # Skeletons are alpha-only, so the in-game apostrophe/hyphen variants
+    # ("Appoint-Based Troops' Attack" etc.) match identically. Fold bucket
+    # is UNVERIFIED against a real appointed-account capture pair (see the
+    # OCR_UX_FLOW_SPEC 2026-08-25 amendment) — one battle+scout pair from an
+    # appointed account will confirm scout-visible vs battle-only.
+    "Appoint-based Troop's Attack", "Appoint-based Troop's Defense",
+    "Appoint-based Troop's Lethality", "Appoint-based Troop's Health",
 )
 # Specials that describe damage done to the ENEMY's stats (QA D-013). Penalty
 # classification is by canonical label — never by a "Penalty" substring (which
