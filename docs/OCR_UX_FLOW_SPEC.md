@@ -110,3 +110,36 @@ Auto-advance screens share ONE history slot (Back/Cancel always land on the last
   (attachments 5-6 — fixtures + exact Appoint-based wording confirmation) and the Troop
   Power screen (sample + parser ground truth). Drop into
   `shell/tests/fixtures/panel_ocr/images/`.
+
+## Amendment 2026-08-29 — merged slot-grid Upload screen (SUPERSEDES the 2026-08-25 rows layout)
+
+Owner redesign, built to a dedicated multi-document-upload UX research round
+(sub-agent, 2026-08-29). S1 (type cards) and S2 (sample rows) are ONE screen now:
+
+- **Type tabs** at the top — `Battle / Scout / City` (one word each), battle
+  preselected (`flow_state` initial is now `battle`). Switching tabs is
+  non-destructive: shots stay parked under their slot keys; the read sends ONLY
+  the active type's slots (`sendableShots`).
+- **Slot grid** — one tile per named screenshot, 2-column, ALL tiles visible in
+  the first viewport at 375x812 (verified by rect: tiles 181-383px, Scan 736-783px).
+  Battle = Heroes* / Stats* / Buffs* / Power(optional); scout & city = stacked
+  You/Enemy groups with per-group `n/m` counts (research: never side-tabs).
+- **State lives on the tile**: empty = dashed + dimmed sample-crop icon; added =
+  real LOCAL thumbnail (object URL — never uploaded, never stored) + green check
+  + corner x; 2-shot slots add a count badge; Buffs offers a one-word `None`
+  attestation link (sets the no-buffs attestation; a real upload clears it).
+- **Summary strip**: pips + bare fraction (`2/3`). Footer CTA: `Scan` (one word),
+  disabled until every required slot is covered.
+- **Tap a FULL tile** -> preview sheet (thumbnail + `Remove` / `Replace`) — never
+  a silent overwrite. Tap a tile with room -> OS picker; drag-drop targets the
+  tile; paste routes via `pasteTargetSlot` (last-touched slot with room, else
+  first empty, else first with room).
+- **Word budget is enforced**: every slot label is one word (unit test), and the
+  whole battle screen shows < 20 visible words (unit test). Notices trimmed:
+  re-entry = `Earlier screenshots kept.`; recovery = `Removed. Add a new one.`
+  E1 actions: `Retake` / `Type instead` / `Try again` / `Type the rest`.
+- **Compat**: `goto('s2')` aliases to `s1`; E1 recovery targets `s1` directly.
+  D-039/D-041 recovery machinery, the D-040 inert rules, and the sample-img
+  promoted-bundle fallback (tile icon degrades to label-only) all carry over.
+- Troop Power's sample image is still PENDING an owner capture — its tile
+  renders label-only via the img-error fallback meanwhile.

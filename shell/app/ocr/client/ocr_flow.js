@@ -5,16 +5,14 @@
 // goto/back/show pattern, and the read -> convert -> classify -> render
 // pipeline). SERVER-ONLY v1 (COORDINATOR RULING 2026-08-10 #1): no client
 // OCR engine import, no PREP screen/step — see controller.mjs and
-// screens/reading.mjs for the rationale. onDropzone/onTypeTag (left as
-// commented stubs in the plan's draft) are wired here to real DOM mechanics;
-// they carry no decision logic of their own (every actual decision — which
-// type is valid for a side, whether a type change confirms, what the
-// dropzone should say — was already built and tested in Task 6).
+// screens/reading.mjs for the rationale. Upload mechanics (slot picker,
+// drag-drop, paste, thumbnails) are wired here to real DOM plumbing; the
+// decisions (which slots a type has, what counts as scannable) live in
+// screens/pick_upload.mjs's pure model (2026-08-29 slot-grid redesign).
 import { mountEntry, wireEntry, renderUpgradeNote, wireUpgradeNote } from './screens/entry.mjs';
 import {
-  renderS1, renderS2, renderE1, wireS1, wireS2,
+  renderUpload, wireUpload, uploadModel, groupsFor, renderE1,
   renderSampleFallback,
-  YOU_TYPES, ENEMY_TYPES, TYPE_LABEL,
 } from './screens/pick_upload.mjs';
 import { renderS3, driveScan, applyStepClasses, wireS3 } from './screens/reading.mjs';
 import {
@@ -69,8 +67,8 @@ function postPanel({ shotBytesList, side, panelType }) {
 let controller = null;
 
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
-  noBuffs: false, lastZoneSide: null,   // owner 2026-08-25: buffs attestation + paste routing
-  shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array}]
+  noBuffs: false, lastSlot: null,   // buffs attestation + paste routing (slot key "side:key")
+  shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array, url, slot}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
 
@@ -86,12 +84,29 @@ function root() { return document.getElementById('ocrfRoot'); }
 // NOT modal: per the mock, S5 IS the app again — the Battle-setup chip
 // renders inline at the top of the form section next to the freshly filled
 // panel (see the s5 branch of render()). Pure so it's unit-testable.
-// Owner feedback 2026-08-25 (paste/drop upload): a paste has no target
-// element, so the side is decided by, in order: the zone that HAS focus,
-// the zone the user last touched (click or drag-over), then 'you'.
-// Pure; exported for tests.
-export function pasteTargetSide({ focusedSide = null, lastZoneSide = null } = {}) {
-  return focusedSide || lastZoneSide || 'you';
+// Owner redesign 2026-08-29 (slot grid): a paste has no target element, so
+// the SLOT is decided by, in order: the slot the user last touched (tap or
+// drag-over) if it still has room, the first empty slot, then the first
+// slot with room. Pure; exported for tests. `model` = uploadModel() output.
+export function pasteTargetSlot(model, lastSlot = null) {
+  const flat = model.groups.flatMap((g) => g.slots.map((s) => ({ ...s, side: g.side, ref: `${g.side}:${s.key}` })));
+  const room = (s) => s.state !== 'none' && s.count < s.max;
+  const last = flat.find((s) => s.ref === lastSlot && room(s));
+  if (last) return last.ref;
+  const empty = flat.find((s) => s.state === 'empty');
+  if (empty) return empty.ref;
+  const any = flat.find(room);
+  return any ? any.ref : null;
+}
+
+// Which slot keys the active type accepts for a side — the read sends ONLY
+// these (a shot uploaded under another tab stays parked, never silently
+// included). Pure; exported for tests.
+export function sendableShots(type, side, sideShots) {
+  const group = groupsFor(type).find((g) => g.side === side);
+  if (!group) return [];
+  const keys = new Set(group.slots.map((s) => s.key));
+  return sideShots.filter((s) => keys.has(s.slot));
 }
 
 export function presentationFor(screen) {
@@ -106,8 +121,7 @@ export function presentationFor(screen) {
 // existing rule the moment a new screenshot lands).
 export function reentryNotice({ shotsYou = [], shotsEnemy = [] } = {}) {
   if (!shotsYou.length && !shotsEnemy.length) return null;
-  return 'Picked up where you left off — your earlier screenshots are still here. '
-    + 'Tap the × on any of them if you want a fresh start.';
+  return 'Earlier screenshots kept.';
 }
 
 // Takeover polish round (2026-08-15, continued — live rect verification at
@@ -220,6 +234,7 @@ function show(html) {
 }
 
 function goto(screen, opts = {}) {
+  if (screen === 's2') screen = 's1';   // 2026-08-29: S1+S2 merged into one slot-grid screen
   if (app.resetTimer) { clearTimeout(app.resetTimer); app.resetTimer = null; }
   const push = opts.push !== false;
   if (push) app.history.push(screen); else app.history[app.history.length - 1] = screen;
@@ -227,8 +242,8 @@ function goto(screen, opts = {}) {
   // Carries fromRecovery/showMissing (D-039) through to render()'s arrival
   // handling for the target screen. MUST be consumed via takeNavOpts (D-041
   // fix) by whichever render() branch reads it, not read directly — render()
-  // is also called by internal actions (onDropzone's upload callback,
-  // onTypeTag's selection) that are NOT a fresh navigation, and those calls
+  // is also called by internal actions (slot uploads, tab switches) that
+  // are NOT a fresh navigation, and those calls
   // must see null, never this same opts object again. D-041 was exactly
   // this: nothing ever cleared it, so every post-upload re-render on s2
   // still saw {fromRecovery:true} from the ORIGINAL recovery navigation and
@@ -335,7 +350,7 @@ export function planS2Entry({ fromRecovery, shotsYou, shotsEnemy }) {
   return {
     clearYou: [...shotsYou],
     clearEnemy: [...shotsEnemy],
-    notice: 'We took that one out. Add a new screenshot.',
+    notice: 'Removed. Add a new one.',
   };
 }
 
@@ -424,22 +439,12 @@ function renderScreen() {
     root()?.remove();
     return;
   }
-  if (app.screen === 's1') { show(renderS1()); wireS1(root(), { onPick: onPickKind }); return; }
-  if (app.screen === 's2') {
-    // D-039: arriving via E1's "Add a clearer screenshot" (data-goto="s2"
-    // data-recovery="1") must actually clear the failed upload — from BOTH
-    // app.shots (the bytes) AND controller.flow (flow_state.mjs's own
-    // shotState, whose coverage()/isCovered() the phantom "covered" badge
-    // and Continue-enabled bug both traced back to).
-    //
-    // D-041 fix: this block must run ONLY on a fresh navigation to s2 (a
-    // real goto() call), never on a re-render triggered by an internal
-    // action already ON s2 (onDropzone's upload callback, onTypeTag's
-    // selection both call render() directly). takeNavOpts returns null for
-    // those — the previous code read app.navOpts directly with nothing ever
-    // clearing it, so EVERY re-render after landing here via recovery still
-    // saw {fromRecovery:true} and re-cleared whatever the user had just
-    // uploaded, forever (the reported "permanently dead" dropzones).
+  if (app.screen === 's1') {
+    // Combined Upload screen (2026-08-29): type tabs + slot grid + Scan.
+    // D-039 recovery and the UXJ-009 re-entry notice keep their exact
+    // machinery — the branch just renders the merged screen now.
+    // D-041: consume navOpts exactly once (fresh navigation only), never on
+    // internal re-renders (slot add/remove/tab switch call render() direct).
     const navOpts = takeNavOpts(app);
     if (navOpts) {
       const plan = planS2Entry({
@@ -449,20 +454,38 @@ function renderScreen() {
       });
       for (const id of plan.clearYou) controller.flow.removeShot('you', id);
       for (const id of plan.clearEnemy) controller.flow.removeShot('enemy', id);
-      if (plan.clearYou.length || plan.clearEnemy.length) app.shots = { you: [], enemy: [] };
-      // UXJ-009: the re-entry notice (set by onProceed, consumed exactly
-      // once here) fills the slot only when the recovery plan has nothing
-      // to say — recovery wins when both apply, and any LATER fresh
-      // navigation to S2 clears the slot exactly as before.
+      if (plan.clearYou.length || plan.clearEnemy.length) {
+        dropAllShots('you'); dropAllShots('enemy');
+      }
       app.s2Notice = plan.notice ?? app.reentryNotice ?? null;
       app.reentryNotice = null;
     }
-
-    const coverage = controller.flow.coverage();
-    show(renderS2({ types: controller.flow.types(), coverage, notice: app.s2Notice, noBuffs: app.noBuffs,
-      shots: { you: app.shots.you.map((s) => s.id), enemy: app.shots.enemy.map((s) => s.id) } }));
-    wireS2(root(), { onDropzone, onTypeTag, onContinue: onS2Continue,
-      onNoBuffs: () => { app.noBuffs = !app.noBuffs; render(); } });
+    const type = activeType();
+    const model = currentModel();
+    // Thumbnails: LOCAL object URLs only (never uploaded, never stored —
+    // the no-storage promise is about the server; self-confirmation that
+    // the right screenshot landed is the research round's core finding).
+    for (const g of model.groups) {
+      for (const s of g.slots) {
+        const mine = app.shots[g.side].filter((x) => x.slot === s.key);
+        if (mine.length) s.thumbUrl = mine[mine.length - 1].url || null;
+      }
+    }
+    show(renderUpload({ type, model, notice: app.s2Notice }));
+    wireUpload(root(), {
+      onTab: (t) => { controller.flow.pickKind(t); render(); },
+      onSlot: (side, key, state) => {
+        const slot = slotDef(type, side, key);
+        if (!slot) return;
+        if (state === 'none') { app.noBuffs = false; render(); return; }
+        const count = app.shots[side].filter((x) => x.slot === key).length;
+        if (count >= slot.max) { openSlotPreview(side, key); return; }
+        openPicker(side, key, slot.max - count);
+      },
+      onSlotRemove: (side, key) => { dropSlot(side, key); render(); },
+      onSlotNone: () => { app.noBuffs = true; render(); },
+      onScan: () => { if (currentModel().canScan) goto('s3'); },
+    });
     return;
   }
   if (app.screen === 's3') {
@@ -476,14 +499,15 @@ function renderScreen() {
     activeScanAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const handle = driveScan({
       run: () => controller.readAll(
-        { you: app.shots.you.map((s) => s.bytes), enemy: app.shots.enemy.map((s) => s.bytes) },
+        { you: sendableShots(activeType(), 'you', app.shots.you).map((s) => s.bytes),
+          enemy: sendableShots(activeType(), 'enemy', app.shots.enemy).map((s) => s.bytes) },
         null, { noBuffsAttested: app.noBuffs }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
       onError: (err) => { app.scanHandle = null; activeScanAbort = null; onReadError(err); },
     });
     app.scanHandle = handle;
-    wireS3(root(), { onCancel: () => { goto('s2', { push: false }); } });
+    wireS3(root(), { onCancel: () => { goto('s1', { push: false }); } });
     return;
   }
   if (app.screen === 's4') {
@@ -627,48 +651,60 @@ function wireE1Upgrade(button) {
   });
 }
 
-function onPickKind(kind) { controller.flow.pickKind(kind); goto('s2'); }
+// The active tab's type — controller.flow owns it (pickKind); 'battle' is
+// the fresh-open default flow_state already ships with.
+function activeType() { return controller.flow.types().you || 'battle'; }
+function currentModel() {
+  return uploadModel({ type: activeType(), shots: app.shots, attested: app.noBuffs });
+}
+function slotDef(type, side, key) {
+  const group = groupsFor(type).find((g) => g.side === side);
+  return group ? group.slots.find((s) => s.key === key) || null : null;
+}
 
-// Real file input: no decision logic (Task 6 already decided what's a valid
-// type/what the dropzone says) — just OS-picker plumbing + reading bytes.
-// The picker input must be ROOTED in the document while the OS dialog is
-// open: a detached element (the original implementation) can be garbage-
+// Real file input, per SLOT now. The picker input must be ROOTED in the
+// document while the OS dialog is open: a detached element can be garbage-
 // collected mid-pick, after which the change event simply never fires —
 // "I picked a file and nothing happened" (owner report 2026-08-15).
-// Synthetic-drive tests dispatch change directly and can't catch this, so
-// the rooting is the guard; a stale picker left by a cancelled dialog is
-// removed before creating the next one.
-function onDropzone(side) {
+function openPicker(side, slot, remaining) {
   document.querySelector('input[data-ocrf-picker]')?.remove();
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/png,image/jpeg,image/webp';
-  input.multiple = true;
+  input.multiple = remaining > 1;
   input.hidden = true;
-  input.setAttribute('data-ocrf-picker', side);
+  input.setAttribute('data-ocrf-picker', `${side}:${slot}`);
   document.body.appendChild(input);
   input.addEventListener('change', async () => {
-    await addFilesToSide(side, input.files);
+    await addFilesToSlot(side, slot, input.files);
     input.remove();
   });
-  app.lastZoneSide = side;   // paste routing: remember the last-touched zone
+  app.lastSlot = `${side}:${slot}`;   // paste routing: last-touched slot
   input.click();
 }
 
-// Shared ingest for every upload channel — picker, drag-drop, paste (owner
-// feedback 2026-08-16: "Tap to add" alone is not enough). Accepts only the
-// image types the picker itself accepts; a call that adds nothing changes
-// nothing (no notice clear, no re-render churn).
+// Shared ingest for every upload channel — picker, drag-drop, paste. Accepts
+// only the image types the picker itself accepts; caps at the slot's max
+// (extras are ignored, the count badge tells the truth); a call that adds
+// nothing changes nothing.
 const UPLOAD_IMAGE_TYPES = /^image\/(png|jpe?g|webp)$/;
-async function addFilesToSide(side, fileList) {
-  const files = [...(fileList || [])].filter((f) => UPLOAD_IMAGE_TYPES.test(f.type));
+async function addFilesToSlot(side, slot, fileList) {
+  const def = slotDef(activeType(), side, slot);
+  if (!def) return 0;
+  const have = app.shots[side].filter((s) => s.slot === slot).length;
+  const files = [...(fileList || [])].filter((f) => UPLOAD_IMAGE_TYPES.test(f.type))
+    .slice(0, Math.max(0, def.max - have));
   if (!files.length) return 0;
   for (const file of files) {
     const bytes = new Uint8Array(await file.arrayBuffer());
     const id = `${side}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     controller.flow.addShot(side, id);
-    app.shots[side].push({ id, bytes });
+    let url = null;
+    try { url = URL.createObjectURL(file); } catch (err) { /* thumb only */ }
+    app.shots[side].push({ id, bytes, url, slot });
   }
+  if (def.noneable) app.noBuffs = false;   // a real upload beats the attestation
+  app.lastSlot = `${side}:${slot}`;
   // The recovery/re-entry notice has served its purpose once a screenshot
   // lands — leaving it up reads as stale (L4 closing nit).
   app.s2Notice = null;
@@ -676,17 +712,61 @@ async function addFilesToSide(side, fileList) {
   return files.length;
 }
 
-// D-035 fix: index into app.shots[side] (matches renderThumbs's own
-// side+index keying) resolved to the real shot id for controller.flow
-// (flow_state.mjs removes by id, not position) — removing then re-renders,
-// which naturally recomputes both sides' covered badges and Continue state
-// (Task 6's existing, untouched dropzoneLabel/computeS2ContinueState).
+function dropShot(side, shot) {
+  controller.flow.removeShot(side, shot.id);
+  if (shot.url) { try { URL.revokeObjectURL(shot.url); } catch (err) { /* gone */ } }
+}
+function dropSlot(side, slot) {
+  const keep = [];
+  for (const s of app.shots[side]) {
+    if (s.slot === slot) dropShot(side, s); else keep.push(s);
+  }
+  app.shots[side] = keep;
+}
+function dropAllShots(side) {
+  for (const s of app.shots[side]) dropShot(side, s);
+  app.shots[side] = [];
+}
+
+// D-035 successor: the delegate's [data-remove-thumb] branch still routes
+// here from any legacy markup; slot tiles use wireUpload's own onSlotRemove.
 function onRemoveThumb(side, index) {
   const shot = app.shots[side][index];
   if (!shot) return;
-  controller.flow.removeShot(side, shot.id);
+  dropShot(side, shot);
   app.shots[side].splice(index, 1);
   render();
+}
+
+// Tap on a FULL slot: preview what's there, Replace or Remove — never a
+// silent overwrite (research round, 2026-08-29). Same scrim machinery as
+// the editor/picture sheets (openScrim/closeScrim own focus + inert).
+function openSlotPreview(side, slot) {
+  const mine = app.shots[side].filter((s) => s.slot === slot);
+  if (!mine.length) return;
+  const imgs = mine.map((s) => (s.url ? `<img class="ocrf-slotprev-img" src="${s.url}" alt="">` : '')).join('');
+  document.body.insertAdjacentHTML('beforeend', `
+<div class="ocrf-modal-scrim" id="ocrfSlotScrim" aria-hidden="false">
+  <div class="ocrf-sheet ocrf-slotprev" role="dialog" aria-label="Screenshot">
+    <div class="ocrf-slotprev-body">${imgs}</div>
+    <div class="ocrf-slotprev-actions">
+      <button type="button" class="ocrf-btn-ghost" id="ocrfSlotRemove">Remove</button>
+      <button type="button" class="ocrf-btn-primary" id="ocrfSlotReplace">Replace</button>
+    </div>
+  </div>
+</div>`);
+  const scrim = document.getElementById('ocrfSlotScrim');
+  const closeThis = () => closeScrim(scrim);
+  scrim.addEventListener('click', (ev) => { if (ev.target === scrim) closeThis(); });
+  scrim.querySelector('#ocrfSlotRemove').addEventListener('click', () => {
+    closeThis(); dropSlot(side, slot); render();
+  });
+  scrim.querySelector('#ocrfSlotReplace').addEventListener('click', () => {
+    closeThis(); dropSlot(side, slot); render();
+    const def = slotDef(activeType(), side, slot);
+    openPicker(side, slot, def ? def.max : 1);
+  });
+  openScrim(scrim, scrim.querySelector('#ocrfSlotReplace'));
 }
 
 // D-040 fix (mock's own proven pattern, ocr_flow_mock.html's
@@ -748,38 +828,9 @@ function closeScrim(scrim) {
   lastFocusBeforeSheet = null;
 }
 
-// Real anchored popover: no decision logic (Task 6's TYPE_LABEL/YOU_TYPES/
-// ENEMY_TYPES are the only source of truth for what's offered).
-function onTypeTag(side, tagElement) {
-  document.querySelectorAll('.ocrf-type-menu').forEach((el) => el.remove());
-  const options = side === 'you' ? YOU_TYPES : ENEMY_TYPES;
-  const menu = document.createElement('div');
-  menu.className = 'ocrf-type-menu';
-  menu.setAttribute('role', 'menu');
-  menu.innerHTML = options.map((type) => (
-    `<button type="button" role="menuitem" data-type="${type}">${TYPE_LABEL[type]}</button>`
-  )).join('');
-  tagElement.insertAdjacentElement('afterend', menu);
-  syncBackgroundInert();   // D-040: the menu counts as an open sheet too
-  menu.querySelectorAll('button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      controller.flow.setSideType(side, btn.dataset.type);
-      menu.remove();
-      syncBackgroundInert();
-      render();
-    });
-  });
-  const dismiss = (ev) => {
-    if (!menu.contains(ev.target) && ev.target !== tagElement) {
-      menu.remove();
-      syncBackgroundInert();
-      document.removeEventListener('click', dismiss, true);
-    }
-  };
-  setTimeout(() => document.addEventListener('click', dismiss, true), 0);
-}
-
-function onS2Continue() { goto('s3'); }   // PREP dropped entirely (Ruling #1) — every read is the same network round trip
+// onTypeTag/onS2Continue retired (2026-08-29): the type is a TAB on the
+// combined Upload screen (wireUpload's onTab -> flow.pickKind) and Scan is
+// gated by uploadModel().canScan — no per-side type menu exists any more.
 
 // D-038 fix: onReadDone previously only checked "any unreadable at all?",
 // collapsing two very different outcomes into one "partial" branch — a
@@ -961,33 +1012,36 @@ function boot() {
     if (ev.target && ev.target.id === 'ocrfRoot' && presentationFor(app.screen).modal) exitFlow();
   });
 
-  // Owner feedback 2026-08-25: the add-zones take DRAG-DROP and PASTE, not
-  // just the OS picker. All three channels funnel into addFilesToSide.
-  const zoneOf = (ev) => (ev.target && typeof ev.target.closest === 'function')
-    ? ev.target.closest('[data-dropzone]') : null;
+  // Owner feedback 2026-08-25: uploads take DRAG-DROP and PASTE, not just
+  // the OS picker. All three channels funnel into addFilesToSlot — the drop
+  // target is the slot TILE, the paste target is pasteTargetSlot's pick.
+  const tileOf = (ev) => (ev.target && typeof ev.target.closest === 'function')
+    ? ev.target.closest('[data-slot-tile]') : null;
   document.addEventListener('dragover', (ev) => {
-    if (app.screen !== 's2') return;
+    if (app.screen !== 's1') return;
     ev.preventDefault();                     // required for drop to fire; also
-    const zone = zoneOf(ev);                 // stops the browser navigating away
-    if (zone) { zone.classList.add('ocrf-drag-over'); app.lastZoneSide = zone.dataset.dropzone; }
+    const tile = tileOf(ev);                 // stops the browser navigating away
+    if (tile) { tile.classList.add('ocrf-drag-over'); app.lastSlot = tile.dataset.slotTile; }
   });
-  document.addEventListener('dragleave', (ev) => { zoneOf(ev)?.classList.remove('ocrf-drag-over'); });
+  document.addEventListener('dragleave', (ev) => { tileOf(ev)?.classList.remove('ocrf-drag-over'); });
   document.addEventListener('drop', (ev) => {
-    if (app.screen !== 's2') return;
+    if (app.screen !== 's1') return;
     ev.preventDefault();
-    const zone = zoneOf(ev);
-    if (!zone) return;
-    zone.classList.remove('ocrf-drag-over');
-    addFilesToSide(zone.dataset.dropzone, ev.dataTransfer && ev.dataTransfer.files);
+    const tile = tileOf(ev);
+    if (!tile) return;
+    tile.classList.remove('ocrf-drag-over');
+    const [side, key] = tile.dataset.slotTile.split(':');
+    addFilesToSlot(side, key, ev.dataTransfer && ev.dataTransfer.files);
   });
   document.addEventListener('paste', (ev) => {
-    if (app.screen !== 's2') return;
+    if (app.screen !== 's1') return;
     const files = [...((ev.clipboardData && ev.clipboardData.files) || [])];
     if (!files.length) return;
     ev.preventDefault();
-    const focusedSide = document.activeElement && typeof document.activeElement.closest === 'function'
-      ? document.activeElement.closest('[data-dropzone]')?.dataset?.dropzone ?? null : null;
-    addFilesToSide(pasteTargetSide({ focusedSide, lastZoneSide: app.lastZoneSide }), files);
+    const ref = pasteTargetSlot(currentModel(), app.lastSlot);
+    if (!ref) return;
+    const [side, key] = ref.split(':');
+    addFilesToSlot(side, key, files);
   });
   // Real-screenshot samples degrade to the hand-drawn mini-panels when their
   // images can't load (a promoted bundle strips game-IP raster art —
@@ -996,20 +1050,14 @@ function boot() {
   document.addEventListener('error', (ev) => {
     const img = ev.target;
     if (!(img instanceof HTMLImageElement) || !img.classList.contains('ocrf-sample-img')) return;
-    // S1 cards: the whole sample container swaps to its hand-drawn panel.
+    // Slot tiles (2026-08-29 grid): the dimmed sample-crop icon simply goes
+    // away — the dashed tile + label carry the state on their own (the tiny
+    // tile can't host the hand-drawn mini-panels; renderSampleFallback stays
+    // for any legacy .ocrf-sample container below).
+    if (img.classList.contains('ocrf-slot-sample')) { img.remove(); return; }
     const sample = img.closest('.ocrf-sample');
     const type = sample?.getAttribute('data-sample');
     if (sample && type) { sample.outerHTML = renderSampleFallback(type); return; }
-    // S2 rows: only the FIGURE degrades (the row's own dropzone stays).
-    // Rows with a drawn equivalent get it; the popup/heroes rows fall back
-    // to their alt text (no drawn equivalents exist — honest, not blank).
-    const row = img.closest('.ocrf-sample-row');
-    const rowKey = row?.getAttribute('data-sample-row');
-    if (!row || !rowKey) return;
-    const figure = img.closest('.ocrf-sample-shot');
-    const drawn = { battle_panel: 'battle', scout: 'scout', citystats: 'citystats' }[rowKey];
-    if (drawn) figure.outerHTML = `<div class="ocrf-sample-shot">${renderSampleFallback(drawn)}</div>`;
-    else figure.innerHTML = `<span class="ocrf-sample-alt">${img.alt}</span>`;
   }, true);
 
   entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())

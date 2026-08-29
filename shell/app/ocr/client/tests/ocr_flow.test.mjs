@@ -20,10 +20,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor, reentryNotice, pasteTargetSide,
-  backLandsOnEntry,
+  createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor, reentryNotice, pasteTargetSlot,
+  sendableShots, backLandsOnEntry,
 } from '../ocr_flow.js';
 import { mapError } from '../error_copy.mjs';
+import { uploadModel } from '../screens/pick_upload.mjs';
 
 // UXJ-004: the same real denial fixture error_copy.test.mjs/controller.test.mjs
 // already use — reusing it here (rather than hand-rolling status/body pairs)
@@ -147,14 +148,14 @@ test('D-039 probe: planS2Entry with fromRecovery=true clears BOTH sides\' curren
   const plan = planS2Entry({ fromRecovery: true, shotsYou: ['y1', 'y2'], shotsEnemy: ['e1'] });
   assert.deepEqual(plan.clearYou, ['y1', 'y2']);
   assert.deepEqual(plan.clearEnemy, ['e1']);
-  assert.equal(plan.notice, 'We took that one out. Add a new screenshot.');
+  assert.equal(plan.notice, 'Removed. Add a new one.');
 });
 
 test('D-039 probe: planS2Entry with fromRecovery=true and nothing tracked on one side still clears the other and still shows the notice', () => {
   const plan = planS2Entry({ fromRecovery: true, shotsYou: [], shotsEnemy: ['e1'] });
   assert.deepEqual(plan.clearYou, []);
   assert.deepEqual(plan.clearEnemy, ['e1']);
-  assert.equal(plan.notice, 'We took that one out. Add a new screenshot.');
+  assert.equal(plan.notice, 'Removed. Add a new one.');
 });
 
 // --- D-038: onReadDone must branch three ways, not two — a 200 that parsed
@@ -363,19 +364,41 @@ test('backLandsOnEntry: a length-1 history (just entry, nothing pushed yet) is f
 
 // ---- Round 3 fixes (UXJ-007/008/009) ---------------------------------------
 
-test('UXJ-009: reentryNotice speaks only when shots carried over, and says how to start fresh', () => {
+test('UXJ-009: reentryNotice speaks only when shots carried over (minimal-words copy, 2026-08-29)', () => {
   assert.equal(reentryNotice({ shotsYou: [], shotsEnemy: [] }), null);
   assert.equal(reentryNotice(), null);
-  const notice = reentryNotice({ shotsYou: ['a'], shotsEnemy: [] });
-  assert.match(notice, /Picked up where you left off/);
-  assert.match(notice, /fresh start/);
-  assert.match(reentryNotice({ shotsYou: [], shotsEnemy: ['b'] }), /still here/);
+  assert.equal(reentryNotice({ shotsYou: ['a'], shotsEnemy: [] }), 'Earlier screenshots kept.');
+  assert.equal(reentryNotice({ shotsYou: [], shotsEnemy: ['b'] }), 'Earlier screenshots kept.');
 });
 
 
-test('owner 2026-08-25: pasteTargetSide precedence is focused zone, then last-touched zone, then you', () => {
-  assert.equal(pasteTargetSide({ focusedSide: 'enemy', lastZoneSide: 'you' }), 'enemy');
-  assert.equal(pasteTargetSide({ focusedSide: null, lastZoneSide: 'enemy' }), 'enemy');
-  assert.equal(pasteTargetSide({}), 'you');
-  assert.equal(pasteTargetSide(), 'you');
+// Slot-grid redesign (2026-08-29): paste routes to a SLOT — last-touched
+// slot if it still has room, else first empty, else first with room.
+function model(type, shots, attested = false) {
+  return uploadModel({ type, shots, attested });
+}
+test('pasteTargetSlot: last-touched slot wins while it has room', () => {
+  const m = model('battle', { you: [{ slot: 'heroes' }], enemy: [] });
+  assert.equal(pasteTargetSlot(m, 'you:buffs'), 'you:buffs');
+});
+test('pasteTargetSlot: a FULL last-touched slot yields to the first empty slot', () => {
+  const m = model('battle', { you: [{ slot: 'heroes' }], enemy: [] });
+  assert.equal(pasteTargetSlot(m, 'you:heroes'), 'you:stats');   // heroes max=1, already full
+});
+test('pasteTargetSlot: no lastSlot -> first empty slot in grid order', () => {
+  const m = model('battle', { you: [], enemy: [] });
+  assert.equal(pasteTargetSlot(m, null), 'you:heroes');
+});
+test('pasteTargetSlot: all slots occupied but one has room -> that one; truly full grid -> null', () => {
+  const oneEach = model('battle', { you: [{ slot: 'heroes' }, { slot: 'stats' }, { slot: 'buffs' }, { slot: 'power' }], enemy: [] });
+  assert.equal(pasteTargetSlot(oneEach, null), 'you:stats');   // stats max=2, still has room
+  const full = model('battle', { you: [{ slot: 'heroes' }, { slot: 'stats' }, { slot: 'stats' },
+    { slot: 'buffs' }, { slot: 'buffs' }, { slot: 'power' }], enemy: [] });
+  assert.equal(pasteTargetSlot(full, null), null);
+});
+test("sendableShots: the read sends ONLY the active type's slots — parked shots from another tab stay home", () => {
+  const shots = [{ slot: 'heroes', id: 'a' }, { slot: 'scout', id: 'b' }, { slot: 'stats', id: 'c' }];
+  assert.deepEqual(sendableShots('battle', 'you', shots).map((s) => s.id), ['a', 'c']);
+  assert.deepEqual(sendableShots('scout', 'you', shots).map((s) => s.id), ['b']);
+  assert.deepEqual(sendableShots('battle', 'enemy', shots), []);   // battle has no enemy group
 });

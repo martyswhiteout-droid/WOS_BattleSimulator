@@ -1,335 +1,249 @@
+// tests for screens/pick_upload.mjs — the combined slot-grid Upload screen
+// (owner redesign 2026-08-29, built to the multi-doc-upload research round).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  UPLOAD_ROWS,
-  renderS1, renderS2, renderE1, dropzoneLabel, computeS2ContinueState, TYPE_LABEL, renderThumbs,
-  renderSample, renderSampleFallback,
+  SLOTS, groupsFor, slotState, uploadModel, renderUpload, renderE1, TAB_LABEL,
 } from '../screens/pick_upload.mjs';
 
-test('S1 uses the real flow_state type vocabulary and the mock copy verbatim', () => {
-  const html = renderS1();
-  assert.match(html, /Which screenshot do you have\?/);
-  assert.match(html, /data-pick-type="battle"/);
-  assert.match(html, /data-pick-type="scout"/);
-  assert.match(html, /data-pick-type="citystats"/);   // NOT "city" — flow_state's real vocabulary
-  assert.match(html, /BEST &middot; FILLS BOTH SIDES/);   // matches the mock's own HTML entity verbatim
-  assert.match(html, /Shows your stats and the enemy's stats together\./);
-  assert.match(html, /called Bonus Overview in the game/);
-  assert.doesNotMatch(html, /\bpicture\b/i);
+// --- slot config: the owner's document list, one word per label ------------
+
+test('battle slots: Heroes/Stats/Buffs/Power — heroes required (owner 2026-08-25), power optional, buffs noneable up to 2', () => {
+  const keys = SLOTS.battle.map((s) => s.key);
+  assert.deepEqual(keys, ['heroes', 'stats', 'buffs', 'power']);
+  assert.deepEqual(SLOTS.battle.map((s) => s.label), ['Heroes', 'Stats', 'Buffs', 'Power']);
+  const byKey = Object.fromEntries(SLOTS.battle.map((s) => [s.key, s]));
+  assert.equal(byKey.heroes.required, true);
+  assert.equal(byKey.stats.required, true);
+  assert.equal(byKey.buffs.required, true);
+  assert.equal(byKey.power.required, false);
+  assert.equal(byKey.buffs.noneable, true);
+  assert.equal(byKey.buffs.max, 2);
 });
 
-test('dropzoneLabel matches the mock exactly for all three states', () => {
-  assert.equal(dropzoneLabel({ side: 'you', covered: false }), 'Tap to add your screenshot');
-  assert.equal(dropzoneLabel({ side: 'enemy', covered: false }), "Tap to add the enemy's screenshot");
-  assert.equal(dropzoneLabel({ side: 'you', covered: true }), 'Add your own screenshot instead');
-  assert.equal(dropzoneLabel({ side: 'enemy', covered: true }), 'Add your own screenshot instead');
+test('every slot label is ONE word (strict word-minimalism, owner 2026-08-29)', () => {
+  for (const type of Object.keys(SLOTS)) {
+    for (const s of SLOTS[type]) {
+      assert.equal(s.label.trim().split(/\s+/).length, 1, `${type}:${s.key} label "${s.label}"`);
+    }
+  }
 });
 
-test('computeS2ContinueState matches updateS2Continue exactly, all four branches', () => {
-  assert.deepEqual(computeS2ContinueState({ you: true, enemy: true }), { disabled: false, hint: null });
-  assert.deepEqual(computeS2ContinueState({ you: true, enemy: false }),
-    { disabled: true, hint: "Now add the enemy's screenshot." });
-  assert.deepEqual(computeS2ContinueState({ you: false, enemy: true }),
-    { disabled: true, hint: 'Now add your screenshot.' });
-  assert.deepEqual(computeS2ContinueState({ you: false, enemy: false }),
-    { disabled: true, hint: 'Add a screenshot to continue' });
+test('groupsFor: battle is ONE shared group; scout is stacked You/Enemy; citystats pairs city(you) with scout(enemy)', () => {
+  const battle = groupsFor('battle');
+  assert.equal(battle.length, 1);
+  assert.equal(battle[0].side, 'you');
+  assert.equal(battle[0].label, null);
+
+  const scout = groupsFor('scout');
+  assert.deepEqual(scout.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
+
+  const city = groupsFor('citystats');
+  assert.deepEqual(city.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
+  assert.equal(city[0].slots[0].key, 'city');
+  assert.equal(city[1].slots[0].key, 'scout');   // enemy side has no city screen
 });
 
-test('S2 renders both sides, the always-on hint card, and reflects Continue state', () => {
-  const html = renderS2({
-    types: { you: 'battle', enemy: 'battle' },
-    coverage: { you: true, enemy: true },
-    shots: { you: ['shot1'], enemy: [] },
+// --- slotState: the per-tile state machine --------------------------------
+
+test('slotState: empty -> added (with count) -> and "none" only for a noneable slot with the attestation on', () => {
+  const buffs = SLOTS.battle.find((s) => s.key === 'buffs');
+  const heroes = SLOTS.battle.find((s) => s.key === 'heroes');
+  assert.deepEqual(slotState(buffs, [], false), { state: 'empty', count: 0 });
+  assert.deepEqual(slotState(buffs, [{ slot: 'buffs' }], false), { state: 'added', count: 1 });
+  assert.deepEqual(slotState(buffs, [{ slot: 'buffs' }, { slot: 'buffs' }], true), { state: 'added', count: 2 });
+  assert.deepEqual(slotState(buffs, [], true), { state: 'none', count: 0 });
+  // attestation never touches a non-noneable slot
+  assert.deepEqual(slotState(heroes, [], true), { state: 'empty', count: 0 });
+  // shots parked under other slots don't count
+  assert.deepEqual(slotState(heroes, [{ slot: 'stats' }], false), { state: 'empty', count: 0 });
+});
+
+// --- uploadModel: fraction + Scan gate ------------------------------------
+
+test('uploadModel(battle): 3 required slots; Scan stays gated until heroes+stats+buffs are covered (None counts for buffs)', () => {
+  const empty = uploadModel({ type: 'battle', shots: { you: [], enemy: [] } });
+  assert.equal(empty.total, 3);
+  assert.equal(empty.done, 0);
+  assert.equal(empty.canScan, false);
+
+  const partial = uploadModel({
+    type: 'battle',
+    shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [] },
   });
-  assert.match(html, /Add your screenshots/);
-  assert.match(html, /data-side="you"/);
-  assert.match(html, /data-side="enemy"/);
-  assert.match(html, /Long list\? Take 2 screenshots that share a row\. We'll join them\./);
-  assert.match(html, /Covered by your battle report/);   // enemy has no shots of its own but battle covers it
-  assert.doesNotMatch(html, /disabled/);                 // both covered -> Continue enabled
+  assert.equal(partial.done, 2);
+  assert.equal(partial.canScan, false);
+
+  const attested = uploadModel({
+    type: 'battle',
+    shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [] },
+    attested: true,
+  });
+  assert.equal(attested.done, 3);
+  assert.equal(attested.canScan, true);
+
+  const full = uploadModel({
+    type: 'battle',
+    shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }, { slot: 'buffs' }], enemy: [] },
+  });
+  assert.equal(full.canScan, true);
+  // optional Power never enters the fraction
+  assert.equal(full.total, 3);
 });
 
-test('S2 disables Continue and shows the hint when only one side is covered', () => {
-  const html = renderS2({
-    types: { you: 'scout', enemy: 'scout' },
-    coverage: { you: true, enemy: false },
-    shots: { you: ['shot1'], enemy: [] },
-  });
-  assert.match(html, /disabled/);
-  assert.match(html, /Now add the enemy's screenshot\./);
+test('uploadModel(scout): BOTH sides required — one covered side is not scannable', () => {
+  const one = uploadModel({ type: 'scout', shots: { you: [{ slot: 'scout' }], enemy: [] } });
+  assert.equal(one.total, 2);
+  assert.equal(one.done, 1);
+  assert.equal(one.canScan, false);
+  const both = uploadModel({ type: 'scout', shots: { you: [{ slot: 'scout' }], enemy: [{ slot: 'scout' }] } });
+  assert.equal(both.canScan, true);
 });
 
-test('D-039: S2 renders the removal notice verbatim when supplied (arriving from E1 recovery), and nothing when not', () => {
-  const withNotice = renderS2({
-    types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false },
-    shots: { you: [], enemy: [] }, notice: 'We took that one out. Add a new screenshot.',
-  });
-  assert.match(withNotice, /We took that one out\. Add a new screenshot\./);
+// --- renderUpload: everything visible, state on the tile ------------------
 
-  const withoutNotice = renderS2({
-    types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false },
-    shots: { you: [], enemy: [] },
-  });
-  assert.doesNotMatch(withoutNotice, /ocrf-s2-notice/);
+function battleHtml(over = {}) {
+  const model = uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, ...over.modelArgs });
+  return renderUpload({ type: 'battle', model, ...over });
+}
+
+test('renderUpload: all four battle tiles render at once — no picker step, no scrolling reveal', () => {
+  const html = battleHtml();
+  for (const key of ['heroes', 'stats', 'buffs', 'power']) {
+    assert.match(html, new RegExp(`data-slot-tile="you:${key}"`), key);
+  }
+  assert.match(html, /data-screen="s1"/);
 });
 
-test('E1 "wrong" uses the mock copy verbatim', () => {
+test('renderUpload: type tabs are Battle/Scout/City with the active one pressed', () => {
+  const html = battleHtml();
+  assert.match(html, /data-type-tab="battle"[^>]*aria-pressed="true"/);
+  assert.match(html, /data-type-tab="scout"[^>]*aria-pressed="false"/);
+  assert.match(html, /data-type-tab="citystats"[^>]*aria-pressed="false"/);
+  assert.deepEqual(Object.values(TAB_LABEL), ['Battle', 'Scout', 'City']);
+});
+
+test('renderUpload: required = * cue, optional = the one word "optional" (research dual-coding)', () => {
+  const html = battleHtml();
+  assert.match(html, /Heroes <span class="ocrf-slot-req"/);
+  assert.match(html, /Power <span class="ocrf-slot-opt">optional</);
+  assert.doesNotMatch(html, /Power <span class="ocrf-slot-req"/);
+});
+
+test('renderUpload: bare-fraction summary + one pip per required slot', () => {
+  const model = uploadModel({ type: 'battle', shots: { you: [{ slot: 'stats' }], enemy: [] } });
+  const html = renderUpload({ type: 'battle', model });
+  assert.match(html, /class="ocrf-fraction">1\/3</);
+  assert.equal((html.match(/ocrf-pip[" ]/g) || []).length - (html.match(/ocrf-pip--on/g) || []).length, 2);
+  assert.equal((html.match(/ocrf-pip--on/g) || []).length, 1);
+});
+
+test('renderUpload: an added slot carries checkmark + remove ×; a 2-shot slot adds the count badge', () => {
+  const model = uploadModel({
+    type: 'battle',
+    shots: { you: [{ slot: 'buffs' }, { slot: 'buffs' }, { slot: 'heroes' }], enemy: [] },
+  });
+  const html = renderUpload({ type: 'battle', model });
+  assert.match(html, /data-slot="you:heroes" data-slot-state="added"/);
+  assert.match(html, /data-slot-remove="you:heroes"/);
+  assert.match(html, /data-slot-remove="you:buffs"/);
+  assert.match(html, /class="ocrf-slot-count">2</);
+  // the still-empty stats tile carries neither
+  assert.doesNotMatch(html, /data-slot-remove="you:stats"/);
+});
+
+test('renderUpload: the buffs None link shows only while buffs is empty, and an attested slot shows the none-check', () => {
+  const empty = battleHtml();
+  assert.match(empty, /data-slot-none="you:buffs"[^>]*>None</);
+  const attested = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, attested: true }),
+  });
+  assert.doesNotMatch(attested, /data-slot-none=/);
+  assert.match(attested, /data-slot="you:buffs" data-slot-state="none"/);
+  assert.match(attested, /ocrf-slot-check--none/);
+  const filled = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [{ slot: 'buffs' }], enemy: [] } }),
+  });
+  assert.doesNotMatch(filled, /data-slot-none=/);
+});
+
+test('renderUpload: a thumbUrl replaces the sample icon with the real thumbnail (self-confirmation)', () => {
+  const model = uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }], enemy: [] } });
+  model.groups[0].slots[0].thumbUrl = 'blob:fake-url';
+  const html = renderUpload({ type: 'battle', model });
+  assert.match(html, /background-image:url\('blob:fake-url'\)/);
+  const heroTile = html.split('data-slot-tile="you:heroes"')[1].split('data-slot-tile')[0];
+  assert.doesNotMatch(heroTile, /ocrf-slot-sample/);
+});
+
+test('renderUpload(scout): stacked You/Enemy group heads each carry their own n/m count — never tabs', () => {
+  const model = uploadModel({ type: 'scout', shots: { you: [{ slot: 'scout' }], enemy: [] } });
+  const html = renderUpload({ type: 'scout', model });
+  assert.match(html, /<span>You<\/span><span class="ocrf-group-count">1\/1</);
+  assert.match(html, /<span>Enemy<\/span><span class="ocrf-group-count">0\/1</);
+  assert.doesNotMatch(html, /data-side-tab/);
+});
+
+test('renderUpload: Scan is the sticky footer CTA — one word, disabled until scannable', () => {
+  const gated = battleHtml();
+  assert.match(gated, /id="ocrfScan" disabled>Scan</);
+  const ready = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [] }, attested: true }),
+  });
+  assert.match(ready, /id="ocrfScan">Scan</);
+});
+
+test('renderUpload: the notice slot renders when given, absent when null', () => {
+  const withNotice = renderUpload({
+    type: 'battle', model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] } }),
+    notice: 'Removed. Add a new one.',
+  });
+  assert.match(withNotice, /id="ocrfS2Notice">Removed\. Add a new one\.</);
+  assert.doesNotMatch(battleHtml(), /ocrfS2Notice/);
+});
+
+// --- STRICT word budget (owner 2026-08-29: "minimum words... keywords is
+// probably enough") — the whole battle screen's visible text, tags stripped,
+// must stay under 20 words. This is the hard gate the UX loop polices too.
+test('word budget: the entire battle upload screen shows fewer than 20 visible words', () => {
+  const text = battleHtml().replace(/<[^>]+>/g, ' ');
+  const words = text.split(/\s+/).filter((w) => /[a-zA-Z]/.test(w));
+  assert.ok(words.length < 20, `${words.length} words: ${words.join(' ')}`);
+});
+
+// --- E1: minimal words, targets the combined s1 screen --------------------
+
+test('renderE1("wrong"): keyword copy, Retake/Try-again paths target s1 (the merged screen), Type instead fallback', () => {
   const html = renderE1('wrong');
-  assert.match(html, /That doesn't look like the right screenshot/);
-  assert.match(html, /This looks like a different screen/);
-  assert.match(html, />Type them in myself</);
-  assert.match(html, /Add a clearer screenshot/);
+  assert.match(html, /Wrong screenshot/);
+  assert.match(html, /data-goto="s1" data-recovery="1">\s*Retake</);
+  assert.match(html, /data-goto="s4" data-show-missing="1">Type instead</);
 });
 
-test('E1 "partial" computes its heading from the real count, never a hardcoded demo number', () => {
-  const html = renderE1('partial', { readCount: 9, totalCount: 24 });
-  assert.match(html, /We read 9 of 24 numbers/);
-  assert.match(html, />Type the missing numbers</);
-  const other = renderE1('partial', { readCount: 20, totalCount: 24 });
-  assert.match(other, /We read 20 of 24 numbers/);
+test('renderE1("partial"): says the read fraction and offers Type the rest / Retake', () => {
+  const html = renderE1('partial', { okCount: 9, total: 24 });
+  assert.match(html, /Some numbers missing/);
+  assert.match(html, /We read 9 of 24\./);
+  assert.match(html, /data-goto="s4" data-show-missing="1">Type the rest</);
+  assert.match(html, /data-goto="s1" data-recovery="1">Retake</);
 });
 
-// ---- UXJ-004 (EVAL_UX_JOURNEY.md round 1): an HTTP error during a read
-// (quota, burst, payment lapsed mid-session, engine busy, session expired)
-// must show ITS OWN honest heading/body (error_copy.mjs's mapError output),
-// never the "wrong screenshot" copy, plus the recovery action that actually
-// matches the failure — never the generic "add a clearer screenshot" +
-// sample, which doesn't apply when the screenshot was never the problem. ----
-
-test('UXJ-004: renderE1("error", ...) shows the mapped heading/body verbatim, never the wrong-screenshot copy, and drops the "good example" sample', () => {
-  const mapped = { heading: "That's today's limit", body: "You've used up today's screenshot reads. They come back at midnight. You can still type the numbers in.", cta: 'wait' };
+test('renderE1("error", mapped): mapped heading/body verbatim; every cta variant wires its own buttons', () => {
+  const mapped = { heading: 'Out of reads', body: 'Resets tomorrow.', cta: 'wait' };
   const html = renderE1('error', { mapped });
-  assert.match(html, /That's today's limit/);
-  assert.match(html, /come back at midnight/);
-  assert.doesNotMatch(html, /doesn't look like the right screenshot/i);
-  assert.doesNotMatch(html, /A good example:/);
-});
+  assert.match(html, /Out of reads/);
+  assert.match(html, /Resets tomorrow\./);
+  assert.match(html, /data-goto="s4" data-show-missing="1">Type instead</);
 
-test('UXJ-004: cta "wait" (429 quota) offers ONLY typing — retrying is pointless until midnight', () => {
-  const html = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'wait' } });
-  assert.match(html, />Type the numbers in myself</);
-  assert.doesNotMatch(html, /Try again/);
-  assert.doesNotMatch(html, /data-goto="s2"/);   // never routes back through re-upload
-});
+  const upgrade = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'upgrade' } });
+  assert.match(upgrade, /id="ocrfE1Upgrade">See plans</);
 
-test('UXJ-004: cta "slow_down" (429 burst) and "retry_or_type" (503/unknown) both offer "Try again" (re-reads the SAME uploaded bytes via data-goto="s3") plus a typing fallback', () => {
-  for (const cta of ['slow_down', 'retry_or_type', 'sign_in']) {
-    const html = renderE1('error', { mapped: { heading: 'h', body: 'b', cta } });
-    assert.match(html, /data-goto="s3"[^>]*>Try again</, cta);
-    assert.match(html, /data-goto="s4" data-show-missing="1"[^>]*>Type them in myself</, cta);
-  }
-});
+  const retake = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'retake' } });
+  assert.match(retake, /data-goto="s1" data-recovery="1">Retake</);
 
-test('UXJ-004: cta "retake" (413/415, a bad-file problem) offers re-upload (data-goto="s2" data-recovery="1") plus a typing fallback', () => {
-  const html = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'retake' } });
-  assert.match(html, /data-goto="s2" data-recovery="1"/);
-  assert.match(html, /Add a different screenshot/);
-  assert.match(html, /data-goto="s4" data-show-missing="1"[^>]*>Type them in myself</);
-});
-
-test('UXJ-004: cta "upgrade" (402 mid-session) offers a real "See plans" action (its own id, wired with a side effect elsewhere) plus a typing fallback, never a bare retry', () => {
-  const html = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'upgrade' } });
-  assert.match(html, /id="ocrfE1Upgrade"[^>]*>See plans</);
-  assert.match(html, /data-goto="s4" data-show-missing="1"[^>]*>Type it in myself</);
-  assert.doesNotMatch(html, /data-goto="s3"/);
-});
-
-test('TYPE_LABEL covers exactly the three real panel types', () => {
-  assert.deepEqual(TYPE_LABEL, { battle: 'Battle Report', scout: 'Scout Report', citystats: 'City Stats' });
-});
-
-// --- D-035: no thumbnail, no remove — the .ocrf-thumbs container existed
-// but was ALWAYS rendered empty, regardless of shotCount; nothing ever
-// mapped over the actual shots to render into it. ---
-
-test('D-035 probe: renderThumbs renders one thumb per shot id, each with a >=44px remove control carrying the side + INDEX (mock\'s .thumb-x counterpart, data-remove-thumb-side/data-remove-thumb)', () => {
-  const html = renderThumbs('you', ['shotA', 'shotB']);
-  const matches = [...html.matchAll(/data-remove-thumb-side="you" data-remove-thumb="(\d+)"/g)];
-  assert.equal(matches.length, 2);
-  assert.deepEqual(matches.map((m) => m[1]), ['0', '1']);
-  assert.match(html, /aria-label="Remove screenshot"/);
-  assert.match(html, /class="ocrf-thumb-x"/);
-});
-
-test('D-035 probe: renderThumbs is empty for zero shots (the container stays present but contentless)', () => {
-  assert.equal(renderThumbs('you', []), '');
-});
-
-test('D-035: S2 actually renders thumb content into .ocrf-thumbs when a side has shots (previously always empty regardless of shotCount)', () => {
-  const html = renderS2({
-    types: { you: 'scout', enemy: 'scout' },
-    coverage: { you: true, enemy: false },
-    shots: { you: ['shotA'], enemy: [] },
-  });
-  assert.match(html, /data-remove-thumb-side="you" data-remove-thumb="0"/);
-  assert.doesNotMatch(html, /data-thumbs="you"[^>]*\shidden/);   // visible now that it has content
-});
-
-// ---- UXJ-002 (EVAL_UX_JOURNEY.md round 1) + owner request 2026-08-15: the
-// samples are REAL cropped game screenshots (the owner's own fixture
-// captures, served from /shell/ocr/client/samples/); the hand-typed
-// mini-panels survive as renderSampleFallback for art-stripped bundles. ----
-
-test('samples: battle renders the TWO required real screenshots, numbered (panel then popup)', () => {
-  const html = renderSample('battle');
-  assert.match(html, /ocrf-sample--pair/);
-  assert.match(html, /sample_battle_panel\.jpg/);
-  assert.match(html, /sample_battle_popup\.jpg/);
-  assert.match(html, /ocrf-sample-badge[^>]*>1</);
-  assert.match(html, /ocrf-sample-badge[^>]*>2</);
-  assert.match(html, /Stat Bonuses list/);
-  assert.match(html, /popup behind the ! icon/);
-  // both images carry honest alt text
-  assert.match(html, /alt="The battle report's Stat Bonuses panel"/);
-  assert.match(html, /alt="The Notes on Special Bonuses popup"/);
-});
-
-test('samples: scout and citystats render their single real screenshot; unknown keys render nothing', () => {
-  assert.match(renderSample('scout'), /sample_scout\.jpg/);
-  assert.match(renderSample('citystats'), /sample_citystats\.jpg/);
-  assert.doesNotMatch(renderSample('scout'), /ocrf-sample-badge/);
-  assert.equal(renderSample('city'), '');   // the mock's demo key is NOT this file's vocabulary
-});
-
-test('samples: renderSampleFallback keeps the hand-drawn mini-panels intact (the img-error path for art-stripped bundles)', () => {
-  assert.match(renderSampleFallback('battle'), /ocrf-mini-panel--battle/);
-  assert.match(renderSampleFallback('battle'), /\+4859\.0%/);
-  assert.match(renderSampleFallback('scout'), /ocrf-mini-panel--scout/);
-  assert.match(renderSampleFallback('citystats'), /ocrf-mini-panel--city/);
-  assert.match(renderSampleFallback('citystats'), /Bonus Overview/);
-  assert.equal(renderSampleFallback('city'), '');
-});
-
-test('UXJ-002: S1\'s three cards each carry their matching real-screenshot sample', () => {
-  const html = renderS1();
-  const battleCard = html.slice(html.indexOf('data-pick-type="battle"'), html.indexOf('data-pick-type="scout"'));
-  assert.match(battleCard, /sample_battle_panel\.jpg/);
-  const scoutCard = html.slice(html.indexOf('data-pick-type="scout"'), html.indexOf('data-pick-type="citystats"'));
-  assert.match(scoutCard, /sample_scout\.jpg/);
-  const cityCard = html.slice(html.indexOf('data-pick-type="citystats"'));
-  assert.match(cityCard, /sample_citystats\.jpg/);
-});
-
-test('UXJ-002 + owner arrangement: S2 renders labeled sample rows — four for battle (owner 2026-08-25 added Troop Power), one for scout', () => {
-  const html = renderS2({
-    types: { you: 'battle', enemy: 'scout' },
-    coverage: { you: false, enemy: false },
-  });
-  assert.match(html, /ocrf-dz-icon/);
-  const youSection = html.slice(html.indexOf('data-side="you"'), html.indexOf('data-side="enemy"'));
-  // battle = THREE rows, in order: Heroes (optional) / Battle stats / Buffs (needed)
-  for (const key of ['battle_heroes', 'battle_panel', 'battle_popup', 'battle_troop_power']) {
-    assert.match(youSection, new RegExp(`data-sample-row="${key}"`));
-  }
-  assert.ok(youSection.indexOf('battle_heroes') < youSection.indexOf('battle_panel'));
-  assert.ok(youSection.indexOf('battle_panel') < youSection.indexOf('battle_popup'));
-  assert.ok(youSection.indexOf('battle_popup') < youSection.indexOf('battle_troop_power'));
-  // Owner feedback 2026-08-25: 'Heroes + Experts', and the OPTIONAL/NEEDED
-  // tags are gone (hard to see) — the rows carry their teaching in copy.
-  assert.match(youSection, />Heroes \+ Experts</);
-  assert.match(youSection, />Battle stats</);
-  assert.match(youSection, />Buffs</);
-  // Heroes/Buffs carry no tags (owner 2026-08-25); Troop Power is the one
-  // deliberately OPTIONAL-tagged row.
-  assert.doesNotMatch(youSection, /NEEDED/);
-  assert.equal((youSection.match(/OPTIONAL/g) || []).length, 1);
-  // every row carries its own add-zone feeding the SAME side shot set
-  assert.equal((youSection.match(/data-dropzone="you"/g) || []).length, 4);
-  // scout = exactly one row
-  const enemySection = html.slice(html.indexOf('data-side="enemy"'));
-  assert.equal((enemySection.match(/data-sample-row=/g) || []).length, 1);
-  assert.match(enemySection, /data-sample-row="scout"/);
-  assert.match(enemySection, /sample_scout\.jpg/);
-});
-
-test('owner arrangement: citystats side renders exactly one row with the City Defenses reminder', () => {
-  const html = renderS2({
-    types: { you: 'citystats', enemy: 'scout' },
-    coverage: { you: false, enemy: false },
-  });
-  const youSection = html.slice(html.indexOf('data-side="you"'), html.indexOf('data-side="enemy"'));
-  assert.equal((youSection.match(/data-sample-row=/g) || []).length, 1);
-  assert.match(youSection, /data-sample-row="citystats"/);
-  assert.match(youSection, /City Defenses rows/);
-});
-
-test('UXJ-002: a COVERED side shows the covered-note, not a mini-panel (mutually exclusive, matching the mock)', () => {
-  const html = renderS2({
-    types: { you: 'battle', enemy: 'battle' },
-    coverage: { you: true, enemy: true },
-    shots: { you: ['shot1'], enemy: [] },   // enemy is covered by you's battle upload, no shots of its own
-  });
-  const enemySection = html.slice(html.indexOf('data-side="enemy"'));
-  assert.match(enemySection, /Covered by your battle report/);
-  // a covered side shows NO sample rows at all — just the note + muted zone
-  assert.doesNotMatch(enemySection, /ocrf-sample-row/);
-  assert.doesNotMatch(enemySection, /ocrf-mini-panel/);
-  assert.match(enemySection, /ocrf-dropzone--muted/);
-  // the dropzone icon is still present even when covered/muted (mock parity)
-  assert.match(html, /ocrf-dz-icon/);
-});
-
-// ---- QA defect 045: the upload screen must say the specials popup is needed --
-test('QA defect 045: S2 shows the Special Bonuses popup hint for battle, and only for battle', () => {
-  const battle = renderS2({
-    types: { you: 'battle', enemy: 'battle' },
-    coverage: { you: false, enemy: false },
-  });
-  // D-045's guarantee moved INTO the battle rows (owner arrangement
-  // 2026-08-15): the "Buffs · NEEDED" row with the real popup screenshot
-  // teaches the requirement where the action happens — the old separate
-  // hint card is gone, but the popup requirement must still be on screen.
-  assert.match(battle, /data-sample-row="battle_popup"/);
-  // Owner feedback 2026-08-25: the NEEDED tag is gone; the popup teaching
-  // lives in the row copy (where to find it) + the honesty chain (D-043/44)
-  // still refuses and explains when it is missing.
-  assert.match(battle, /Tap the ! next to/);
-
-  const scoutOnly = renderS2({
-    types: { you: 'scout', enemy: 'scout' },
-    coverage: { you: false, enemy: false },
-  });
-  assert.doesNotMatch(scoutOnly, /data-sample-row="battle_popup"/);
-  assert.doesNotMatch(scoutOnly, /NEEDED/);
-});
-
-
-// ---- Owner feedback 2026-08-25: rows relabel + attestation toggle ----------
-
-test('owner 2026-08-25: battle rows are Heroes + Experts (untagged) / Battle stats / Buffs (untagged, 1-2 shots)', () => {
-  const rows = UPLOAD_ROWS.battle;
-  assert.equal(rows[0].label, 'Heroes + Experts');
-  assert.equal(rows[0].tag, '');
-  assert.doesNotMatch(rows[0].copy, /Captain auto-set|hero part at the top/i);
-  assert.equal(rows[2].label, 'Buffs');
-  assert.equal(rows[2].tag, '');           // NEEDED dropped: hard to see
-  assert.match(rows[2].copy, /up to 2 screenshots/);
-});
-
-test('owner 2026-08-25: every add-zone teaches all three channels (tap / paste / drop)', () => {
-  const html = renderS2({ types: { you: 'battle', enemy: 'battle' }, coverage: { you: false, enemy: false } });
-  assert.match(html, /Tap \u00b7 paste \u00b7 drop|Tap · paste · drop/);
-  assert.doesNotMatch(html, /Tap to add</);
-});
-
-test('owner 2026-08-25: the no-buffs attestation toggle renders for battle only, with pressed state', () => {
-  const battle = renderS2({ types: { you: 'battle', enemy: 'battle' }, coverage: { you: false, enemy: false } });
-  assert.match(battle, /data-no-buffs="you"/);
-  assert.match(battle, /aria-pressed="false"/);
-  assert.match(battle, /No buffs on either side/);
-  const battleOn = renderS2({ types: { you: 'battle', enemy: 'battle' }, coverage: { you: false, enemy: false }, noBuffs: true });
-  assert.match(battleOn, /aria-pressed="true"/);
-  assert.match(battleOn, /ocrf-no-buffs--on/);
-  const scout = renderS2({ types: { you: 'scout', enemy: 'scout' }, coverage: { you: false, enemy: false } });
-  assert.doesNotMatch(scout, /data-no-buffs/);
-});
-
-
-test('owner 2026-08-25: the Troop Power row is the fourth battle row, OPTIONAL, capture-only copy', () => {
-  const rows = UPLOAD_ROWS.battle;
-  assert.equal(rows.length, 4);
-  assert.equal(rows[3].key, 'battle_troop_power');
-  assert.equal(rows[3].label, 'Troop Power');
-  assert.equal(rows[3].tag, 'OPTIONAL');
-  assert.match(rows[3].copy, /final checks/);
+  const retry = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'retry_or_type' } });
+  assert.match(retry, /data-goto="s3">Try again</);
 });

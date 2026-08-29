@@ -11,7 +11,11 @@ function requireType(type) {
 }
 
 export function createFlow({ genTable = {} } = {}) {
-  const typeState = { you: 'scout', enemy: 'scout' };
+  // 'battle' initial (2026-08-29): the merged upload screen shows this state
+  // directly as the active tab — battle is the primary flow and first tab.
+  // (Under the retired S1 picker a pickKind always ran first, so the old
+  // 'scout' initial never surfaced anywhere.)
+  const typeState = { you: 'battle', enemy: 'battle' };
   const shotState = { you: [], enemy: [] };
 
   function setSideType(side, type) {

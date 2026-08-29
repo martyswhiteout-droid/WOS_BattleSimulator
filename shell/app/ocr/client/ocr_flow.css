@@ -859,3 +859,88 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   font-size: 11.5px;
   color: rgba(255, 255, 255, .85);
 }
+
+
+/* --- Round: SLOT-GRID upload screen (owner redesign 2026-08-29) -----------
+   S1+S2 merged: type tabs, bare-fraction summary, one tile per named
+   screenshot with its state ON the tile (research round: checklist grid,
+   all slots visible without scrolling at 375x812). Same navy-world tokens;
+   append-only. Word budget: labels 1 word, CTA 1 word. */
+
+.ocrf-type-tabs{display:flex;gap:6px;margin:2px 0 10px}
+.ocrf-type-tab{flex:1;min-height:40px;padding:8px 6px;border-radius:12px;cursor:pointer;
+  font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:13.5px;
+  color:var(--ocrf-ink-label);background:var(--ocrf-well);
+  border:1px solid rgba(185,210,229,.28)}
+.ocrf-type-tab--on{color:#fff;text-shadow:0 1px 2px rgba(10,52,96,.55);
+  background:linear-gradient(180deg,var(--ocrf-cta-1) 0%,var(--ocrf-cta-2) 46%,var(--ocrf-cta-3) 100%);
+  border-color:transparent;
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+    0 2px 0 var(--ocrf-cta-ledge)}
+.ocrf-type-tab:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+
+.ocrf-summary{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px}
+.ocrf-pips{display:flex;gap:5px}
+.ocrf-pip{width:8px;height:8px;border-radius:50%;background:rgba(185,210,229,.28)}
+.ocrf-pip--on{background:var(--ocrf-ok)}
+.ocrf-fraction{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:12px;
+  letter-spacing:.08em;color:var(--ocrf-ink-mute)}
+
+.ocrf-group-head{display:flex;align-items:center;justify-content:space-between;margin:12px 0 6px;
+  font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:13px;color:var(--ocrf-ink)}
+.ocrf-group-count{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;
+  color:var(--ocrf-ink-mute)}
+
+.ocrf-slot-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 8px}
+.ocrf-slot{position:relative}
+.ocrf-slot-main{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;
+  padding:8px 8px 9px;cursor:pointer;font:inherit;color:var(--ocrf-ink);
+  border:1.5px dashed rgba(185,210,229,.38);border-radius:12px;background:var(--ocrf-well);
+  transition:border-color .15s ease,background .15s ease}
+.ocrf-slot--optional .ocrf-slot-main{border-color:rgba(185,210,229,.20)}
+.ocrf-slot--added .ocrf-slot-main{border:1.5px solid rgba(87,211,163,.55);
+  background:rgba(87,211,163,.07)}
+.ocrf-slot--none .ocrf-slot-main{border:1.5px solid rgba(185,210,229,.35);opacity:.85}
+.ocrf-slot-main:hover{border-color:var(--ocrf-tile-focus)}
+.ocrf-slot-main:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-slot.ocrf-drag-over .ocrf-slot-main,
+.ocrf-slot-main.ocrf-drag-over{border-color:var(--ocrf-ice-b);background:rgba(46,161,242,.10)}
+
+.ocrf-slot-fig{width:100%;height:56px;border-radius:8px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;background:rgba(6,20,34,.5);
+  background-size:cover;background-position:top center}
+.ocrf-slot--empty .ocrf-slot-fig .ocrf-slot-sample{width:100%;height:100%;object-fit:cover;
+  object-position:top center;opacity:.38;filter:saturate(.7)}
+.ocrf-slot-label{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:12.5px;
+  display:flex;align-items:baseline;gap:3px}
+.ocrf-slot-req{color:var(--ocrf-gold-b);font-size:14px;line-height:0}
+.ocrf-slot-opt{font-family:'Inter',system-ui,sans-serif;font-weight:400;font-size:10px;
+  color:var(--ocrf-ink-mute)}
+
+.ocrf-slot-check{position:absolute;top:-6px;right:-5px;width:20px;height:20px;border-radius:50%;
+  display:grid;place-items:center;background:var(--ocrf-ok);color:#0B273D;
+  font-size:12px;font-weight:700;box-shadow:0 1px 3px rgba(4,22,44,.6);pointer-events:none}
+.ocrf-slot-check--none{background:var(--ocrf-well);color:var(--ocrf-ink-mute);
+  border:1px solid rgba(185,210,229,.35)}
+.ocrf-slot-count{position:absolute;top:-6px;right:17px;min-width:16px;height:16px;padding:0 4px;
+  border-radius:999px;display:grid;place-items:center;
+  font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:9.5px;font-weight:700;
+  background:linear-gradient(180deg,var(--ocrf-gold-b),var(--ocrf-gold));color:#0B273D;pointer-events:none}
+.ocrf-slot-x{position:absolute;top:-6px;left:-5px;width:20px;height:20px;border-radius:50%;
+  border:1px solid rgba(255,129,129,.5);background:var(--ocrf-panel);color:var(--ocrf-ember-b);
+  font-size:13px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.ocrf-slot-x:hover{background:var(--ocrf-ember-d);color:#fff}
+.ocrf-slot-none{position:absolute;bottom:-4px;right:2px;padding:2px 8px;border-radius:999px;
+  border:1px dashed rgba(185,210,229,.35);background:var(--ocrf-panel);
+  color:var(--ocrf-ink-mute);font-size:10px;cursor:pointer}
+.ocrf-slot-none:hover{color:var(--ocrf-ink);border-color:rgba(185,210,229,.6)}
+
+/* Slot preview sheet (tap on a full tile): thumbnail(s) + Replace/Remove. */
+.ocrf-slotprev{width:min(420px,92vw)}
+.ocrf-slotprev-body{display:flex;gap:8px;max-height:52vh;overflow:auto;margin:0 0 14px}
+.ocrf-slotprev-img{flex:1;min-width:0;max-width:100%;border-radius:10px;
+  border:1px solid rgba(185,210,229,.28)}
+.ocrf-slotprev-actions{display:flex;gap:10px;justify-content:flex-end}
+
+/* Single-column tiles stay comfortable on very narrow phones. */
+@media (max-width:340px){.ocrf-slot-grid{grid-template-columns:1fr}}
