@@ -1055,3 +1055,13 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   .ocrf-req-main{gap:9px;padding:9px 0}
   .ocrf-req-add{padding:6px 11px}
 }
+
+/* --- Round: QA comprehension round 1 fixes (QAC-001/002/004/005) ----------
+   Per-thumb x, 40px chips, rejection notes. Append-only. */
+.ocrf-req-none,.ocrf-req-add{min-height:40px}
+.ocrf-req-thumb-x{position:absolute;left:-7px;top:-7px;width:20px;height:20px;border-radius:50%;
+  padding:0;cursor:pointer;border:1px solid rgba(255,129,129,.5);background:var(--ocrf-panel);
+  color:var(--ocrf-ember-b);font-size:12px;line-height:1;display:grid;place-items:center}
+.ocrf-req-thumb-x::before{content:"";position:absolute;inset:-7px}
+.ocrf-req-thumb-x:hover{background:var(--ocrf-ember-d);color:#fff}
+.ocrf-req-hint--warn{color:var(--ocrf-ember-b)}

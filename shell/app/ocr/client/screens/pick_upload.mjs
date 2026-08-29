@@ -24,11 +24,11 @@ export const SLOTS = {
   battle: [
     { key: 'heroes', label: 'Heroes', required: true, max: 1, img: 'sample_battle_heroes.jpg', hint: 'Report · hero rows' },
     { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg', hint: 'Report · stat rows' },
-    { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true, hint: '! popup · up to 2' },
+    { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true, hint: 'Report · ! popup' },
     // img null (UXG-003): the Troop Power sample capture is still owed by the
     // owner — no img element until it ships (a 404 per open is worse than the
     // dashed tile the img-error fallback would leave anyway).
-    { key: 'power', label: 'Power', required: false, max: 1, img: null, hint: 'Troop details screen' },
+    { key: 'power', label: 'Power', required: false, max: 1, img: null, hint: 'Your troop details' },
   ],
   scout: [
     { key: 'scout', label: 'Stats', required: true, max: 2, img: 'sample_scout.jpg', hint: 'Scout report' },
@@ -87,13 +87,20 @@ function requirementRow(side, s) {
   const sample = s.img
     ? `<img class="ocrf-sample-img ocrf-req-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`
     : '';
-  const thumbs = (s.thumbUrls || []).map((u) => (
-    `<span class="ocrf-req-thumb"${u ? ` style="background-image:url('${u}')"` : ''}>`
-    + '<span class="ocrf-req-tick" aria-hidden="true">&#10003;</span></span>'
+  // QAC-001: one x per thumbnail — removing one of two buffs never nukes
+  // the other. QAC-004: + Add stays visible until the row hits its cap.
+  // Chip count derives from s.count (never thumbUrls length): a shot whose
+  // object-URL failed still gets its chip, tick, and its own remove x.
+  const urls = s.thumbUrls || [];
+  const thumbs = Array.from({ length: s.count }, (_, i) => (
+    `<span class="ocrf-req-thumb"${urls[i] ? ` style="background-image:url('${urls[i]}')"` : ''}>`
+    + '<span class="ocrf-req-tick" aria-hidden="true">&#10003;</span>'
+    + `<button type="button" class="ocrf-req-thumb-x" data-slot-remove="${side}:${s.key}:${i}" aria-label="Remove">&times;</button></span>`
   )).join('');
   let cluster;
   if (s.state === 'added') {
-    cluster = `${thumbs}<button type="button" class="ocrf-req-x" data-slot-remove="${side}:${s.key}" aria-label="Remove">&times;</button>`;
+    const more = s.count < s.max ? '<span class="ocrf-req-add" aria-hidden="true">+ Add</span>' : '';
+    cluster = `${thumbs}${more}`;
   } else if (s.state === 'none') {
     cluster = `<button type="button" class="ocrf-req-none ocrf-req-none--on" data-slot-none="${side}:${s.key}" aria-pressed="true">None <span aria-hidden="true">&#10003;</span></button>`;
   } else {
@@ -110,7 +117,7 @@ function requirementRow(side, s) {
     <span class="ocrf-req-fig">${sample}</span>
     <span class="ocrf-req-text">
       <span class="ocrf-req-name">${s.label} ${cue}</span>
-      <span class="ocrf-req-hint">${s.hint}</span>
+      <span class="ocrf-req-hint" data-hint="${s.hint}" aria-live="polite">${s.hint}</span>
     </span>
   </button>
   <span class="ocrf-req-cluster">${cluster}</span>
@@ -138,7 +145,7 @@ export function renderUpload({ type, model, notice = null }) {
   return `
 <section class="screen" data-screen="s1">
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
-    <h1 tabindex="-1">New read</h1></header>
+    <h1 tabindex="-1">Screenshots</h1></header>
   <div class="ocrf-scr-body ocrf-upload-body">
     <div class="ocrf-type-tabs" role="group" aria-label="Screenshot type">${tabs}</div>
     ${noticeHtml}
@@ -161,7 +168,11 @@ export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onSc
     });
   });
   root.querySelectorAll('[data-slot-remove]').forEach((b) => {
-    b.addEventListener('click', (e) => { e.stopPropagation(); const [side, key] = b.dataset.slotRemove.split(':'); onSlotRemove(side, key); });
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const [side, key, idx] = b.dataset.slotRemove.split(':');
+      onSlotRemove(side, key, idx === undefined ? null : parseInt(idx, 10));
+    });
   });
   root.querySelectorAll('[data-slot-none]').forEach((b) => {
     b.addEventListener('click', (e) => { e.stopPropagation(); const [side, key] = b.dataset.slotNone.split(':'); onSlotNone(side, key); });

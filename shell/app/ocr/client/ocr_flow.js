@@ -485,7 +485,16 @@ function renderScreen() {
         if (count >= slot.max) { openSlotPreview(side, key); return; }
         openPicker(side, key, slot.max - count);
       },
-      onSlotRemove: (side, key) => { dropSlot(side, key); render(); },
+      onSlotRemove: (side, key, idx) => {
+        if (idx === null || idx === undefined) { dropSlot(side, key); render(); return; }
+        // QAC-001: the x on ONE thumb removes only that shot.
+        const mine = app.shots[side].filter((x) => x.slot === key);
+        const shot = mine[idx];
+        if (!shot) return;
+        dropShot(side, shot);
+        app.shots[side] = app.shots[side].filter((x) => x !== shot);
+        render();
+      },
       onSlotNone: () => { app.noBuffs = !app.noBuffs; render(); },
       onScan: () => { if (currentModel().canScan) goto('s3'); },
     });
@@ -695,14 +704,14 @@ async function addFilesToSlot(side, slot, fileList) {
   const def = slotDef(activeType(), side, slot);
   if (!def) return 0;
   const have = app.shots[side].filter((s) => s.slot === slot).length;
-  const valid = [...(fileList || [])].filter((f) => UPLOAD_IMAGE_TYPES.test(f.type));
+  const all = [...(fileList || [])];
+  const valid = all.filter((f) => UPLOAD_IMAGE_TYPES.test(f.type));
   const files = valid.slice(0, Math.max(0, def.max - have));
-  if (!files.length) {
-    // UXG-007: a real image aimed at a FULL slot must not vanish silently —
-    // pulse the tile so "it's already full" is said where the user aimed.
-    if (valid.length) flashFull(document.querySelector(`[data-slot-tile="${side}:${slot}"]`));
-    return 0;
-  }
+  // QAC-002: every rejection is SAID on the row it happened to — a pulse
+  // plus a transient 2-3-word swap of the locator hint (aria-live).
+  if (all.length && !valid.length) rejectNote(side, slot, 'Images only');
+  else if (valid.length > files.length) rejectNote(side, slot, `${def.max} max`);
+  if (!files.length) return 0;
   for (const file of files) {
     const bytes = new Uint8Array(await file.arrayBuffer());
     const id = `${side}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -720,6 +729,21 @@ async function addFilesToSlot(side, slot, fileList) {
   return files.length;
 }
 
+// QAC-002: swap the row's locator hint for a short reason, restore after
+// 1.6s (or on the next full render, which rebuilds the markup anyway).
+function rejectNote(side, slot, msg) {
+  const row = document.querySelector(`[data-slot-tile="${side}:${slot}"]`);
+  flashFull(row);
+  const hint = row ? row.querySelector('.ocrf-req-hint') : null;
+  if (!hint) return;
+  hint.textContent = msg;
+  hint.classList.add('ocrf-req-hint--warn');
+  setTimeout(() => {
+    if (!hint.isConnected) return;
+    hint.textContent = hint.getAttribute('data-hint') || '';
+    hint.classList.remove('ocrf-req-hint--warn');
+  }, 1600);
+}
 function flashFull(el) {
   if (!el) return;
   el.classList.remove('ocrf-slot-flash');

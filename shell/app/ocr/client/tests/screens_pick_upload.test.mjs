@@ -162,7 +162,7 @@ test('renderUpload: the fraction lives INSIDE the locked Scan button; enabled Sc
   assert.doesNotMatch(gated, /ocrf-summary/);
 });
 
-test('renderUpload: an added row keeps its sample, shows one thumb chip per shot + remove x', () => {
+test('renderUpload: an added row keeps its sample and gives each thumb its OWN remove x (QAC-001)', () => {
   const model = uploadModel({
     type: 'battle',
     shots: { you: [{ slot: 'buffs' }, { slot: 'buffs' }, { slot: 'heroes' }], enemy: [] },
@@ -170,12 +170,36 @@ test('renderUpload: an added row keeps its sample, shows one thumb chip per shot
   model.groups[0].slots.find((s) => s.key === 'buffs').thumbUrls = ['blob:one', 'blob:two'];
   const html = renderUpload({ type: 'battle', model });
   assert.match(html, /data-slot="you:heroes" data-slot-state="added"/);
-  assert.match(html, /data-slot-remove="you:heroes"/);
+  assert.match(html, /data-slot-remove="you:heroes:0"/);
   const buffsRow = html.split('data-slot-tile="you:buffs"')[1].split('data-slot-tile')[0];
-  assert.equal((buffsRow.match(/ocrf-req-thumb/g) || []).length, 2);
+  assert.equal((buffsRow.match(/class="ocrf-req-thumb"/g) || []).length, 2);
+  assert.match(buffsRow, /data-slot-remove="you:buffs:0"/);
+  assert.match(buffsRow, /data-slot-remove="you:buffs:1"/);
   assert.match(buffsRow, /url\('blob:one'\)/);
   assert.match(buffsRow, /ocrf-req-sample/);   // the recognition sample never disappears
-  assert.doesNotMatch(html, /data-slot-remove="you:stats"/);
+  assert.doesNotMatch(html, /data-slot-remove="you:stats/);
+});
+
+test('QAC-004: a row below its cap keeps the + Add chip; a full row drops it', () => {
+  const one = uploadModel({ type: 'battle', shots: { you: [{ slot: 'buffs' }], enemy: [] } });
+  const oneHtml = renderUpload({ type: 'battle', model: one });
+  const buffs1 = oneHtml.split('data-slot-tile="you:buffs"')[1].split('data-slot-tile')[0];
+  assert.match(buffs1, /ocrf-req-add/);
+  const full = uploadModel({ type: 'battle', shots: { you: [{ slot: 'buffs' }, { slot: 'buffs' }], enemy: [] } });
+  const fullHtml = renderUpload({ type: 'battle', model: full });
+  const buffs2 = fullHtml.split('data-slot-tile="you:buffs"')[1].split('data-slot-tile')[0];
+  assert.doesNotMatch(buffs2, /ocrf-req-add/);
+  // heroes (max 1) drops its chip after one shot
+  const hero = uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }], enemy: [] } });
+  const heroRow = renderUpload({ type: 'battle', model: hero }).split('data-slot-tile="you:heroes"')[1].split('data-slot-tile')[0];
+  assert.doesNotMatch(heroRow, /ocrf-req-add/);
+});
+
+test('QAC-002: every hint span carries its data-hint restore value and an aria-live channel', () => {
+  const html = battleHtml();
+  for (const s of SLOTS.battle) {
+    assert.match(html, new RegExp(`data-hint="${s.hint.replace(/[.*+?^${}()|[\]\!]/g, '\$&')}" aria-live="polite"`), s.key);
+  }
 });
 
 test('renderUpload: None is an inline chip on the Buffs row — pressed state when attested, gone when a file lands', () => {
