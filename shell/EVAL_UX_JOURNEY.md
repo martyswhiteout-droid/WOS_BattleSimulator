@@ -1504,3 +1504,29 @@ with the stale flag inert both mirrors, same-mode uploads clear both,
 re-expand mutates nothing — "each mode shows precisely the attestations it
 consumes"). All other fixes verified verbatim; rejection notes swap/restore
 the renamed hints; zero new defects. Fixes commit 4d0d180; closed 2026-08-30.
+
+## Round 5 — CRYSTAL CLEAR (scope redesign; owner /loop mandate satisfied)
+
+Owner rejected round-4's cards+checkbox on sight ("What's you? What's
+enemy? What does the check box do?"; his dead checkbox = stale-tab version
+skew, verified alive with real mouse events, moot — control deleted).
+Redesign (058ea3f): segmented "Whose battle report?" Mine / Enemy's / Both
+ABOVE the rows (gold active pill) + "Each report shows both sides." —
+mine/enemy = 4 plain rows for that report; both = two labeled cards
+"Your report" / "Enemy's report" w/ per-card counts, Scan 0/6; every scope
+a full read; scope switches park shots non-destructively.
+
+Gate verdict CRYSTAL CLEAR on the owner's exact bar: options visible above
+the fold at both widths (label 186/pills 211-251/note 257 desktop;
+160/185-225/231 mobile, zero scrolling), one-report-covers-both carried by
+the label+note conjunction, the Both cards structurally contain their own
+rows, pills guessable without tapping, hints clear w/ no word-tower return.
+Adversarial: full scope round-trips blob-verified (1/3 -> 0/3 -> 1/6 ->
+1/3), real-mouse pill clicks, None-per-scope matrix, scout/city untouched.
+
+QAC-017 MINOR accepted w/ rationale: cross-scope None propagation is the
+battle-wide attestation ("no buffs on either side", owner-defined
+2026-08-25) — every scope's display is truthful; on-screen explanation
+would spend words on a rare path. QAC-018 NIT FIXED post-verdict
+(radiogroup pills; "Your report: X" aria prefixes under Both). QAC-019 NIT
+accepted (mobile buffs hint 5 lines, untruncated). Loop CLOSED 2026-08-30.

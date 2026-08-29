@@ -202,3 +202,27 @@ Owner-dictated changes, gated CRYSTAL CLEAR by the QA comprehension agent
   both, uploads clear both, the read sends the shared flag for both).
 - Troops row: hand-drawn mini-panel stand-in, ghosted like the photo
   samples, until the owner's real Troop-details capture arrives.
+
+## Amendment 2026-08-30 #2 — battle scope = "Whose battle report?" (SUPERSEDES the cards+checkbox scope)
+
+The You/Enemy cards + "Same report as yours" checkbox failed the owner
+cold ("What's you? What's enemy? What does the check box do?"). Battle
+scope is now a segmented radiogroup ABOVE the rows: **Whose battle
+report? [Mine] [Enemy's] [Both]** (gold active pill) + the reassurance
+line "Each report shows both sides."
+
+- mine (default): 4 plain rows, side you, Scan 0/3.
+- enemy: the same 4 rows for the OPPONENT's report (service.py side swap),
+  Scan 0/3 — still a full both-sides read.
+- both: two labeled cards "Your report" / "Enemy's report" (side-by-side
+  >=768px), per-card n/m, Scan 0/6; row aria-labels carry the card name.
+- Scope switches park shots non-destructively. One-report scopes share the
+  single None chip across both sides of that report (battle-wide
+  attestation per the owner's 2026-08-25 definition); 'both' is per side.
+- Hints (owner dictation #2): buffs "Upload the screenshot showing all
+  buffs (special bonuses)" — bracket structure, popup content named, never
+  the 'Stat Bonuses' main-panel title; troops "Upload the screenshot
+  showing troop quality, ratio, FC tier" (side-neutral).
+- QA gate round 5: CRYSTAL CLEAR on the owner's /loop bar (options above
+  the fold both widths, coverage understood without tapping, Both
+  unambiguous). Ledger: shell/EVAL_UX_JOURNEY.md round 5.
