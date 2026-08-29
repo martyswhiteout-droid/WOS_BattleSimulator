@@ -1395,3 +1395,31 @@ Round-1 PASSES worth keeping: word counts max 13 of the 20 budget across all
 7 audited states; mobile first-viewport rect-proven (tiles 181-383, Scan
 736-783 at 375x812); point-of-action feedback synchronous; zero old-design
 remnants; gating exact in every probed state. Fixes: commit dbe7dfb.
+
+## Round 2 — ABSOLUTELY SATISFIED (loop CLOSED)
+
+Evaluator independently re-measured every fix (offsets, not rects — the
+parked-entrance-transform artifact from round 1 is now the documented
+measurement rule) and re-ran the full regression sweep at both widths:
+
+- UXG-001: Escape peels the sheet, flow alive, state intact; second Escape
+  exits; verified both widths.
+- UXG-002: None bar 40px below the tile, zero overlap; full attest/un-attest/
+  override cycle wired; zero words added.
+- UXG-003: zero troop-power requests across fresh reloads.
+- UXG-004: elementFromPoint proves the 38px hit boundary both sides.
+- UXG-005: retraction independently confirmed (matrix .97/.97/+16 parked at
+  t=1150ms; layout offsets show the mobile sheet bottom exactly 812).
+- UXG-006: offsetHeight 44 on all tabs, both widths.
+- UXG-007: full-slot flash synchronous (MutationObserver t=7ms on the
+  no-room paste), fraction truthful, reduced-motion kill confirmed in CSSOM.
+- Regression: word counts unchanged (13/13/13/2/8), mobile first-viewport
+  holds with the new bar (content bottom 778 <= 812), gating truthful in
+  every probed state, zero console errors.
+
+Verdict: "Ship it." Evaluator's aside that the 2-shot count badge is
+untestable ("no slot configured max>1") is wrong about the config (stats and
+buffs are max:2) but moot — the badge render is pinned by unit test
+(screens_pick_upload.test.mjs). Known real-browser-only residuals unchanged:
+entrance-animation smoothness, OS picker/clipboard roundtrips, S3-S5/E1
+drives (need a real read).
