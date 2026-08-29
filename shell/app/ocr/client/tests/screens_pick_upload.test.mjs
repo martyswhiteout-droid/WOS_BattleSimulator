@@ -172,9 +172,10 @@ test('renderUpload: the * cue is RETIRED (owner: "What does * mean?"); only opti
 test('battle scope (owner 2026-08-30 #2): segmented Whose battle report? sits above the rows, Mine active by default', () => {
   const html = battleHtml();
   assert.match(html, /Whose battle report\?/);
-  assert.match(html, /data-scope="mine"[^>]*aria-pressed="true"[^>]*>Mine</);
-  assert.match(html, /data-scope="enemy"[^>]*aria-pressed="false"[^>]*>Enemy's</);
-  assert.match(html, /data-scope="both"[^>]*aria-pressed="false"[^>]*>Both</);
+  assert.match(html, /role="radiogroup"/);
+  assert.match(html, /data-scope="mine"[^>]*aria-checked="true"[^>]*>Mine</);
+  assert.match(html, /data-scope="enemy"[^>]*aria-checked="false"[^>]*>Enemy's</);
+  assert.match(html, /data-scope="both"[^>]*aria-checked="false"[^>]*>Both</);
   assert.match(html, /Each report shows both sides\./);
   // the checkbox is DEAD
   assert.doesNotMatch(html, /data-same-toggle/);
@@ -318,6 +319,9 @@ test("renderUpload(battle, scope both): each labeled card carries its own n/m co
   });
   assert.match(html, /<span>Your report<\/span><span class="ocrf-req-card-count">1\/3</);
   assert.match(html, /<span>Enemy's report<\/span><span class="ocrf-req-card-count">0\/3</);
+  // QAC-018: each labeled card prefixes its name into row aria-labels
+  assert.match(html, /aria-label="Your report: Stats, 1 added"/);
+  assert.match(html, /aria-label="Enemy's report: Heroes \+ Experts, required"/);
 });
 
 test('QAC-011: the None attestation is PER SIDE — scope both renders independent chip states', () => {

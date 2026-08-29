@@ -120,7 +120,7 @@ export function uploadModel({ type, shots, attested = false, scope = 'mine' }) {
 // Rows read top-to-bottom at EVERY width — the 2-col tile grid died on
 // desktop (ownership-by-proximity: the Enemy tile rendered under the You
 // header; owner: "absolute non-sense").
-function requirementRow(side, s) {
+function requirementRow(side, s, ariaPrefix = '') {
   // Owner 2026-08-30: the * cue is retired ("What does * mean?") — required
   // is the unmarked default; only "optional" earns a word. aria keeps saying
   // required for screen readers.
@@ -154,7 +154,7 @@ function requirementRow(side, s) {
   return `
 <div class="ocrf-req ocrf-req--${s.state}" data-slot-tile="${side}:${s.key}">
   <button type="button" class="ocrf-req-main" data-slot="${side}:${s.key}" data-slot-state="${s.state}"
-    aria-label="${s.label}, ${stateLabel}">
+    aria-label="${ariaPrefix}${s.label}, ${stateLabel}">
     <span class="ocrf-req-fig">${sample}</span>
     <span class="ocrf-req-text">
       <span class="ocrf-req-name">${s.label}${cue}</span>
@@ -176,9 +176,9 @@ export function renderUpload({ type, model, notice = null }) {
   const scopeBar = type === 'battle'
     ? `<div class="ocrf-scope">
     <span class="ocrf-scope-q" id="ocrfScopeQ">Whose battle report?</span>
-    <div class="ocrf-scope-tabs" role="group" aria-labelledby="ocrfScopeQ">${BATTLE_SCOPES.map((sc) => (
-      `<button type="button" class="ocrf-scope-tab${sc === model.scope ? ' ocrf-scope-tab--on' : ''}"
-        data-scope="${sc}" aria-pressed="${sc === model.scope}">${SCOPE_LABEL[sc]}</button>`
+    <div class="ocrf-scope-tabs" role="radiogroup" aria-labelledby="ocrfScopeQ">${BATTLE_SCOPES.map((sc) => (
+      `<button type="button" role="radio" class="ocrf-scope-tab${sc === model.scope ? ' ocrf-scope-tab--on' : ''}"
+        data-scope="${sc}" aria-checked="${sc === model.scope}">${SCOPE_LABEL[sc]}</button>`
     )).join('')}</div>
     <span class="ocrf-scope-note">Each report shows both sides.</span>
   </div>`
@@ -189,7 +189,10 @@ export function renderUpload({ type, model, notice = null }) {
       ? `<div class="ocrf-req-card-head"><span>${g.label}</span>`
         + `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span></div>`
       : '';
-    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${g.slots.map((s) => requirementRow(g.side, s)).join('')}</section>`;
+    // QAC-018: labeled cards prefix their name into each row's aria-label
+    // so non-visual users can tell whose row is whose under "Both".
+    const prefix = g.label ? `${g.label}: ` : '';
+    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${g.slots.map((s) => requirementRow(g.side, s, prefix)).join('')}</section>`;
   }).join('');
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
   // The fraction lives INSIDE the locked Scan button — the "why is this
