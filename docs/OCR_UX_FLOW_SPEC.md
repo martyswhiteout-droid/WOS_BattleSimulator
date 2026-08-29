@@ -143,3 +143,32 @@ Owner redesign, built to a dedicated multi-document-upload UX research round
   promoted-bundle fallback (tile icon degrades to label-only) all carry over.
 - Troop Power's sample image is still PENDING an owner capture — its tile
   renders label-only via the img-error fallback meanwhile.
+
+## Amendment 2026-08-29 (later) — requirement-ROW checklist (SUPERSEDES the slot-grid layout above)
+
+The owner rejected the slot grid on sight of desktop ("absolute non-sense"):
+tiles clumped left, None orphaned, and the Enemy tile rendered under the You
+header. Two causes: a stale desktop rule from the RETIRED S1 type-card round
+([data-screen=s1] .ocrf-scr-body -> 3-col grid) interleaving every child, and
+ownership-by-proximity, which no grid survives at width. Replaced by:
+
+- **One requirement ROW per screenshot** (sample crop | name* + <=4-word
+  in-game locator | action cluster), stacked top-to-bottom identically at 375
+  and desktop, inside a 620px centered column. Locators: "Report · hero rows",
+  "Report · stat rows", "Report · ! popup", "Your troop details",
+  "Scout report", "Bonus Overview".
+- **You / Enemy are separate bordered CARDS** (scout/city) with per-card n/m —
+  ownership by containment. Battle: one card, no header.
+- **Action cluster**: "+ Add" chip (persists until the row's cap) -> one 40px
+  thumbnail chip PER shot, each with its own indexed x (side:key:i); the
+  sample never disappears (it keeps teaching). Buffs carries the inline
+  "None" chip (aria-pressed toggle; a real upload overrides).
+- **Fraction lives INSIDE the locked CTA** ("Scan 0/3"); pips and the
+  detached summary strip are gone. h1 = "Screenshots" (CTA vocabulary).
+- **Rejections speak on the row**: wrong type -> "Images only", over-cap ->
+  "N max" — 1.6s red aria-live hint swap + pulse, locator restores.
+- Independent QA comprehension gate (cold-read quiz Q1-Q7 + adversarial
+  ambiguity hunt, both widths): round 1 verdict CRYSTAL CLEAR with 4 MINORs,
+  all fixed (QAC-001/002/004/005 + 003/008 wording); QAC-006/007 declined
+  with rationale (shared wizard header; game knowledge). Ledger:
+  shell/EVAL_UX_JOURNEY.md "QA comprehension gate".

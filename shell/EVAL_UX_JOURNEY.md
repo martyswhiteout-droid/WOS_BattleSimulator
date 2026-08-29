@@ -1423,3 +1423,29 @@ buffs are max:2) but moot — the badge render is pinned by unit test
 (screens_pick_upload.test.mjs). Known real-browser-only residuals unchanged:
 entrance-animation smoothness, OS picker/clipboard roundtrips, S3-S5/E1
 drives (need a real read).
+
+
+---
+
+# QA comprehension gate — requirement-row redesign (2026-08-29, owner round 2)
+
+Owner rejected the shipped slot grid from desktop screenshots ("absolute
+non-sense... makes no sense from a user understanding perspective"): tiles
+clumped left, None orphaned, Enemy tile under the You header. Root cause of
+the interleave: the retired S1 type-card desktop rule (3-col .ocrf-scr-body)
+poured the merged screen's children into columns. Redesigned via the
+frontend-design skill into requirement ROWS in contained You/Enemy cards
+(commit 31334aa); gate = FRESH independent QA agent (adcb8cf3b4d3d7d8e),
+criterion = a cold-read comprehension quiz ("is it crystal clear what's
+required?") + adversarial ambiguity hunt, both widths.
+
+## Round 1 — CRYSTAL CLEAR (0 blockers/majors; 4 MINOR + 4 NIT)
+
+Quiz Q1-Q7 all CLEAR at both widths; the old ownership flaw proven
+structurally dead (element.contains + elementFromPoint + geometry). Fixed
+(58ea64f): QAC-001 per-thumb indexed x; QAC-002 rejection notes on the row
+("Images only" / "N max", aria-live + pulse, locator restores); QAC-003/008
+hints ("Your troop details", "Report · ! popup") + h1 "Screenshots";
+QAC-004 + Add persists until cap; QAC-005 40px chips. Declined: QAC-006
+(back stays — shared wizard header, both exits non-destructive), QAC-007
+(scouting yourself is game knowledge). Round 2 re-verdict pending.
