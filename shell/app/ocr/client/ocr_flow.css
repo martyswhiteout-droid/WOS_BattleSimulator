@@ -971,3 +971,87 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   0%{box-shadow:0 0 0 0 rgba(231,199,131,.75)}
   100%{box-shadow:0 0 0 9px rgba(231,199,131,0)}
 }
+
+
+/* --- Round: REQUIREMENT-ROW upload redesign (owner round 2, 2026-08-29) ---
+   The 2-col tile grid was illegible at desktop (owner screenshots: tiles
+   clumped left, None orphaned, Enemy tile under the You header). Root cause
+   of the interleave: the RETIRED S1 type-card round's desktop rule
+   ([data-screen="s1"] .ocrf-scr-body -> 3-col grid, line ~337) poured the
+   merged screen's every child into three columns. Neutralized here (source
+   order wins); replaced by a contained row-based checklist: one full-width
+   row per screenshot (sample | name+locator | action cluster), You/Enemy
+   as bordered cards. Reads identically at 375 and desktop. */
+
+@media (min-width: 768px){
+  [data-screen="s1"] .ocrf-scr-body.ocrf-upload-body{display:block}
+}
+.ocrf-upload-body{max-width:620px;margin:0 auto;width:100%}
+
+.ocrf-req-card{margin:0 0 12px;padding:4px 12px;border:1px solid rgba(185,210,229,.22);
+  border-radius:14px;background:var(--ocrf-well)}
+.ocrf-req-card-head{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 4px 6px;font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;
+  font-size:13.5px;color:var(--ocrf-ink);border-bottom:1px solid rgba(185,210,229,.16)}
+.ocrf-req-card-count{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:11.5px;color:var(--ocrf-ink-mute)}
+
+.ocrf-req{position:relative;display:flex;align-items:center;gap:10px;padding:0}
+.ocrf-req + .ocrf-req{border-top:1px solid rgba(185,210,229,.14)}
+.ocrf-req-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px;
+  padding:10px 2px;background:none;border:0;cursor:pointer;color:var(--ocrf-ink);
+  font:inherit;text-align:left;border-radius:10px}
+.ocrf-req-main:hover .ocrf-req-add{border-color:var(--ocrf-tile-focus);color:var(--ocrf-ink)}
+.ocrf-req-main:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:-2px}
+
+.ocrf-req-fig{flex:0 0 84px;height:56px;border-radius:8px;overflow:hidden;
+  background:rgba(6,20,34,.5);display:flex;align-items:center;justify-content:center}
+.ocrf-req-sample{width:100%;height:100%;object-fit:cover;object-position:top center}
+.ocrf-req--empty .ocrf-req-sample{opacity:.55}
+.ocrf-req--added .ocrf-req-fig{outline:1.5px solid rgba(87,211,163,.45)}
+
+.ocrf-req-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ocrf-req-name{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:14px;
+  display:flex;align-items:baseline;gap:4px}
+.ocrf-req-star{color:var(--ocrf-gold-b);font-size:15px;line-height:0}
+.ocrf-req-opt{font-family:'Inter',system-ui,sans-serif;font-weight:400;font-size:10.5px;
+  color:var(--ocrf-ink-mute)}
+.ocrf-req-hint{font-size:11.5px;color:var(--ocrf-ink-mute);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+
+.ocrf-req-cluster{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding-right:2px}
+.ocrf-req-add{display:inline-flex;align-items:center;min-height:34px;padding:6px 14px;
+  border:1.5px dashed rgba(185,210,229,.45);border-radius:999px;
+  font-size:12.5px;font-weight:600;color:var(--ocrf-ink-label);pointer-events:none}
+.ocrf-req-thumb{position:relative;width:40px;height:40px;border-radius:8px;
+  background:rgba(6,20,34,.5) center/cover;border:1px solid rgba(87,211,163,.45)}
+.ocrf-req-tick{position:absolute;right:-5px;top:-5px;width:16px;height:16px;border-radius:50%;
+  display:grid;place-items:center;background:var(--ocrf-ok);color:#0B273D;
+  font-size:10px;font-weight:700}
+.ocrf-req-x{position:relative;width:34px;height:34px;border-radius:50%;padding:0;cursor:pointer;
+  border:1px solid rgba(255,129,129,.5);background:var(--ocrf-panel);color:var(--ocrf-ember-b);
+  font-size:16px;line-height:1;display:grid;place-items:center}
+.ocrf-req-x::before{content:"";position:absolute;inset:-6px}
+.ocrf-req-x:hover{background:var(--ocrf-ember-d);color:#fff}
+.ocrf-req-none{min-height:34px;padding:6px 14px;border-radius:999px;cursor:pointer;
+  border:1px dashed rgba(185,210,229,.35);background:transparent;
+  color:var(--ocrf-ink-mute);font-size:12.5px;font-weight:600}
+.ocrf-req-none:hover{color:var(--ocrf-ink);border-color:rgba(185,210,229,.6)}
+.ocrf-req-none--on{border-style:solid;border-color:rgba(87,211,163,.55);
+  background:rgba(87,211,163,.10);color:var(--ocrf-ink)}
+.ocrf-req--none .ocrf-req-sample{opacity:.3}
+
+.ocrf-scan-count{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:13px;margin-left:8px;opacity:.85}
+
+.ocrf-req.ocrf-drag-over{outline:2px dashed var(--ocrf-ice-b);outline-offset:-2px;
+  border-radius:10px;background:rgba(46,161,242,.10)}
+.ocrf-req.ocrf-slot-flash{animation:ocrf-full-pulse .55s ease-out}
+
+.ocrf-upload-body .ocrf-s2-notice{margin:0 0 12px}
+
+@media (max-width:430px){
+  .ocrf-req-fig{flex-basis:64px;height:46px}
+  .ocrf-req-main{gap:9px;padding:9px 0}
+  .ocrf-req-add{padding:6px 11px}
+}

@@ -468,22 +468,25 @@ function renderScreen() {
     for (const g of model.groups) {
       for (const s of g.slots) {
         const mine = app.shots[g.side].filter((x) => x.slot === s.key);
-        if (mine.length) s.thumbUrl = mine[mine.length - 1].url || null;
+        if (mine.length) s.thumbUrls = mine.map((x) => x.url || null);
       }
     }
     show(renderUpload({ type, model, notice: app.s2Notice }));
     wireUpload(root(), {
       onTab: (t) => { controller.flow.pickKind(t); render(); },
-      onSlot: (side, key, state) => {
+      onSlot: (side, key) => {
+        // A row tap always moves toward adding: attested rows open the
+        // picker too (a real upload overrides None via addFilesToSlot);
+        // full rows open the preview sheet. Un-attesting is the None
+        // chip's own job (aria-pressed toggle).
         const slot = slotDef(type, side, key);
         if (!slot) return;
-        if (state === 'none') { app.noBuffs = false; render(); return; }
         const count = app.shots[side].filter((x) => x.slot === key).length;
         if (count >= slot.max) { openSlotPreview(side, key); return; }
         openPicker(side, key, slot.max - count);
       },
       onSlotRemove: (side, key) => { dropSlot(side, key); render(); },
-      onSlotNone: () => { app.noBuffs = true; render(); },
+      onSlotNone: () => { app.noBuffs = !app.noBuffs; render(); },
       onScan: () => { if (currentModel().canScan) goto('s3'); },
     });
     return;

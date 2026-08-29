@@ -100,25 +100,35 @@ test('uploadModel(scout): BOTH sides required — one covered side is not scanna
   assert.equal(both.canScan, true);
 });
 
-// --- renderUpload: everything visible, state on the tile ------------------
+// --- renderUpload: requirement rows in contained cards (owner round 2) ----
 
 function battleHtml(over = {}) {
   const model = uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, ...over.modelArgs });
   return renderUpload({ type: 'battle', model, ...over });
 }
 
-test('renderUpload: all four battle tiles render at once — no picker step, no scrolling reveal', () => {
+test('renderUpload: all four battle requirement rows render at once, top-to-bottom', () => {
   const html = battleHtml();
   for (const key of ['heroes', 'stats', 'buffs', 'power']) {
     assert.match(html, new RegExp(`data-slot-tile="you:${key}"`), key);
   }
   assert.match(html, /data-screen="s1"/);
+  assert.match(html, /class="ocrf-req-card"/);
+});
+
+test('every row carries its in-game locator hint (<=4 words) — the "what do I screenshot" answer', () => {
+  const html = battleHtml();
+  for (const s of SLOTS.battle) {
+    assert.match(html, new RegExp(s.hint.replace(/[.*+?^${}()|[\]\!]/g, '\$&')), s.key);
+    const words = s.hint.split(/\s+/).filter((w) => /[a-zA-Z0-9]/.test(w));
+    assert.ok(words.length <= 4, `${s.key} hint "${s.hint}" is ${words.length} words`);
+  }
 });
 
 test('UXG-003: a slot with no sample capture yet (Power) renders NO img element — no 404 per open', () => {
   const html = battleHtml();
-  const powerTile = html.split('data-slot-tile="you:power"')[1];
-  assert.doesNotMatch(powerTile, /ocrf-slot-sample/);
+  const powerRow = html.split('data-slot-tile="you:power"')[1];
+  assert.doesNotMatch(powerRow, /ocrf-req-sample/);
   assert.doesNotMatch(html, /sample_troop_power/);
 });
 
@@ -130,45 +140,54 @@ test('renderUpload: type tabs are Battle/Scout/City with the active one pressed'
   assert.deepEqual(Object.values(TAB_LABEL), ['Battle', 'Scout', 'City']);
 });
 
-test('renderUpload: required = * cue, optional = the one word "optional" (research dual-coding)', () => {
+test('renderUpload: required = * cue, optional = the one word "optional"; empty rows show the + Add chip', () => {
   const html = battleHtml();
-  assert.match(html, /Heroes <span class="ocrf-slot-req"/);
-  assert.match(html, /Power <span class="ocrf-slot-opt">optional</);
-  assert.doesNotMatch(html, /Power <span class="ocrf-slot-req"/);
+  assert.match(html, /Heroes <span class="ocrf-req-star"/);
+  assert.match(html, /Power <span class="ocrf-req-opt">optional</);
+  assert.doesNotMatch(html, /Power <span class="ocrf-req-star"/);
+  assert.equal((html.match(/ocrf-req-add/g) || []).length, 4);
 });
 
-test('renderUpload: bare-fraction summary + one pip per required slot', () => {
-  const model = uploadModel({ type: 'battle', shots: { you: [{ slot: 'stats' }], enemy: [] } });
-  const html = renderUpload({ type: 'battle', model });
-  assert.match(html, /class="ocrf-fraction">1\/3</);
-  assert.equal((html.match(/ocrf-pip[" ]/g) || []).length - (html.match(/ocrf-pip--on/g) || []).length, 2);
-  assert.equal((html.match(/ocrf-pip--on/g) || []).length, 1);
+test('renderUpload: the fraction lives INSIDE the locked Scan button; enabled Scan is the bare word', () => {
+  const gated = battleHtml();
+  assert.match(gated, /id="ocrfScan" disabled>Scan <span class="ocrf-scan-count">0\/3</);
+  const ready = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [] }, attested: true }),
+  });
+  assert.match(ready, /id="ocrfScan">Scan</);
+  assert.doesNotMatch(ready, /ocrf-scan-count/);
+  // the old detached summary strip and pips are GONE
+  assert.doesNotMatch(gated, /ocrf-pip/);
+  assert.doesNotMatch(gated, /ocrf-summary/);
 });
 
-test('renderUpload: an added slot carries checkmark + remove ×; a 2-shot slot adds the count badge', () => {
+test('renderUpload: an added row keeps its sample, shows one thumb chip per shot + remove x', () => {
   const model = uploadModel({
     type: 'battle',
     shots: { you: [{ slot: 'buffs' }, { slot: 'buffs' }, { slot: 'heroes' }], enemy: [] },
   });
+  model.groups[0].slots.find((s) => s.key === 'buffs').thumbUrls = ['blob:one', 'blob:two'];
   const html = renderUpload({ type: 'battle', model });
   assert.match(html, /data-slot="you:heroes" data-slot-state="added"/);
   assert.match(html, /data-slot-remove="you:heroes"/);
-  assert.match(html, /data-slot-remove="you:buffs"/);
-  assert.match(html, /class="ocrf-slot-count">2</);
-  // the still-empty stats tile carries neither
+  const buffsRow = html.split('data-slot-tile="you:buffs"')[1].split('data-slot-tile')[0];
+  assert.equal((buffsRow.match(/ocrf-req-thumb/g) || []).length, 2);
+  assert.match(buffsRow, /url\('blob:one'\)/);
+  assert.match(buffsRow, /ocrf-req-sample/);   // the recognition sample never disappears
   assert.doesNotMatch(html, /data-slot-remove="you:stats"/);
 });
 
-test('renderUpload: the buffs None link shows only while buffs is empty, and an attested slot shows the none-check', () => {
+test('renderUpload: None is an inline chip on the Buffs row — pressed state when attested, gone when a file lands', () => {
   const empty = battleHtml();
-  assert.match(empty, /data-slot-none="you:buffs"[^>]*>None</);
+  assert.match(empty, /data-slot-none="you:buffs"[^>]*aria-pressed="false"[^>]*>None</);
   const attested = renderUpload({
     type: 'battle',
     model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, attested: true }),
   });
-  assert.doesNotMatch(attested, /data-slot-none=/);
+  assert.match(attested, /ocrf-req-none--on/);
+  assert.match(attested, /aria-pressed="true"/);
   assert.match(attested, /data-slot="you:buffs" data-slot-state="none"/);
-  assert.match(attested, /ocrf-slot-check--none/);
   const filled = renderUpload({
     type: 'battle',
     model: uploadModel({ type: 'battle', shots: { you: [{ slot: 'buffs' }], enemy: [] } }),
@@ -176,31 +195,23 @@ test('renderUpload: the buffs None link shows only while buffs is empty, and an 
   assert.doesNotMatch(filled, /data-slot-none=/);
 });
 
-test('renderUpload: a thumbUrl replaces the sample icon with the real thumbnail (self-confirmation)', () => {
-  const model = uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }], enemy: [] } });
-  model.groups[0].slots[0].thumbUrl = 'blob:fake-url';
-  const html = renderUpload({ type: 'battle', model });
-  assert.match(html, /background-image:url\('blob:fake-url'\)/);
-  const heroTile = html.split('data-slot-tile="you:heroes"')[1].split('data-slot-tile')[0];
-  assert.doesNotMatch(heroTile, /ocrf-slot-sample/);
-});
-
-test('renderUpload(scout): stacked You/Enemy group heads each carry their own n/m count — never tabs', () => {
+test('renderUpload(scout): You and Enemy are SEPARATE bordered cards, each with its own header + count', () => {
   const model = uploadModel({ type: 'scout', shots: { you: [{ slot: 'scout' }], enemy: [] } });
   const html = renderUpload({ type: 'scout', model });
-  assert.match(html, /<span>You<\/span><span class="ocrf-group-count">1\/1</);
-  assert.match(html, /<span>Enemy<\/span><span class="ocrf-group-count">0\/1</);
-  assert.doesNotMatch(html, /data-side-tab/);
+  assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 2);
+  assert.match(html, /<span>You<\/span><span class="ocrf-req-card-count">1\/1</);
+  assert.match(html, /<span>Enemy<\/span><span class="ocrf-req-card-count">0\/1</);
+  // each card CONTAINS its own row — ownership by containment, not proximity
+  const youCard = html.split('data-group="you"')[1].split('</section>')[0];
+  assert.match(youCard, /data-slot-tile="you:scout"/);
+  const enemyCard = html.split('data-group="enemy"')[1].split('</section>')[0];
+  assert.match(enemyCard, /data-slot-tile="enemy:scout"/);
 });
 
-test('renderUpload: Scan is the sticky footer CTA — one word, disabled until scannable', () => {
-  const gated = battleHtml();
-  assert.match(gated, /id="ocrfScan" disabled>Scan</);
-  const ready = renderUpload({
-    type: 'battle',
-    model: uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [] }, attested: true }),
-  });
-  assert.match(ready, /id="ocrfScan">Scan</);
+test('renderUpload(battle): one card, no group header (the report covers both sides)', () => {
+  const html = battleHtml();
+  assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 1);
+  assert.doesNotMatch(html, /ocrf-req-card-head/);
 });
 
 test('renderUpload: the notice slot renders when given, absent when null', () => {
@@ -212,13 +223,13 @@ test('renderUpload: the notice slot renders when given, absent when null', () =>
   assert.doesNotMatch(battleHtml(), /ocrfS2Notice/);
 });
 
-// --- STRICT word budget (owner 2026-08-29: "minimum words... keywords is
-// probably enough") — the whole battle screen's visible text, tags stripped,
-// must stay under 20 words. This is the hard gate the UX loop polices too.
-test('word budget: the entire battle upload screen shows fewer than 20 visible words', () => {
+// --- STRICT word budget (owner): every word must earn its place. The rows
+// gained <=4-word in-game locators (the crystal-clear mandate) — the whole
+// battle screen still stays under 35 visible words.
+test('word budget: the entire battle upload screen shows fewer than 35 visible words', () => {
   const text = battleHtml().replace(/<[^>]+>/g, ' ');
   const words = text.split(/\s+/).filter((w) => /[a-zA-Z]/.test(w));
-  assert.ok(words.length < 20, `${words.length} words: ${words.join(' ')}`);
+  assert.ok(words.length < 35, `${words.length} words: ${words.join(' ')}`);
 });
 
 // --- E1: minimal words, targets the combined s1 screen --------------------

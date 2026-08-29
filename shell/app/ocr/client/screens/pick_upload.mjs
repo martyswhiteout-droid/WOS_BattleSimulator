@@ -18,21 +18,23 @@ const SAMPLE_IMG_BASE = '/shell/ocr/client/samples';
 // takes (long lists scroll -> 2). `noneable` = the user may attest "None"
 // instead of uploading (buffs). Battle is ONE group (the report carries both
 // sides); scout/city repeat per side.
+// `hint` = a <=4-word in-game locator ("what do I screenshot?") — the one
+// piece of information the owner's crystal-clear mandate demands per row.
 export const SLOTS = {
   battle: [
-    { key: 'heroes', label: 'Heroes', required: true, max: 1, img: 'sample_battle_heroes.jpg' },
-    { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg' },
-    { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true },
+    { key: 'heroes', label: 'Heroes', required: true, max: 1, img: 'sample_battle_heroes.jpg', hint: 'Report · hero rows' },
+    { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg', hint: 'Report · stat rows' },
+    { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true, hint: '! popup · up to 2' },
     // img null (UXG-003): the Troop Power sample capture is still owed by the
     // owner — no img element until it ships (a 404 per open is worse than the
     // dashed tile the img-error fallback would leave anyway).
-    { key: 'power', label: 'Power', required: false, max: 1, img: null },
+    { key: 'power', label: 'Power', required: false, max: 1, img: null, hint: 'Troop details screen' },
   ],
   scout: [
-    { key: 'scout', label: 'Stats', required: true, max: 2, img: 'sample_scout.jpg' },
+    { key: 'scout', label: 'Stats', required: true, max: 2, img: 'sample_scout.jpg', hint: 'Scout report' },
   ],
   citystats: [
-    { key: 'city', label: 'City', required: true, max: 2, img: 'sample_citystats.jpg' },
+    { key: 'city', label: 'City', required: true, max: 2, img: 'sample_citystats.jpg', hint: 'Bonus Overview' },
   ],
 };
 
@@ -71,33 +73,47 @@ export function uploadModel({ type, shots, attested = false }) {
   return { groups, done, total: required.length, canScan: done === required.length };
 }
 
-function slotTile(side, s) {
+// One requirement ROW (owner redesign round 2, 2026-08-29): sample crop on
+// the left (recognition anchor — stays visible even after adding), name +
+// in-game locator in the middle, action cluster on the right (+ Add chip ->
+// per-shot thumbnail chips + remove x; Buffs adds the inline None chip).
+// Rows read top-to-bottom at EVERY width — the 2-col tile grid died on
+// desktop (ownership-by-proximity: the Enemy tile rendered under the You
+// header; owner: "absolute non-sense").
+function requirementRow(side, s) {
   const cue = s.required
-    ? '<span class="ocrf-slot-req" aria-label="required">*</span>'
-    : '<span class="ocrf-slot-opt">optional</span>';
-  const badge = s.state === 'added'
-    ? `<span class="ocrf-slot-check" aria-hidden="true">&#10003;</span>${s.count > 1 ? `<span class="ocrf-slot-count">${s.count}</span>` : ''}`
-    : s.state === 'none'
-      ? '<span class="ocrf-slot-check ocrf-slot-check--none" aria-hidden="true">&#10003;</span>'
+    ? '<span class="ocrf-req-star" aria-label="required">*</span>'
+    : '<span class="ocrf-req-opt">optional</span>';
+  const sample = s.img
+    ? `<img class="ocrf-sample-img ocrf-req-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`
+    : '';
+  const thumbs = (s.thumbUrls || []).map((u) => (
+    `<span class="ocrf-req-thumb"${u ? ` style="background-image:url('${u}')"` : ''}>`
+    + '<span class="ocrf-req-tick" aria-hidden="true">&#10003;</span></span>'
+  )).join('');
+  let cluster;
+  if (s.state === 'added') {
+    cluster = `${thumbs}<button type="button" class="ocrf-req-x" data-slot-remove="${side}:${s.key}" aria-label="Remove">&times;</button>`;
+  } else if (s.state === 'none') {
+    cluster = `<button type="button" class="ocrf-req-none ocrf-req-none--on" data-slot-none="${side}:${s.key}" aria-pressed="true">None <span aria-hidden="true">&#10003;</span></button>`;
+  } else {
+    const noneChip = s.noneable
+      ? `<button type="button" class="ocrf-req-none" data-slot-none="${side}:${s.key}" aria-pressed="false">None</button>`
       : '';
-  const remove = s.state === 'added'
-    ? `<button type="button" class="ocrf-slot-x" data-slot-remove="${side}:${s.key}" aria-label="Remove">&times;</button>`
-    : '';
-  const noneLink = s.noneable && s.state === 'empty'
-    ? `<button type="button" class="ocrf-slot-none" data-slot-none="${side}:${s.key}">None</button>`
-    : '';
+    cluster = `${noneChip}<span class="ocrf-req-add" aria-hidden="true">+ Add</span>`;
+  }
   const stateLabel = s.state === 'added' ? `${s.count} added` : s.state === 'none' ? 'none' : (s.required ? 'required' : 'optional');
   return `
-<div class="ocrf-slot ocrf-slot--${s.state}${s.required ? '' : ' ocrf-slot--optional'}" data-slot-tile="${side}:${s.key}">
-  <button type="button" class="ocrf-slot-main" data-slot="${side}:${s.key}" data-slot-state="${s.state}"
+<div class="ocrf-req ocrf-req--${s.state}" data-slot-tile="${side}:${s.key}">
+  <button type="button" class="ocrf-req-main" data-slot="${side}:${s.key}" data-slot-state="${s.state}"
     aria-label="${s.label}, ${stateLabel}">
-    <span class="ocrf-slot-fig"${s.thumbUrl ? ` style="background-image:url('${s.thumbUrl}')"` : ''}>
-      ${s.thumbUrl || !s.img ? '' : `<img class="ocrf-sample-img ocrf-slot-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`}
+    <span class="ocrf-req-fig">${sample}</span>
+    <span class="ocrf-req-text">
+      <span class="ocrf-req-name">${s.label} ${cue}</span>
+      <span class="ocrf-req-hint">${s.hint}</span>
     </span>
-    <span class="ocrf-slot-label">${s.label} ${cue}</span>
-    ${badge}
   </button>
-  ${remove}${noneLink}
+  <span class="ocrf-req-cluster">${cluster}</span>
 </div>`;
 }
 
@@ -106,25 +122,30 @@ export function renderUpload({ type, model, notice = null }) {
     `<button type="button" class="ocrf-type-tab${t === type ? ' ocrf-type-tab--on' : ''}"
       data-type-tab="${t}" aria-pressed="${t === type}">${TAB_LABEL[t]}</button>`
   )).join('');
-  const pips = Array.from({ length: model.total }, (_, i) => (
-    `<span class="ocrf-pip${i < model.done ? ' ocrf-pip--on' : ''}" aria-hidden="true"></span>`
-  )).join('');
-  const groups = model.groups.map((g) => `
-${g.label ? `<div class="ocrf-group-head"><span>${g.label}</span><span class="ocrf-group-count">${g.slots.filter((s) => s.required && s.state !== 'empty').length}/${g.slots.filter((s) => s.required).length}</span></div>` : ''}
-<div class="ocrf-slot-grid" data-group="${g.side}">${g.slots.map((s) => slotTile(g.side, s)).join('')}</div>`).join('');
+  const cards = model.groups.map((g) => {
+    const req = g.slots.filter((s) => s.required);
+    const head = g.label
+      ? `<div class="ocrf-req-card-head"><span>${g.label}</span>`
+        + `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span></div>`
+      : '';
+    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${g.slots.map((s) => requirementRow(g.side, s)).join('')}</section>`;
+  }).join('');
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
+  // The fraction lives INSIDE the locked Scan button — the "why is this
+  // disabled" answer sits exactly where the eye lands. No pips, no strip.
+  const scanLabel = model.canScan ? 'Scan'
+    : `Scan <span class="ocrf-scan-count">${model.done}/${model.total}</span>`;
   return `
 <section class="screen" data-screen="s1">
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
     <h1 tabindex="-1">New read</h1></header>
-  <div class="ocrf-scr-body">
+  <div class="ocrf-scr-body ocrf-upload-body">
     <div class="ocrf-type-tabs" role="group" aria-label="Screenshot type">${tabs}</div>
     ${noticeHtml}
-    <div class="ocrf-summary"><span class="ocrf-pips">${pips}</span><span class="ocrf-fraction">${model.done}/${model.total}</span></div>
-    ${groups}
+    ${cards}
   </div>
   <footer class="ocrf-scr-foot">
-    <button type="button" class="ocrf-btn-primary ocrf-btn-block" id="ocrfScan"${model.canScan ? '' : ' disabled'}>Scan</button>
+    <button type="button" class="ocrf-btn-primary ocrf-btn-block" id="ocrfScan"${model.canScan ? '' : ' disabled'}>${scanLabel}</button>
   </footer>
 </section>`.trim();
 }
