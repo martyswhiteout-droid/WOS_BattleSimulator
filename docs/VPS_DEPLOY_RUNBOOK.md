@@ -111,3 +111,22 @@ committed Caddyfile changes — re-apply the block if so.)
   single user; Supabase makes it real later.
 - Backups/snapshots: enable Hostinger VPS snapshots once things work.
 - The engine demo on Vercel is unaffected; retire or redirect it whenever you like.
+
+## INTERIM DEPLOYMENT — LIVE since 2026-08-29 (Cloudflare Tunnel, $0)
+
+The VPS above is DEFERRED (owner choice). What is actually serving today:
+
+- **https://staging.wostests.com** → Cloudflare Tunnel `wos-pc` → `localhost:8200` on the
+  owner's PC (app in dev mode, pro-by-default).
+- **Gate:** Cloudflare Access self-hosted app "WOS Tests staging" — Allow policy on the
+  owner's email only (one-time-PIN login; team domain `cold-morning-ab99.cloudflareaccess.com`).
+  Verified: every unauthenticated request 302s to the Access login; the dev pro-default never
+  faces the public (C6 posture held by Access instead of Caddy basic_auth).
+- **Auto-start:** `%APPDATA%\...\Startup\wos-staging.vbs` → runs
+  `C:\Users\Martin\wos-ops\start_app.bat` (uvicorn :8200, --env-file shell/.env) and
+  `start_tunnel.bat` (cloudflared with the tunnel token — token lives ONLY in that local file,
+  outside every repo; rotate it in Zero Trust → Networks → Tunnels if ever exposed).
+- **Limits of this mode:** up only while the PC is on and the owner is logged in; quotas are
+  in-memory; keep GEMINI_API_KEY unset here unless fuzzier budget-reset-on-restart is accepted.
+- Moving to the VPS later: run the runbook above, then just repoint — either delete the
+  tunnel route and add the `A staging → VPS` record, or keep Cloudflare proxying to the VPS.
