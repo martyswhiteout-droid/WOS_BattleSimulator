@@ -68,6 +68,7 @@ let controller = null;
 
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
   noBuffs: false, lastSlot: null,   // buffs attestation + paste routing (slot key "side:key")
+  enemySame: true,   // battle scope (owner 2026-08-30): Enemy card defaults to "Same report as yours"
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array, url, slot}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
@@ -102,8 +103,8 @@ export function pasteTargetSlot(model, lastSlot = null) {
 // Which slot keys the active type accepts for a side — the read sends ONLY
 // these (a shot uploaded under another tab stays parked, never silently
 // included). Pure; exported for tests.
-export function sendableShots(type, side, sideShots) {
-  const group = groupsFor(type).find((g) => g.side === side);
+export function sendableShots(type, side, sideShots, enemySame = true) {
+  const group = groupsFor(type, { enemySame }).find((g) => g.side === side);
   if (!group) return [];
   const keys = new Set(group.slots.map((s) => s.key));
   return sideShots.filter((s) => keys.has(s.slot));
@@ -496,6 +497,7 @@ function renderScreen() {
         render();
       },
       onSlotNone: () => { app.noBuffs = !app.noBuffs; render(); },
+      onSameToggle: () => { app.enemySame = !app.enemySame; render(); },
       onScan: () => { if (currentModel().canScan) goto('s3'); },
     });
     return;
@@ -511,8 +513,8 @@ function renderScreen() {
     activeScanAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const handle = driveScan({
       run: () => controller.readAll(
-        { you: sendableShots(activeType(), 'you', app.shots.you).map((s) => s.bytes),
-          enemy: sendableShots(activeType(), 'enemy', app.shots.enemy).map((s) => s.bytes) },
+        { you: sendableShots(activeType(), 'you', app.shots.you, app.enemySame).map((s) => s.bytes),
+          enemy: sendableShots(activeType(), 'enemy', app.shots.enemy, app.enemySame).map((s) => s.bytes) },
         null, { noBuffsAttested: app.noBuffs }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
@@ -667,10 +669,10 @@ function wireE1Upgrade(button) {
 // the fresh-open default flow_state already ships with.
 function activeType() { return controller.flow.types().you || 'battle'; }
 function currentModel() {
-  return uploadModel({ type: activeType(), shots: app.shots, attested: app.noBuffs });
+  return uploadModel({ type: activeType(), shots: app.shots, attested: app.noBuffs, enemySame: app.enemySame });
 }
 function slotDef(type, side, key) {
-  const group = groupsFor(type).find((g) => g.side === side);
+  const group = groupsFor(type, { enemySame: app.enemySame }).find((g) => g.side === side);
   return group ? group.slots.find((s) => s.key === key) || null : null;
 }
 

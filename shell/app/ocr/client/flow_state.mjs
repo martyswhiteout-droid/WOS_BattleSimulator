@@ -21,9 +21,9 @@ export function createFlow({ genTable = {} } = {}) {
   function setSideType(side, type) {
     requireSide(side);
     requireType(type);
-    if (side === 'enemy' && type === 'citystats') {
-      throw new Error('enemy cannot use citystats');
-    }
+    // Owner 2026-08-30: the old "enemy cannot use citystats" throw is gone —
+    // the enemy's City Stats screenshot comes from the other player, and the
+    // server accepts any side x panel. City reads are symmetric now.
     typeState[side] = type;
   }
 
@@ -31,7 +31,7 @@ export function createFlow({ genTable = {} } = {}) {
     requireType(kind);
     const presets = {
       scout: { you: 'scout', enemy: 'scout' },
-      citystats: { you: 'citystats', enemy: 'scout' },
+      citystats: { you: 'citystats', enemy: 'citystats' },
       battle: { you: 'battle', enemy: 'battle' },
     };
     typeState.you = presets[kind].you;

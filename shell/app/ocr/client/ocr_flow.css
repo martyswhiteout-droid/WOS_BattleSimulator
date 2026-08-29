@@ -1065,3 +1065,38 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
 .ocrf-req-thumb-x::before{content:"";position:absolute;inset:-7px}
 .ocrf-req-thumb-x:hover{background:var(--ocrf-ember-d);color:#fff}
 .ocrf-req-hint--warn{color:var(--ocrf-ember-b)}
+
+/* --- Round: owner walkthrough 2026-08-30 ----------------------------------
+   Intro line, full-name tabs, You|Enemy cards side-by-side at desktop (the
+   app's own my-left / enemy-right convention), the battle Enemy card's
+   "Same report as yours" checkbox row, drawn Troops stand-in fig. */
+
+.ocrf-upload-intro{margin:0 0 8px;font-size:13px;color:var(--ocrf-ink-mute)}
+.ocrf-type-tab{font-size:12.5px;padding:8px 4px}
+
+.ocrf-req-cards{display:block}
+@media (min-width:768px){
+  [data-screen="s1"] .ocrf-upload-body{max-width:none}
+  .ocrf-req-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .ocrf-req-cards > .ocrf-req-card{margin-bottom:0}
+}
+
+.ocrf-req-same{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;
+  margin:8px 0;padding:10px 12px;border:1px dashed rgba(185,210,229,.35);border-radius:12px;
+  background:transparent;color:var(--ocrf-ink-label);font:inherit;font-size:13px;
+  font-weight:600;text-align:left;cursor:pointer}
+.ocrf-req-same:hover{border-color:rgba(185,210,229,.6);color:var(--ocrf-ink)}
+.ocrf-req-same:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-req-same--on{border-style:solid;border-color:rgba(87,211,163,.55);
+  background:rgba(87,211,163,.08);color:var(--ocrf-ink)}
+.ocrf-req-same-box{flex:0 0 auto;width:22px;height:22px;display:grid;place-items:center;
+  border:1px solid rgba(185,210,229,.45);border-radius:6px;background:rgba(6,20,34,.38);
+  color:var(--ocrf-ok);font-size:14px;line-height:1}
+.ocrf-req-same--on .ocrf-req-same-box{border-color:rgba(87,211,163,.55)}
+
+/* Drawn Troops stand-in: reuse the city mini-panel recipe inside the fig. */
+.ocrf-req-fig .ocrf-mini-panel{width:100%;height:100%;margin:0;transform:scale(.92)}
+.ocrf-mini-panel--troops{background:linear-gradient(180deg,#123f66,#0B273D)}
+
+/* Hints are sentences now (owner-dictated) — let them wrap, never clip. */
+.ocrf-req-hint{white-space:normal;line-height:1.35}

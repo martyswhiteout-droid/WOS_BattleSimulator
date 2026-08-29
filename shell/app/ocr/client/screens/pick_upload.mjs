@@ -8,7 +8,8 @@
 //   for scout/city (research: tabs hide the other party's completion state).
 // Replaces the old S1 type-cards + S2 rows two-screen flow entirely.
 export const TYPE_LABEL = { battle: 'Battle Report', scout: 'Scout Report', citystats: 'City Stats' };
-export const TAB_LABEL = { battle: 'Battle', scout: 'Scout', citystats: 'City' };
+// Owner 2026-08-30: tabs carry the full names — "Battle" alone read as vague.
+export const TAB_LABEL = TYPE_LABEL;
 export const YOU_TYPES = ['citystats', 'scout', 'battle'];
 export const ENEMY_TYPES = ['scout', 'battle'];
 
@@ -18,39 +19,61 @@ const SAMPLE_IMG_BASE = '/shell/ocr/client/samples';
 // takes (long lists scroll -> 2). `noneable` = the user may attest "None"
 // instead of uploading (buffs). Battle is ONE group (the report carries both
 // sides); scout/city repeat per side.
-// `hint` = a <=4-word in-game locator ("what do I screenshot?") — the one
-// piece of information the owner's crystal-clear mandate demands per row.
+// `hint`/`hintEnemy` = the owner's dictated per-row instruction ("Upload the
+// screenshot showing ...", 2026-08-30 — the terse locators "don't make
+// sense" was his verdict). hintEnemy is used when the row renders in the
+// Enemy card; hint is the You-side (and single-card) wording.
 export const SLOTS = {
   battle: [
-    { key: 'heroes', label: 'Heroes', required: true, max: 1, img: 'sample_battle_heroes.jpg', hint: 'Report · hero rows' },
-    { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg', hint: 'Report · stat rows' },
-    { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true, hint: 'Report · ! popup' },
+    { key: 'heroes', label: 'Heroes + Experts', required: true, max: 1, img: 'sample_battle_heroes.jpg',
+      hint: 'Upload the screenshot showing heroes & experts' },
+    { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg',
+      hint: 'Upload the screenshot showing battle stats' },
+    { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true,
+      hint: 'Upload the screenshot showing stat bonuses (buffs)' },
     // img null (UXG-003): the Troop Power sample capture is still owed by the
-    // owner — no img element until it ships (a 404 per open is worse than the
-    // dashed tile the img-error fallback would leave anyway).
-    { key: 'power', label: 'Power', required: false, max: 1, img: null, hint: 'Your troop details' },
+    // owner — the drawn mini-panel stands in until the real capture ships.
+    { key: 'power', label: 'Troops', required: false, max: 1, img: null, drawn: 'troops',
+      hint: 'Upload the screenshot showing your troops',
+      hintEnemy: "Upload the screenshot showing the enemy's troops" },
   ],
   scout: [
-    { key: 'scout', label: 'Stats', required: true, max: 2, img: 'sample_scout.jpg', hint: 'Scout report' },
+    { key: 'scout', label: 'Combat stats', required: true, max: 2, img: 'sample_scout.jpg',
+      hint: 'Upload the scout report showing your combat stats',
+      hintEnemy: 'Upload the scout report showing enemy combat stats' },
   ],
   citystats: [
-    { key: 'city', label: 'City', required: true, max: 2, img: 'sample_citystats.jpg', hint: 'Bonus Overview' },
+    { key: 'city', label: 'Bonus Overview', required: true, max: 2, img: 'sample_citystats.jpg',
+      hint: 'Upload your City Stats (Bonus Overview)',
+      hintEnemy: "Upload the enemy's City Stats (Bonus Overview)" },
   ],
 };
 
-// Which sides a type needs. Battle: one shared group stored on 'you'.
-// City: the enemy side is a scout capture (ENEMY_TYPES has no citystats).
-export function groupsFor(type) {
-  if (type === 'battle') return [{ side: 'you', label: null, slots: SLOTS.battle }];
-  if (type === 'citystats') {
+// Which sides a type needs — every type is You + Enemy cards now.
+// City is SYMMETRIC (owner 2026-08-30): the enemy's Bonus Overview comes
+// from the other player, and the server accepts any side x panel.
+// Battle scope (owner 2026-08-30): one report normally covers BOTH sides
+// (the panel has My/Enemy columns), so the Enemy card defaults to a ticked
+// "Same report as yours" toggle; unticking (enemySame=false) expands the
+// enemy's own upload rows — for reading the OPPONENT's battle report, whose
+// own My column is the enemy's stats (flow_state has modeled per-side
+// battle uploads since Task 6).
+function sideSlots(slots, side) {
+  return slots.map((s) => (side === 'enemy' && s.hintEnemy ? { ...s, hint: s.hintEnemy } : s));
+}
+export function groupsFor(type, { enemySame = true } = {}) {
+  if (type === 'battle') {
     return [
-      { side: 'you', label: 'You', slots: SLOTS.citystats },
-      { side: 'enemy', label: 'Enemy', slots: SLOTS.scout },
+      { side: 'you', label: 'You', slots: SLOTS.battle },
+      enemySame
+        ? { side: 'enemy', label: 'Enemy', sameToggle: true, slots: [] }
+        : { side: 'enemy', label: 'Enemy', sameToggle: true, slots: sideSlots(SLOTS.battle, 'enemy') },
     ];
   }
+  const base = type === 'citystats' ? SLOTS.citystats : SLOTS.scout;
   return [
-    { side: 'you', label: 'You', slots: SLOTS.scout },
-    { side: 'enemy', label: 'Enemy', slots: SLOTS.scout },
+    { side: 'you', label: 'You', slots: sideSlots(base, 'you') },
+    { side: 'enemy', label: 'Enemy', slots: sideSlots(base, 'enemy') },
   ];
 }
 
@@ -63,14 +86,14 @@ export function slotState(slotDef, sideShots, attested) {
   return { state: 'empty', count: 0 };
 }
 
-export function uploadModel({ type, shots, attested = false }) {
-  const groups = groupsFor(type).map((g) => ({
+export function uploadModel({ type, shots, attested = false, enemySame = true }) {
+  const groups = groupsFor(type, { enemySame }).map((g) => ({
     ...g,
     slots: g.slots.map((def) => ({ ...def, ...slotState(def, shots[g.side] || [], attested) })),
   }));
   const required = groups.flatMap((g) => g.slots.filter((s) => s.required));
   const done = required.filter((s) => s.state !== 'empty').length;
-  return { groups, done, total: required.length, canScan: done === required.length };
+  return { groups, done, total: required.length, canScan: done === required.length, enemySame };
 }
 
 // One requirement ROW (owner redesign round 2, 2026-08-29): sample crop on
@@ -81,12 +104,13 @@ export function uploadModel({ type, shots, attested = false }) {
 // desktop (ownership-by-proximity: the Enemy tile rendered under the You
 // header; owner: "absolute non-sense").
 function requirementRow(side, s) {
-  const cue = s.required
-    ? '<span class="ocrf-req-star" aria-label="required">*</span>'
-    : '<span class="ocrf-req-opt">optional</span>';
+  // Owner 2026-08-30: the * cue is retired ("What does * mean?") — required
+  // is the unmarked default; only "optional" earns a word. aria keeps saying
+  // required for screen readers.
+  const cue = s.required ? '' : ' <span class="ocrf-req-opt">optional</span>';
   const sample = s.img
     ? `<img class="ocrf-sample-img ocrf-req-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`
-    : '';
+    : (s.drawn ? renderSampleFallback(s.drawn) : '');
   // QAC-001: one x per thumbnail — removing one of two buffs never nukes
   // the other. QAC-004: + Add stays visible until the row hits its cap.
   // Chip count derives from s.count (never thumbUrls length): a shot whose
@@ -116,7 +140,7 @@ function requirementRow(side, s) {
     aria-label="${s.label}, ${stateLabel}">
     <span class="ocrf-req-fig">${sample}</span>
     <span class="ocrf-req-text">
-      <span class="ocrf-req-name">${s.label} ${cue}</span>
+      <span class="ocrf-req-name">${s.label}${cue}</span>
       <span class="ocrf-req-hint" data-hint="${s.hint}" aria-live="polite">${s.hint}</span>
     </span>
   </button>
@@ -131,11 +155,20 @@ export function renderUpload({ type, model, notice = null }) {
   )).join('');
   const cards = model.groups.map((g) => {
     const req = g.slots.filter((s) => s.required);
+    const count = g.sameToggle && model.enemySame ? ''
+      : `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span>`;
     const head = g.label
-      ? `<div class="ocrf-req-card-head"><span>${g.label}</span>`
-        + `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span></div>`
+      ? `<div class="ocrf-req-card-head"><span>${g.label}</span>${count}</div>`
       : '';
-    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${g.slots.map((s) => requirementRow(g.side, s)).join('')}</section>`;
+    // Battle's Enemy card: a ticked "Same report as yours" checkbox row.
+    // Unticking expands the enemy's own upload rows below it.
+    const same = g.sameToggle
+      ? `<button type="button" class="ocrf-req-same${model.enemySame ? ' ocrf-req-same--on' : ''}"
+          data-same-toggle aria-pressed="${model.enemySame}">
+          <span class="ocrf-req-same-box" aria-hidden="true">${model.enemySame ? '&#10003;' : ''}</span>
+          Same report as yours</button>`
+      : '';
+    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${same}${g.slots.map((s) => requirementRow(g.side, s)).join('')}</section>`;
   }).join('');
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
   // The fraction lives INSIDE the locked Scan button — the "why is this
@@ -147,9 +180,10 @@ export function renderUpload({ type, model, notice = null }) {
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
     <h1 tabindex="-1">Screenshots</h1></header>
   <div class="ocrf-scr-body ocrf-upload-body">
+    <p class="ocrf-upload-intro">Choose the type of screenshot to upload</p>
     <div class="ocrf-type-tabs" role="group" aria-label="Screenshot type">${tabs}</div>
     ${noticeHtml}
-    ${cards}
+    <div class="ocrf-req-cards">${cards}</div>
   </div>
   <footer class="ocrf-scr-foot">
     <button type="button" class="ocrf-btn-primary ocrf-btn-block" id="ocrfScan"${model.canScan ? '' : ' disabled'}>${scanLabel}</button>
@@ -157,10 +191,12 @@ export function renderUpload({ type, model, notice = null }) {
 </section>`.trim();
 }
 
-export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan }) {
+export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan, onSameToggle }) {
   root.querySelectorAll('[data-type-tab]').forEach((b) => {
     b.addEventListener('click', () => onTab(b.dataset.typeTab));
   });
+  const same = root.querySelector('[data-same-toggle]');
+  if (same && onSameToggle) same.addEventListener('click', () => onSameToggle());
   root.querySelectorAll('[data-slot]').forEach((b) => {
     b.addEventListener('click', () => {
       const [side, key] = b.dataset.slot.split(':');
@@ -199,6 +235,11 @@ const SAMPLES = {
     { label: "Troops' Defense", val: '775.42%' },
     { label: 'Infantry Attack', val: '658.25%' },
   ],
+  troops: [
+    { label: 'Infantry', val: 'T11' },
+    { label: 'Lancer', val: 'T11' },
+    { label: 'Marksman', val: 'T11' },
+  ],
 };
 
 export function renderSampleFallback(type) {
@@ -221,6 +262,15 @@ export function renderSampleFallback(type) {
       `<div class="ocrf-mp-c-row"><span class="ocrf-mp-c-lab">${r.label}</span><span class="ocrf-mp-c-val">${r.val}</span></div>`
     )).join('');
     return `<div class="ocrf-mini-panel ocrf-mini-panel--city"><div class="ocrf-mp-c-head">Bonus Overview</div>${rows}</div>`;
+  }
+  if (type === 'troops') {
+    // Hand-drawn stand-in for the Troops (troop details) row — the real
+    // capture is still owed by the owner; a drawn representation beats both
+    // an empty box and a fabricated screenshot.
+    const rows = SAMPLES.troops.map((r) => (
+      `<div class="ocrf-mp-c-row"><span class="ocrf-mp-c-lab">${r.label}</span><span class="ocrf-mp-c-val">${r.val}</span></div>`
+    )).join('');
+    return `<div class="ocrf-mini-panel ocrf-mini-panel--troops"><div class="ocrf-mp-c-head">Troops</div>${rows}</div>`;
   }
   return '';
 }

@@ -8,10 +8,10 @@ import {
 
 // --- slot config: the owner's document list, one word per label ------------
 
-test('battle slots: Heroes/Stats/Buffs/Power — heroes required (owner 2026-08-25), power optional, buffs noneable up to 2', () => {
+test('battle slots: owner labels 2026-08-30 — Heroes + Experts / Stats / Buffs / Troops; heroes required, troops optional, buffs noneable up to 2', () => {
   const keys = SLOTS.battle.map((s) => s.key);
   assert.deepEqual(keys, ['heroes', 'stats', 'buffs', 'power']);
-  assert.deepEqual(SLOTS.battle.map((s) => s.label), ['Heroes', 'Stats', 'Buffs', 'Power']);
+  assert.deepEqual(SLOTS.battle.map((s) => s.label), ['Heroes + Experts', 'Stats', 'Buffs', 'Troops']);
   const byKey = Object.fromEntries(SLOTS.battle.map((s) => [s.key, s]));
   assert.equal(byKey.heroes.required, true);
   assert.equal(byKey.stats.required, true);
@@ -21,27 +21,33 @@ test('battle slots: Heroes/Stats/Buffs/Power — heroes required (owner 2026-08-
   assert.equal(byKey.buffs.max, 2);
 });
 
-test('every slot label is ONE word (strict word-minimalism, owner 2026-08-29)', () => {
+test('slot labels stay short (<=3 words; owner names them: Heroes + Experts / Combat stats / Bonus Overview)', () => {
   for (const type of Object.keys(SLOTS)) {
     for (const s of SLOTS[type]) {
-      assert.equal(s.label.trim().split(/\s+/).length, 1, `${type}:${s.key} label "${s.label}"`);
+      const words = s.label.trim().split(/\s+/).filter((w) => /[a-zA-Z]/.test(w));
+      assert.ok(words.length <= 3, `${type}:${s.key} label "${s.label}"`);
     }
   }
 });
 
-test('groupsFor: battle is ONE shared group; scout is stacked You/Enemy; citystats pairs city(you) with scout(enemy)', () => {
+test('groupsFor: every type is You+Enemy; city is SYMMETRIC (owner 2026-08-30); battle Enemy is the same-report toggle', () => {
   const battle = groupsFor('battle');
-  assert.equal(battle.length, 1);
-  assert.equal(battle[0].side, 'you');
-  assert.equal(battle[0].label, null);
+  assert.deepEqual(battle.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
+  assert.equal(battle[1].sameToggle, true);
+  assert.equal(battle[1].slots.length, 0);   // collapsed by default
+
+  const expanded = groupsFor('battle', { enemySame: false });
+  assert.equal(expanded[1].slots.length, 4);   // the enemy's own 4 upload rows
+  assert.equal(expanded[1].slots[3].hint, "Upload the screenshot showing the enemy's troops");
 
   const scout = groupsFor('scout');
   assert.deepEqual(scout.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
+  assert.equal(scout[1].slots[0].hint, 'Upload the scout report showing enemy combat stats');
 
   const city = groupsFor('citystats');
-  assert.deepEqual(city.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
   assert.equal(city[0].slots[0].key, 'city');
-  assert.equal(city[1].slots[0].key, 'scout');   // enemy side has no city screen
+  assert.equal(city[1].slots[0].key, 'city');   // enemy uploads City Stats too now
+  assert.match(city[1].slots[0].hint, /enemy's City Stats/);
 });
 
 // --- slotState: the per-tile state machine --------------------------------
@@ -116,12 +122,18 @@ test('renderUpload: all four battle requirement rows render at once, top-to-bott
   assert.match(html, /class="ocrf-req-card"/);
 });
 
-test('every row carries its in-game locator hint (<=4 words) — the "what do I screenshot" answer', () => {
+test('every row carries the owner-dictated upload instruction (<=8 words)', () => {
   const html = battleHtml();
   for (const s of SLOTS.battle) {
-    assert.match(html, new RegExp(s.hint.replace(/[.*+?^${}()|[\]\!]/g, '\$&')), s.key);
-    const words = s.hint.split(/\s+/).filter((w) => /[a-zA-Z0-9]/.test(w));
-    assert.ok(words.length <= 4, `${s.key} hint "${s.hint}" is ${words.length} words`);
+    assert.match(html, new RegExp(s.hint.replace(/[.*+?^${}()|[\]\!&]/g, '\\$&')), s.key);
+  }
+  for (const type of Object.keys(SLOTS)) {
+    for (const s of SLOTS[type]) {
+      for (const h of [s.hint, s.hintEnemy].filter(Boolean)) {
+        const words = h.split(/\s+/).filter((w) => /[a-zA-Z0-9]/.test(w));
+        assert.ok(words.length <= 8, `${type}:${s.key} hint "${h}" is ${words.length} words`);
+      }
+    }
   }
 });
 
@@ -132,20 +144,50 @@ test('UXG-003: a slot with no sample capture yet (Power) renders NO img element 
   assert.doesNotMatch(html, /sample_troop_power/);
 });
 
-test('renderUpload: type tabs are Battle/Scout/City with the active one pressed', () => {
+test('renderUpload: tabs carry the FULL type names (owner 2026-08-30) with the active one pressed; intro line present', () => {
   const html = battleHtml();
   assert.match(html, /data-type-tab="battle"[^>]*aria-pressed="true"/);
   assert.match(html, /data-type-tab="scout"[^>]*aria-pressed="false"/);
   assert.match(html, /data-type-tab="citystats"[^>]*aria-pressed="false"/);
-  assert.deepEqual(Object.values(TAB_LABEL), ['Battle', 'Scout', 'City']);
+  assert.deepEqual(Object.values(TAB_LABEL), ['Battle Report', 'Scout Report', 'City Stats']);
+  assert.match(html, /class="ocrf-upload-intro">Choose the type of screenshot to upload</);
 });
 
-test('renderUpload: required = * cue, optional = the one word "optional"; empty rows show the + Add chip', () => {
+test('renderUpload: the * cue is RETIRED (owner: "What does * mean?"); only optional is marked; + Add on every empty row', () => {
   const html = battleHtml();
-  assert.match(html, /Heroes <span class="ocrf-req-star"/);
-  assert.match(html, /Power <span class="ocrf-req-opt">optional</);
-  assert.doesNotMatch(html, /Power <span class="ocrf-req-star"/);
+  assert.doesNotMatch(html, /ocrf-req-star/);
+  assert.match(html, /Troops <span class="ocrf-req-opt">optional</);
   assert.equal((html.match(/ocrf-req-add/g) || []).length, 4);
+});
+
+test('battle scope (owner 2026-08-30): Enemy card ships ticked "Same report as yours"; unticking expands the enemy rows', () => {
+  const collapsed = battleHtml();
+  assert.match(collapsed, /data-same-toggle aria-pressed="true"/);
+  assert.match(collapsed, /Same report as yours/);
+  const enemyCard = collapsed.split('data-group="enemy"')[1];
+  assert.doesNotMatch(enemyCard, /data-slot-tile/);   // no rows while same
+
+  const expanded = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, enemySame: false }),
+  });
+  assert.match(expanded, /data-same-toggle aria-pressed="false"/);
+  const enemyCard2 = expanded.split('data-group="enemy"')[1];
+  for (const key of ['heroes', 'stats', 'buffs', 'power']) {
+    assert.match(enemyCard2, new RegExp(`data-slot-tile="enemy:${key}"`), key);
+  }
+});
+
+test('battle scope model: same -> 3 required; separate -> 6 required (both sides gate Scan)', () => {
+  const same = uploadModel({ type: 'battle', shots: { you: [], enemy: [] } });
+  assert.equal(same.total, 3);
+  const sep = uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, enemySame: false });
+  assert.equal(sep.total, 6);
+  const sepReady = uploadModel({
+    type: 'battle', enemySame: false, attested: true,
+    shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [{ slot: 'heroes' }, { slot: 'stats' }] },
+  });
+  assert.equal(sepReady.canScan, true);   // buffs covered by the attestation on BOTH sides
 });
 
 test('renderUpload: the fraction lives INSIDE the locked Scan button; enabled Scan is the bare word', () => {
@@ -198,7 +240,7 @@ test('QAC-004: a row below its cap keeps the + Add chip; a full row drops it', (
 test('QAC-002: every hint span carries its data-hint restore value and an aria-live channel', () => {
   const html = battleHtml();
   for (const s of SLOTS.battle) {
-    assert.match(html, new RegExp(`data-hint="${s.hint.replace(/[.*+?^${}()|[\]\!]/g, '\$&')}" aria-live="polite"`), s.key);
+    assert.match(html, new RegExp(`data-hint="${s.hint.replace(/[.*+?^${}()|[\]\!&]/g, '\\$&')}" aria-live="polite"`), s.key);
   }
 });
 
@@ -232,10 +274,20 @@ test('renderUpload(scout): You and Enemy are SEPARATE bordered cards, each with 
   assert.match(enemyCard, /data-slot-tile="enemy:scout"/);
 });
 
-test('renderUpload(battle): one card, no group header (the report covers both sides)', () => {
+test('renderUpload(citystats): the Enemy card uploads City Stats too — never a scout row (owner 2026-08-30)', () => {
+  const model = uploadModel({ type: 'citystats', shots: { you: [], enemy: [] } });
+  const html = renderUpload({ type: 'citystats', model });
+  const enemyCard = html.split('data-group="enemy"')[1].split('</section>')[0];
+  assert.match(enemyCard, /data-slot-tile="enemy:city"/);
+  assert.doesNotMatch(enemyCard, /data-slot-tile="enemy:scout"/);
+  assert.match(enemyCard, /enemy's City Stats/);
+});
+
+test('renderUpload(battle): two cards — You with the 4 rows, Enemy collapsed behind the same-report toggle (no count while same)', () => {
   const html = battleHtml();
-  assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 1);
-  assert.doesNotMatch(html, /ocrf-req-card-head/);
+  assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 2);
+  const enemyHead = html.split('data-group="enemy"')[1];
+  assert.doesNotMatch(enemyHead.split('</div>')[0], /ocrf-req-card-count/);
 });
 
 test('renderUpload: the notice slot renders when given, absent when null', () => {
@@ -247,13 +299,13 @@ test('renderUpload: the notice slot renders when given, absent when null', () =>
   assert.doesNotMatch(battleHtml(), /ocrfS2Notice/);
 });
 
-// --- STRICT word budget (owner): every word must earn its place. The rows
-// gained <=4-word in-game locators (the crystal-clear mandate) — the whole
-// battle screen still stays under 35 visible words.
-test('word budget: the entire battle upload screen shows fewer than 35 visible words', () => {
+// --- Word budget: the owner dictated full upload instructions per row
+// (2026-08-30) — every word still has to earn its place; the default battle
+// screen stays under 65 visible words.
+test('word budget: the entire default battle upload screen shows fewer than 65 visible words', () => {
   const text = battleHtml().replace(/<[^>]+>/g, ' ');
   const words = text.split(/\s+/).filter((w) => /[a-zA-Z]/.test(w));
-  assert.ok(words.length < 35, `${words.length} words: ${words.join(' ')}`);
+  assert.ok(words.length < 65, `${words.length} words: ${words.join(' ')}`);
 });
 
 // --- E1: minimal words, targets the combined s1 screen --------------------

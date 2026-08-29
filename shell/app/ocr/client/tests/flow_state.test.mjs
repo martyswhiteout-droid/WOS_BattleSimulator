@@ -2,16 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createFlow } from '../flow_state.mjs';
 
-test('S1 presets per spec', () => {
+test('presets per spec (owner 2026-08-30: city is SYMMETRIC — both sides upload City Stats)', () => {
   const f = createFlow();
   f.pickKind('citystats');
-  assert.deepEqual(f.types(), { you: 'citystats', enemy: 'scout' });
+  assert.deepEqual(f.types(), { you: 'citystats', enemy: 'citystats' });
   f.pickKind('battle');
   assert.deepEqual(f.types(), { you: 'battle', enemy: 'battle' });
 });
-test('enemy can never be citystats', () => {
+test('enemy citystats is legal now (the old throw is retired; server accepts any side x panel)', () => {
   const f = createFlow();
-  assert.throws(() => f.setSideType('enemy', 'citystats'));
+  f.setSideType('enemy', 'citystats');
+  assert.equal(f.types().enemy, 'citystats');
 });
 test('battle-with-shot covers both; own shot takes precedence', () => {
   const f = createFlow();
