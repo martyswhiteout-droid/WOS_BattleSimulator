@@ -172,3 +172,33 @@ ownership-by-proximity, which no grid survives at width. Replaced by:
   all fixed (QAC-001/002/004/005 + 003/008 wording); QAC-006/007 declined
   with rationale (shared wizard header; game knowledge). Ledger:
   shell/EVAL_UX_JOURNEY.md "QA comprehension gate".
+
+## Amendment 2026-08-30 — owner walkthrough round (on the requirement-row design)
+
+Owner-dictated changes, gated CRYSTAL CLEAR by the QA comprehension agent
+(rounds 3-4, shell/EVAL_UX_JOURNEY.md):
+
+- Intro line "Choose the type of screenshot to upload"; tabs carry FULL
+  names (Battle Report / Scout Report / City Stats).
+- Row labels: "Heroes + Experts", "Stats", "Buffs", "Troops" (storage key
+  stays `power`), "Combat stats" (scout), "Bonus Overview" (city). The `*`
+  required cue is RETIRED (owner: "What does * mean?") — required is the
+  unmarked default; per-card n/m + the Scan fraction carry it.
+- Hints are owner-dictated instructions ("Upload the screenshot showing
+  heroes & experts", "...battle stats", "...your troops"; per-side variants
+  via `hintEnemy`). Buffs deliberately names the POPUP, never the
+  main-panel title: "Upload the special bonuses popup (!)" (D-043 trap).
+- BATTLE SCOPE: You + Enemy cards (side-by-side >=768px, stacked at 375).
+  Enemy defaults to a ticked "Same report as yours" checkbox (one report
+  carries both columns); unticking expands the enemy's own 4 rows (reading
+  the OPPONENT's report — service.py's side swap maps its My column to
+  stats_enemy) and the gate widens Scan 0/3 -> 0/6. Parking is
+  non-destructive both ways.
+- CITY IS SYMMETRIC: both cards upload City Stats (Bonus Overview);
+  flow_state's enemy-citystats throw retired.
+- The None attestation is PER SIDE ({you, enemy} through app state, model,
+  and controller read flags; boolean = both for back-compat). Same-report
+  mode has ONE deliberate attestation surface (the you-chip speaks for
+  both, uploads clear both, the read sends the shared flag for both).
+- Troops row: hand-drawn mini-panel stand-in, ghosted like the photo
+  samples, until the owner's real Troop-details capture arrives.

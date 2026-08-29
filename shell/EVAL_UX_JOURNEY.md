@@ -1470,3 +1470,37 @@ owner's real capture — no exemplar beats a fabricated one).
 
 Verdict: CRYSTAL CLEAR at both widths, cold read and fix verification.
 Fixes commit 58ea64f; ledger closed 2026-08-29.
+
+## Round 3 — NOT CLEAR (1 BLOCKER, 2 MAJOR) — owner-walkthrough surface
+
+The owner's 2026-08-30 walkthrough changes (instruction hints, full tab
+names, battle scope toggle, symmetric City — commit e779582) re-audited
+cold. The new comprehension surface itself passed (Q8 one-report-covers-
+both, Q9 scope discovery + non-destructive parking blob-verified, Q11
+required-ness without the retired *, Q12 symmetric City). Findings:
+
+- QAC-011 BLOCKER: the None attestation was ONE shared bit behind two
+  per-side chips — enemy-None silently attested the you side, the phantom
+  reached the Scan gate, and removing a masking file resurrected it
+  cross-side. FIXED per-side end-to-end (app state {you,enemy}, model
+  attested-by-side w/ boolean back-compat, controller per-side read flags);
+  same-report default keeps ONE deliberate shared surface and the read
+  guard sends the shared flag for both sides in same-mode.
+- QAC-016 MAJOR: the buffs hint named the WRONG in-game screen ("stat
+  bonuses" = the main panel's title, D-043's exact trap). FIXED: "Upload
+  the special bonuses popup (!)".
+- QAC-012 MAJOR: desktop two-col cards set the buffs instruction as a
+  137px one-word-per-line tower. FIXED: cards stack the action chips
+  vertically; hint gets ~135px, row 87px.
+- QAC-013/014 MINOR/NIT: drawn stand-in now ghosts at .55; possessives
+  uniform; duplicate parentheticals gone. QAC-015 NIT accepted (the
+  dictated stem, no residual cost after the fixes).
+
+## Round 4 — CRYSTAL CLEAR (loop CLOSED for the walkthrough round)
+
+Per-side attestation verified as an 8-path matrix (independent directions,
+per-side file precedence, no cross-side resurrection, collapse truthful
+with the stale flag inert both mirrors, same-mode uploads clear both,
+re-expand mutates nothing — "each mode shows precisely the attestations it
+consumes"). All other fixes verified verbatim; rejection notes swap/restore
+the renamed hints; zero new defects. Fixes commit 4d0d180; closed 2026-08-30.
