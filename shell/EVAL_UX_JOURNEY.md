@@ -1359,3 +1359,39 @@ reserve and unused. `ux-eval` identity: not touched this round.
 **Verdict is SATISFIED — the loop closes here.** Both evaluator-owned servers (restarted at the
 start of this round after the app process reset killed them) were stopped again: mock static
 server on :8790, CORS fixture server on :8791. The app on :8200 was left untouched.
+
+
+---
+
+# UX GATE loop — slot-grid upload redesign (2026-08-29)
+
+Owner mandate: merged S1+S2 slot-grid upload screen (built to a dedicated
+multi-doc-upload research round) gated by a UX-expert evaluator loop with
+STRICT word minimalism as a hard criterion. Evaluator = resumable agent
+(ab337c6fdb34aeb9f); builder = main session. Evidence rule: viewport
+rects/offsets via page JS (screenshots never composite on this pane).
+
+## Round 1 — NOT SATISFIED (2 MAJOR, 2 MINOR, 3 NIT)
+
+- UXG-001 MAJOR: Escape with the slot preview sheet open dismissed the FLOW
+  and left the sheet orphaned over the entry page. FIXED: #ocrfSlotScrim
+  heads decideSheetToClose (slotOpen-first); Escape peels layers topmost-in.
+- UXG-002 MAJOR: Buffs "None" link was a 42x17px overlay colliding with the
+  tile's picker zone. FIXED: full-width 40px block bar below the tile.
+- UXG-003 MINOR: Power sample img 404'd 10+ times per open (capture still
+  owed by owner). FIXED: img:null -> no img element until it ships.
+- UXG-004 MINOR: corner x 20x20 zero padding. FIXED: ::before hit-slop
+  (38px effective, 20px visual).
+- UXG-005 NIT: "mobile dialog bottom 816 > 812". RETRACTED as environment
+  artifact: the numbers are byte-exact the parked FIRST FRAME of
+  .ocrf-dialog-enter (matrix .97/.97/+16) in the non-compositing pane;
+  visible browsers complete the entrance and the sheet fits exactly.
+  Lesson recorded in the CSS round: headless measurers read offsetHeight.
+- UXG-006 NIT: tabs 39px. FIXED: min-height 44px.
+- UXG-007 NIT: valid image at a full slot silently ignored. FIXED: gold
+  pulse on the tile (reduced-motion-killed); no-room paste pulses summary.
+
+Round-1 PASSES worth keeping: word counts max 13 of the 20 budget across all
+7 audited states; mobile first-viewport rect-proven (tiles 181-383, Scan
+736-783 at 375x812); point-of-action feedback synchronous; zero old-design
+remnants; gating exact in every probed state. Fixes: commit dbe7dfb.
