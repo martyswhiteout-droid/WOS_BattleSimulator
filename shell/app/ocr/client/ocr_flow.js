@@ -69,7 +69,7 @@ let controller = null;
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
   noBuffs: { you: false, enemy: false },   // QAC-011: attestation is PER SIDE, like the file store
   lastSlot: null,   // paste routing (slot key "side:key")
-  enemySame: true,   // battle scope (owner 2026-08-30): Enemy card defaults to "Same report as yours"
+  battleScope: 'mine',   // owner 2026-08-30 #2: Whose battle report? mine | enemy | both
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array, url, slot}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
@@ -104,8 +104,8 @@ export function pasteTargetSlot(model, lastSlot = null) {
 // Which slot keys the active type accepts for a side — the read sends ONLY
 // these (a shot uploaded under another tab stays parked, never silently
 // included). Pure; exported for tests.
-export function sendableShots(type, side, sideShots, enemySame = true) {
-  const group = groupsFor(type, { enemySame }).find((g) => g.side === side);
+export function sendableShots(type, side, sideShots, scope = 'mine') {
+  const group = groupsFor(type, { scope }).find((g) => g.side === side);
   if (!group) return [];
   const keys = new Set(group.slots.map((s) => s.key));
   return sideShots.filter((s) => keys.has(s.slot));
@@ -498,18 +498,14 @@ function renderScreen() {
         render();
       },
       onSlotNone: (side) => {
-        // QAC-011: per-side toggle. In the same-report default the one
-        // visible chip speaks for BOTH sides (one report covers both);
-        // with separate reports each side's chip toggles its own flag.
+        // QAC-011: per-side toggle; one-report scopes share the single
+        // visible chip across both sides of that report.
         const next = !app.noBuffs[side];
-        if (activeType() === 'battle' && app.enemySame) {
-          app.noBuffs = { you: next, enemy: next };
-        } else {
-          app.noBuffs = { ...app.noBuffs, [side]: next };
-        }
+        if (oneReportScope()) app.noBuffs = { you: next, enemy: next };
+        else app.noBuffs = { ...app.noBuffs, [side]: next };
         render();
       },
-      onSameToggle: () => { app.enemySame = !app.enemySame; render(); },
+      onScope: (scope) => { app.battleScope = scope; render(); },
       onScan: () => { if (currentModel().canScan) goto('s3'); },
     });
     return;
@@ -525,14 +521,16 @@ function renderScreen() {
     activeScanAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const handle = driveScan({
       run: () => controller.readAll(
-        { you: sendableShots(activeType(), 'you', app.shots.you, app.enemySame).map((s) => s.bytes),
-          enemy: sendableShots(activeType(), 'enemy', app.shots.enemy, app.enemySame).map((s) => s.bytes) },
-        null, { noBuffsAttested: (activeType() === 'battle' && app.enemySame)
-          // Same-report mode: ONE report covers both columns, so the visible
-          // (you-side) chip's flag speaks for both — a stale per-side split
-          // left over from an expand/collapse round-trip must never send
-          // asymmetric attestations for a single shared report.
-          ? { you: app.noBuffs.you, enemy: app.noBuffs.you }
+        { you: sendableShots(activeType(), 'you', app.shots.you, app.battleScope).map((s) => s.bytes),
+          enemy: sendableShots(activeType(), 'enemy', app.shots.enemy, app.battleScope).map((s) => s.bytes) },
+        null, { noBuffsAttested: oneReportScope()
+          // One-report scopes: ONE report covers both columns, so the
+          // visible chip's flag speaks for both — a stale per-side split
+          // left over from a scope round-trip must never send asymmetric
+          // attestations for a single shared report.
+          ? (app.battleScope === 'enemy'
+            ? { you: app.noBuffs.enemy, enemy: app.noBuffs.enemy }
+            : { you: app.noBuffs.you, enemy: app.noBuffs.you })
           : { ...app.noBuffs } }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
@@ -687,12 +685,15 @@ function wireE1Upgrade(button) {
 // the fresh-open default flow_state already ships with.
 function activeType() { return controller.flow.types().you || 'battle'; }
 function currentModel() {
-  return uploadModel({ type: activeType(), shots: app.shots, attested: app.noBuffs, enemySame: app.enemySame });
+  return uploadModel({ type: activeType(), shots: app.shots, attested: app.noBuffs, scope: app.battleScope });
 }
 function slotDef(type, side, key) {
-  const group = groupsFor(type, { enemySame: app.enemySame }).find((g) => g.side === side);
+  const group = groupsFor(type, { scope: app.battleScope }).find((g) => g.side === side);
   return group ? group.slots.find((s) => s.key === key) || null : null;
 }
+// One-report scopes (mine/enemy) have a single attestation surface — the
+// visible chip speaks for BOTH sides of that one report. 'both' is per side.
+function oneReportScope() { return activeType() === 'battle' && app.battleScope !== 'both'; }
 
 // Real file input, per SLOT now. The picker input must be ROOTED in the
 // document while the OS dialog is open: a detached element can be garbage-
@@ -742,8 +743,8 @@ async function addFilesToSlot(side, slot, fileList) {
   }
   if (def.noneable) {
     // A real upload beats the attestation — for THIS side (both in the
-    // same-report default, where one buffs upload covers both columns).
-    if (activeType() === 'battle' && app.enemySame) app.noBuffs = { you: false, enemy: false };
+    // one-report scopes, where one buffs upload covers both columns).
+    if (oneReportScope()) app.noBuffs = { you: false, enemy: false };
     else app.noBuffs = { ...app.noBuffs, [side]: false };
   }
   app.lastSlot = `${side}:${slot}`;

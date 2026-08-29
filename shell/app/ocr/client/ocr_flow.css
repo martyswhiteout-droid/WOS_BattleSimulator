@@ -1111,3 +1111,30 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   .ocrf-req-cards .ocrf-req-thumb{align-self:center}
 }
 .ocrf-req--empty .ocrf-req-fig .ocrf-mini-panel{opacity:.55;filter:saturate(.7)}
+
+/* --- Round: battle scope segmented control (owner 2026-08-30 #2) ----------
+   "Whose battle report?" Mine / Enemy's / Both above the rows — replaces
+   the You/Enemy cards + "Same report as yours" checkbox the owner could
+   not parse. Gold active pill = report-ownership accent (the tag gradient),
+   deliberately distinct from the blue type tabs' hierarchy. */
+.ocrf-scope{display:flex;flex-direction:column;gap:6px;margin:0 0 12px}
+.ocrf-scope-q{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;
+  font-size:13px;color:var(--ocrf-ink)}
+.ocrf-scope-tabs{display:flex;gap:6px}
+.ocrf-scope-tab{flex:1;min-height:40px;padding:8px 6px;border-radius:10px;cursor:pointer;
+  font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:12.5px;
+  color:var(--ocrf-ink-label);background:var(--ocrf-well);
+  border:1px solid rgba(185,210,229,.28)}
+.ocrf-scope-tab--on{color:#0B273D;text-shadow:none;
+  background:linear-gradient(180deg,#F4D06F,#D9A94F);
+  border-color:rgba(217,169,79,.55);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.5),0 1px 0 rgba(120,86,20,.45)}
+.ocrf-scope-tab:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-scope-note{font-size:11.5px;color:var(--ocrf-ink-mute)}
+
+/* Single-group battle scopes render ONE full-width card at desktop too. */
+@media (min-width:768px){
+  .ocrf-req-cards{grid-template-columns:1fr}
+  .ocrf-req-cards--two{grid-template-columns:1fr 1fr}
+  .ocrf-req-cards:not(.ocrf-req-cards--two) .ocrf-req-cluster{flex-direction:row;align-items:center}
+}

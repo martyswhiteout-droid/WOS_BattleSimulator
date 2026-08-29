@@ -403,5 +403,10 @@ test("sendableShots: the read sends ONLY the active type's slots — parked shot
   const shots = [{ slot: 'heroes', id: 'a' }, { slot: 'scout', id: 'b' }, { slot: 'stats', id: 'c' }];
   assert.deepEqual(sendableShots('battle', 'you', shots).map((s) => s.id), ['a', 'c']);
   assert.deepEqual(sendableShots('scout', 'you', shots).map((s) => s.id), ['b']);
-  assert.deepEqual(sendableShots('battle', 'enemy', shots), []);   // battle has no enemy group
+  // scope routing: mine sends nothing for enemy; enemy scope sends nothing
+  // for you; both sends each side's own battle shots
+  assert.deepEqual(sendableShots('battle', 'enemy', shots), []);                    // default mine
+  assert.deepEqual(sendableShots('battle', 'you', shots, 'enemy'), []);
+  assert.deepEqual(sendableShots('battle', 'enemy', shots, 'enemy').map((s) => s.id), ['a', 'c']);
+  assert.deepEqual(sendableShots('battle', 'enemy', shots, 'both').map((s) => s.id), ['a', 'c']);
 });

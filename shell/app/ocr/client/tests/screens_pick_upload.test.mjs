@@ -30,16 +30,25 @@ test('slot labels stay short (<=3 words; owner names them: Heroes + Experts / Co
   }
 });
 
-test('groupsFor: every type is You+Enemy; city is SYMMETRIC (owner 2026-08-30); battle Enemy is the same-report toggle', () => {
-  const battle = groupsFor('battle');
-  assert.deepEqual(battle.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
-  assert.equal(battle[1].sameToggle, true);
-  assert.equal(battle[1].slots.length, 0);   // collapsed by default
+test('groupsFor(battle): scope model — mine = 4 plain rows; enemy = the opponent-report rows; both = two labeled report groups', () => {
+  const mine = groupsFor('battle');
+  assert.deepEqual(mine.map((g) => [g.side, g.label]), [['you', null]]);
+  assert.equal(mine[0].slots.length, 4);
 
-  const expanded = groupsFor('battle', { enemySame: false });
-  assert.equal(expanded[1].slots.length, 4);   // the enemy's own 4 upload rows
-  assert.equal(expanded[1].slots[3].hint, "Upload the screenshot showing the enemy's troops");
+  const enemy = groupsFor('battle', { scope: 'enemy' });
+  assert.deepEqual(enemy.map((g) => [g.side, g.label]), [['enemy', null]]);
+  assert.equal(enemy[0].slots.length, 4);
 
+  const both = groupsFor('battle', { scope: 'both' });
+  assert.deepEqual(both.map((g) => [g.side, g.label]),
+    [['you', 'Your report'], ['enemy', "Enemy's report"]]);
+  // battle hints are SIDE-NEUTRAL (the scope control owns "whose")
+  for (const g of both) {
+    assert.equal(g.slots[3].hint, 'Upload the screenshot showing troop quality, ratio, FC tier');
+  }
+});
+
+test('groupsFor: scout/city stay You+Enemy; city is SYMMETRIC (owner 2026-08-30)', () => {
   const scout = groupsFor('scout');
   assert.deepEqual(scout.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
   assert.equal(scout[1].slots[0].hint, "Upload the scout report showing the enemy's stats");
@@ -122,7 +131,7 @@ test('renderUpload: all four battle requirement rows render at once, top-to-bott
   assert.match(html, /class="ocrf-req-card"/);
 });
 
-test('every row carries the owner-dictated upload instruction (<=8 words)', () => {
+test('every row carries the owner-dictated upload instruction (<=10 words)', () => {
   const html = battleHtml();
   for (const s of SLOTS.battle) {
     assert.match(html, new RegExp(s.hint.replace(/[.*+?^${}()|[\]\!&]/g, '\\$&')), s.key);
@@ -131,7 +140,7 @@ test('every row carries the owner-dictated upload instruction (<=8 words)', () =
     for (const s of SLOTS[type]) {
       for (const h of [s.hint, s.hintEnemy].filter(Boolean)) {
         const words = h.split(/\s+/).filter((w) => /[a-zA-Z0-9]/.test(w));
-        assert.ok(words.length <= 8, `${type}:${s.key} hint "${h}" is ${words.length} words`);
+        assert.ok(words.length <= 10, `${type}:${s.key} hint "${h}" is ${words.length} words`);
       }
     }
   }
@@ -160,34 +169,53 @@ test('renderUpload: the * cue is RETIRED (owner: "What does * mean?"); only opti
   assert.equal((html.match(/ocrf-req-add/g) || []).length, 4);
 });
 
-test('battle scope (owner 2026-08-30): Enemy card ships ticked "Same report as yours"; unticking expands the enemy rows', () => {
-  const collapsed = battleHtml();
-  assert.match(collapsed, /data-same-toggle aria-pressed="true"/);
-  assert.match(collapsed, /Same report as yours/);
-  const enemyCard = collapsed.split('data-group="enemy"')[1];
-  assert.doesNotMatch(enemyCard, /data-slot-tile/);   // no rows while same
-
-  const expanded = renderUpload({
-    type: 'battle',
-    model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, enemySame: false }),
-  });
-  assert.match(expanded, /data-same-toggle aria-pressed="false"/);
-  const enemyCard2 = expanded.split('data-group="enemy"')[1];
-  for (const key of ['heroes', 'stats', 'buffs', 'power']) {
-    assert.match(enemyCard2, new RegExp(`data-slot-tile="enemy:${key}"`), key);
-  }
+test('battle scope (owner 2026-08-30 #2): segmented Whose battle report? sits above the rows, Mine active by default', () => {
+  const html = battleHtml();
+  assert.match(html, /Whose battle report\?/);
+  assert.match(html, /data-scope="mine"[^>]*aria-pressed="true"[^>]*>Mine</);
+  assert.match(html, /data-scope="enemy"[^>]*aria-pressed="false"[^>]*>Enemy's</);
+  assert.match(html, /data-scope="both"[^>]*aria-pressed="false"[^>]*>Both</);
+  assert.match(html, /Each report shows both sides\./);
+  // the checkbox is DEAD
+  assert.doesNotMatch(html, /data-same-toggle/);
+  assert.doesNotMatch(html, /Same report as yours/);
+  // default: ONE plain card, no group header, rows for side you
+  assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 1);
+  assert.doesNotMatch(html, /ocrf-req-card-head/);
+  assert.match(html, /data-slot-tile="you:heroes"/);
 });
 
-test('battle scope model: same -> 3 required; separate -> 6 required (both sides gate Scan)', () => {
-  const same = uploadModel({ type: 'battle', shots: { you: [], enemy: [] } });
-  assert.equal(same.total, 3);
-  const sep = uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, enemySame: false });
-  assert.equal(sep.total, 6);
-  const sepReady = uploadModel({
-    type: 'battle', enemySame: false, attested: true,
+test('battle scope: enemy = the same 4 rows for side enemy; both = two labeled report cards, Scan 0/6', () => {
+  const enemy = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, scope: 'enemy' }),
+  });
+  for (const key of ['heroes', 'stats', 'buffs', 'power']) {
+    assert.match(enemy, new RegExp(`data-slot-tile="enemy:${key}"`), key);
+  }
+  assert.doesNotMatch(enemy, /data-slot-tile="you:/);
+  assert.match(enemy, /id="ocrfScan" disabled>Scan <span class="ocrf-scan-count">0\/3</);
+
+  const both = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, scope: 'both' }),
+  });
+  assert.match(both, /<span>Your report<\/span>/);
+  assert.match(both, /<span>Enemy's report<\/span>/);
+  assert.match(both, /ocrf-req-cards ocrf-req-cards--two/);
+  assert.match(both, /class="ocrf-scan-count">0\/6</);
+});
+
+test('battle scope model: mine/enemy -> 3 required; both -> 6 (each side gates Scan)', () => {
+  assert.equal(uploadModel({ type: 'battle', shots: { you: [], enemy: [] } }).total, 3);
+  assert.equal(uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, scope: 'enemy' }).total, 3);
+  const both = uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, scope: 'both' });
+  assert.equal(both.total, 6);
+  const ready = uploadModel({
+    type: 'battle', scope: 'both', attested: true,
     shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }], enemy: [{ slot: 'heroes' }, { slot: 'stats' }] },
   });
-  assert.equal(sepReady.canScan, true);   // buffs covered by the attestation on BOTH sides
+  assert.equal(ready.canScan, true);
 });
 
 test('renderUpload: the fraction lives INSIDE the locked Scan button; enabled Scan is the bare word', () => {
@@ -283,16 +311,18 @@ test('renderUpload(citystats): the Enemy card uploads City Stats too — never a
   assert.match(enemyCard, /enemy's City Stats/);
 });
 
-test('renderUpload(battle): two cards — You with the 4 rows, Enemy collapsed behind the same-report toggle (no count while same)', () => {
-  const html = battleHtml();
-  assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 2);
-  const enemyHead = html.split('data-group="enemy"')[1];
-  assert.doesNotMatch(enemyHead.split('</div>')[0], /ocrf-req-card-count/);
+test("renderUpload(battle, scope both): each labeled card carries its own n/m count", () => {
+  const html = renderUpload({
+    type: 'battle',
+    model: uploadModel({ type: 'battle', shots: { you: [{ slot: 'stats' }], enemy: [] }, scope: 'both' }),
+  });
+  assert.match(html, /<span>Your report<\/span><span class="ocrf-req-card-count">1\/3</);
+  assert.match(html, /<span>Enemy's report<\/span><span class="ocrf-req-card-count">0\/3</);
 });
 
-test('QAC-011: the None attestation is PER SIDE — expanded battle renders independent chip states', () => {
+test('QAC-011: the None attestation is PER SIDE — scope both renders independent chip states', () => {
   const model = uploadModel({
-    type: 'battle', enemySame: false,
+    type: 'battle', scope: 'both',
     shots: { you: [], enemy: [] },
     attested: { you: true, enemy: false },
   });
@@ -323,13 +353,16 @@ test('renderUpload: the notice slot renders when given, absent when null', () =>
   assert.doesNotMatch(battleHtml(), /ocrfS2Notice/);
 });
 
-// --- Word budget: the owner dictated full upload instructions per row
-// (2026-08-30) — every word still has to earn its place; the default battle
-// screen stays under 65 visible words.
-test('word budget: the entire default battle upload screen shows fewer than 65 visible words', () => {
-  const text = battleHtml().replace(/<[^>]+>/g, ' ');
+// --- Word budget: the owner dictated full upload instructions per row and
+// the scope question (2026-08-30) — every word still has to earn its place;
+// the default battle screen stays under 70 visible words. The drawn Troops
+// mini-panel is excluded: it stands in for an IMAGE (zero words once the
+// real capture ships), not for copy.
+test('word budget: the entire default battle upload screen shows fewer than 70 visible words', () => {
+  const html = battleHtml().replace(/<div class="ocrf-mini-panel[\s\S]*?<\/div><\/div>/g, ' ');
+  const text = html.replace(/<[^>]+>/g, ' ');
   const words = text.split(/\s+/).filter((w) => /[a-zA-Z]/.test(w));
-  assert.ok(words.length < 65, `${words.length} words: ${words.join(' ')}`);
+  assert.ok(words.length < 70, `${words.length} words: ${words.join(' ')}`);
 });
 
 // --- E1: minimal words, targets the combined s1 screen --------------------

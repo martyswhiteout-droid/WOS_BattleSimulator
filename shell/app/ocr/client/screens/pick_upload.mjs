@@ -29,17 +29,18 @@ export const SLOTS = {
       hint: 'Upload the screenshot showing heroes & experts' },
     { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg',
       hint: 'Upload the screenshot showing battle stats' },
-    // QAC-016: the WHERE must name the popup behind the report's ! icon —
-    // the in-game screen literally titled "Stat Bonuses" is the WRONG one
-    // (D-043's exact trap). Short on purpose (QAC-012's word-tower).
+    // Owner 2026-08-30 #2: bracket structure per dictation — "all buffs
+    // (special bonuses)". Still names the POPUP's real title, never the
+    // main panel's "Stat Bonuses" (D-043's trap); the "(!)" glyph is gone
+    // ("the bracket is showing" — it read as broken markup).
     { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true,
-      hint: 'Upload the special bonuses popup (!)',
-      hintEnemy: "Upload the enemy's special bonuses popup (!)" },
+      hint: 'Upload the screenshot showing all buffs (special bonuses)' },
     // img null (UXG-003): the Troop Power sample capture is still owed by the
     // owner — the drawn mini-panel stands in until the real capture ships.
+    // Hint is SIDE-NEUTRAL (owner dictation #2): the scope control above the
+    // rows owns "whose", so battle hints never say your/enemy's.
     { key: 'power', label: 'Troops', required: false, max: 1, img: null, drawn: 'troops',
-      hint: 'Upload the screenshot showing your troops',
-      hintEnemy: "Upload the screenshot showing the enemy's troops" },
+      hint: 'Upload the screenshot showing troop quality, ratio, FC tier' },
   ],
   scout: [
     { key: 'scout', label: 'Combat stats', required: true, max: 2, img: 'sample_scout.jpg',
@@ -53,26 +54,33 @@ export const SLOTS = {
   ],
 };
 
-// Which sides a type needs — every type is You + Enemy cards now.
+// Which sides a type needs.
 // City is SYMMETRIC (owner 2026-08-30): the enemy's Bonus Overview comes
 // from the other player, and the server accepts any side x panel.
-// Battle scope (owner 2026-08-30): one report normally covers BOTH sides
-// (the panel has My/Enemy columns), so the Enemy card defaults to a ticked
-// "Same report as yours" toggle; unticking (enemySame=false) expands the
-// enemy's own upload rows — for reading the OPPONENT's battle report, whose
-// own My column is the enemy's stats (flow_state has modeled per-side
-// battle uploads since Task 6).
+// BATTLE SCOPE (owner 2026-08-30 #2, replacing the You/Enemy cards +
+// "Same report as yours" checkbox — "What's you? What's enemy? What does
+// the check box do?"): the user answers the question they actually think
+// in — "Whose battle report?" — via a segmented control ABOVE the rows:
+//   mine  -> 4 rows, side 'you'   (default; a report shows both sides)
+//   enemy -> 4 rows, side 'enemy' (the OPPONENT's report; service.py's
+//            side swap maps its My column to stats_enemy)
+//   both  -> two labeled groups, "Your report" / "Enemy's report"
+// Every scope yields a full read (each report carries both columns).
+export const BATTLE_SCOPES = ['mine', 'enemy', 'both'];
+export const SCOPE_LABEL = { mine: 'Mine', enemy: "Enemy's", both: 'Both' };
 function sideSlots(slots, side) {
   return slots.map((s) => (side === 'enemy' && s.hintEnemy ? { ...s, hint: s.hintEnemy } : s));
 }
-export function groupsFor(type, { enemySame = true } = {}) {
+export function groupsFor(type, { scope = 'mine' } = {}) {
   if (type === 'battle') {
-    return [
-      { side: 'you', label: 'You', slots: SLOTS.battle },
-      enemySame
-        ? { side: 'enemy', label: 'Enemy', sameToggle: true, slots: [] }
-        : { side: 'enemy', label: 'Enemy', sameToggle: true, slots: sideSlots(SLOTS.battle, 'enemy') },
-    ];
+    if (scope === 'enemy') return [{ side: 'enemy', label: null, slots: SLOTS.battle }];
+    if (scope === 'both') {
+      return [
+        { side: 'you', label: 'Your report', slots: SLOTS.battle },
+        { side: 'enemy', label: "Enemy's report", slots: SLOTS.battle },
+      ];
+    }
+    return [{ side: 'you', label: null, slots: SLOTS.battle }];
   }
   const base = type === 'citystats' ? SLOTS.citystats : SLOTS.scout;
   return [
@@ -90,19 +98,19 @@ export function slotState(slotDef, sideShots, attested) {
   return { state: 'empty', count: 0 };
 }
 
-export function uploadModel({ type, shots, attested = false, enemySame = true }) {
+export function uploadModel({ type, shots, attested = false, scope = 'mine' }) {
   // QAC-011: the None attestation is PER SIDE (mirror of the file store) —
-  // a boolean still means "both sides" for back-compat and the same-report
-  // default, an object keys by side.
+  // a boolean still means "both sides" for back-compat and the one-report
+  // scopes, an object keys by side.
   const att = (attested && typeof attested === 'object')
     ? attested : { you: !!attested, enemy: !!attested };
-  const groups = groupsFor(type, { enemySame }).map((g) => ({
+  const groups = groupsFor(type, { scope }).map((g) => ({
     ...g,
     slots: g.slots.map((def) => ({ ...def, ...slotState(def, shots[g.side] || [], att[g.side]) })),
   }));
   const required = groups.flatMap((g) => g.slots.filter((s) => s.required));
   const done = required.filter((s) => s.state !== 'empty').length;
-  return { groups, done, total: required.length, canScan: done === required.length, enemySame };
+  return { groups, done, total: required.length, canScan: done === required.length, scope };
 }
 
 // One requirement ROW (owner redesign round 2, 2026-08-29): sample crop on
@@ -162,22 +170,26 @@ export function renderUpload({ type, model, notice = null }) {
     `<button type="button" class="ocrf-type-tab${t === type ? ' ocrf-type-tab--on' : ''}"
       data-type-tab="${t}" aria-pressed="${t === type}">${TAB_LABEL[t]}</button>`
   )).join('');
+  // Battle only: the scope question sits ABOVE the rows, always visible —
+  // segmented Mine / Enemy's / Both plus one reassurance line that kills
+  // the coverage doubt. (Owner 2026-08-30 #2; the checkbox is dead.)
+  const scopeBar = type === 'battle'
+    ? `<div class="ocrf-scope">
+    <span class="ocrf-scope-q" id="ocrfScopeQ">Whose battle report?</span>
+    <div class="ocrf-scope-tabs" role="group" aria-labelledby="ocrfScopeQ">${BATTLE_SCOPES.map((sc) => (
+      `<button type="button" class="ocrf-scope-tab${sc === model.scope ? ' ocrf-scope-tab--on' : ''}"
+        data-scope="${sc}" aria-pressed="${sc === model.scope}">${SCOPE_LABEL[sc]}</button>`
+    )).join('')}</div>
+    <span class="ocrf-scope-note">Each report shows both sides.</span>
+  </div>`
+    : '';
   const cards = model.groups.map((g) => {
     const req = g.slots.filter((s) => s.required);
-    const count = g.sameToggle && model.enemySame ? ''
-      : `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span>`;
     const head = g.label
-      ? `<div class="ocrf-req-card-head"><span>${g.label}</span>${count}</div>`
+      ? `<div class="ocrf-req-card-head"><span>${g.label}</span>`
+        + `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span></div>`
       : '';
-    // Battle's Enemy card: a ticked "Same report as yours" checkbox row.
-    // Unticking expands the enemy's own upload rows below it.
-    const same = g.sameToggle
-      ? `<button type="button" class="ocrf-req-same${model.enemySame ? ' ocrf-req-same--on' : ''}"
-          data-same-toggle aria-pressed="${model.enemySame}">
-          <span class="ocrf-req-same-box" aria-hidden="true">${model.enemySame ? '&#10003;' : ''}</span>
-          Same report as yours</button>`
-      : '';
-    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${same}${g.slots.map((s) => requirementRow(g.side, s)).join('')}</section>`;
+    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${g.slots.map((s) => requirementRow(g.side, s)).join('')}</section>`;
   }).join('');
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
   // The fraction lives INSIDE the locked Scan button — the "why is this
@@ -192,7 +204,8 @@ export function renderUpload({ type, model, notice = null }) {
     <p class="ocrf-upload-intro">Choose the type of screenshot to upload</p>
     <div class="ocrf-type-tabs" role="group" aria-label="Screenshot type">${tabs}</div>
     ${noticeHtml}
-    <div class="ocrf-req-cards">${cards}</div>
+    ${scopeBar}
+    <div class="ocrf-req-cards${model.groups.length > 1 ? ' ocrf-req-cards--two' : ''}">${cards}</div>
   </div>
   <footer class="ocrf-scr-foot">
     <button type="button" class="ocrf-btn-primary ocrf-btn-block" id="ocrfScan"${model.canScan ? '' : ' disabled'}>${scanLabel}</button>
@@ -200,12 +213,13 @@ export function renderUpload({ type, model, notice = null }) {
 </section>`.trim();
 }
 
-export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan, onSameToggle }) {
+export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan, onScope }) {
   root.querySelectorAll('[data-type-tab]').forEach((b) => {
     b.addEventListener('click', () => onTab(b.dataset.typeTab));
   });
-  const same = root.querySelector('[data-same-toggle]');
-  if (same && onSameToggle) same.addEventListener('click', () => onSameToggle());
+  root.querySelectorAll('[data-scope]').forEach((b) => {
+    b.addEventListener('click', () => { if (onScope) onScope(b.dataset.scope); });
+  });
   root.querySelectorAll('[data-slot]').forEach((b) => {
     b.addEventListener('click', () => {
       const [side, key] = b.dataset.slot.split(':');
