@@ -944,3 +944,30 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
 
 /* Single-column tiles stay comfortable on very narrow phones. */
 @media (max-width:340px){.ocrf-slot-grid{grid-template-columns:1fr}}
+
+
+/* --- Round: UX gate round 1 fixes (evaluator UXG-002/004/005/006/007) -----
+   None link -> full-width 40px bar BELOW the tile (was a 17px overlay pill
+   colliding with the tile's picker zone); corner x gets invisible hit-slop;
+   tabs reach 44px; mobile dialog capped to dvh; full-slot flash feedback. */
+
+.ocrf-slot-grid{align-items:start}
+.ocrf-slot-none{position:static;display:block;width:100%;margin-top:4px;min-height:40px;
+  padding:8px;border-radius:10px;font-size:11px}
+.ocrf-slot-x::before{content:"";position:absolute;inset:-9px}   /* 38px hit area, 20px visual */
+.ocrf-type-tab{min-height:44px}
+
+/* UXG-005 verdict: NOT a real defect. The reported 4px overflow (bottom 816
+   at 812vh, x0.97 width) is byte-exact the FIRST FRAME of .ocrf-dialog-enter
+   (matrix(.97,.97)+16px) parked forever in a non-compositing hidden pane —
+   in any visible browser the 200ms entrance completes, transform clears,
+   and the mobile sheet's min-height:100% fits the viewport exactly. (A
+   max-height cap here would be inert anyway: min-height beats max-height.)
+   Headless measurers: read offsetTop/offsetHeight, not boundingClientRect. */
+
+.ocrf-slot-flash .ocrf-slot-main,
+.ocrf-summary.ocrf-slot-flash{animation:ocrf-full-pulse .55s ease-out}
+@keyframes ocrf-full-pulse{
+  0%{box-shadow:0 0 0 0 rgba(231,199,131,.75)}
+  100%{box-shadow:0 0 0 9px rgba(231,199,131,0)}
+}

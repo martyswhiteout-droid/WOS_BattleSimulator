@@ -23,7 +23,10 @@ export const SLOTS = {
     { key: 'heroes', label: 'Heroes', required: true, max: 1, img: 'sample_battle_heroes.jpg' },
     { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg' },
     { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true },
-    { key: 'power', label: 'Power', required: false, max: 1, img: 'sample_troop_power.jpg' },
+    // img null (UXG-003): the Troop Power sample capture is still owed by the
+    // owner — no img element until it ships (a 404 per open is worse than the
+    // dashed tile the img-error fallback would leave anyway).
+    { key: 'power', label: 'Power', required: false, max: 1, img: null },
   ],
   scout: [
     { key: 'scout', label: 'Stats', required: true, max: 2, img: 'sample_scout.jpg' },
@@ -89,7 +92,7 @@ function slotTile(side, s) {
   <button type="button" class="ocrf-slot-main" data-slot="${side}:${s.key}" data-slot-state="${s.state}"
     aria-label="${s.label}, ${stateLabel}">
     <span class="ocrf-slot-fig"${s.thumbUrl ? ` style="background-image:url('${s.thumbUrl}')"` : ''}>
-      ${s.thumbUrl ? '' : `<img class="ocrf-sample-img ocrf-slot-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`}
+      ${s.thumbUrl || !s.img ? '' : `<img class="ocrf-sample-img ocrf-slot-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`}
     </span>
     <span class="ocrf-slot-label">${s.label} ${cue}</span>
     ${badge}

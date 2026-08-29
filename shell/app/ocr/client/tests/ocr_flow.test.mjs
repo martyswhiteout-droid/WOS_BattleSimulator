@@ -193,11 +193,14 @@ test('D-038: a "check" (Gemini gap-fill) field counts as read, not missing — o
 
 test('D-040 probe: decideSheetToClose picks the picture sheet first when more than one is (structurally shouldn\'t happen once inert is applied, but the chain stays defensive, matching the mock\'s own OR-chain shape)', () => {
   assert.equal(decideSheetToClose({ pictureOpen: true, editorOpen: true, menuOpen: true }), 'picture');
+  // UXG-001: the slot preview sheet overlays the upload screen — topmost of all
+  assert.equal(decideSheetToClose({ slotOpen: true, pictureOpen: true, editorOpen: true, menuOpen: true }), 'slot');
 });
 
 test('D-040 probe: decideSheetToClose falls through to editor, then menu, then null (nothing open)', () => {
   assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: true, menuOpen: true }), 'editor');
   assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: false, menuOpen: true }), 'menu');
+  assert.equal(decideSheetToClose({ slotOpen: false, pictureOpen: false, editorOpen: false, menuOpen: false }), null);
   assert.equal(decideSheetToClose({ pictureOpen: false, editorOpen: false, menuOpen: false }), null);
 });
 

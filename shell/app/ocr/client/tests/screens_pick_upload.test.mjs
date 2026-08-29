@@ -115,6 +115,13 @@ test('renderUpload: all four battle tiles render at once — no picker step, no 
   assert.match(html, /data-screen="s1"/);
 });
 
+test('UXG-003: a slot with no sample capture yet (Power) renders NO img element — no 404 per open', () => {
+  const html = battleHtml();
+  const powerTile = html.split('data-slot-tile="you:power"')[1];
+  assert.doesNotMatch(powerTile, /ocrf-slot-sample/);
+  assert.doesNotMatch(html, /sample_troop_power/);
+});
+
 test('renderUpload: type tabs are Battle/Scout/City with the active one pressed', () => {
   const html = battleHtml();
   assert.match(html, /data-type-tab="battle"[^>]*aria-pressed="true"/);

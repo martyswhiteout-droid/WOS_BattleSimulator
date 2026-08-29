@@ -692,9 +692,14 @@ async function addFilesToSlot(side, slot, fileList) {
   const def = slotDef(activeType(), side, slot);
   if (!def) return 0;
   const have = app.shots[side].filter((s) => s.slot === slot).length;
-  const files = [...(fileList || [])].filter((f) => UPLOAD_IMAGE_TYPES.test(f.type))
-    .slice(0, Math.max(0, def.max - have));
-  if (!files.length) return 0;
+  const valid = [...(fileList || [])].filter((f) => UPLOAD_IMAGE_TYPES.test(f.type));
+  const files = valid.slice(0, Math.max(0, def.max - have));
+  if (!files.length) {
+    // UXG-007: a real image aimed at a FULL slot must not vanish silently —
+    // pulse the tile so "it's already full" is said where the user aimed.
+    if (valid.length) flashFull(document.querySelector(`[data-slot-tile="${side}:${slot}"]`));
+    return 0;
+  }
   for (const file of files) {
     const bytes = new Uint8Array(await file.arrayBuffer());
     const id = `${side}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -712,6 +717,13 @@ async function addFilesToSlot(side, slot, fileList) {
   return files.length;
 }
 
+function flashFull(el) {
+  if (!el) return;
+  el.classList.remove('ocrf-slot-flash');
+  void el.offsetWidth;   // restart the animation on repeat hits
+  el.classList.add('ocrf-slot-flash');
+  setTimeout(() => el.classList.remove('ocrf-slot-flash'), 600);
+}
 function dropShot(side, shot) {
   controller.flow.removeShot(side, shot.id);
   if (shot.url) { try { URL.revokeObjectURL(shot.url); } catch (err) { /* gone */ } }
@@ -973,21 +985,25 @@ function openPicture() {
 // syncBackgroundInert correctly applied, at most one of these is ever
 // actually open at a time (everything else is inert, so nothing else is
 // reachable to open a second one), but the chain stays defensive.
-export function decideSheetToClose({ pictureOpen, editorOpen, menuOpen }) {
+export function decideSheetToClose({ pictureOpen, editorOpen, menuOpen, slotOpen = false }) {
+  if (slotOpen) return 'slot';   // UXG-001: the slot preview overlays the upload screen — topmost
   if (pictureOpen) return 'picture';
   if (editorOpen) return 'editor';
   if (menuOpen) return 'menu';
   return null;
 }
 function closeWhicheverIsOpen() {
+  const slot = document.getElementById('ocrfSlotScrim');
   const picture = document.getElementById('ocrfPictureScrim');
   const editor = document.getElementById('ocrfEditorScrim');
   const menu = document.querySelector('.ocrf-type-menu');
   const which = decideSheetToClose({
+    slotOpen: !!slot && slot.getAttribute('aria-hidden') === 'false',
     pictureOpen: !!picture && picture.getAttribute('aria-hidden') === 'false',
     editorOpen: !!editor && editor.getAttribute('aria-hidden') === 'false',
     menuOpen: !!menu,
   });
+  if (which === 'slot') { closeScrim(slot); return true; }
   if (which === 'picture') { closeScrim(picture); return true; }
   if (which === 'editor') { closeScrim(editor); return true; }
   if (which === 'menu') { menu.remove(); syncBackgroundInert(); return true; }
@@ -1039,7 +1055,7 @@ function boot() {
     if (!files.length) return;
     ev.preventDefault();
     const ref = pasteTargetSlot(currentModel(), app.lastSlot);
-    if (!ref) return;
+    if (!ref) { flashFull(document.querySelector('.ocrf-summary')); return; }   // UXG-007
     const [side, key] = ref.split(':');
     addFilesToSlot(side, key, files);
   });
