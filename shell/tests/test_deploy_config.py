@@ -125,7 +125,7 @@ def test_caddyfile_ocr_route_cap_is_at_least_the_app_ocr_cap():
     uploads 413 before the app-level cap ever gets a say."""
     text = _caddyfile_text()
     app_ocr_cap = Settings(_env_file=None).MAX_OCR_BODY_BYTES
-    assert app_ocr_cap == 8 * 1024 * 1024 + 65_536  # pin the value this test relies on
+    assert app_ocr_cap == 16 * 1024 * 1024 + 65_536  # pin the value this test relies on
 
     for host in _HOSTS:
         block = _server_block(text, host)

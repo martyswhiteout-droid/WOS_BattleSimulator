@@ -82,7 +82,7 @@ class Settings(BaseSettings):
     # MAX_REQUEST_BYTES (8 MB image cap + 64 KiB multipart framing, QA
     # D-014/D-024) so main.py's outer BodyLimitMiddleware never rejects a
     # request Agent C's own (correct) OCR-specific validation would accept.
-    MAX_OCR_BODY_BYTES: int = 8 * 1024 * 1024 + 65_536
+    MAX_OCR_BODY_BYTES: int = 16 * 1024 * 1024 + 65_536   # 2026-08-29: 6 phone shots
 
     # --- derived helpers (properties, not env keys) -----------------------
 

@@ -22,7 +22,7 @@
 # (MAX_OCR_BODY_BYTES, shell/app/config.py). Fix: split request_body into
 # two mutually-exclusive, matcher-scoped blocks per host — one for the OCR
 # upload routes with a cap that MIRRORS the app constant exactly (8*1024*1024
-# + 65536 = 8454144 bytes; Caddy's max_size with no unit suffix is parsed as
+# + 65536 = 16842752 bytes; Caddy's max_size with no unit suffix is parsed as
 # a literal byte count, per go-humanize's ParseBytes — no unit-rounding
 # ambiguity), one for everything else at the original small cap. The two
 # matchers (`path ...` / `not path ...`) are complements by construction, so
@@ -34,7 +34,7 @@ wostests.com {
 	encode gzip
 	@ocr_upload path /shell/ocr /shell/ocr/panel
 	request_body @ocr_upload {
-		max_size 8454144
+		max_size 16842752
 	}
 	@default_body {
 		not path /shell/ocr /shell/ocr/panel
@@ -55,7 +55,7 @@ staging.wostests.com {
 	encode gzip
 	@ocr_upload path /shell/ocr /shell/ocr/panel
 	request_body @ocr_upload {
-		max_size 8454144
+		max_size 16842752
 	}
 	@default_body {
 		not path /shell/ocr /shell/ocr/panel

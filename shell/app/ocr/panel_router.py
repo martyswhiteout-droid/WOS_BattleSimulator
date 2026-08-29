@@ -36,7 +36,9 @@ from ._shims import get_settings
 from .panel.ladder import EngineUnavailable, extract_panel_production
 from .panel.service import extract_panel
 
-MAX_BODY_BYTES = 8 * 1024 * 1024
+# 2026-08-29 (owner phone test): 16 MB aggregate — four-to-six real phone
+# screenshots at 1.5-3 MB each; still a hard cap (E6/D2 intent kept).
+MAX_BODY_BYTES = 16 * 1024 * 1024
 # The aggregate cap plus 64 KiB of multipart framing: nothing legitimate can
 # declare more, so anything larger is refused before the body is read
 # (QA D-024 tightened this from 3 x MAX_BODY_BYTES).
@@ -147,7 +149,10 @@ async def panel_upload(
         return JSONResponse(status_code=422, content={"error": "invalid_side"})
     if panel not in (None, "battle", "scout", "citystats"):
         return JSONResponse(status_code=422, content={"error": "invalid_panel"})
-    if not file or len(file) > 3:
+    # 2026-08-29: the four-row battle UI (Heroes+Experts / Battle stats /
+    # Buffs x2 / Troop Power) legitimately sends up to 6 shots — the old cap
+    # of 3 rejected the owner's first real phone read (422 invalid_file_count).
+    if not file or len(file) > 6:
         return JSONResponse(status_code=422, content={"error": "invalid_file_count"})
 
     total_bytes = 0

@@ -32,3 +32,35 @@ def test_owner_20260825_appoint_based_labels_match_and_fold_as_plain_buffs():
         [], observed="read")
     assert S_scout["Attack"] == 0.05 and S_battle["Attack"] == 0.05
     assert P["Attack"] == 0.0
+
+
+def test_owner_20260829_real_popup_labels_from_first_phone_read():
+    # Ground truth: the owner's first real phone battle report (2026-08-29).
+    # The popup carried labels the lexicon had never seen; each is pinned here
+    # with its fold classification.
+    from shell.app.ocr.panel.convert import fold_sets
+    from shell.app.ocr.panel.lexicon import PENALTY_LABELS, match_label
+
+    for label in ("Troops' Attack Bonus", "Troops' Defense Bonus",
+                  "Troops' Lethality Bonus", "Troops' Health Bonus",
+                  "Defender Troops' Defense",
+                  "Enemy Troops' Attack", "Enemy Troops' Defense"):
+        assert match_label(label) == f"special:{label}", label
+
+    # Enemy-directed debuffs lacking Penalty/Reduction wording are penalties.
+    assert "Enemy Troops' Attack" in PENALTY_LABELS
+    assert "Enemy Troops' Defense" in PENALTY_LABELS
+
+    # Own side: +20 Troops' Attack Bonus folds into S; the own -20 Enemy
+    # Troops' Attack row never leaks into own buffs (negative own penalty =
+    # correct sign, silently skipped from S). Enemy side: their Enemy Troops'
+    # Attack row folds |value| into P (the debuff ON us).
+    warnings = []
+    S_scout, S_battle, P = fold_sets(
+        [{"label": "Troops' Attack Bonus", "value": 20.0, "side": None},
+         {"label": "Enemy Troops' Attack", "value": -20.0, "side": None}],
+        [{"label": "Enemy Troops' Attack", "value": -20.0, "side": None}],
+        observed="read", warnings=warnings)
+    assert S_scout["Attack"] == 0.20 and S_battle["Attack"] == 0.20
+    assert P["Attack"] == 0.20
+    assert warnings == []

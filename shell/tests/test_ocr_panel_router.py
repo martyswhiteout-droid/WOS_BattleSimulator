@@ -79,7 +79,13 @@ def test_qa_defect_016_unauthenticated_gets_401(monkeypatch):
     assert r.status_code == 401 and r.json()["error"] == "auth_required"
 
 def test_qa_defect_016_more_than_three_files_422(client_paid):
-    files = [("file", (f"{i}.png", PNG_BYTES, "image/png")) for i in range(4)]
+    # 2026-08-29: cap raised 3 -> 6 (the four-row battle UI legitimately sends
+    # heroes + stats + 2 buffs [+ troop power]; the owner's first real phone
+    # read was rejected by the old cap). Both sides of the new boundary:
+    files_ok = [("file", (f"{i}.png", PNG_BYTES, "image/png")) for i in range(6)]
+    r_ok = client_paid.post("/shell/ocr/panel", files=files_ok, data={"side": "enemy"})
+    assert r_ok.status_code == 200
+    files = [("file", (f"{i}.png", PNG_BYTES, "image/png")) for i in range(7)]
     r = client_paid.post("/shell/ocr/panel", files=files, data={"side": "enemy"})
     assert r.status_code == 422 and r.json()["error"] == "invalid_file_count"
 
@@ -114,7 +120,10 @@ def test_qa_defect_007_oversize_content_length_rejected_before_form_parsing(clie
     assert sentinel == []                 # the handler never ran, so no spooling
 
 def test_qa_defect_014_aggregate_upload_size_413(client_paid):
-    blob = b"\x89PNG\r\n\x1a\n" + b"0" * (3 * 1024 * 1024)   # 3 MiB each, 9 MiB total
+    from shell.app.ocr.panel_router import MAX_BODY_BYTES as _CAP
+    # Each file under the per-file cap; the SUM exceeds the aggregate cap
+    # (D-014's intent), sized from the constant (2026-08-29: 8 -> 16 MB).
+    blob = bytes([137, 80, 78, 71, 13, 10, 26, 10]) + b"0" * (_CAP // 2)
     files = [("file", (f"{i}.png", blob, "image/png")) for i in range(3)]
     r = client_paid.post("/shell/ocr/panel", files=files, data={"side": "enemy"})
     assert r.status_code == 413 and r.json()["error"] == "body_too_large"
@@ -190,7 +199,7 @@ def test_qa_defect_024_oversize_declared_length_never_reaches_the_parser(client_
         return await original(self, *args, **kwargs)
 
     monkeypatch.setattr(MultiPartParser, "parse", spy)
-    r = _post(client_paid, headers={"content-length": str(9 * 1024 * 1024)})
+    r = _post(client_paid, headers={"content-length": str(__import__('shell.app.ocr.panel_router', fromlist=['x']).MAX_REQUEST_BYTES + 1)})
     assert r.status_code == 413 and r.json()["error"] == "body_too_large"
     assert parsed == []
     # the ceiling is MAX_BODY_BYTES + 64 KiB, not 3x it

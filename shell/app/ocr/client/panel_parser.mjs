@@ -15,6 +15,11 @@ const SPECIALS = [
   'Attack Bonus', 'Defense Bonus', 'Lethality Bonus', 'Health Bonus',
   'Enemy Attack Reduction', 'Enemy Defense Reduction',
   // Owner 2026-08-25: appointment buffs — plain stat buffs (see lexicon.py).
+  // Ground truth 2026-08-29 (owner's real popup): see lexicon.py.
+  "Troops' Attack Bonus", "Troops' Defense Bonus",
+  "Troops' Lethality Bonus", "Troops' Health Bonus",
+  "Defender Troops' Defense",
+  "Enemy Troops' Attack", "Enemy Troops' Defense",
   "Appoint-based Troop's Attack", "Appoint-based Troop's Defense",
   "Appoint-based Troop's Lethality", "Appoint-based Troop's Health",
 ];
@@ -23,9 +28,13 @@ const SPECIALS = [
 // missed the '... Reduction' wording) and never by the sign of the value (which
 // OCR can lose). Enemy-side rows fold |value| into P; own-side rows never enter
 // the S folds at all.
-export const PENALTY_LABELS = new Set(SPECIALS.filter(
-  (label) => label.startsWith('Enemy ') && (label.includes('Penalty') || label.includes('Reduction')),
-));
+export const PENALTY_LABELS = new Set([
+  ...SPECIALS.filter(
+    (label) => label.startsWith('Enemy ') && (label.includes('Penalty') || label.includes('Reduction')),
+  ),
+  // 2026-08-29: enemy-directed debuffs without the Penalty/Reduction wording.
+  "Enemy Troops' Attack", "Enemy Troops' Defense",
+]);
 
 // QA D-020 (accepted, documented): 'Enemy Lethality Penalty (Expert Skill)' and
 // 'Enemy Lethality Penalty (Pet Skill)' are the one label pair a 2-edit OCR

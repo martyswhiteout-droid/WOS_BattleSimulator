@@ -17,6 +17,14 @@ _SPECIALS = (
     # is UNVERIFIED against a real appointed-account capture pair (see the
     # OCR_UX_FLOW_SPEC 2026-08-25 amendment) — one battle+scout pair from an
     # appointed account will confirm scout-visible vs battle-only.
+    # Ground truth 2026-08-29: the owner's first real phone battle report
+    # (popup screenshots) — Troops'-Bonus family + Defender Troops' Defense
+    # are plain/defender buffs; Enemy Troops' Attack/Defense are PENALTIES
+    # despite lacking the Penalty/Reduction wording (explicit set below).
+    "Troops' Attack Bonus", "Troops' Defense Bonus",
+    "Troops' Lethality Bonus", "Troops' Health Bonus",
+    "Defender Troops' Defense",
+    "Enemy Troops' Attack", "Enemy Troops' Defense",
     "Appoint-based Troop's Attack", "Appoint-based Troop's Defense",
     "Appoint-based Troop's Lethality", "Appoint-based Troop's Health",
 )
@@ -28,7 +36,11 @@ _SPECIALS = (
 PENALTY_LABELS = frozenset(
     sp for sp in _SPECIALS
     if sp.startswith("Enemy ") and ("Penalty" in sp or "Reduction" in sp)
-)
+) | frozenset({
+    # 2026-08-29: enemy-directed debuffs whose in-game names carry neither
+    # "Penalty" nor "Reduction" (owner's real popup, green -20.00% own side).
+    "Enemy Troops' Attack", "Enemy Troops' Defense",
+})
 
 # QA D-020 (accepted, documented): "Enemy Lethality Penalty (Expert Skill)" and
 # "Enemy Lethality Penalty (Pet Skill)" are the one label pair a 2-edit OCR

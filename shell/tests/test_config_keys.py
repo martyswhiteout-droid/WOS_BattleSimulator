@@ -32,7 +32,7 @@ def test_settings_declares_previously_missing_keys():
     assert s.OCR_VISION_MODEL == "claude-sonnet-4-5"
     assert s.OCR_MOCK_FIXTURE is None
     assert s.MAX_BODY_BYTES == 262_144
-    assert s.MAX_OCR_BODY_BYTES == 8 * 1024 * 1024 + 65_536
+    assert s.MAX_OCR_BODY_BYTES == 16 * 1024 * 1024 + 65_536
 
 
 def test_lowercase_aliases_match_the_architecture_md_contract_casing():

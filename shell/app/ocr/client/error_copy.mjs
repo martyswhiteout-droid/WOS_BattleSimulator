@@ -13,6 +13,21 @@ export function mapError(status, body) {
       cta: 'upgrade',
     };
   }
+  // 2026-08-29 (owner phone test): 422s are INPUT problems, never "our end".
+  if (status === 422 && code === 'invalid_file_count') {
+    return {
+      heading: 'Too many screenshots at once',
+      body: 'One read takes up to 6 screenshots. Remove a few and try again.',
+      cta: 'retake',
+    };
+  }
+  if (status === 422) {
+    return {
+      heading: "Those screenshots didn't read as expected",
+      body: 'Check they are game screenshots (PNG or JPEG) and try again.',
+      cta: 'retake',
+    };
+  }
   if (status === 413 || status === 415) {
     return {
       heading: "That screenshot didn't come through",
@@ -48,7 +63,7 @@ export function mapError(status, body) {
       cta: 'sign_in',
     };
   }
-  // 411/422/anything else the UI should never trigger by construction, plus a real
+  // 411/anything else the UI should never trigger by construction, plus a real
   // network failure (status 0, no body) — degrade the same honest way as 503 rather
   // than surface an internal code.
   return {
