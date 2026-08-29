@@ -1100,3 +1100,14 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
 
 /* Hints are sentences now (owner-dictated) — let them wrap, never clip. */
 .ocrf-req-hint{white-space:normal;line-height:1.35}
+
+/* --- Round: QA round 3 fixes (QAC-012/013) --------------------------------
+   Desktop two-col cards squeeze the hint column to ~60px, setting the buffs
+   instruction as a one-word-per-line tower — stack the action chips
+   vertically inside the narrow cards so the text keeps ~135px. Ghost the
+   drawn Troops stand-in like every photo sample (it is an exemplar too). */
+@media (min-width:768px){
+  .ocrf-req-cards .ocrf-req-cluster{flex-direction:column;align-items:stretch;gap:6px}
+  .ocrf-req-cards .ocrf-req-thumb{align-self:center}
+}
+.ocrf-req--empty .ocrf-req-fig .ocrf-mini-panel{opacity:.55;filter:saturate(.7)}

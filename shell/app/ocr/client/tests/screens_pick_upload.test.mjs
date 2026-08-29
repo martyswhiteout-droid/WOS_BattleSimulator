@@ -42,7 +42,7 @@ test('groupsFor: every type is You+Enemy; city is SYMMETRIC (owner 2026-08-30); 
 
   const scout = groupsFor('scout');
   assert.deepEqual(scout.map((g) => [g.side, g.label]), [['you', 'You'], ['enemy', 'Enemy']]);
-  assert.equal(scout[1].slots[0].hint, 'Upload the scout report showing enemy combat stats');
+  assert.equal(scout[1].slots[0].hint, "Upload the scout report showing the enemy's stats");
 
   const city = groupsFor('citystats');
   assert.equal(city[0].slots[0].key, 'city');
@@ -288,6 +288,30 @@ test('renderUpload(battle): two cards — You with the 4 rows, Enemy collapsed b
   assert.equal((html.match(/class="ocrf-req-card"/g) || []).length, 2);
   const enemyHead = html.split('data-group="enemy"')[1];
   assert.doesNotMatch(enemyHead.split('</div>')[0], /ocrf-req-card-count/);
+});
+
+test('QAC-011: the None attestation is PER SIDE — expanded battle renders independent chip states', () => {
+  const model = uploadModel({
+    type: 'battle', enemySame: false,
+    shots: { you: [], enemy: [] },
+    attested: { you: true, enemy: false },
+  });
+  const html = renderUpload({ type: 'battle', model });
+  const youCard = html.split('data-group="you"')[1].split('</section>')[0];
+  const enemyCard = html.split('data-group="enemy"')[1].split('</section>')[0];
+  assert.match(youCard, /data-slot="you:buffs" data-slot-state="none"/);
+  assert.match(enemyCard, /data-slot="enemy:buffs" data-slot-state="empty"/);
+  assert.match(enemyCard, /data-slot-none="enemy:buffs"[^>]*aria-pressed="false"/);
+  // one side attested + nothing else -> 1 of 6, never 2
+  assert.equal(model.done, 1);
+  assert.equal(model.total, 6);
+});
+
+test('QAC-011 back-compat: a boolean attested still means both sides (same-report default)', () => {
+  const model = uploadModel({ type: 'battle', shots: { you: [], enemy: [] }, attested: true });
+  const buffs = model.groups[0].slots.find((s) => s.key === 'buffs');
+  assert.equal(buffs.state, 'none');
+  assert.equal(model.done, 1);
 });
 
 test('renderUpload: the notice slot renders when given, absent when null', () => {

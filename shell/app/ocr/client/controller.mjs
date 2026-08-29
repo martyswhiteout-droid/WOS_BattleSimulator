@@ -133,10 +133,14 @@ export function createController({ genTable = {}, postPanel, fetchMe, storage } 
     const conversion = {};
     const attested = {};
     const cachedU = loadCachedU(userId);
+    // QAC-011: the attestation arrives per side ({you, enemy}) from the
+    // per-side None chips; a plain boolean still means "both sides".
+    const attFor = (side) => (noBuffsAttested && typeof noBuffsAttested === 'object')
+      ? !!noBuffsAttested[side] : !!noBuffsAttested;
     for (const side of SIDES) {
       if (!views[side]) continue;
       const extra = side === 'you' ? { calibratedU: cachedU } : {};
-      const observed = attestedObserved(views[side].specialsObserved, noBuffsAttested);
+      const observed = attestedObserved(views[side].specialsObserved, attFor(side));
       attested[side] = observed !== views[side].specialsObserved;
       const outcome = convertSide({ ...views[side], ...extra, specialsObserved: observed });
       conversion[side] = outcome;

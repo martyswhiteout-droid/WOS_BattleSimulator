@@ -234,6 +234,34 @@ test('readAll with noBuffsAttested: a popup-less battle read converts, and the a
   assert.equal(withAtt.conversion.you.percents['Infantry|Attack'], 1000.0);
 });
 
+test('QAC-011: a PER-SIDE noBuffsAttested object applies each flag to its own side only', async () => {
+  const stats = {};
+  for (const cls of ['Infantry', 'Lancer', 'Marksman']) {
+    for (const st of ['Attack', 'Defense', 'Lethality', 'Health']) stats[`${cls}|${st}`] = 1000.0;
+  }
+  const fieldConf = Object.fromEntries(Object.keys(stats).map((k) => [k, 0.99]));
+  const postPanel = async ({ side }) => ({
+    status: 'ok', panel_type: 'battle', requested_side: side,
+    stats_left: stats, stats_left_conf: fieldConf,
+    stats_right: stats, stats_right_conf: fieldConf,
+    stats_you: stats, stats_you_conf: fieldConf,
+    stats_enemy: stats, stats_enemy_conf: fieldConf,
+    specials: [], specials_you: [], specials_enemy: [],
+    specials_observed: 'none', unreadable_fields: [], warnings: [],
+    field_engine: {}, engines_used: ['rapidocr'],
+  });
+  const c = createController({ postPanel });
+  c.flow.pickKind('battle');
+  // separate reports: each side has its own bytes; only YOU attested none
+  const out = await c.readAll(
+    { you: [new Uint8Array([1])], enemy: [new Uint8Array([2])] },
+    null, { noBuffsAttested: { you: true, enemy: false } });
+  assert.equal(out.attested.you, true);
+  assert.equal(out.attested.enemy, false);
+  assert.equal(out.conversion.you.outcome, 'ready');
+  assert.equal(out.conversion.enemy.outcome, 'needs_specials');
+});
+
 test('readAll attestation never overrides a partial read (the screen contradicts the claim)', async () => {
   const stats = { 'Infantry|Attack': 1000.0 };
   const conf = { 'Infantry|Attack': 0.99 };

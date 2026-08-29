@@ -67,7 +67,8 @@ function postPanel({ shotBytesList, side, panelType }) {
 let controller = null;
 
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
-  noBuffs: false, lastSlot: null,   // buffs attestation + paste routing (slot key "side:key")
+  noBuffs: { you: false, enemy: false },   // QAC-011: attestation is PER SIDE, like the file store
+  lastSlot: null,   // paste routing (slot key "side:key")
   enemySame: true,   // battle scope (owner 2026-08-30): Enemy card defaults to "Same report as yours"
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array, url, slot}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
@@ -496,7 +497,18 @@ function renderScreen() {
         app.shots[side] = app.shots[side].filter((x) => x !== shot);
         render();
       },
-      onSlotNone: () => { app.noBuffs = !app.noBuffs; render(); },
+      onSlotNone: (side) => {
+        // QAC-011: per-side toggle. In the same-report default the one
+        // visible chip speaks for BOTH sides (one report covers both);
+        // with separate reports each side's chip toggles its own flag.
+        const next = !app.noBuffs[side];
+        if (activeType() === 'battle' && app.enemySame) {
+          app.noBuffs = { you: next, enemy: next };
+        } else {
+          app.noBuffs = { ...app.noBuffs, [side]: next };
+        }
+        render();
+      },
       onSameToggle: () => { app.enemySame = !app.enemySame; render(); },
       onScan: () => { if (currentModel().canScan) goto('s3'); },
     });
@@ -515,7 +527,13 @@ function renderScreen() {
       run: () => controller.readAll(
         { you: sendableShots(activeType(), 'you', app.shots.you, app.enemySame).map((s) => s.bytes),
           enemy: sendableShots(activeType(), 'enemy', app.shots.enemy, app.enemySame).map((s) => s.bytes) },
-        null, { noBuffsAttested: app.noBuffs }),
+        null, { noBuffsAttested: (activeType() === 'battle' && app.enemySame)
+          // Same-report mode: ONE report covers both columns, so the visible
+          // (you-side) chip's flag speaks for both — a stale per-side split
+          // left over from an expand/collapse round-trip must never send
+          // asymmetric attestations for a single shared report.
+          ? { you: app.noBuffs.you, enemy: app.noBuffs.you }
+          : { ...app.noBuffs } }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
       onError: (err) => { app.scanHandle = null; activeScanAbort = null; onReadError(err); },
@@ -552,7 +570,7 @@ function renderScreen() {
     const att = app.lastRead?.attested ?? {};
     if (att.you || att.enemy) {
       infoNotes.push({ kind: 'no-buffs', message:
-        'Converted with no special bonuses \u2014 you told us there are none on either side.' });
+        'Converted with no special bonuses \u2014 you told us there are none.' });
     }
     app.priorSnapshot = buildSnapshot({
       percentsMe: window.readInputPanelPct ? window.readInputPanelPct('me') : {},
@@ -722,7 +740,12 @@ async function addFilesToSlot(side, slot, fileList) {
     try { url = URL.createObjectURL(file); } catch (err) { /* thumb only */ }
     app.shots[side].push({ id, bytes, url, slot });
   }
-  if (def.noneable) app.noBuffs = false;   // a real upload beats the attestation
+  if (def.noneable) {
+    // A real upload beats the attestation — for THIS side (both in the
+    // same-report default, where one buffs upload covers both columns).
+    if (activeType() === 'battle' && app.enemySame) app.noBuffs = { you: false, enemy: false };
+    else app.noBuffs = { ...app.noBuffs, [side]: false };
+  }
   app.lastSlot = `${side}:${slot}`;
   // The recovery/re-entry notice has served its purpose once a screenshot
   // lands — leaving it up reads as stale (L4 closing nit).

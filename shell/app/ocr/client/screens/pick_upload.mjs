@@ -29,8 +29,12 @@ export const SLOTS = {
       hint: 'Upload the screenshot showing heroes & experts' },
     { key: 'stats', label: 'Stats', required: true, max: 2, img: 'sample_battle_panel.jpg',
       hint: 'Upload the screenshot showing battle stats' },
+    // QAC-016: the WHERE must name the popup behind the report's ! icon —
+    // the in-game screen literally titled "Stat Bonuses" is the WRONG one
+    // (D-043's exact trap). Short on purpose (QAC-012's word-tower).
     { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true,
-      hint: 'Upload the screenshot showing stat bonuses (buffs)' },
+      hint: 'Upload the special bonuses popup (!)',
+      hintEnemy: "Upload the enemy's special bonuses popup (!)" },
     // img null (UXG-003): the Troop Power sample capture is still owed by the
     // owner — the drawn mini-panel stands in until the real capture ships.
     { key: 'power', label: 'Troops', required: false, max: 1, img: null, drawn: 'troops',
@@ -40,12 +44,12 @@ export const SLOTS = {
   scout: [
     { key: 'scout', label: 'Combat stats', required: true, max: 2, img: 'sample_scout.jpg',
       hint: 'Upload the scout report showing your combat stats',
-      hintEnemy: 'Upload the scout report showing enemy combat stats' },
+      hintEnemy: "Upload the scout report showing the enemy's stats" },
   ],
   citystats: [
     { key: 'city', label: 'Bonus Overview', required: true, max: 2, img: 'sample_citystats.jpg',
-      hint: 'Upload your City Stats (Bonus Overview)',
-      hintEnemy: "Upload the enemy's City Stats (Bonus Overview)" },
+      hint: 'Upload your City Stats screen',
+      hintEnemy: "Upload the enemy's City Stats screen" },
   ],
 };
 
@@ -87,9 +91,14 @@ export function slotState(slotDef, sideShots, attested) {
 }
 
 export function uploadModel({ type, shots, attested = false, enemySame = true }) {
+  // QAC-011: the None attestation is PER SIDE (mirror of the file store) —
+  // a boolean still means "both sides" for back-compat and the same-report
+  // default, an object keys by side.
+  const att = (attested && typeof attested === 'object')
+    ? attested : { you: !!attested, enemy: !!attested };
   const groups = groupsFor(type, { enemySame }).map((g) => ({
     ...g,
-    slots: g.slots.map((def) => ({ ...def, ...slotState(def, shots[g.side] || [], attested) })),
+    slots: g.slots.map((def) => ({ ...def, ...slotState(def, shots[g.side] || [], att[g.side]) })),
   }));
   const required = groups.flatMap((g) => g.slots.filter((s) => s.required));
   const done = required.filter((s) => s.state !== 'empty').length;
