@@ -417,7 +417,9 @@ function renderScreen() {
   if (app.screen === 'entry') {
     // Back from S1 lands here: restore the CTA, clear whatever the flow was
     // showing so a later "Fill from screenshots" tap starts clean.
-    if (entryNode) { entryNode.hidden = false; entryNode.querySelector('#ocrfCtaScreenshots')?.focus({ preventScroll: true }); }
+    if (entryNode) { entryNode.hidden = false; entryNode.querySelector('#ocrfCtaScreenshots')?.focus({ preventScroll: true });
+      // Owner 2026-08-29: never strand the user where the CTA isn't visible.
+      entryNode.scrollIntoView({ block: 'nearest' }); }
     document.getElementById('ocrfS5Host')?.remove();
     root()?.remove();
     return;

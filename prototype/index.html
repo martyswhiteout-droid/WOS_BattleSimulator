@@ -1900,7 +1900,50 @@
     font-family:'Inter';font-size:12px;line-height:1.45;color:#6a5647;
   }
   @media (max-width:520px){ .fc-caveat{flex-direction:column;gap:3px} }
-</style>
+
+  /* ============================================================
+     Round 16 — scenarios as a horizontal top strip + kebab menus
+     (owner request 2026-08-29). The rail leaves the left column at
+     EVERY width: .layout collapses to one column, the rail becomes a
+     full-width chip strip above the content, and each tab carries one
+     kebab whose dropdown holds Rename / Upload / Download / Close
+     (menu items keep the legacy tool classes for the delegate).
+     Palette: existing navy tokens only. Reduced-motion kill-switch
+     covers the pop-in reuse.
+     ============================================================ */
+  .layout{grid-template-columns:1fr;gap:14px}
+  .config-rail{position:static;top:auto;flex-direction:row;align-items:center;gap:10px;
+    padding:10px 12px;width:auto}
+  .rail-head{display:none}
+  .rail-tabs{flex-direction:row;flex-wrap:nowrap;gap:8px;flex:1;min-width:0;
+    overflow-x:auto;overflow-y:visible;padding:2px 2px 4px;scrollbar-width:thin}
+  .rail-tabs .tab{grid-template-columns:minmax(0,1fr) auto;position:relative;
+    width:auto;min-width:130px;max-width:230px;flex:none;white-space:nowrap;
+    padding:10px 8px 10px 14px;min-height:44px}
+  .rail-tabs .tab .tname{overflow:hidden;text-overflow:ellipsis}
+  .rail-add{flex:none;width:auto;min-height:44px;padding:10px 14px;font-size:11px}
+  .tab-kebab{font-family:var(--mono);font-size:15px;line-height:1;color:rgba(255,255,255,.75);
+    background:transparent;border:0;border-radius:7px;min-width:28px;min-height:28px;
+    display:grid;place-items:center;cursor:pointer}
+  .tab-kebab:hover,.tab-kebab[aria-expanded="true"]{background:rgba(255,255,255,.16);color:#fff}
+  .tab-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:60;min-width:150px;
+    display:flex;flex-direction:column;padding:6px;border-radius:12px;
+    background:linear-gradient(180deg,#123f66,#0B273D);border:1px solid rgba(255,255,255,.12);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 14px 30px -12px rgba(0,0,0,.7);
+    animation:pop-in .16s ease}
+  .tab-menu[hidden]{display:none}
+  .tab-menu .tab-tool,.tab-menu .x{display:block;width:100%;min-height:36px;padding:8px 12px;
+    border:0;border-radius:8px;background:transparent;text-align:left;cursor:pointer;
+    font-family:var(--body,Inter,system-ui,sans-serif);font-size:12.5px;color:#EAF6FF}
+  .tab-menu .tab-tool:hover{background:rgba(255,255,255,.10);color:#fff}
+  .tab-menu .x{color:#B9D2E5;font-family:inherit;font-size:12.5px;min-width:0}
+  .tab-menu .x:hover{background:rgba(239,95,95,.16);color:#ff9a9a}
+  @media (max-width:960px){
+    .config-rail{flex-direction:row;padding:8px 10px}
+    .rail-tabs .tab{min-height:44px}
+  }
+
+  </style>
 </head>
 <body>
 
@@ -1932,7 +1975,7 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
   <aside class="config-rail">
     <div class="rail-head">Scenarios</div>
     <div class="rail-tabs" id="tabs" role="tablist" aria-label="Forecast scenarios">
-      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Scenario 1</span><button class="tab-tool rename-tab" type="button" title="Rename" aria-label="Rename"><img src="assets/ui/rename-pen.png" alt=""></button><button class="tab-tool save-tab" type="button" title="Save scenario" aria-label="Save scenario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></button><button class="tab-tool load-tab" type="button" title="Load scenario" aria-label="Load scenario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V10"/><path d="m7 14 5-5 5 5"/><path d="M5 4h14"/></svg></button><button class="x" type="button" aria-label="Close scenario">x</button></div>
+      <div class="tab" role="tab" tabindex="0" aria-selected="true"><span class="tname">Scenario 1</span><button class="tab-kebab" type="button" title="Scenario menu" aria-label="Scenario menu" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="tab-menu" role="menu" hidden><button class="tab-tool rename-tab" role="menuitem" type="button">Rename</button><button class="tab-tool load-tab" role="menuitem" type="button">Upload</button><button class="tab-tool save-tab" role="menuitem" type="button">Download</button><button class="x" role="menuitem" type="button" aria-label="Close scenario">Close</button></div></div>
     </div>
     <button class="rail-add" id="tabAdd" title="New scenario (max 5)">+ New scenario</button>
   </aside>
@@ -3124,12 +3167,20 @@ function initInteractions(){
       inp.addEventListener('blur',()=>commit(true));
   }
   $('#tabs').addEventListener('dblclick',e=>{ const t=e.target.closest('.tab'); if(t) startRename(t); });
+  function closeTabMenus(except){ document.querySelectorAll('#tabs .tab-menu').forEach(m=>{ if(m!==except){ m.hidden=true; const k=m.parentElement&&m.parentElement.querySelector('.tab-kebab'); if(k)k.setAttribute('aria-expanded','false'); } }); }
+  document.addEventListener('click',e=>{ if(!e.target.closest('#tabs')) closeTabMenus(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTabMenus(); });
   $('#tabs').addEventListener('click',e=>{
+    const kebab=e.target.closest('.tab-kebab');
+    if(kebab){ e.stopPropagation(); const menu=kebab.parentElement.querySelector('.tab-menu');
+      const opening=menu.hidden; closeTabMenus(opening?menu:null);
+      menu.hidden=!opening; kebab.setAttribute('aria-expanded',String(opening)); return; }
     const tool=e.target.closest('.tab-tool');
     if(tool){
       e.stopPropagation();
       const tab=tool.closest('.tab');
       if(tab) selectTab(tab);
+      closeTabMenus();
       if(tool.classList.contains('rename-tab')) startRename(tab);
       else if(tool.classList.contains('save-tab')) saveConfig();
       else if(tool.classList.contains('load-tab')) loadConfig();
@@ -3429,13 +3480,17 @@ function closeTab(tab){
 function makeTab(name, cfg, forecast){
   const t=el('div','tab'); t.setAttribute('role','tab'); t.tabIndex=-1; t.setAttribute('aria-selected','false');
   const nm=el('span','tname'); nm.textContent=name;
-  const mkTool=(cls,title,src)=>{ const b=el('button','tab-tool '+cls); b.type='button'; b.title=title; b.setAttribute('aria-label',title);
-    if(src){ const img=el('img'); img.src=src; img.alt=''; b.appendChild(img); } else { b.innerHTML=TAB_TOOL_SVG[cls]||''; } return b; };
-  const rn=mkTool('rename-tab','Rename','assets/ui/rename-pen.png');
-  const sv=mkTool('save-tab','Save scenario',null);   // inline SVG (the PNG export had no alpha -> showed as a white square)
-  const ld=mkTool('load-tab','Load scenario',null);
-  const x=el('button','x'); x.type='button'; x.setAttribute('aria-label','Close scenario'); x.textContent='x';
-  t.append(nm,rn,sv,ld,x); $('#tabs').appendChild(t);
+  // Owner 2026-08-29: one kebab per tab, actions in a dropdown (the four
+  // inline icons crowded every tab). Menu items keep the original classes so
+  // the existing #tabs delegation handles them unchanged.
+  const kb=el('button','tab-kebab'); kb.type='button'; kb.title='Scenario menu';
+  kb.setAttribute('aria-label','Scenario menu'); kb.setAttribute('aria-haspopup','menu');
+  kb.setAttribute('aria-expanded','false'); kb.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>';
+  const menu=el('div','tab-menu'); menu.setAttribute('role','menu'); menu.hidden=true;
+  const mkItem=(cls,label)=>{ const b=el('button',cls); b.type='button'; b.setAttribute('role','menuitem'); b.textContent=label; return b; };
+  menu.append(mkItem('tab-tool rename-tab','Rename'), mkItem('tab-tool load-tab','Upload'),
+              mkItem('tab-tool save-tab','Download'), mkItem('x','Close'));
+  t.append(nm,kb,menu); $('#tabs').appendChild(t);
   tabState.set(t,{config:cfg||formToConfig(), forecast:forecast||null});
   updateTabAddState();
   return t;

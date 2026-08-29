@@ -809,3 +809,53 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   border-color: rgba(46, 161, 242, .55);
   color: var(--ocrf-ink);
 }
+
+
+/* --- Round: HERO entry CTA (owner 2026-08-29) ----------------------------
+   The entry button becomes the page's dominant action: full-width glossy
+   slab (DESIGN_SYSTEM glossy-CTA recipe), stacked label, one-line note
+   inside the button itself. Same ramp tokens; append-only. */
+
+.ocrf-entry--hero { margin: 4px 0 14px; }
+
+.ocrf-cta--hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 96px;
+  padding: 16px 20px;
+  border: 0;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #8ED0FF 0%, #5AAEF3 46%, #3E97E8 100%);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(10, 52, 96, .55);
+  box-shadow: inset 0 2px 1px rgba(255, 255, 255, .65),
+              inset 0 -2px 1px rgba(20, 96, 170, .45),
+              0 3px 0 #235f9c,
+              0 6px 12px -4px rgba(4, 22, 44, .7);
+  cursor: pointer;
+  transition: filter .15s ease, transform .15s ease;
+}
+
+.ocrf-cta--hero:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.ocrf-cta--hero:active { transform: translateY(2px); box-shadow: inset 0 2px 1px rgba(255, 255, 255, .65), inset 0 -2px 1px rgba(20, 96, 170, .45), 0 1px 0 #235f9c, 0 3px 6px -3px rgba(4, 22, 44, .7); }
+.ocrf-cta--hero:focus-visible { outline: 2px solid #5AAEF3; outline-offset: 2px; }
+
+.ocrf-cta--hero .ocrf-cta-emoji { font-size: 26px; line-height: 1; }
+
+.ocrf-cta--hero .ocrf-cta-main {
+  font-family: 'Chakra Petch', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: .02em;
+}
+
+.ocrf-cta--hero .ocrf-cta-note {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, .85);
+}

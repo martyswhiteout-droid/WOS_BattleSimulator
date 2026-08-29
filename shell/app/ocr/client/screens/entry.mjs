@@ -1,10 +1,13 @@
 export function renderEntryCard() {
+  // Owner 2026-08-29: the CTA is the page's PRIMARY action — hero-sized,
+  // full width, impossible to miss.
   return `
-<section class="ocrf-entry" id="ocrfEntry">
-  <button type="button" class="ocrf-cta" id="ocrfCtaScreenshots">
-    <span class="ocrf-cta-emoji" aria-hidden="true">\u{1F4F7}</span> Fill from screenshots
+<section class="ocrf-entry ocrf-entry--hero" id="ocrfEntry">
+  <button type="button" class="ocrf-cta ocrf-cta--hero" id="ocrfCtaScreenshots">
+    <span class="ocrf-cta-emoji" aria-hidden="true">\u{1F4F7}</span>
+    <span class="ocrf-cta-main">Fill from screenshots</span>
+    <span class="ocrf-cta-note">Fastest way. No typing.</span>
   </button>
-  <p class="ocrf-cta-note">Fastest way. No typing.</p>
 </section>`.trim();
 }
 
