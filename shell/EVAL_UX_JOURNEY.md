@@ -1449,3 +1449,24 @@ hints ("Your troop details", "Report · ! popup") + h1 "Screenshots";
 QAC-004 + Add persists until cap; QAC-005 40px chips. Declined: QAC-006
 (back stays — shared wizard header, both exits non-destructive), QAC-007
 (scouting yourself is game knowledge). Round 2 re-verdict pending.
+
+## Round 2 — CRYSTAL CLEAR (loop CLOSED)
+
+All six fixes verified with hard evidence (per-thumb removal proven by blob
+identity — the survivor IS the second file; all three rejection classes
+speak and always restore; caps probed directly on all four slot types;
+chips 40px both widths; zero truncation at 375 including the new texts).
+Both declines' rationales accepted (QAC-006 back stays / QAC-007 game
+knowledge). Capacity-wording removal judged SUFFICIENT: the persisting
++ Add chip discloses "more allowed" exactly when relevant, "N max" bounds
+it, and stats/buffs share the identical mechanism.
+
+Residual NITs, non-gating, documented: QAC-009 (per-thumb x hit-slop
+grazes the row button by ~3px slivers — removal trivially reversible);
+QAC-010 (rejection note holds ~2s vs the stated 1.6s in the parked pane;
+consecutive rejections extend the hold by design; never-permanent invariant
+proven in every path); QAC-003 residual (Power sample box empty until the
+owner's real capture — no exemplar beats a fabricated one).
+
+Verdict: CRYSTAL CLEAR at both widths, cold read and fix verification.
+Fixes commit 58ea64f; ledger closed 2026-08-29.
