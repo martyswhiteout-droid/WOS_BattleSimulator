@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  SLOTS, groupsFor, slotState, uploadModel, renderUpload, renderE1, TAB_LABEL,
+  SLOTS, groupsFor, slotState, uploadModel, renderUpload, renderE1, TAB_LABEL, missingList,
 } from '../screens/pick_upload.mjs';
 
 // --- slot config: the owner's document list, one word per label ------------
@@ -408,4 +408,18 @@ test('renderE1("error", mapped): mapped heading/body verbatim; every cta variant
 
   const retry = renderE1('error', { mapped: { heading: 'h', body: 'b', cta: 'retry_or_type' } });
   assert.match(retry, /data-goto="s3">Try again</);
+});
+
+// --- missing prompt (owner 2026-09-06) ---------------------------------------
+
+test('missingList: names exactly the required rows still empty, grouped by card label', () => {
+  const both = uploadModel({
+    type: 'battle', scope: 'both', attested: { you: true, enemy: false },
+    shots: { you: [{ slot: 'heroes' }], enemy: [] },
+  });
+  assert.deepEqual(missingList(both), ['Your report: Stats', "Enemy's report: Heroes + Experts, Stats, Buffs"]);
+  const mine = uploadModel({ type: 'battle', shots: { you: [{ slot: 'heroes' }, { slot: 'stats' }, { slot: 'buffs' }], enemy: [] } });
+  assert.deepEqual(missingList(mine), []);   // optional Troops never counts as missing
+  const scout = uploadModel({ type: 'scout', shots: { you: [{ slot: 'scout' }], enemy: [] } });
+  assert.deepEqual(missingList(scout), ['Enemy: Combat stats']);
 });

@@ -112,6 +112,19 @@ export function uploadModel({ type, shots, attested = false, scope = 'mine' }) {
   return { groups, done, total: required.length, canScan: done === required.length, scope };
 }
 
+// Owner 2026-09-06: "there should be a prompt that says you're missing
+// something" — the specific required rows still empty, grouped by card, as
+// short strings for the missing line above Scan. Pure; exported for tests.
+export function missingList(model) {
+  const out = [];
+  for (const g of model.groups) {
+    const names = g.slots.filter((s) => s.required && s.state === 'empty').map((s) => s.label);
+    if (!names.length) continue;
+    out.push(g.label ? `${g.label}: ${names.join(', ')}` : names.join(', '));
+  }
+  return out;
+}
+
 // One requirement ROW (owner redesign round 2, 2026-08-29): sample crop on
 // the left (recognition anchor — stays visible even after adding), name +
 // in-game locator in the middle, action cluster on the right (+ Add chip ->
