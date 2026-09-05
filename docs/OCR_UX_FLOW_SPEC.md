@@ -226,3 +226,37 @@ line "Each report shows both sides."
 - QA gate round 5: CRYSTAL CLEAR on the owner's /loop bar (options above
   the fold both widths, coverage understood without tapping, Both
   unambiguous). Ledger: shell/EVAL_UX_JOURNEY.md round 5.
+
+## Amendment 2026-09-06 — two cards, one screen (SUPERSEDES the type tabs + "Whose battle report?" pills)
+
+Owner walkthrough #3 ("too many clicks"; the + Add chip was decorative;
+the Troops preview must be his own capture) + a designer sub-agent spec:
+
+- **Two cards always**: "Upload screenshots of your battle report" and
+  "... the enemy's battle report", each with its OWN type radiogroup
+  (Battle Report / Scout Report / City Stats — the title's noun adapts;
+  mixed types allowed; shots of other types stay parked per side).
+- **L/R column pill** on battle cards: "Your stats are in the [L][R]
+  column" / "Enemy's stats are in the [L][R] column" — L left, R right,
+  faction-filled (ice you / ember enemy); defaults you L, enemy R; a
+  half-wash on the battle-row samples shows the column read. Seam:
+  controller.postSideFor(side, col) -> the posted side hint (service.py
+  keys stats_you/stats_enemy off it): you+L->you, you+R->enemy,
+  enemy+R->you, enemy+L->enemy. Results stay keyed by the card side.
+- **"Use your report for the enemy too"** (enemy card, battle+battle
+  only, default UNCHECKED): on -> enemy rows hidden (shots parked), count
+  hidden, pill LOCKED to the mirror of your column (derived), Scan total =
+  your card's 3; the enemy's stats come from the other column of your
+  report (deriveViews coverage). Inert-but-remembered when either card
+  leaves battle type.
+- **Missing line** in the sticky footer ("Missing: your Buffs, enemy's
+  scout report"; a card's noun when nothing is done), shown once anything
+  is touched or the locked (aria-disabled) Scan is tapped; tap -> scroll +
+  pulse the first missing row.
+- **Rows**: "+ Add" is the ONLY picker trigger (real button); the words
+  are inert; thumbnails open the preview sheet; Troops row shows the
+  owner's Troop Power Comparison capture (drawn mini-panel = fallback).
+- **QA enabler**: DEV-ONLY mount /shell/ocr/dev-fixtures/ (Settings.ENV
+  == 'dev', fail-closed, test-pinned) serves the golden fixture reports so
+  an in-browser QA drive proves L/R with REAL reads against
+  golden_vectors.json battle_left/battle_right.

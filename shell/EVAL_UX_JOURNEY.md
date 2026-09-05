@@ -1530,3 +1530,20 @@ battle-wide attestation ("no buffs on either side", owner-defined
 would spend words on a rare path. QAC-018 NIT FIXED post-verdict
 (radiogroup pills; "Your report: X" aria prefixes under Both). QAC-019 NIT
 accepted (mobile buffs hint 5 lines, untruncated). Loop CLOSED 2026-08-30.
+
+
+---
+
+# Round 6 — two cards, L/R columns, same-report box (2026-09-06)
+
+Owner walkthrough #3: "+ Add" was decorative while the words opened the
+picker (fixed: + Add is the only trigger, thumbnails preview); Troops
+preview = his own Troop Power capture (recovered from the session
+attachment); the scope pills were "too many clicks" -> designer sub-agent
+spec: two cards always, per-card type selector, L/R pill (you L / enemy R
+defaults), enemy "Use your report for the enemy too" checkbox (default
+unchecked), footer missing line. Commits 85024a6, 4082166, 7538233,
+4f8ee79, 587a155. L/R proven at the seam (postSideFor tests) and the
+server (curl read of C_battle_3: left 2269.7/2151.7, right 543.3/509.1,
+side=you -> stats_you = left). QA round (fresh agent): real-read L/R
+matrix A-E + cold comprehension Q19-Q24 — verdict pending.
