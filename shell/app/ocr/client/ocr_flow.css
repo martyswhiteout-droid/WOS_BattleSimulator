@@ -1138,3 +1138,18 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   .ocrf-req-cards--two{grid-template-columns:1fr 1fr}
   .ocrf-req-cards:not(.ocrf-req-cards--two) .ocrf-req-cluster{flex-direction:row;align-items:center}
 }
+
+/* --- Round: + Add is the trigger (owner 2026-09-06) ------------------------
+   The row's words are inert (plain div); + Add is a real button; each
+   thumbnail carries an invisible full-size open button (preview sheet)
+   under its tick and x. */
+.ocrf-req-main{cursor:default}
+.ocrf-req-add{pointer-events:auto;cursor:pointer;background:var(--ocrf-well);
+  font-family:inherit;color:var(--ocrf-ink-label)}
+.ocrf-req-add:hover{border-color:var(--ocrf-tile-focus);color:var(--ocrf-ink);
+  background:rgba(46,161,242,.10)}
+.ocrf-req-add:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-req-thumb-open{position:absolute;inset:0;border:0;background:transparent;
+  border-radius:8px;cursor:pointer;padding:0}
+.ocrf-req-thumb-open:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-req-thumb-x,.ocrf-req-tick{z-index:1}

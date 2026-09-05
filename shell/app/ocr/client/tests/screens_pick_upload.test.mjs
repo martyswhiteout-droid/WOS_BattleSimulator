@@ -146,11 +146,11 @@ test('every row carries the owner-dictated upload instruction (<=10 words)', () 
   }
 });
 
-test('UXG-003: a slot with no sample capture yet (Power) renders NO img element — no 404 per open', () => {
+test("Troops row shows the owner's real Troop Power capture (2026-09-06) with the drawn stand-in declared as fallback", () => {
   const html = battleHtml();
-  const powerRow = html.split('data-slot-tile="you:power"')[1];
-  assert.doesNotMatch(powerRow, /ocrf-req-sample/);
-  assert.doesNotMatch(html, /sample_troop_power/);
+  const powerRow = html.split('data-slot-tile="you:power"')[1].split('data-slot-tile')[0];
+  assert.match(powerRow, /ocrf-req-sample" src="\/shell\/ocr\/client\/samples\/sample_troop_power\.jpg"/);
+  assert.match(powerRow, /data-drawn="troops"/);
 });
 
 test('renderUpload: tabs carry the FULL type names (owner 2026-08-30) with the active one pressed; intro line present', () => {
@@ -162,11 +162,14 @@ test('renderUpload: tabs carry the FULL type names (owner 2026-08-30) with the a
   assert.match(html, /class="ocrf-upload-intro">Choose the type of screenshot to upload</);
 });
 
-test('renderUpload: the * cue is RETIRED (owner: "What does * mean?"); only optional is marked; + Add on every empty row', () => {
+test('renderUpload: the * cue is RETIRED (owner: "What does * mean?"); only optional is marked; + Add is a real BUTTON on every empty row', () => {
   const html = battleHtml();
   assert.doesNotMatch(html, /ocrf-req-star/);
   assert.match(html, /Troops <span class="ocrf-req-opt">optional</);
-  assert.equal((html.match(/ocrf-req-add/g) || []).length, 4);
+  assert.equal((html.match(/<button type="button" class="ocrf-req-add" data-slot="you:/g) || []).length, 4);
+  // the row words are inert: no button wraps the sample/text any more
+  assert.doesNotMatch(html, /<button[^>]*class="ocrf-req-main"/);
+  assert.match(html, /<div class="ocrf-req-main">/);
 });
 
 test('battle scope (owner 2026-08-30 #2): segmented Whose battle report? sits above the rows, Mine active by default', () => {
@@ -240,7 +243,11 @@ test('renderUpload: an added row keeps its sample and gives each thumb its OWN r
   });
   model.groups[0].slots.find((s) => s.key === 'buffs').thumbUrls = ['blob:one', 'blob:two'];
   const html = renderUpload({ type: 'battle', model });
-  assert.match(html, /data-slot="you:heroes" data-slot-state="added"/);
+  // owner 2026-09-06: + Add is the trigger; a FULL row (heroes max 1) has
+  // no add button, its thumbnail opens the preview instead
+  const heroRow = html.split('data-slot-tile="you:heroes"')[1].split('data-slot-tile')[0];
+  assert.doesNotMatch(heroRow, /data-slot="you:heroes"/);
+  assert.match(heroRow, /data-slot-preview="you:heroes"/);
   assert.match(html, /data-slot-remove="you:heroes:0"/);
   const buffsRow = html.split('data-slot-tile="you:buffs"')[1].split('data-slot-tile')[0];
   assert.equal((buffsRow.match(/class="ocrf-req-thumb"/g) || []).length, 2);

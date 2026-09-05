@@ -546,6 +546,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.mount("/shell/ocr/client", _NoCacheStatic(directory=str(_ocr_client_dir)),
               name="ocr_client_assets")
 
+    # DEV ONLY: the real fixture battle reports (shell/tests/fixtures/
+    # panel_ocr/images) served read-only so an in-browser QA drive can run
+    # REAL reads and check column mapping against golden_vectors.json (the
+    # L/R toggle verification the owner mandated 2026-09-06). Gated on the
+    # Settings object's ENV exactly like the panel mock (_mock_enabled): any
+    # non-dev ENV — blank, staging, prod — leaves the route unmounted, so a
+    # promoted bundle can never expose fixture screenshots (game IP).
+    _fixtures_dir = _REPO_ROOT / "shell" / "tests" / "fixtures" / "panel_ocr" / "images"
+    _env = getattr(settings, "ENV", "") or ""
+    if _env.strip().lower() == "dev" and _fixtures_dir.is_dir():
+        app.mount("/shell/ocr/dev-fixtures", _StaticFiles(directory=str(_fixtures_dir)),
+                  name="ocr_dev_fixtures")
+
     # shell/assets_prod/ — the original SVG emblem pack (class/generation/
     # rarity/role badges), mounted at /shell/assets/ (M3, EVAL_ROUND_1.md
     # F18 / EVAL_ROUND_2.md M3). A promoted bundle strips ALL raster art from

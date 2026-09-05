@@ -27,5 +27,7 @@ JPEG quality 84, optimize=True; target = "Stat Bonuses" title + ~3 rows
 Owner feedback 2026-08-25: scout + citystats samples are LONG-FORM (the
 full panel, not a 3-row teaser); the heroes sample is the report's Hero
 Comparison + Expert Comparison sections ('Heroes + Experts' row).
-sample_troop_power.jpg is PENDING an owner capture of the Troop Power
-screen - until it lands the row shows its alt text (img-error fallback).
+sample_troop_power.jpg = the owner's own capture of the Troop Power
+Comparison screen (2026-09-06; 527x389, whole screen, JPEG q86, ~41KB) -
+served as the Troops row sample; the drawn mini-panel is its img-error
+fallback for promoted bundles.

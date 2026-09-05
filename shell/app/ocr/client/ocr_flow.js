@@ -477,16 +477,16 @@ function renderScreen() {
     wireUpload(root(), {
       onTab: (t) => { controller.flow.pickKind(t); render(); },
       onSlot: (side, key) => {
-        // A row tap always moves toward adding: attested rows open the
-        // picker too (a real upload overrides None via addFilesToSlot);
-        // full rows open the preview sheet. Un-attesting is the None
-        // chip's own job (aria-pressed toggle).
+        // "+ Add" is the ONLY picker trigger (owner 2026-09-06); it renders
+        // only while the row has room, so this never has to arbitrate a
+        // full row. Un-attesting is the None chip's own job.
         const slot = slotDef(type, side, key);
         if (!slot) return;
         const count = app.shots[side].filter((x) => x.slot === key).length;
-        if (count >= slot.max) { openSlotPreview(side, key); return; }
+        if (count >= slot.max) return;
         openPicker(side, key, slot.max - count);
       },
+      onSlotPreview: (side, key) => { openSlotPreview(side, key); },
       onSlotRemove: (side, key, idx) => {
         if (idx === null || idx === undefined) { dropSlot(side, key); render(); return; }
         // QAC-001: the x on ONE thumb removes only that shot.
@@ -1124,6 +1124,15 @@ function boot() {
     // tile can't host the hand-drawn mini-panels; renderSampleFallback stays
     // for any legacy .ocrf-sample container below).
     if (img.classList.contains('ocrf-slot-sample')) { img.remove(); return; }
+    // Requirement rows: a broken sample degrades to the row's declared drawn
+    // stand-in (Troops -> mini-panel) or simply disappears — never a broken
+    // image icon next to the instruction.
+    if (img.classList.contains('ocrf-req-sample')) {
+      const fig = img.closest('.ocrf-req-fig');
+      const drawn = fig && fig.getAttribute('data-drawn');
+      if (fig && drawn) fig.innerHTML = renderSampleFallback(drawn); else img.remove();
+      return;
+    }
     const sample = img.closest('.ocrf-sample');
     const type = sample?.getAttribute('data-sample');
     if (sample && type) { sample.outerHTML = renderSampleFallback(type); return; }

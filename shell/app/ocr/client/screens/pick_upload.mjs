@@ -35,11 +35,10 @@ export const SLOTS = {
     // ("the bracket is showing" — it read as broken markup).
     { key: 'buffs', label: 'Buffs', required: true, max: 2, img: 'sample_battle_popup.jpg', noneable: true,
       hint: 'Upload the screenshot showing all buffs (special bonuses)' },
-    // img null (UXG-003): the Troop Power sample capture is still owed by the
-    // owner — the drawn mini-panel stands in until the real capture ships.
-    // Hint is SIDE-NEUTRAL (owner dictation #2): the scope control above the
-    // rows owns "whose", so battle hints never say your/enemy's.
-    { key: 'power', label: 'Troops', required: false, max: 1, img: null, drawn: 'troops',
+    // Owner capture 2026-09-06: the real Troop Power Comparison screen; the
+    // drawn mini-panel stays as the img-error fallback (promoted bundles
+    // strip game art). Hint is SIDE-NEUTRAL: the card owns "whose".
+    { key: 'power', label: 'Troops', required: false, max: 1, img: 'sample_troop_power.jpg', drawn: 'troops',
       hint: 'Upload the screenshot showing troop quality, ratio, FC tier' },
   ],
   scout: [
@@ -132,35 +131,43 @@ function requirementRow(side, s, ariaPrefix = '') {
   // the other. QAC-004: + Add stays visible until the row hits its cap.
   // Chip count derives from s.count (never thumbUrls length): a shot whose
   // object-URL failed still gets its chip, tick, and its own remove x.
+  // Owner 2026-09-06: "+ Add" IS the trigger (it used to be decorative
+  // while the row's words opened the picker — "not intuitive"). The words
+  // are inert now; each thumbnail is a button that opens its preview sheet
+  // (Replace / Remove). The + Add button stays while the row has room,
+  // including the attested "None" state (a real upload overrides None).
   const urls = s.thumbUrls || [];
   const thumbs = Array.from({ length: s.count }, (_, i) => (
     `<span class="ocrf-req-thumb"${urls[i] ? ` style="background-image:url('${urls[i]}')"` : ''}>`
+    + `<button type="button" class="ocrf-req-thumb-open" data-slot-preview="${side}:${s.key}" aria-label="View screenshot ${i + 1}"></button>`
     + '<span class="ocrf-req-tick" aria-hidden="true">&#10003;</span>'
     + `<button type="button" class="ocrf-req-thumb-x" data-slot-remove="${side}:${s.key}:${i}" aria-label="Remove">&times;</button></span>`
   )).join('');
+  const addBtn = s.count < s.max
+    ? `<button type="button" class="ocrf-req-add" data-slot="${side}:${s.key}" data-slot-state="${s.state}" aria-label="Add ${s.label}">+ Add</button>`
+    : '';
   let cluster;
   if (s.state === 'added') {
-    const more = s.count < s.max ? '<span class="ocrf-req-add" aria-hidden="true">+ Add</span>' : '';
-    cluster = `${thumbs}${more}`;
+    cluster = `${thumbs}${addBtn}`;
   } else if (s.state === 'none') {
-    cluster = `<button type="button" class="ocrf-req-none ocrf-req-none--on" data-slot-none="${side}:${s.key}" aria-pressed="true">None <span aria-hidden="true">&#10003;</span></button>`;
+    cluster = `<button type="button" class="ocrf-req-none ocrf-req-none--on" data-slot-none="${side}:${s.key}" aria-pressed="true">None <span aria-hidden="true">&#10003;</span></button>${addBtn}`;
   } else {
     const noneChip = s.noneable
       ? `<button type="button" class="ocrf-req-none" data-slot-none="${side}:${s.key}" aria-pressed="false">None</button>`
       : '';
-    cluster = `${noneChip}<span class="ocrf-req-add" aria-hidden="true">+ Add</span>`;
+    cluster = `${noneChip}${addBtn}`;
   }
   const stateLabel = s.state === 'added' ? `${s.count} added` : s.state === 'none' ? 'none' : (s.required ? 'required' : 'optional');
   return `
-<div class="ocrf-req ocrf-req--${s.state}" data-slot-tile="${side}:${s.key}">
-  <button type="button" class="ocrf-req-main" data-slot="${side}:${s.key}" data-slot-state="${s.state}"
-    aria-label="${ariaPrefix}${s.label}, ${stateLabel}">
-    <span class="ocrf-req-fig">${sample}</span>
+<div class="ocrf-req ocrf-req--${s.state}" data-slot-tile="${side}:${s.key}" role="group"
+  aria-label="${ariaPrefix}${s.label}, ${stateLabel}">
+  <div class="ocrf-req-main">
+    <span class="ocrf-req-fig"${s.drawn ? ` data-drawn="${s.drawn}"` : ''}>${sample}</span>
     <span class="ocrf-req-text">
       <span class="ocrf-req-name">${s.label}${cue}</span>
       <span class="ocrf-req-hint" data-hint="${s.hint}" aria-live="polite">${s.hint}</span>
     </span>
-  </button>
+  </div>
   <span class="ocrf-req-cluster">${cluster}</span>
 </div>`;
 }
@@ -216,7 +223,14 @@ export function renderUpload({ type, model, notice = null }) {
 </section>`.trim();
 }
 
-export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan, onScope }) {
+export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan, onScope, onSlotPreview }) {
+  root.querySelectorAll('[data-slot-preview]').forEach((b) => {
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const [side, key] = b.dataset.slotPreview.split(':');
+      if (onSlotPreview) onSlotPreview(side, key);
+    });
+  });
   root.querySelectorAll('[data-type-tab]').forEach((b) => {
     b.addEventListener('click', () => onTab(b.dataset.typeTab));
   });
