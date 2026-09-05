@@ -1572,3 +1572,15 @@ and the thumbnail + tick already carry the added state; QAC-023 casing
 ("your City Stats" vs "your battle report") DECLINED — City Stats is the
 in-game screen's proper name; QAC-025 ‹ Back on S1 DECLINED again (shared
 wizard header, both exits non-destructive; QAC-006 precedent).
+
+Re-verification (fresh agent, commit 3835e66): **ALL FIXED** — QAC-020
+enemy pill bottom 713 / checkbox 675 vs fold 718 at 375 (default R visible
+on first open, nothing clipped, no h-scroll); QAC-021 caption is real DOM
+text ("set by your report", 11px, mute ink), segments aria-disabled, mirror
+follows your flip, untick restores the enemy's own choice; QAC-024 None
+round-trips in both directions leave the hidden enemy report untouched
+(Scan 1/6 <-> 1/3; stronger variant 4/6 <-> 2/3). Regression clean (parking
+across tick/untick and close/reopen; Escape/back/x; totals truthful).
+Cosmetic observation only: the emulator's 11px classic scrollbar on first
+render squeezes the buffs hint to 4 lines until any re-render. Round 6
+CLOSED 2026-09-06.

@@ -260,3 +260,8 @@ the Troops preview must be his own capture) + a designer sub-agent spec:
   == 'dev', fail-closed, test-pinned) serves the golden fixture reports so
   an in-browser QA drive proves L/R with REAL reads against
   golden_vectors.json battle_left/battle_right.
+- QA (2026-09-06): L/R PROVEN 5/5 with real reads through the live screen;
+  comprehension CRYSTAL CLEAR both widths; QAC-020/021/024 fixed and
+  re-verified (locked pill carries the visible caption "set by your report";
+  the enemy's stored None flag is never written while its rows are hidden).
+  Ledger: shell/EVAL_UX_JOURNEY.md round 6.
