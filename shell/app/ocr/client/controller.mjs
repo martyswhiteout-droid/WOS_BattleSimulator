@@ -70,6 +70,21 @@ export function deriveViews(types, results) {
   return views;
 }
 
+// L/R column selection (owner 2026-09-06): each battle card says which
+// COLUMN of its report holds that side's stats. The posted `side` hint is
+// what tells the server which column becomes stats_you (service.py:
+// side="you" -> stats_you = left; side="enemy" -> stats_you = right), so a
+// card reading the "other" column simply posts the other hint:
+//   you  + L -> 'you'    you  + R -> 'enemy'
+//   enemy+ R -> 'you'    enemy+ L -> 'enemy'
+// Defaults: your report L, the enemy's R (a report as YOU see it). Results
+// stay keyed by the CARD side; only the hint flips. Pure; exported for tests.
+export function postSideFor(side, col) {
+  const column = col || (side === 'you' ? 'L' : 'R');
+  const wantsLeft = column === 'L';
+  return (side === 'you') === wantsLeft ? 'you' : 'enemy';
+}
+
 export function createController({ genTable = {}, postPanel, fetchMe, storage } = {}) {
   const flow = createFlow({ genTable });
 
@@ -91,10 +106,10 @@ export function createController({ genTable = {}, postPanel, fetchMe, storage } 
   // .body (asserted by controller.test.mjs, not by this module) so mapError
   // can read them. A leftover gap is left for the user to type, honestly,
   // never silently retried forever.
-  async function readSide({ side, panelType, shotBytesList }) {
+  async function readSide({ side, panelType, shotBytesList, hint = side }) {
     if (!postPanel) return { error: true, mapped: mapError(0, null) };
     try {
-      return await postPanel({ shotBytesList, side, panelType });
+      return await postPanel({ shotBytesList, side: hint, panelType });
     } catch (err) {
       return { error: true, mapped: mapError(err.status ?? 0, err.body ?? null) };
     }
@@ -121,13 +136,17 @@ export function createController({ genTable = {}, postPanel, fetchMe, storage } 
     return (attested && observed === 'none') ? 'read' : observed;
   }
 
-  async function readAll(shotBytesBySide, userId = null, { noBuffsAttested = false } = {}) {
+  async function readAll(shotBytesBySide, userId = null, { noBuffsAttested = false, columns = {} } = {}) {
     const types = flow.types();
     const results = {};
     for (const side of SIDES) {
       const bytesList = shotBytesBySide[side];
       if (!bytesList || !bytesList.length) continue;
-      results[side] = await readSide({ side, panelType: types[side], shotBytesList: bytesList });
+      // Battle panels carry two columns: the card's L/R choice flips the
+      // posted hint (postSideFor). Single-column panels always post the
+      // card side.
+      const hint = types[side] === 'battle' ? postSideFor(side, columns[side]) : side;
+      results[side] = await readSide({ side, panelType: types[side], shotBytesList: bytesList, hint });
     }
     const views = deriveViews(types, results);
     const conversion = {};

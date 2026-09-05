@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createController, deriveViews } from '../controller.mjs';
+import { createController, deriveViews, postSideFor } from '../controller.mjs';
 import { classifyFields, ALL_FIELD_KEYS } from '../fill_mapper.mjs';
 
 const GOLD = JSON.parse(readFileSync(
@@ -281,4 +281,57 @@ test('readAll attestation never overrides a partial read (the screen contradicts
   const out = await c.readAll({ you: [new Uint8Array([1])] }, null, { noBuffsAttested: true });
   assert.equal(out.conversion.you.outcome, 'needs_specials');
   assert.equal(out.attested.you, false);
+});
+
+
+// --- L/R column selection (owner 2026-09-06) ---------------------------------
+
+test('postSideFor: the L/R column choice flips the posted side hint; defaults are your-L / enemy-R', () => {
+  assert.equal(postSideFor('you', 'L'), 'you');
+  assert.equal(postSideFor('you', 'R'), 'enemy');
+  assert.equal(postSideFor('enemy', 'R'), 'you');
+  assert.equal(postSideFor('enemy', 'L'), 'enemy');
+  assert.equal(postSideFor('you'), 'you');       // default L
+  assert.equal(postSideFor('enemy'), 'you');     // default R (a report as YOU see it)
+});
+
+test('readAll posts the column-derived hint per battle card while results stay keyed by the card side', async () => {
+  const stats = {};
+  for (const cls of ['Infantry', 'Lancer', 'Marksman']) {
+    for (const st of ['Attack', 'Defense', 'Lethality', 'Health']) stats[`${cls}|${st}`] = 1000.0;
+  }
+  const conf = Object.fromEntries(Object.keys(stats).map((k) => [k, 0.99]));
+  const posted = [];
+  const postPanel = async ({ side, panelType }) => {
+    posted.push([side, panelType]);
+    return {
+      status: 'ok', panel_type: 'battle', requested_side: side,
+      stats_left: stats, stats_left_conf: conf, stats_right: stats, stats_right_conf: conf,
+      stats_you: stats, stats_you_conf: conf, stats_enemy: stats, stats_enemy_conf: conf,
+      specials: [], specials_you: [], specials_enemy: [],
+      specials_observed: 'read', unreadable_fields: [], warnings: [], field_engine: {}, engines_used: ['rapidocr'],
+    };
+  };
+  const c = createController({ postPanel });
+  c.flow.pickKind('battle');
+  const out = await c.readAll(
+    { you: [new Uint8Array([1])], enemy: [new Uint8Array([2])] },
+    null, { columns: { you: 'R', enemy: 'L' } });
+  // your card reading R posts 'enemy'; the enemy card reading L posts 'enemy'
+  assert.deepEqual(posted, [['enemy', 'battle'], ['enemy', 'battle']]);
+  assert.ok(out.results.you && out.results.enemy);   // keyed by CARD side
+  assert.ok(out.views.you && out.views.enemy);
+});
+
+test('readAll defaults: both cards post side=you (your-L, enemy-R) and scout panels never flip', async () => {
+  const posted = [];
+  const postPanel = async ({ side, panelType }) => { posted.push([side, panelType]); return { status: 'ok', panel_type: panelType, requested_side: side, stats: {}, field_conf: {}, specials: [], specials_observed: 'read', unreadable_fields: [], warnings: [], field_engine: {}, engines_used: ['rapidocr'] }; };
+  const c = createController({ postPanel });
+  c.flow.pickKind('battle');
+  await c.readAll({ you: [new Uint8Array([1])], enemy: [new Uint8Array([2])] });
+  assert.deepEqual(posted, [['you', 'battle'], ['you', 'battle']]);
+  posted.length = 0;
+  c.flow.pickKind('scout');
+  await c.readAll({ you: [new Uint8Array([1])], enemy: [new Uint8Array([2])] }, null, { columns: { you: 'R', enemy: 'L' } });
+  assert.deepEqual(posted, [['you', 'scout'], ['enemy', 'scout']]);
 });
