@@ -1209,3 +1209,15 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
 @media (max-width:767px){
   .ocrf-req-cards--two .ocrf-req-card + .ocrf-req-card{margin-top:12px}
 }
+
+/* --- Round: narrow-screen density for the two-card screen (2026-09-06) ------
+   At 375 the enemy card's controls fell just below the fold because your
+   card's rows (5-line buffs hint at 95px) ran long. Tighter fig + hint on
+   narrow screens pulls ~40px back; nothing is hidden or clipped. */
+@media (max-width:430px){
+  .ocrf-req-fig{flex-basis:56px;height:40px}
+  .ocrf-req-hint{font-size:11px;line-height:1.3}
+  .ocrf-req-main{padding:7px 0;gap:8px}
+  .ocrf-card-types{margin:6px 0 4px}
+  .ocrf-col{margin:4px 0 6px}
+}
