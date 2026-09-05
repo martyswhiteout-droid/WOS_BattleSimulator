@@ -1545,5 +1545,30 @@ defaults), enemy "Use your report for the enemy too" checkbox (default
 unchecked), footer missing line. Commits 85024a6, 4082166, 7538233,
 4f8ee79, 587a155. L/R proven at the seam (postSideFor tests) and the
 server (curl read of C_battle_3: left 2269.7/2151.7, right 543.3/509.1,
-side=you -> stats_you = left). QA round (fresh agent): real-read L/R
-matrix A-E + cold comprehension Q19-Q24 — verdict pending.
+side=you -> stats_you = left). QA round (fresh agent a99899e94a450cf77): **L/R PROVEN 5/5** with REAL
+RapidOCR reads of C_battle_3.png through the live screen — every S4 cell
+digit-exact to golden (left 2269.7/2151.7/2189.6, right 543.3/509.1/553.1):
+A you-L box-on -> you=left, enemy=right (1 POST side=you); B you-R box-on
+-> mirror (side=enemy); C box-off defaults -> you=left/enemy=right (posts
+you,you); D both L -> both left (you,enemy); E both R -> both right
+(enemy,you). Defaults aria-checked on open with zero interaction; pills
+independent when unticked; ticked = enemy locked to the mirror; untick
+restores the enemy's own choice. **Comprehension CRYSTAL CLEAR** both
+widths (Q19 unmistakable cards/types; Q20 pill sentence + wash clear; Q21
+box predictable, effect obvious; Q22 missing line exact; Q24 375 fold:
+your card + enemy title/tabs above, enemy pill 18px under). Pane note: the
+hidden pane did not deliver real `computer` clicks (document.hidden) —
+driven with full pointer sequences instead; recommends one manual phone
+tap pass.
+
+Defects: QAC-020 MINOR mobile fold (enemy pill 736-766 vs fold 718) —
+FIXED (narrow-screen density); QAC-021 MINOR locked-pill meaning hover-
+only — FIXED (visible caption "set by your report"); QAC-024 LOW None
+leak: your None under the ticked box wrote the enemy's flag, surviving
+untick — FIXED (the enemy's stored flag is never written while hidden;
+the read guard derives it); QAC-022 (drop the "Upload the screenshot
+showing" stem / swap hint after add) DECLINED — owner-dictated wording,
+and the thumbnail + tick already carry the added state; QAC-023 casing
+("your City Stats" vs "your battle report") DECLINED — City Stats is the
+in-game screen's proper name; QAC-025 ‹ Back on S1 DECLINED again (shared
+wizard header, both exits non-destructive; QAC-006 precedent).

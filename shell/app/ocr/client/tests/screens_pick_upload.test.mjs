@@ -200,6 +200,8 @@ test('renderUpload: box on -> enemy rows gone, count gone, pill locked to the mi
   assert.doesNotMatch(enemy, /ocrf-req-card-count/);
   assert.match(enemy, /ocrf-col--locked/);
   assert.match(enemy, /data-col="enemy:L" aria-checked="true"[^>]*aria-disabled="true"/);
+  assert.match(enemy, /<span class="ocrf-col-note">set by your report<\/span>/);   // QAC-021: visible, not hover-only
+  assert.doesNotMatch(card(html, 'you'), /ocrf-col-note/);
   assert.match(html, /class="ocrf-scan-count">0\/3</);
 });
 

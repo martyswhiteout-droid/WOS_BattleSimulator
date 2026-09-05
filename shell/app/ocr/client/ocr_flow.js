@@ -517,11 +517,13 @@ function renderScreen() {
         render();
       },
       onSlotNone: (side) => {
-        // QAC-011: per-side toggle; with the same-report box on, your one
-        // visible chip speaks for both sides of that one report.
-        const next = !app.noBuffs[side];
-        if (sameActive()) app.noBuffs = { you: next, enemy: next };
-        else app.noBuffs = { ...app.noBuffs, [side]: next };
+        // QAC-011: per-side toggle. With the same-report box on, your one
+        // visible chip speaks for both sides of that one report — but ONLY
+        // at read time (effective flags in the s3 branch). The enemy's own
+        // stored flag is never written while its rows are hidden, so
+        // unticking the box restores exactly the enemy's own state
+        // (QAC-024: no attestation leaks onto a report never attested).
+        app.noBuffs = { ...app.noBuffs, [side]: !app.noBuffs[side] };
         render();
       },
       onScan: (locked) => {
@@ -775,10 +777,10 @@ async function addFilesToSlot(side, slot, fileList) {
     app.shots[side].push({ id, bytes, url, slot });
   }
   if (def.noneable) {
-    // A real upload beats the attestation — for THIS side (both in the
-    // one-report scopes, where one buffs upload covers both columns).
-    if (sameActive()) app.noBuffs = { you: false, enemy: false };
-    else app.noBuffs = { ...app.noBuffs, [side]: false };
+    // A real upload beats the attestation — for THIS side only. (Under the
+    // same-report box the enemy's effective flag mirrors yours at read
+    // time; its own stored flag stays untouched — QAC-024.)
+    app.noBuffs = { ...app.noBuffs, [side]: false };
   }
   app.lastSlot = `${side}:${slot}`;
   // The recovery/re-entry notice has served its purpose once a screenshot

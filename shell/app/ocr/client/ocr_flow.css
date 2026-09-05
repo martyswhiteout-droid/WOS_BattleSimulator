@@ -1221,3 +1221,17 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   .ocrf-card-types{margin:6px 0 4px}
   .ocrf-col{margin:4px 0 6px}
 }
+
+/* --- Round: QA round-6 fixes (QAC-020 fold, QAC-021 caption) ---------------
+   375: the enemy's default pill (R) sat 18px under the sticky footer on
+   first open — tighter rows/tabs on narrow screens clear it. The locked
+   pill carries a visible caption. */
+@media (max-width:430px){
+  .ocrf-req-fig{flex-basis:52px;height:36px}
+  .ocrf-req-main{padding:5px 0;gap:7px}
+  .ocrf-req-hint{font-size:10.5px}
+  .ocrf-card-types .ocrf-type-tab{min-height:34px;padding:4px 2px}
+  .ocrf-req-same{min-height:42px;margin:6px 0;padding:8px 10px}
+  .ocrf-req-card .ocrf-req-card-head{padding:6px 4px 4px}
+}
+.ocrf-col-note{font-size:11px;color:var(--ocrf-ink-mute);font-style:italic}

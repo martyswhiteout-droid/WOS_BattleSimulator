@@ -205,8 +205,11 @@ function columnPill(card) {
       data-col="${card.side}:${col}" aria-checked="${col === card.column}"
       aria-label="${col === 'L' ? 'Left' : 'Right'} column"${card.colLocked ? ' aria-disabled="true" title="Set by your report"' : ''}>${col}</button>`
   );
+  // QAC-021: a locked pill says WHY in visible words (a hover title never
+  // reaches touch users).
+  const note = card.colLocked ? ' <span class="ocrf-col-note">set by your report</span>' : '';
   return `<div class="ocrf-col ocrf-col--${card.side}${card.colLocked ? ' ocrf-col--locked' : ''}" role="radiogroup"
-    aria-label="${who} stats column">${who} stats are in the <span class="ocrf-col-pill">${seg('L')}${seg('R')}</span> column</div>`;
+    aria-label="${who} stats column">${who} stats are in the <span class="ocrf-col-pill">${seg('L')}${seg('R')}</span> column${note}</div>`;
 }
 
 function cardHtml(card) {
