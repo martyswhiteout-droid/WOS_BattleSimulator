@@ -377,8 +377,10 @@ test('UXJ-009: reentryNotice speaks only when shots carried over (minimal-words 
 
 // Slot-grid redesign (2026-08-29): paste routes to a SLOT — last-touched
 // slot if it still has room, else first empty, else first with room.
+// Two-card model (2026-09-06): these paste tests exercise YOUR card alone,
+// so the enemy card is hidden behind the same-report box.
 function model(type, shots, attested = false) {
-  return uploadModel({ type, shots, attested });
+  return uploadModel({ types: { you: type, enemy: type }, shots, attested, sameReport: true });
 }
 test('pasteTargetSlot: last-touched slot wins while it has room', () => {
   const m = model('battle', { you: [{ slot: 'heroes' }], enemy: [] });
@@ -399,14 +401,12 @@ test('pasteTargetSlot: all slots occupied but one has room -> that one; truly fu
     { slot: 'buffs' }, { slot: 'buffs' }, { slot: 'power' }], enemy: [] });
   assert.equal(pasteTargetSlot(full, null), null);
 });
-test("sendableShots: the read sends ONLY the active type's slots — parked shots from another tab stay home", () => {
+test("sendableShots: the read sends ONLY the card's active-type slots — parked shots of other types stay home; the enemy sends nothing while the same-report box is on", () => {
   const shots = [{ slot: 'heroes', id: 'a' }, { slot: 'scout', id: 'b' }, { slot: 'stats', id: 'c' }];
-  assert.deepEqual(sendableShots('battle', 'you', shots).map((s) => s.id), ['a', 'c']);
-  assert.deepEqual(sendableShots('scout', 'you', shots).map((s) => s.id), ['b']);
-  // scope routing: mine sends nothing for enemy; enemy scope sends nothing
-  // for you; both sends each side's own battle shots
-  assert.deepEqual(sendableShots('battle', 'enemy', shots), []);                    // default mine
-  assert.deepEqual(sendableShots('battle', 'you', shots, 'enemy'), []);
-  assert.deepEqual(sendableShots('battle', 'enemy', shots, 'enemy').map((s) => s.id), ['a', 'c']);
-  assert.deepEqual(sendableShots('battle', 'enemy', shots, 'both').map((s) => s.id), ['a', 'c']);
+  const bb = { you: 'battle', enemy: 'battle' };
+  assert.deepEqual(sendableShots(bb, 'you', shots).map((s) => s.id), ['a', 'c']);
+  assert.deepEqual(sendableShots({ you: 'scout', enemy: 'battle' }, 'you', shots).map((s) => s.id), ['b']);
+  assert.deepEqual(sendableShots(bb, 'enemy', shots).map((s) => s.id), ['a', 'c']);   // its own report
+  assert.deepEqual(sendableShots(bb, 'enemy', shots, true), []);                        // box on: covered by yours
+  assert.deepEqual(sendableShots({ you: 'battle', enemy: 'scout' }, 'enemy', shots, true).map((s) => s.id), ['b']);   // box inert when not both battle
 });

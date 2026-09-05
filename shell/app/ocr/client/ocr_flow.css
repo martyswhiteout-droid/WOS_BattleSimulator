@@ -1153,3 +1153,59 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   border-radius:8px;cursor:pointer;padding:0}
 .ocrf-req-thumb-open:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
 .ocrf-req-thumb-x,.ocrf-req-tick{z-index:1}
+
+/* --- Round: two cards, one screen (owner 2026-09-06, designer spec) --------
+   Your card / the enemy's card carry the system's own faction pair (ice =
+   me, ember = enemy): a 3px inset rule on the card edge, faction-filled L/R
+   pill segments, and a half-wash on battle-row samples showing which
+   COLUMN gets read. Type selector reuses .ocrf-type-tab inside the card.
+   Missing line + aria-disabled Scan live in the sticky footer. */
+
+.ocrf-req-card--you{box-shadow:inset 3px 0 0 rgba(46,161,242,.55)}
+.ocrf-req-card--enemy{box-shadow:inset 3px 0 0 rgba(239,95,95,.55)}
+.ocrf-req-card-title{font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;
+  font-size:13.5px;line-height:1.25;color:var(--ocrf-ink)}
+.ocrf-req-card .ocrf-req-card-head{align-items:flex-start;gap:10px}
+.ocrf-card-types{margin:8px 0 6px}
+.ocrf-card-types .ocrf-type-tab{min-height:38px;font-size:11.5px;padding:6px 2px}
+
+.ocrf-col{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:6px 0 8px;
+  font-size:12.5px;color:var(--ocrf-ink-label)}
+.ocrf-col-pill{display:inline-flex;gap:0;border-radius:8px;overflow:hidden;
+  border:1px solid rgba(185,210,229,.28)}
+.ocrf-col-seg{width:34px;height:30px;border:0;padding:0;cursor:pointer;
+  font-family:'Chakra Petch',system-ui,sans-serif;font-weight:700;font-size:13px;
+  color:var(--ocrf-ink-label);background:var(--ocrf-well)}
+.ocrf-col-seg + .ocrf-col-seg{border-left:1px solid rgba(185,210,229,.28)}
+.ocrf-col--you .ocrf-col-seg--on{color:#0B273D;
+  background:linear-gradient(180deg,#55BFFF,#2EA1F2);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+.ocrf-col--enemy .ocrf-col-seg--on{color:#0B273D;
+  background:linear-gradient(180deg,#FF8181,#EF5F5F);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+.ocrf-col-seg:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:-2px}
+.ocrf-col--locked{opacity:.5}
+.ocrf-col--locked .ocrf-col-seg{cursor:not-allowed}
+
+/* Column wash: the selected half of a battle-row sample, in the card's hue. */
+.ocrf-req-fig{position:relative}
+.ocrf-req-fig--L::after,.ocrf-req-fig--R::after{content:"";position:absolute;top:0;bottom:0;
+  width:50%;pointer-events:none}
+.ocrf-req-fig--L::after{left:0}
+.ocrf-req-fig--R::after{right:0}
+.ocrf-req-fig--you::after{background:rgba(46,161,242,.28);box-shadow:inset 0 0 0 1.5px #55BFFF}
+.ocrf-req-fig--enemy::after{background:rgba(239,95,95,.28);box-shadow:inset 0 0 0 1.5px #FF8181}
+
+.ocrf-missing{display:block;width:100%;margin:0 0 8px;padding:8px 10px;border:0;
+  border-radius:10px;background:var(--ocrf-well);color:var(--ocrf-gold-b);
+  font:inherit;font-size:12.5px;text-align:left;cursor:pointer;line-height:1.35}
+.ocrf-missing b{font-weight:600}
+.ocrf-missing:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-missing.ocrf-slot-flash{animation:ocrf-full-pulse .55s ease-out}
+.ocrf-btn-primary[aria-disabled="true"]{opacity:.55;cursor:not-allowed;filter:saturate(.6)}
+
+/* Two cards ALWAYS; desktop side-by-side, phone stacked. */
+.ocrf-req-cards--two .ocrf-req-card{padding-top:10px}
+@media (max-width:767px){
+  .ocrf-req-cards--two .ocrf-req-card + .ocrf-req-card{margin-top:12px}
+}

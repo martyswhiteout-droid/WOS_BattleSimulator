@@ -11,7 +11,7 @@
 // screens/pick_upload.mjs's pure model (2026-08-29 slot-grid redesign).
 import { mountEntry, wireEntry, renderUpgradeNote, wireUpgradeNote } from './screens/entry.mjs';
 import {
-  renderUpload, wireUpload, uploadModel, groupsFor, renderE1,
+  renderUpload, wireUpload, uploadModel, cardsFor, SLOTS, DEFAULT_COLUMNS, otherColumn, renderE1,
   renderSampleFallback,
 } from './screens/pick_upload.mjs';
 import { renderS3, driveScan, applyStepClasses, wireS3 } from './screens/reading.mjs';
@@ -69,7 +69,11 @@ let controller = null;
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
   noBuffs: { you: false, enemy: false },   // QAC-011: attestation is PER SIDE, like the file store
   lastSlot: null,   // paste routing (slot key "side:key")
-  battleScope: 'mine',   // owner 2026-08-30 #2: Whose battle report? mine | enemy | both
+  // Owner 2026-09-06 (designer spec): per-side column choice for battle
+  // reports (L = this side's stats are in the LEFT column), the enemy's
+  // "Use your report for the enemy too" box, and whether the missing line
+  // has been requested by a tap on the locked Scan.
+  columns: { ...DEFAULT_COLUMNS }, sameReport: false, showMissing: false,
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array, url, slot}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
@@ -91,7 +95,8 @@ function root() { return document.getElementById('ocrfRoot'); }
 // drag-over) if it still has room, the first empty slot, then the first
 // slot with room. Pure; exported for tests. `model` = uploadModel() output.
 export function pasteTargetSlot(model, lastSlot = null) {
-  const flat = model.groups.flatMap((g) => g.slots.map((s) => ({ ...s, side: g.side, ref: `${g.side}:${s.key}` })));
+  const flat = model.cards.filter((c) => !c.rowsHidden)
+    .flatMap((g) => g.slots.map((s) => ({ ...s, side: g.side, ref: `${g.side}:${s.key}` })));
   const room = (s) => s.state !== 'none' && s.count < s.max;
   const last = flat.find((s) => s.ref === lastSlot && room(s));
   if (last) return last.ref;
@@ -104,10 +109,10 @@ export function pasteTargetSlot(model, lastSlot = null) {
 // Which slot keys the active type accepts for a side — the read sends ONLY
 // these (a shot uploaded under another tab stays parked, never silently
 // included). Pure; exported for tests.
-export function sendableShots(type, side, sideShots, scope = 'mine') {
-  const group = groupsFor(type, { scope }).find((g) => g.side === side);
-  if (!group) return [];
-  const keys = new Set(group.slots.map((s) => s.key));
+export function sendableShots(types, side, sideShots, sameReport = false) {
+  const card = cardsFor({ types, sameReport }).find((c) => c.side === side);
+  if (!card || card.rowsHidden) return [];
+  const keys = new Set(card.slots.map((s) => s.key));
   return sideShots.filter((s) => keys.has(s.slot));
 }
 
@@ -462,31 +467,45 @@ function renderScreen() {
       app.s2Notice = plan.notice ?? app.reentryNotice ?? null;
       app.reentryNotice = null;
     }
-    const type = activeType();
     const model = currentModel();
     // Thumbnails: LOCAL object URLs only (never uploaded, never stored —
     // the no-storage promise is about the server; self-confirmation that
     // the right screenshot landed is the research round's core finding).
-    for (const g of model.groups) {
-      for (const s of g.slots) {
-        const mine = app.shots[g.side].filter((x) => x.slot === s.key);
+    for (const c of model.cards) {
+      for (const s of c.slots) {
+        const mine = app.shots[c.side].filter((x) => x.slot === s.key);
         if (mine.length) s.thumbUrls = mine.map((x) => x.url || null);
       }
     }
-    show(renderUpload({ type, model, notice: app.s2Notice }));
+    if (model.canScan) app.showMissing = false;
+    show(renderUpload({ model, notice: app.s2Notice, showMissing: app.showMissing }));
     wireUpload(root(), {
-      onTab: (t) => { controller.flow.pickKind(t); render(); },
+      // Per-card type: shots for the other types stay parked per side.
+      onType: (side, t) => { controller.flow.setSideType(side, t); render(); },
+      onCol: (side, col, locked) => {
+        if (locked) { flashFull(document.querySelector('[data-same]')); return; }
+        app.columns = { ...app.columns, [side]: col };
+        render();
+      },
+      onSame: () => { app.sameReport = !app.sameReport; render(); },
       onSlot: (side, key) => {
         // "+ Add" is the ONLY picker trigger (owner 2026-09-06); it renders
         // only while the row has room, so this never has to arbitrate a
         // full row. Un-attesting is the None chip's own job.
-        const slot = slotDef(type, side, key);
+        const slot = slotDef(side, key);
         if (!slot) return;
         const count = app.shots[side].filter((x) => x.slot === key).length;
         if (count >= slot.max) return;
         openPicker(side, key, slot.max - count);
       },
       onSlotPreview: (side, key) => { openSlotPreview(side, key); },
+      onMissingJump: () => {
+        const m = currentModel();
+        const first = m.cards.filter((c) => !c.rowsHidden)
+          .flatMap((c) => c.slots.filter((s) => s.required && s.state === 'empty').map((s) => `${c.side}:${s.key}`))[0];
+        const row = first ? document.querySelector(`[data-slot-tile="${first}"]`) : null;
+        if (row) { row.scrollIntoView({ block: 'center' }); flashFull(row); }
+      },
       onSlotRemove: (side, key, idx) => {
         if (idx === null || idx === undefined) { dropSlot(side, key); render(); return; }
         // QAC-001: the x on ONE thumb removes only that shot.
@@ -498,15 +517,23 @@ function renderScreen() {
         render();
       },
       onSlotNone: (side) => {
-        // QAC-011: per-side toggle; one-report scopes share the single
-        // visible chip across both sides of that report.
+        // QAC-011: per-side toggle; with the same-report box on, your one
+        // visible chip speaks for both sides of that one report.
         const next = !app.noBuffs[side];
-        if (oneReportScope()) app.noBuffs = { you: next, enemy: next };
+        if (sameActive()) app.noBuffs = { you: next, enemy: next };
         else app.noBuffs = { ...app.noBuffs, [side]: next };
         render();
       },
-      onScope: (scope) => { app.battleScope = scope; render(); },
-      onScan: () => { if (currentModel().canScan) goto('s3'); },
+      onScan: (locked) => {
+        // Locked Scan is aria-disabled, not disabled: a tap reveals the
+        // missing line (owner: "a prompt that says you're missing something").
+        if (locked || !currentModel().canScan) {
+          app.showMissing = true; render();
+          flashFull(document.querySelector('[data-missing-jump]'));
+          return;
+        }
+        goto('s3');
+      },
     });
     return;
   }
@@ -521,17 +548,16 @@ function renderScreen() {
     activeScanAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const handle = driveScan({
       run: () => controller.readAll(
-        { you: sendableShots(activeType(), 'you', app.shots.you, app.battleScope).map((s) => s.bytes),
-          enemy: sendableShots(activeType(), 'enemy', app.shots.enemy, app.battleScope).map((s) => s.bytes) },
-        null, { noBuffsAttested: oneReportScope()
-          // One-report scopes: ONE report covers both columns, so the
-          // visible chip's flag speaks for both — a stale per-side split
-          // left over from a scope round-trip must never send asymmetric
-          // attestations for a single shared report.
-          ? (app.battleScope === 'enemy'
-            ? { you: app.noBuffs.enemy, enemy: app.noBuffs.enemy }
-            : { you: app.noBuffs.you, enemy: app.noBuffs.you })
-          : { ...app.noBuffs } }),
+        { you: sendableShots(typesNow(), 'you', app.shots.you, app.sameReport).map((s) => s.bytes),
+          enemy: sendableShots(typesNow(), 'enemy', app.shots.enemy, app.sameReport).map((s) => s.bytes) },
+        null, {
+          // Same-report: ONE report covers both columns, so your chip's flag
+          // speaks for both — a stale per-side split must never send
+          // asymmetric attestations for a single shared report.
+          noBuffsAttested: sameActive() ? { you: app.noBuffs.you, enemy: app.noBuffs.you } : { ...app.noBuffs },
+          // L/R: the posted side hint per card (controller.postSideFor).
+          columns: effectiveColumns(),
+        }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
       onError: (err) => { app.scanHandle = null; activeScanAbort = null; onReadError(err); },
@@ -681,19 +707,26 @@ function wireE1Upgrade(button) {
   });
 }
 
-// The active tab's type — controller.flow owns it (pickKind); 'battle' is
-// the fresh-open default flow_state already ships with.
-function activeType() { return controller.flow.types().you || 'battle'; }
+// Per-side types live in controller.flow (setSideType); both default to
+// battle. The model is rebuilt from app state on every render.
+function typesNow() { const t = controller.flow.types(); return { you: t.you || 'battle', enemy: t.enemy || 'battle' }; }
 function currentModel() {
-  return uploadModel({ type: activeType(), shots: app.shots, attested: app.noBuffs, scope: app.battleScope });
+  return uploadModel({ types: typesNow(), shots: app.shots, attested: app.noBuffs,
+    columns: app.columns, sameReport: app.sameReport });
 }
-function slotDef(type, side, key) {
-  const group = groupsFor(type, { scope: app.battleScope }).find((g) => g.side === side);
-  return group ? group.slots.find((s) => s.key === key) || null : null;
+function slotDef(side, key) {
+  const type = typesNow()[side];
+  return (SLOTS[type] || []).find((s) => s.key === key) || null;
 }
-// One-report scopes (mine/enemy) have a single attestation surface — the
-// visible chip speaks for BOTH sides of that one report. 'both' is per side.
-function oneReportScope() { return activeType() === 'battle' && app.battleScope !== 'both'; }
+// "Use your report for the enemy too" is ACTIVE only while both cards are
+// battle type: then there is ONE report and ONE attestation surface (your
+// None chip speaks for both sides); otherwise attestation is per side.
+function sameActive() { const t = typesNow(); return app.sameReport && t.you === 'battle' && t.enemy === 'battle'; }
+// The columns the read posts: the enemy's is DERIVED (other column of your
+// report) while the box is on.
+function effectiveColumns() {
+  return sameActive() ? { you: app.columns.you, enemy: otherColumn(app.columns.you) } : { ...app.columns };
+}
 
 // Real file input, per SLOT now. The picker input must be ROOTED in the
 // document while the OS dialog is open: a detached element can be garbage-
@@ -722,7 +755,7 @@ function openPicker(side, slot, remaining) {
 // nothing changes nothing.
 const UPLOAD_IMAGE_TYPES = /^image\/(png|jpe?g|webp)$/;
 async function addFilesToSlot(side, slot, fileList) {
-  const def = slotDef(activeType(), side, slot);
+  const def = slotDef(side, slot);
   if (!def) return 0;
   const have = app.shots[side].filter((s) => s.slot === slot).length;
   const all = [...(fileList || [])];
@@ -744,7 +777,7 @@ async function addFilesToSlot(side, slot, fileList) {
   if (def.noneable) {
     // A real upload beats the attestation — for THIS side (both in the
     // one-report scopes, where one buffs upload covers both columns).
-    if (oneReportScope()) app.noBuffs = { you: false, enemy: false };
+    if (sameActive()) app.noBuffs = { you: false, enemy: false };
     else app.noBuffs = { ...app.noBuffs, [side]: false };
   }
   app.lastSlot = `${side}:${slot}`;
@@ -828,7 +861,7 @@ function openSlotPreview(side, slot) {
   });
   scrim.querySelector('#ocrfSlotReplace').addEventListener('click', () => {
     closeThis(); dropSlot(side, slot); render();
-    const def = slotDef(activeType(), side, slot);
+    const def = slotDef(side, slot);
     openPicker(side, slot, def ? def.max : 1);
   });
   openScrim(scrim, scrim.querySelector('#ocrfSlotReplace'));

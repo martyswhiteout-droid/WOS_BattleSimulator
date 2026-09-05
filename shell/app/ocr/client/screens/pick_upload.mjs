@@ -1,12 +1,9 @@
-// screens/pick_upload.mjs — the combined Upload screen (owner redesign
-// 2026-08-29, built to the multi-doc-upload research synthesis):
-//   type tabs (Battle / Scout / City) -> summary fraction -> slot GRID with
-//   every slot visible at once -> sticky Scan. One slot per named document,
-//   state ON the slot (dashed empty w/ dimmed sample-crop icon, thumbnail +
-//   check when added, count badge for multi, x to remove), * = required,
-//   "optional" = the one word that earns its place. Stacked You/Enemy groups
-//   for scout/city (research: tabs hide the other party's completion state).
-// Replaces the old S1 type-cards + S2 rows two-screen flow entirely.
+// screens/pick_upload.mjs — the Upload screen: TWO cards on one screen
+// (owner 2026-09-06, designer spec) — "Upload screenshots of your ..." and
+// "... the enemy's ...", each with its own type selector, requirement rows
+// (sample | name + instruction | + Add / thumbnails), an L/R column pill on
+// battle cards, and the enemy's "Use your report for the enemy too" box.
+// History: slot grid (08-29) -> requirement rows -> scope pills -> this.
 export const TYPE_LABEL = { battle: 'Battle Report', scout: 'Scout Report', citystats: 'City Stats' };
 // Owner 2026-08-30: tabs carry the full names — "Battle" alone read as vague.
 export const TAB_LABEL = TYPE_LABEL;
@@ -53,39 +50,49 @@ export const SLOTS = {
   ],
 };
 
-// Which sides a type needs.
-// City is SYMMETRIC (owner 2026-08-30): the enemy's Bonus Overview comes
-// from the other player, and the server accepts any side x panel.
-// BATTLE SCOPE (owner 2026-08-30 #2, replacing the You/Enemy cards +
-// "Same report as yours" checkbox — "What's you? What's enemy? What does
-// the check box do?"): the user answers the question they actually think
-// in — "Whose battle report?" — via a segmented control ABOVE the rows:
-//   mine  -> 4 rows, side 'you'   (default; a report shows both sides)
-//   enemy -> 4 rows, side 'enemy' (the OPPONENT's report; service.py's
-//            side swap maps its My column to stats_enemy)
-//   both  -> two labeled groups, "Your report" / "Enemy's report"
-// Every scope yields a full read (each report carries both columns).
-export const BATTLE_SCOPES = ['mine', 'enemy', 'both'];
-export const SCOPE_LABEL = { mine: 'Mine', enemy: "Enemy's", both: 'Both' };
+// ---- Two cards, one screen (owner 2026-09-06; designer spec) ------------
+// Every read has YOUR report card and the ENEMY's report card. Each card
+// chooses its own screenshot type (mixed types allowed), battle cards carry
+// an L/R pill ("which column of this report holds this side's stats"), and
+// the enemy card can defer to your battle report ("Use your report for the
+// enemy too" — its stats are then the OTHER column of your report, its rows
+// are hidden and its shots parked). Data flows: type -> flow.setSideType;
+// column -> controller postSideFor (the posted side hint); sameReport ->
+// no enemy upload, coverage from your read (deriveViews).
+export const TYPES = ['battle', 'scout', 'citystats'];
+export const COLUMNS = ['L', 'R'];
+export const DEFAULT_COLUMNS = { you: 'L', enemy: 'R' };
+const TITLE_NOUN = { battle: 'battle report', scout: 'scout report', citystats: 'City Stats' };
+export function cardTitle(side, type) {
+  const owner = side === 'you' ? 'your' : "the enemy's";
+  return `Upload screenshots of ${owner} ${TITLE_NOUN[type]}`;
+}
 function sideSlots(slots, side) {
   return slots.map((s) => (side === 'enemy' && s.hintEnemy ? { ...s, hint: s.hintEnemy } : s));
 }
-export function groupsFor(type, { scope = 'mine' } = {}) {
-  if (type === 'battle') {
-    if (scope === 'enemy') return [{ side: 'enemy', label: null, slots: SLOTS.battle }];
-    if (scope === 'both') {
-      return [
-        { side: 'you', label: 'Your report', slots: SLOTS.battle },
-        { side: 'enemy', label: "Enemy's report", slots: SLOTS.battle },
-      ];
-    }
-    return [{ side: 'you', label: null, slots: SLOTS.battle }];
-  }
-  const base = type === 'citystats' ? SLOTS.citystats : SLOTS.scout;
-  return [
-    { side: 'you', label: 'You', slots: sideSlots(base, 'you') },
-    { side: 'enemy', label: 'Enemy', slots: sideSlots(base, 'enemy') },
-  ];
+export function otherColumn(col) { return col === 'L' ? 'R' : 'L'; }
+
+// Pure card descriptors (no shot state yet).
+export function cardsFor({ types, columns = DEFAULT_COLUMNS, sameReport = false }) {
+  const bothBattle = types.you === 'battle' && types.enemy === 'battle';
+  const sameActive = bothBattle && !!sameReport;
+  const you = {
+    side: 'you', type: types.you, label: cardTitle('you', types.you),
+    slots: sideSlots(SLOTS[types.you], 'you'),
+    showCol: types.you === 'battle', column: columns.you || 'L', colLocked: false,
+    showSame: false, sameActive: false, rowsHidden: false,
+  };
+  const enemy = {
+    side: 'enemy', type: types.enemy, label: cardTitle('enemy', types.enemy),
+    slots: sideSlots(SLOTS[types.enemy], 'enemy'),
+    showCol: types.enemy === 'battle',
+    // With the box on the enemy's column is DERIVED: the other column of
+    // your report. Never stored, never user-editable while locked.
+    column: sameActive ? otherColumn(columns.you || 'L') : (columns.enemy || 'R'),
+    colLocked: sameActive,
+    showSame: bothBattle, sameActive, rowsHidden: sameActive,
+  };
+  return [you, enemy];
 }
 
 // Pure per-slot state. shots = [{id, slot}] for ONE side; attested = the
@@ -97,62 +104,60 @@ export function slotState(slotDef, sideShots, attested) {
   return { state: 'empty', count: 0 };
 }
 
-export function uploadModel({ type, shots, attested = false, scope = 'mine' }) {
+export function uploadModel({ types, shots, attested = false, columns = DEFAULT_COLUMNS, sameReport = false }) {
   // QAC-011: the None attestation is PER SIDE (mirror of the file store) —
-  // a boolean still means "both sides" for back-compat and the one-report
-  // scopes, an object keys by side.
+  // a boolean still means "both sides", an object keys by side.
   const att = (attested && typeof attested === 'object')
     ? attested : { you: !!attested, enemy: !!attested };
-  const groups = groupsFor(type, { scope }).map((g) => ({
-    ...g,
-    slots: g.slots.map((def) => ({ ...def, ...slotState(def, shots[g.side] || [], att[g.side]) })),
+  const cards = cardsFor({ types, columns, sameReport }).map((c) => ({
+    ...c,
+    slots: c.slots.map((def) => ({ ...def, ...slotState(def, shots[c.side] || [], att[c.side]) })),
   }));
-  const required = groups.flatMap((g) => g.slots.filter((s) => s.required));
+  const active = cards.filter((c) => !c.rowsHidden);
+  const required = active.flatMap((c) => c.slots.filter((s) => s.required));
   const done = required.filter((s) => s.state !== 'empty').length;
-  return { groups, done, total: required.length, canScan: done === required.length, scope };
+  const model = { cards, done, total: required.length, canScan: done === required.length, sameReport, types, columns };
+  model.missing = missingList(model);
+  model.touched = cards.some((c) => c.slots.some((s) => s.state !== 'empty'));
+  return model;
 }
 
 // Owner 2026-09-06: "there should be a prompt that says you're missing
-// something" — the specific required rows still empty, grouped by card, as
-// short strings for the missing line above Scan. Pure; exported for tests.
+// something" — specific items in card order: a card with NOTHING done ->
+// its noun ("enemy's scout report"); a partly done card -> one item per
+// empty required row ("your Buffs"). Troops never counts; a card hidden
+// behind the same-report box is skipped. Pure; exported for tests.
 export function missingList(model) {
   const out = [];
-  for (const g of model.groups) {
-    const names = g.slots.filter((s) => s.required && s.state === 'empty').map((s) => s.label);
-    if (!names.length) continue;
-    out.push(g.label ? `${g.label}: ${names.join(', ')}` : names.join(', '));
+  for (const c of model.cards) {
+    if (c.rowsHidden) continue;
+    const req = c.slots.filter((s) => s.required);
+    const empty = req.filter((s) => s.state === 'empty');
+    if (!empty.length) continue;
+    const owner = c.side === 'you' ? 'your' : "enemy's";
+    if (empty.length === req.length) out.push(`${owner} ${TITLE_NOUN[c.type]}`);
+    else out.push(...empty.map((s) => `${owner} ${s.label}`));
   }
   return out;
 }
 
-// One requirement ROW (owner redesign round 2, 2026-08-29): sample crop on
-// the left (recognition anchor — stays visible even after adding), name +
-// in-game locator in the middle, action cluster on the right (+ Add chip ->
-// per-shot thumbnail chips + remove x; Buffs adds the inline None chip).
-// Rows read top-to-bottom at EVERY width — the 2-col tile grid died on
-// desktop (ownership-by-proximity: the Enemy tile rendered under the You
-// header; owner: "absolute non-sense").
-function requirementRow(side, s, ariaPrefix = '') {
-  // Owner 2026-08-30: the * cue is retired ("What does * mean?") — required
-  // is the unmarked default; only "optional" earns a word. aria keeps saying
-  // required for screen readers.
+// One requirement ROW: sample crop left (recognition anchor — stays after
+// adding; on battle rows a half-wash shows which COLUMN gets read), name +
+// instruction line, action cluster right. "+ Add" is the ONLY picker
+// trigger (owner 2026-09-06); the words are inert; each thumbnail is a
+// button that opens its preview sheet (Replace / Remove).
+function requirementRow(card, s) {
+  const side = card.side;
+  const ariaPrefix = `${side === 'you' ? 'Your' : "Enemy's"} ${TITLE_NOUN[card.type]}: `;
   const cue = s.required ? '' : ' <span class="ocrf-req-opt">optional</span>';
   const sample = s.img
     ? `<img class="ocrf-sample-img ocrf-req-sample" src="${SAMPLE_IMG_BASE}/${s.img}" alt="">`
     : (s.drawn ? renderSampleFallback(s.drawn) : '');
-  // QAC-001: one x per thumbnail — removing one of two buffs never nukes
-  // the other. QAC-004: + Add stays visible until the row hits its cap.
-  // Chip count derives from s.count (never thumbUrls length): a shot whose
-  // object-URL failed still gets its chip, tick, and its own remove x.
-  // Owner 2026-09-06: "+ Add" IS the trigger (it used to be decorative
-  // while the row's words opened the picker — "not intuitive"). The words
-  // are inert now; each thumbnail is a button that opens its preview sheet
-  // (Replace / Remove). The + Add button stays while the row has room,
-  // including the attested "None" state (a real upload overrides None).
+  const wash = card.showCol ? ` ocrf-req-fig--${card.column} ocrf-req-fig--${side}` : '';
   const urls = s.thumbUrls || [];
   const thumbs = Array.from({ length: s.count }, (_, i) => (
     `<span class="ocrf-req-thumb"${urls[i] ? ` style="background-image:url('${urls[i]}')"` : ''}>`
-    + `<button type="button" class="ocrf-req-thumb-open" data-slot-preview="${side}:${s.key}" aria-label="View screenshot ${i + 1}"></button>`
+    + `<button type="button" class="ocrf-req-thumb-open" data-slot-preview="${side}:${s.key}" aria-label="Preview ${s.label} screenshot ${i + 1} of ${s.count}"></button>`
     + '<span class="ocrf-req-tick" aria-hidden="true">&#10003;</span>'
     + `<button type="button" class="ocrf-req-thumb-x" data-slot-remove="${side}:${s.key}:${i}" aria-label="Remove">&times;</button></span>`
   )).join('');
@@ -175,7 +180,7 @@ function requirementRow(side, s, ariaPrefix = '') {
 <div class="ocrf-req ocrf-req--${s.state}" data-slot-tile="${side}:${s.key}" role="group"
   aria-label="${ariaPrefix}${s.label}, ${stateLabel}">
   <div class="ocrf-req-main">
-    <span class="ocrf-req-fig"${s.drawn ? ` data-drawn="${s.drawn}"` : ''}>${sample}</span>
+    <span class="ocrf-req-fig${wash}"${s.drawn ? ` data-drawn="${s.drawn}"` : ''}>${sample}</span>
     <span class="ocrf-req-text">
       <span class="ocrf-req-name">${s.label}${cue}</span>
       <span class="ocrf-req-hint" data-hint="${s.hint}" aria-live="polite">${s.hint}</span>
@@ -185,70 +190,86 @@ function requirementRow(side, s, ariaPrefix = '') {
 </div>`;
 }
 
-export function renderUpload({ type, model, notice = null }) {
-  const tabs = ['battle', 'scout', 'citystats'].map((t) => (
-    `<button type="button" class="ocrf-type-tab${t === type ? ' ocrf-type-tab--on' : ''}"
-      data-type-tab="${t}" aria-pressed="${t === type}">${TAB_LABEL[t]}</button>`
-  )).join('');
-  // Battle only: the scope question sits ABOVE the rows, always visible —
-  // segmented Mine / Enemy's / Both plus one reassurance line that kills
-  // the coverage doubt. (Owner 2026-08-30 #2; the checkbox is dead.)
-  const scopeBar = type === 'battle'
-    ? `<div class="ocrf-scope">
-    <span class="ocrf-scope-q" id="ocrfScopeQ">Whose battle report?</span>
-    <div class="ocrf-scope-tabs" role="radiogroup" aria-labelledby="ocrfScopeQ">${BATTLE_SCOPES.map((sc) => (
-      `<button type="button" role="radio" class="ocrf-scope-tab${sc === model.scope ? ' ocrf-scope-tab--on' : ''}"
-        data-scope="${sc}" aria-checked="${sc === model.scope}">${SCOPE_LABEL[sc]}</button>`
-    )).join('')}</div>
-    <span class="ocrf-scope-note">Each report shows both sides.</span>
-  </div>`
+function typeSelector(card) {
+  const owner = card.side === 'you' ? 'Your' : "Enemy's";
+  return `<div class="ocrf-type-tabs ocrf-card-types" role="radiogroup" aria-label="${owner} report type">${TYPES.map((t) => (
+    `<button type="button" role="radio" class="ocrf-type-tab${t === card.type ? ' ocrf-type-tab--on' : ''}"
+      data-type="${card.side}:${t}" aria-checked="${t === card.type}">${TYPE_LABEL[t]}</button>`
+  )).join('')}</div>`;
+}
+
+function columnPill(card) {
+  const who = card.side === 'you' ? 'Your' : "Enemy's";
+  const seg = (col) => (
+    `<button type="button" role="radio" class="ocrf-col-seg${col === card.column ? ' ocrf-col-seg--on' : ''}"
+      data-col="${card.side}:${col}" aria-checked="${col === card.column}"
+      aria-label="${col === 'L' ? 'Left' : 'Right'} column"${card.colLocked ? ' aria-disabled="true" title="Set by your report"' : ''}>${col}</button>`
+  );
+  return `<div class="ocrf-col ocrf-col--${card.side}${card.colLocked ? ' ocrf-col--locked' : ''}" role="radiogroup"
+    aria-label="${who} stats column">${who} stats are in the <span class="ocrf-col-pill">${seg('L')}${seg('R')}</span> column</div>`;
+}
+
+function cardHtml(card) {
+  const req = card.slots.filter((s) => s.required);
+  const count = card.rowsHidden ? ''
+    : `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span>`;
+  const same = card.showSame
+    ? `<button type="button" class="ocrf-req-same${card.sameActive ? ' ocrf-req-same--on' : ''}" role="checkbox"
+        data-same aria-checked="${card.sameActive}">
+        <span class="ocrf-req-same-box" aria-hidden="true">${card.sameActive ? '&#10003;' : ''}</span>
+        Use your report for the enemy too</button>`
     : '';
-  const cards = model.groups.map((g) => {
-    const req = g.slots.filter((s) => s.required);
-    const head = g.label
-      ? `<div class="ocrf-req-card-head"><span>${g.label}</span>`
-        + `<span class="ocrf-req-card-count">${req.filter((s) => s.state !== 'empty').length}/${req.length}</span></div>`
-      : '';
-    // QAC-018: labeled cards prefix their name into each row's aria-label
-    // so non-visual users can tell whose row is whose under "Both".
-    const prefix = g.label ? `${g.label}: ` : '';
-    return `<section class="ocrf-req-card" data-group="${g.side}">${head}${g.slots.map((s) => requirementRow(g.side, s, prefix)).join('')}</section>`;
-  }).join('');
+  const rows = card.rowsHidden ? '' : card.slots.map((s) => requirementRow(card, s)).join('');
+  return `<section class="ocrf-req-card ocrf-req-card--${card.side}" data-group="${card.side}">
+    <div class="ocrf-req-card-head"><span class="ocrf-req-card-title">${card.label}</span>${count}</div>
+    ${typeSelector(card)}
+    ${same}
+    ${card.showCol ? columnPill(card) : ''}
+    ${rows}
+  </section>`;
+}
+
+export function renderUpload({ model, notice = null, showMissing = false }) {
+  const cards = model.cards.map(cardHtml).join('');
   const noticeHtml = notice ? `<p class="ocrf-s2-notice" id="ocrfS2Notice">${notice}</p>` : '';
-  // The fraction lives INSIDE the locked Scan button — the "why is this
-  // disabled" answer sits exactly where the eye lands. No pips, no strip.
+  // The fraction lives INSIDE the locked Scan button; the missing line is
+  // the next action (owner: "a prompt that says you're missing something").
+  // Scan is aria-disabled (not disabled) so a tap on it can reveal the line.
   const scanLabel = model.canScan ? 'Scan'
     : `Scan <span class="ocrf-scan-count">${model.done}/${model.total}</span>`;
+  const missing = !model.canScan && (showMissing || model.touched) && model.missing.length
+    ? `<button type="button" class="ocrf-missing" data-missing-jump aria-live="polite"><b>Missing:</b> ${model.missing.join(', ')}</button>`
+    : '';
   return `
 <section class="screen" data-screen="s1">
   <header class="ocrf-scr-head"><button type="button" class="ocrf-back-btn" data-back aria-label="Back">&#8249;</button>
     <h1 tabindex="-1">Screenshots</h1></header>
   <div class="ocrf-scr-body ocrf-upload-body">
-    <p class="ocrf-upload-intro">Choose the type of screenshot to upload</p>
-    <div class="ocrf-type-tabs" role="group" aria-label="Screenshot type">${tabs}</div>
     ${noticeHtml}
-    ${scopeBar}
-    <div class="ocrf-req-cards${model.groups.length > 1 ? ' ocrf-req-cards--two' : ''}">${cards}</div>
+    <div class="ocrf-req-cards ocrf-req-cards--two">${cards}</div>
   </div>
   <footer class="ocrf-scr-foot">
-    <button type="button" class="ocrf-btn-primary ocrf-btn-block" id="ocrfScan"${model.canScan ? '' : ' disabled'}>${scanLabel}</button>
+    ${missing}
+    <button type="button" class="ocrf-btn-primary ocrf-btn-block" id="ocrfScan"${model.canScan ? '' : ' aria-disabled="true"'}>${scanLabel}</button>
   </footer>
 </section>`.trim();
 }
 
-export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onScan, onScope, onSlotPreview }) {
+export function wireUpload(root, { onType, onCol, onSame, onSlot, onSlotRemove, onSlotNone, onSlotPreview, onScan, onMissingJump }) {
+  root.querySelectorAll('[data-type]').forEach((b) => {
+    b.addEventListener('click', () => { const [side, type] = b.dataset.type.split(':'); if (onType) onType(side, type); });
+  });
+  root.querySelectorAll('[data-col]').forEach((b) => {
+    b.addEventListener('click', () => { const [side, col] = b.dataset.col.split(':'); if (onCol) onCol(side, col, b.getAttribute('aria-disabled') === 'true'); });
+  });
+  const same = root.querySelector('[data-same]');
+  if (same && onSame) same.addEventListener('click', () => onSame());
   root.querySelectorAll('[data-slot-preview]').forEach((b) => {
     b.addEventListener('click', (e) => {
       e.stopPropagation();
       const [side, key] = b.dataset.slotPreview.split(':');
       if (onSlotPreview) onSlotPreview(side, key);
     });
-  });
-  root.querySelectorAll('[data-type-tab]').forEach((b) => {
-    b.addEventListener('click', () => onTab(b.dataset.typeTab));
-  });
-  root.querySelectorAll('[data-scope]').forEach((b) => {
-    b.addEventListener('click', () => { if (onScope) onScope(b.dataset.scope); });
   });
   root.querySelectorAll('[data-slot]').forEach((b) => {
     b.addEventListener('click', () => {
@@ -266,8 +287,10 @@ export function wireUpload(root, { onTab, onSlot, onSlotRemove, onSlotNone, onSc
   root.querySelectorAll('[data-slot-none]').forEach((b) => {
     b.addEventListener('click', (e) => { e.stopPropagation(); const [side, key] = b.dataset.slotNone.split(':'); onSlotNone(side, key); });
   });
+  const jump = root.querySelector('[data-missing-jump]');
+  if (jump && onMissingJump) jump.addEventListener('click', () => onMissingJump());
   const scan = root.querySelector('#ocrfScan');
-  if (scan) scan.addEventListener('click', () => { if (!scan.disabled) onScan(); });
+  if (scan) scan.addEventListener('click', () => onScan(scan.getAttribute('aria-disabled') === 'true'));
 }
 
 // Hand-drawn mini-panels: the img-error fallback for promoted bundles that
