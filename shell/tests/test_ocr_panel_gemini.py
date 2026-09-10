@@ -328,3 +328,16 @@ def test_model_404_falls_back_to_secondary_model():
     assert len(transport.requests) == 2
     assert PRIMARY_MODEL in str(transport.requests[0].url)
     assert FALLBACK_MODEL in str(transport.requests[1].url)
+
+
+# --- 2026-09-10: thinking OFF for extraction (live probe: the preview model
+# thought for 60s+ on image input and the server dropped the connection;
+# thinkingBudget 0 -> ~7s). The fallback id must be one the API still lists.
+
+def test_payload_disables_thinking_and_fallback_is_a_live_alias():
+    from shell.app.ocr.panel.engine_gemini import _build_payload, FALLBACK_MODEL, PRIMARY_MODEL
+    payload = _build_payload(bytes([137, 80, 78, 71, 13, 10, 26, 10]) + b"0" * 64, "image/png")
+    assert payload["generationConfig"]["thinkingConfig"] == {"thinkingBudget": 0}
+    assert payload["generationConfig"]["temperature"] == 0
+    assert FALLBACK_MODEL == "gemini-flash-latest"
+    assert FALLBACK_MODEL != PRIMARY_MODEL

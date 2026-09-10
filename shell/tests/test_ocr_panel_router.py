@@ -330,3 +330,33 @@ def test_qa_defect_031_router_has_no_plan_branch_left():
     assert not hasattr(module, "resolve_plan")
     source = pathlib.Path(module.__file__).read_text(encoding="utf-8")
     assert "ocr_not_available_on_free" not in source
+
+
+# --- 2026-09-10: minimum-resolution guard (owner report: ~230px forwarded
+# screenshots read nothing and burned ~90s each in the Gemini tier) ---------
+
+def _png_of_width(width: int, height: int = 40) -> bytes:
+    from PIL import Image
+    import io as _io
+    buf = _io.BytesIO()
+    Image.new("RGB", (width, height), (10, 40, 60)).save(buf, format="PNG")
+    return buf.getvalue()
+
+
+def test_tiny_screenshot_is_rejected_instantly_with_its_width(client_paid):
+    resp = client_paid.post("/shell/ocr/panel",
+                       files=[("file", ("shot.png", _png_of_width(230), "image/png"))],
+                       data={"side": "you", "panel": "battle"})
+    assert resp.status_code == 422
+    body = resp.json()
+    assert body["error"] == "image_too_small"
+    assert body["width"] == 230
+    assert body["min_width"] == 500
+
+
+def test_min_width_guard_lets_phone_sized_images_through_to_the_engine(client_paid):
+    # 1080 wide clears the guard; the mock/ladder then handles content.
+    resp = client_paid.post("/shell/ocr/panel",
+                       files=[("file", ("shot.png", _png_of_width(1080, 200), "image/png"))],
+                       data={"side": "you", "panel": "battle"})
+    assert resp.status_code != 422 or resp.json().get("error") != "image_too_small"

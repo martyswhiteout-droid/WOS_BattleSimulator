@@ -72,7 +72,10 @@ from .values import parse_value
 # mandatory, not decorative (binding decision #2: "fall back to the newest
 # Flash the API lists if that exact id 404s").
 PRIMARY_MODEL = "gemini-3-flash-preview"
-FALLBACK_MODEL = "gemini-2.5-flash"
+# 2026-09-10 (live probe with the owner's key): "gemini-2.5-flash" now 404s
+# ("no longer available to new users"); "gemini-flash-latest" is Google's
+# rolling alias for the current Flash and is listed by the models endpoint.
+FALLBACK_MODEL = "gemini-flash-latest"
 API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
 
 REQUEST_TIMEOUT_S = 30.0       # binding decision #5: hard timeout ~30s/image
@@ -182,6 +185,15 @@ def _build_payload(image_bytes: bytes, media_type: str) -> dict:
         }],
         "generationConfig": {
             "temperature": 0,
+            # 2026-09-10 (live probe): gemini-3-flash-preview is a THINKING
+            # model — with the default budget an image request ran 60s+ and
+            # the server dropped the connection (binding decision #5's 30s
+            # timeout fired twice per model: every gap-fill "failed" with a
+            # network error and cost ~90s). Extraction is not a reasoning
+            # task and never-fabricate is enforced by our own code (binding
+            # decision #3), so thinking is switched off: the same request
+            # returns in ~7s (full-res report ~8.5s).
+            "thinkingConfig": {"thinkingBudget": 0},
             "responseMimeType": "application/json",
             "responseSchema": PANEL_ROW_SCHEMA,
         },

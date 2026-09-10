@@ -13,6 +13,16 @@ export function mapError(status, body) {
       cta: 'upgrade',
     };
   }
+  // 2026-09-10 (owner report): forwarded/compressed screenshots arrive ~230px
+  // wide — unreadable by any engine. Say the width and the fix, instantly.
+  if (status === 422 && code === 'image_too_small') {
+    const w = body && body.width ? `${body.width} px wide` : 'too small';
+    return {
+      heading: 'Screenshot too small',
+      body: `This one is ${w}. Upload the original from your phone, not a forwarded or compressed copy.`,
+      cta: 'retake',
+    };
+  }
   // 2026-08-29 (owner phone test): 422s are INPUT problems, never "our end".
   if (status === 422 && code === 'invalid_file_count') {
     return {

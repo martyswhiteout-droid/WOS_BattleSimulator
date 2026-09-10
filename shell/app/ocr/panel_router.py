@@ -26,6 +26,7 @@ layer wins, so a second in-route plan check could only ever disagree with it.
 """
 from __future__ import annotations
 
+import io
 import os
 
 from fastapi import APIRouter, File, Form, Request, Response, UploadFile
@@ -94,6 +95,20 @@ def _is_image(raw: bytes) -> bool:
         or raw.startswith(b"\xff\xd8\xff")
         or (len(raw) >= 12 and raw[:4] == b"RIFF" and raw[8:12] == b"WEBP")
     )
+
+
+def _smallest_width(images) -> int | None:
+    """Pixel width of the narrowest upload, or None if no header could be read
+    (an undecodable image is the ladder's problem to report, not this guard's)."""
+    widths = []
+    for image in images:
+        try:
+            from PIL import Image as _Image
+            with _Image.open(io.BytesIO(image)) as im:
+                widths.append(int(im.size[0]))
+        except Exception:
+            continue
+    return min(widths) if widths else None
 
 
 def _mock_enabled() -> bool:
@@ -174,6 +189,16 @@ async def panel_upload(
         return JSONResponse(status_code=422, content={"error": "empty_file"})
     if any(not _is_image(image) for image in images):
         return JSONResponse(status_code=415, content={"error": "unsupported_image_type"})
+    # 2026-09-10: fail FAST and honestly on screenshots too small to read
+    # (forwarded/compressed copies) — see config.MIN_OCR_IMAGE_WIDTH. Measured
+    # before any engine runs, so a hopeless upload costs milliseconds, not the
+    # ladder's full Gemini-timeout budget.
+    min_width = int(getattr(get_settings(), "MIN_OCR_IMAGE_WIDTH", 500) or 0)
+    if min_width > 0:
+        too_small = _smallest_width(images)
+        if too_small is not None and too_small < min_width:
+            return JSONResponse(status_code=422, content={
+                "error": "image_too_small", "width": too_small, "min_width": min_width})
 
     # QA D-019: every malformed-input failure in the panel stack is a ValueError
     # (CalibrationError/MissingSpecialsError included) — a client-input problem,
