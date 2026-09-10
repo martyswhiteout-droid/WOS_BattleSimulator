@@ -93,7 +93,7 @@ def test_seam_routes_and_reproduces_the_real_anchor():
     d = serialize.forecast_to_dict(fc)
     assert d["engine"]["path"] == "army_law"
     assert d["engine"]["stochastic"] is False
-    assert d["verdict"]["win"]["p"] == 1.0            # attacker (own) wins
+    assert d["verdict"]["win"]["p"] > 0.99             # attacker (own) wins -- derived, not forced
     # within the declared +-10% band of the observed 24.185%
     assert abs(own_surv(fc) - OBSERVED_SURV) / OBSERVED_SURV < 0.10
 
@@ -215,13 +215,17 @@ def test_cross_class_reproduces_its_anchor():
     assert abs(own_surv(fc) - 0.4536) / 0.4536 < 0.05
 
 
-def test_near_parity_cross_class_abstains():
-    """exp5 sits 0.24% from parity: a 2.5% R error becomes a 149% survivor error,
-    so the evidence cannot call it. The router must fall through, not guess."""
+def test_near_parity_cross_class_is_an_honest_probability():
+    """exp5 sits 0.24% from parity. Phase A: instead of abstaining, the router
+    reports P(attacker) under the law's MEASURED error -- well below certainty,
+    above a coin flip, and never the old forced 1.0 / 0.5."""
     mm_def = {"Attack": 189.1, "Defense": 165.7, "Lethality": 131.2, "Health": 128.6}
     m = x_pair("Infantry", INF_A, "Marksman", mm_def)
     fc, note = army_router.try_army(m)
-    assert fc is None and "abstained" in note, (fc, note)
+    assert fc is not None, note
+    d = serialize.forecast_to_dict(fc)
+    assert 0.55 < d["verdict"]["win"]["p"] < 0.95
+    assert d["verdict"]["win"]["p"] + d["verdict"]["loss"]["p"] + d["verdict"]["mutual"]["p"] == pytest.approx(1.0)
 
 
 def test_R_table_reciprocal_and_identity():

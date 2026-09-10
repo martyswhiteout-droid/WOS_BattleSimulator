@@ -1,0 +1,460 @@
+{
+ "generated_by": "wos_sim/formula_research/calibrate_winprob.py",
+ "army_law": {
+  "sigma_ln_beta_over_alpha": 0.0197,
+  "n_anchors": 9,
+  "method": "RMS of leave-one-out residuals",
+  "residuals": [
+   {
+    "id": "exp1_mirror_20k",
+    "pred_ln_ba": -0.060187,
+    "obs_ln_ba": -0.060272,
+    "residual": -8.5e-05
+   },
+   {
+    "id": "exp2_mirror_2k",
+    "pred_ln_ba": -0.060187,
+    "obs_ln_ba": -0.060349,
+    "residual": -0.000162
+   },
+   {
+    "id": "exp7_alliance_garrison_mirror_20k",
+    "pred_ln_ba": -0.115421,
+    "obs_ln_ba": -0.095734,
+    "residual": 0.019687
+   },
+   {
+    "id": "exp4_inf_vs_lancer",
+    "pred_ln_ba": -0.238728,
+    "obs_ln_ba": -0.230361,
+    "residual": 0.008367
+   },
+   {
+    "id": "exp4b_inf_vs_lancer",
+    "pred_ln_ba": -0.194225,
+    "obs_ln_ba": -0.202551,
+    "residual": -0.008327
+   },
+   {
+    "id": "exp5_inf_vs_marksman",
+    "pred_ln_ba": -0.027637,
+    "obs_ln_ba": -0.002384,
+    "residual": 0.025253
+   },
+   {
+    "id": "expX2_inf_vs_mm_10k",
+    "pred_ln_ba": -3.43101,
+    "obs_ln_ba": -3.456271,
+    "residual": -0.02526
+   },
+   {
+    "id": "exp3a_lancer",
+    "pred_ln_ba": -0.164979,
+    "obs_ln_ba": -0.19407,
+    "residual": -0.029091
+   },
+   {
+    "id": "expX1_lan_vs_mm_10k",
+    "pred_ln_ba": -0.124215,
+    "obs_ln_ba": -0.09517,
+    "residual": 0.029045
+   }
+  ]
+ },
+ "turn_engine": {
+  "a": 0.980335,
+  "b": 0.0,
+  "n_battles": 22,
+  "margin": "abs(ln(effective_ratio_own)) from winprob.effective_ratio",
+  "brier_old_heuristic": 0.25227,
+  "brier_new_loo": 0.21768,
+  "points": [
+   {
+    "id": "T12_01",
+    "set": "golden",
+    "abs_margin": 0.05234,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "T12_02",
+    "set": "golden",
+    "abs_margin": 0.00903,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "T12_03",
+    "set": "golden",
+    "abs_margin": 0.12064,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "T12_04",
+    "set": "golden",
+    "abs_margin": 0.01732,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "T12_05",
+    "set": "golden",
+    "abs_margin": 0.17406,
+    "call_own": true,
+    "real_own": false,
+    "correct": false,
+    "old_p": 0.55
+   },
+   {
+    "id": "RAW_01",
+    "set": "golden",
+    "abs_margin": 0.06332,
+    "call_own": true,
+    "real_own": false,
+    "correct": false,
+    "old_p": 0.55
+   },
+   {
+    "id": "RAW_02",
+    "set": "golden",
+    "abs_margin": 0.07179,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "RAW_03",
+    "set": "golden",
+    "abs_margin": 0.06915,
+    "call_own": false,
+    "real_own": true,
+    "correct": false,
+    "old_p": 0.45
+   },
+   {
+    "id": "RAW_04",
+    "set": "golden",
+    "abs_margin": 0.48076,
+    "call_own": true,
+    "real_own": false,
+    "correct": false,
+    "old_p": 1.0
+   },
+   {
+    "id": "RAW_05",
+    "set": "golden",
+    "abs_margin": 0.46882,
+    "call_own": true,
+    "real_own": false,
+    "correct": false,
+    "old_p": 0.55
+   },
+   {
+    "id": "RAW_06",
+    "set": "golden",
+    "abs_margin": 0.05655,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "RAW_07",
+    "set": "golden",
+    "abs_margin": 0.07919,
+    "call_own": false,
+    "real_own": true,
+    "correct": false,
+    "old_p": 0.45
+   },
+   {
+    "id": "RAW_08",
+    "set": "golden",
+    "abs_margin": 0.03457,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "exp1_mirror_20k",
+    "set": "army",
+    "abs_margin": 0.01505,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "exp2_mirror_2k",
+    "set": "army",
+    "abs_margin": 0.01505,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "exp7_alliance_garrison_mirror_20k",
+    "set": "army",
+    "abs_margin": 0.02886,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "exp4_inf_vs_lancer",
+    "set": "army",
+    "abs_margin": 0.0035,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "exp4b_inf_vs_lancer",
+    "set": "army",
+    "abs_margin": 0.01254,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "exp5_inf_vs_marksman",
+    "set": "army",
+    "abs_margin": 0.0173,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "expX2_inf_vs_mm_10k",
+    "set": "army",
+    "abs_margin": 0.83986,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 1.0
+   },
+   {
+    "id": "exp3a_lancer",
+    "set": "army",
+    "abs_margin": 0.06994,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   },
+   {
+    "id": "expX1_lan_vs_mm_10k",
+    "set": "army",
+    "abs_margin": 0.05247,
+    "call_own": true,
+    "real_own": true,
+    "correct": true,
+    "old_p": 0.55
+   }
+  ]
+ },
+ "strength_slope": {
+  "k_all": 0.0187,
+  "k_golden_only": 0.0,
+  "n": 22,
+  "sign_accuracy": "12/22",
+  "brier_folded_loo": 0.26255,
+  "brier_constant_hit_rate": 0.19835,
+  "brier_old_heuristic": 0.19835,
+  "display_rule": "p = sigmoid(k*m_own); magnitude kept, side folded onto the hybrid winner call",
+  "points": [
+   {
+    "id": "T12_01",
+    "set": "golden",
+    "m_own": 0.05234,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "T12_02",
+    "set": "golden",
+    "m_own": -0.00903,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "T12_03",
+    "set": "golden",
+    "m_own": 0.12064,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "T12_04",
+    "set": "golden",
+    "m_own": 0.01732,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "T12_05",
+    "set": "golden",
+    "m_own": 0.17406,
+    "real_own": false,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "RAW_01",
+    "set": "golden",
+    "m_own": 0.06332,
+    "real_own": false,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "RAW_02",
+    "set": "golden",
+    "m_own": -0.07179,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "RAW_03",
+    "set": "golden",
+    "m_own": -0.06915,
+    "real_own": true,
+    "call_own": false,
+    "old_p": 0.27283
+   },
+   {
+    "id": "RAW_04",
+    "set": "golden",
+    "m_own": 0.48076,
+    "real_own": false,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "RAW_05",
+    "set": "golden",
+    "m_own": 0.46882,
+    "real_own": false,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "RAW_06",
+    "set": "golden",
+    "m_own": 0.05655,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "RAW_07",
+    "set": "golden",
+    "m_own": 0.07919,
+    "real_own": true,
+    "call_own": false,
+    "old_p": 0.27283
+   },
+   {
+    "id": "RAW_08",
+    "set": "golden",
+    "m_own": 0.03457,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp1_mirror_20k",
+    "set": "army",
+    "m_own": 0.01505,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp2_mirror_2k",
+    "set": "army",
+    "m_own": 0.01505,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp7_alliance_garrison_mirror_20k",
+    "set": "army",
+    "m_own": 0.02886,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp4_inf_vs_lancer",
+    "set": "army",
+    "m_own": -0.0035,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp4b_inf_vs_lancer",
+    "set": "army",
+    "m_own": -0.01254,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp5_inf_vs_marksman",
+    "set": "army",
+    "m_own": -0.0173,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "expX2_inf_vs_mm_10k",
+    "set": "army",
+    "m_own": 0.83986,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "exp3a_lancer",
+    "set": "army",
+    "m_own": 0.06994,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   },
+   {
+    "id": "expX1_lan_vs_mm_10k",
+    "set": "army",
+    "m_own": 0.05247,
+    "real_own": true,
+    "call_own": true,
+    "old_p": 0.72717
+   }
+  ]
+ }
+}

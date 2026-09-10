@@ -4,7 +4,7 @@ Purpose: this repo has too many docs to read wholesale. Look up your question he
 
 Currency legend: **CURRENT** (trust it) · **PARTIAL** (trust with the noted caveat) · **HISTORICAL** (background/rationale only) · **STALE-TRAP** (contains statements now known false).
 
-Last audited: 2026-08-05.
+Last audited: 2026-09-10.
 
 ---
 
@@ -56,6 +56,7 @@ Last audited: 2026-08-05.
 | `ENGINE_REPLY.md` | Why `engine_meta` returns path + model_error; honesty-badge rationale; severe fraction 0.35 | 7.6 KB, medium | **HISTORICAL** — decisions implemented; rationale only |
 | `ENGINE_HANDOFF_joiner_stacking.md` | Joiner Skill-1 stacking: the dedup was WRONG and was removed (commit `8e816f2`) | 4.8 KB, short | **CURRENT** — overrides QA_REPORT & STATUS §22 on this point |
 | `ENGINE_HANDOFF_kill_matrix.md` | Kill-matrix / per-turn telemetry handoff | 6.7 KB, short | CURRENT |
+| `ENGINE_HANDOFF_winprob_surface_what_varies.md` | Why the headline win% sits at exactly 25%/75% for every near-even (garrison) scenario: one-bit display collapse x `def_k=0.45` stuck bit x band-edge cliff/non-monotone; 35-variation repro, G12 check of `def_k=1.0` (6/13, gate-blocked), proposed fix = surface hold rate / casualty margin / strength ratio / branch + continuous call-stability headline | 12 KB, medium | **CURRENT (2026-09-10)** — proposal, awaiting Engine Builder |
 | `QA_CONTEXT.md` | QA onboarding: source-of-truth doc order, full `wos_sim/data/` inventory, claims register, known weaknesses | 9.8 KB, medium | **PARTIAL** — data inventory valid; "round-3 mechanism ACTIVE" framing predates the turn engine |
 | `QA_FINDINGS.md` | Concrete defect list w/ file:line: fast-path gate over-claiming, hardcoded `engine_model_error=0.13`, aliased RunRecords, perf misses | 12 KB, medium | **PARTIAL** — structural findings (confidence over-claiming) still open; verify others against code before re-reporting |
 | `QA_PROMPT.md` | Reusable QA brief for the UI/API layer (adversarial payloads, form-reader robustness, a11y) | 4.5 KB, short | CURRENT |

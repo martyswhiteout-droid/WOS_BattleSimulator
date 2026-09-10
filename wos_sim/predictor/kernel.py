@@ -229,6 +229,69 @@ def _near_even_probe(attacker_units, defender_units, params, swing: float = 0.05
     return len(winners) > 1
 
 
+#: own-strength multipliers spanning the existing +-BAND (winprob.BAND = 0.20).
+#: Seventeen points (2.5% steps), symmetric, including 1.0. Not a tuned constant:
+#: resolution only (nine points quantised three formations onto one bucket).
+STABILITY_MULTS = (0.800, 0.825, 0.850, 0.875, 0.900, 0.925, 0.950, 0.975, 1.000,
+                   1.025, 1.050, 1.075, 1.100, 1.125, 1.150, 1.175, 1.200)
+
+
+def call_stability(attacker_units, defender_units, params, own_is_attacker: bool,
+                   mults=STABILITY_MULTS, side_mults=None) -> tuple[float, list]:
+    """Call-stability S: the fraction of own-strength multipliers (spanning the
+    existing +-20% band) at which OWN wins a deterministic, hero-skill-free sim
+    under the SAME engine params as the real run. Generalises _near_even_probe's
+    3-point +-5% swing into a K-point sweep so the near-even display can reflect
+    HOW ROBUST the sim's call is instead of collapsing to one bit.
+
+    ``side_mults`` (2026-09-10 Change A), when given, is the {"attacker":
+    {cls: {"off","tough"}}, "defender": {...}} dict ``winprob._joiner_mults``
+    returns: joiner stat packets folded as static multipliers (the sim's
+    SKILL logic stays off); measures stability of the joiner-aware matchup.
+    Applied ONCE to fresh deepcopies of BOTH sides, before the own-strength
+    sweep runs on top of those joiner-adjusted copies: sqrt("off") onto
+    Attack/Lethality and sqrt("tough") onto Defense/Health, so the A*L / D*H
+    products scale by exactly the multiplier -- the same fold
+    ``effective_ratio`` applies. Omitted (None), this is byte-identical to
+    the pre-Change-A sweep.
+
+    Returns (S, winners) where winners[i] is True iff own won at mults[i].
+    Deterministic (rng seed 0, matching the probe)."""
+    from wos_sim.pvp_turn_engine import simulate_turns
+
+    base_a = [deepcopy(u) for u in attacker_units]
+    base_d = [deepcopy(u) for u in defender_units]
+    if side_mults:
+        for units, side_key in ((base_a, "attacker"), (base_d, "defender")):
+            side = side_mults.get(side_key) or {}
+            for v in units:
+                m = side.get(v.troop.value)
+                if not m:
+                    continue
+                off_r = m.get("off", 1.0) ** 0.5
+                tough_r = m.get("tough", 1.0) ** 0.5
+                astat = dict(v.astat)
+                astat[StatType.ATTACK] = astat[StatType.ATTACK] * off_r
+                astat[StatType.LETHALITY] = astat[StatType.LETHALITY] * off_r
+                astat[StatType.DEFENSE] = astat[StatType.DEFENSE] * tough_r
+                astat[StatType.HEALTH] = astat[StatType.HEALTH] * tough_r
+                v.astat = astat
+
+    own_side = 'A' if own_is_attacker else 'D'
+    winners = []
+    for mult in mults:
+        a_units = [deepcopy(u) for u in base_a]
+        d_units = [deepcopy(u) for u in base_d]
+        own_units = a_units if own_is_attacker else d_units
+        for v in own_units:
+            v.astat = {k: val * mult for k, val in v.astat.items()}
+        res = simulate_turns(a_units, d_units, [], params=params, rng=random.Random(0))
+        own_won = (res.winner == own_side) or (res.winner == 'mutual' and own_is_attacker)
+        winners.append(own_won)
+    s = sum(1 for w in winners if w) / len(mults)
+    return s, winners
+
+
 def _strength_index(units) -> float:
     """Aggregate side strength: n x sqrt(offense x toughness) per stack.
     Offense = Attack x Lethality, toughness = Defense x Health — the sqrt

@@ -7,6 +7,8 @@ API (FastAPI) and the front-end code only ever touch this — never the engine.
 """
 from __future__ import annotations
 
+import math
+
 from . import construct, kernel, summary, type1_router, validate
 from .profiles import Matchup, SideProfile
 
@@ -78,21 +80,90 @@ def predict(own: SideProfile, enemy: SideProfile, *, n: int = 10_000, seed: int 
     near_even = meta.get("near_even", False)
     confidence = meta.get("confidence", "directional")
     note = meta.get("note", "")
+    sim_hold_rate = None
+    casualty_margin = None
+    strength_ratio_own = None
+    display_branch = None
+    call_stability = None
     if turn_engine and records:
         from . import winprob
+        from wos_sim.pvp_turn_engine import skill_defs_from_matchup
         own_tag = 'A' if con.own_is_attacker else 'D'
         wins = sum(1 for r in records if r.winner == own_tag)
         mutual = sum(1 for r in records if r.winner == 'mutual')
         p_turn_own = (wins + (mutual if con.own_is_attacker else 0)) / len(records)
-        win_override, near_even = winprob.hybrid_win_prob(
-            con, p_turn_own, blind_near_even=meta.get("near_even", False))
+
+        # Call-stability S: fraction of own-strength perturbations across the
+        # existing +-BAND at which own wins a deterministic sim (kernel.py) -
+        # replaces the one-bit p_turn_own as the near-even display's basis so
+        # formation/joiner/troop changes move the headline instead of collapsing
+        # to 25%/75% (ENGINE_HANDOFF_winprob_surface_what_varies.md, 2026-09-10).
+        # Change A (2026-09-10): fold joiner stat packets into the sweep too -
+        # call_stability's hero-skill-free sim was otherwise blind to joiners,
+        # so S was bit-identical across own-joiner variants whenever the ratio
+        # stayed inside the near-even band (test_winprob_stability.py Defect 1).
+        mults = winprob._joiner_mults(skill_defs_from_matchup(con))
+        S, _ = kernel.call_stability(con.attacker_units, con.defender_units,
+                                     dict(eng_params), con.own_is_attacker,
+                                     side_mults=mults)
+
+        # Change C (2026-09-10): troop-only (joiner-blind) own-side strength
+        # ratio, so hybrid_win_prob_ex can tell a joiner-driven decisive
+        # disagreement (sim is proven blind to joiners for the winner -> full
+        # strength override) from a troop-driven one (sim saw it -> keep the
+        # edge-distance blend) (test_winprob_joiners.py Defect 2).
+        a_idx = kernel._strength_index(con.attacker_units)
+        d_idx = kernel._strength_index(con.defender_units)
+        r_blind = a_idx / d_idx if d_idx > 0 else 1.0
+        r_blind_own = r_blind if con.own_is_attacker else (
+            1.0 / r_blind if r_blind > 0 else 1.0)
+
+        res = winprob.hybrid_win_prob_ex(
+            con, p_turn_own, blind_near_even=meta.get("near_even", False),
+            stability=S, r_blind_own=r_blind_own)
+        win_override, near_even = res["p"], res["near_even"]
         confidence = "coin_flip" if near_even else "directional"
+        strength_ratio_own = res["r_own"]
+        display_branch = res["branch"]
+        call_stability = res["stability"]
+
+        # Surface fields (ENGINE_HANDOFF_winprob_surface_what_varies.md §6.A):
+        # the raw sim hold rate and the per-run casualty margin, so the UI can
+        # show "what moved" even while the headline stays hedged.
+        n_rec = len(records)
+        se = math.sqrt(p_turn_own * (1.0 - p_turn_own) / n_rec) if n_rec else 0.0
+        sim_hold_rate = summary.Proportion(p_turn_own, se)
+        margins = []
+        for r in records:
+            if con.own_is_attacker:
+                own_start, own_incap = r.attacker_start, r.attacker_incap
+                enemy_start, enemy_incap = r.defender_start, r.defender_incap
+            else:
+                own_start, own_incap = r.defender_start, r.defender_incap
+                enemy_start, enemy_incap = r.attacker_start, r.attacker_incap
+            own_total = sum(own_start.values())
+            enemy_total = sum(enemy_start.values())
+            own_loss = (sum(own_incap.values()) / own_total) if own_total else 0.0
+            enemy_loss = (sum(enemy_incap.values()) / enemy_total) if enemy_total else 0.0
+            margins.append(enemy_loss - own_loss)
+        margins_sorted = sorted(margins)
+        mean_margin = sum(margins_sorted) / len(margins_sorted) if margins_sorted else 0.0
+        casualty_margin = {"mean": mean_margin,
+                           "p5": summary._percentile(margins_sorted, 0.05),
+                           "p95": summary._percentile(margins_sorted, 0.95)}
+
+        # Phase A (2026-07-28), REVISED after measurement. An earlier cut replaced
+        # this number wholesale with the engine's measured hit rate. That was wrong
+        # on two counts: it also overwrote the DECISIVE branches (expX2, a 2.3x
+        # rout, displayed 0.727), and it discarded the sim's own margin. The
+        # magnitude now comes from winprob.hybrid_win_prob_ex, whose near-even band
+        # is the MEASURED near-even hit rate rather than the old DAMP=0.10 constant.
+        from . import winprob_calibrated as _wpc
         # keep the note consistent with the FINAL (joiner-aware) near-even call
-        note = ("Near-even armies: the win% reflects the strength balance "
-                "(joiners included); ~40-60% is a coin flip either side can take."
-                if near_even else
-                "Turn-by-turn skill engine; win% reflects the joiner-aware "
-                "strength balance. Read survivor magnitudes as directional.")
+        note = (("Near-even armies -- a coin flip either side can take. "
+                 if near_even else
+                 "Turn-by-turn skill engine; read survivor magnitudes as directional. ")
+                + _wpc.turn_engine_summary(near_even) + ".")
 
     if abstain_note:
         note = f"{note} {abstain_note}".strip()
@@ -101,7 +172,10 @@ def predict(own: SideProfile, enemy: SideProfile, *, n: int = 10_000, seed: int 
         records, own_is_attacker=con.own_is_attacker, engine_model_error=err,
         engine_path=meta.get("path", "general"), engine_note=note,
         stochastic=meta.get("stochastic", True), calibrated=meta.get("calibrated", False),
-        near_even=near_even, confidence=confidence, win_prob_override=win_override)
+        near_even=near_even, confidence=confidence, win_prob_override=win_override,
+        sim_hold_rate=sim_hold_rate, casualty_margin=casualty_margin,
+        strength_ratio_own=strength_ratio_own, display_branch=display_branch,
+        call_stability=call_stability)
 
 
 def _stage6_tables_meta() -> dict:

@@ -1943,6 +1943,31 @@
     .rail-tabs .tab{min-height:44px}
   }
 
+  /* ============================================================
+     Round 17 — 'what moved' strip (owner directive 2026-09-10)
+     The headline win% is intentionally hedged near-even (Round 14's
+     confidence-tiered reveal + the coin_flip badge) — the owner's
+     complaint is that it doesn't visibly respond when formation/joiners
+     change. These three tiles surface the raw signals that DO move on
+     every run (battle-sim hold rate, casualty margin, joiner-aware paper
+     strength), directly under the verdict. Parchment world only: reuses
+     .fc-part's own padding/border-top/background, the existing inner-well
+     recipe (rgba(255,255,255,.55) fill + rgba(106,86,71,.18) hairline),
+     and the locked ice/ember faction tokens for the margin sign.
+     ============================================================ */
+  .whatmoved .wm-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .whatmoved .wm-tile{min-width:0;background:rgba(255,255,255,.55);
+    border:1px solid rgba(106,86,71,.18);border-radius:8px;padding:10px 12px}
+  .whatmoved .wm-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:#8d6d56;margin-bottom:4px}
+  .whatmoved .wm-val{font-family:var(--disp);font-size:20px;font-weight:700;
+    color:#6a5647;line-height:1.2}
+  .whatmoved .wm-sub{font-family:var(--body);font-size:12px;color:#9a806c;margin-top:2px}
+  .whatmoved .wm-foot{font-family:var(--body);font-size:12px;color:#9a806c;margin-top:10px}
+  .whatmoved .wm-ice{color:#2EA1F2}
+  .whatmoved .wm-ember{color:#EF5F5F}
+  @media (max-width:700px){ .whatmoved .wm-row{grid-template-columns:1fr} }
+
   </style>
 </head>
 <body>
@@ -2132,6 +2157,18 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- what moved (Round 17, owner directive 2026-09-10): hold-rate, casualty
+           margin, and joiner-aware paper strength move on every run even when the
+           headline win% is intentionally hedged near-even. -->
+      <div class="fc-part whatmoved" id="whatMoved" hidden>
+        <div class="wm-row">
+          <div class="wm-tile"><div class="wm-eyebrow">Battle sim</div><div class="wm-val" id="wmHold">—</div><div class="wm-sub" id="wmHoldSub">you win — of — runs</div></div>
+          <div class="wm-tile"><div class="wm-eyebrow">Casualty margin</div><div class="wm-val" id="wmMargin">—</div><div class="wm-sub" id="wmMarginSub">enemy losses − yours</div></div>
+          <div class="wm-tile"><div class="wm-eyebrow">Paper strength</div><div class="wm-val" id="wmStrength">—</div><div class="wm-sub" id="wmStrengthSub">joiners included</div></div>
+        </div>
+        <div class="wm-foot" id="wmFoot"></div>
       </div>
 
       <!-- outcome quality (moved to slot #2, right after the verdict) -->
@@ -2570,6 +2607,37 @@ function buildArmy(animate){
   const a=FORECAST.army_losses;
   vdist($('#armyDist'), a.own.counts, a.enemy.counts, animate);
   setText('#armyMedMe', Math.round(a.own.mean)+'%'); setText('#armyMedFoe', Math.round(a.enemy.mean)+'%');
+}
+// 'what moved' strip (Round 17): the three signals that move on every run even
+// when the headline win% is hedged near-even. Hides itself on any non-turn-engine
+// forecast (FORECAST.sim / hold_rate missing) rather than showing stale zeros.
+const fmtSigned=(x,decimals)=>(x<0?'−':'+')+Math.abs(x).toFixed(decimals);
+function buildWhatMoved(){
+  const wrap=$('#whatMoved'); if(!wrap) return;
+  const sim=FORECAST&&FORECAST.sim;
+  if(!sim||sim.hold_rate==null){ wrap.hidden=true; return; }
+  const n=FORECAST.n, p=sim.hold_rate.p;
+  setText('#wmHold', Math.round(pctN(p))+'%');
+  setText('#wmHoldSub', 'you win '+Math.round(p*n)+' of '+n+' runs');
+  const cm=sim.casualty_margin||{}, mean=cm.mean, p5=cm.p5, p95=cm.p95;
+  const marginEl=$('#wmMargin');
+  if(marginEl){
+    marginEl.textContent=fmtSigned(mean*100,1)+' pts';
+    marginEl.classList.remove('wm-ice','wm-ember'); marginEl.classList.add(mean>=0?'wm-ice':'wm-ember');
+  }
+  setText('#wmMarginSub', 'p5–p95: '+(p5*100).toFixed(0)+' to '+(p95*100).toFixed(0)+' pts');
+  const ratioOwn=(FORECAST.strength||{}).ratio_own;
+  setText('#wmStrength', fmtSigned((ratioOwn-1)*100,1)+'%');
+  setText('#wmStrengthSub', 'joiners included');
+  const disp=FORECAST.display||{}, branch=disp.branch, stability=disp.stability;
+  const FOOT_BY_BRANCH={
+    near_even:'Your side wins at '+Math.round(pctN(stability))+'% of ±20% strength shifts — the headline is hedged on purpose.',
+    decisive_disagree:'Paper strength and the battle sim disagree — the headline leans toward paper strength.',
+    decisive_agree_knife_edge:'Both measures agree, but a small swing could flip it.',
+    decisive_agree:'Paper strength and the battle sim agree.'
+  };
+  setText('#wmFoot', FOOT_BY_BRANCH[branch]||'');
+  wrap.hidden=false;
 }
 const CLASS_LABEL={Infantry:'Infantry Lost',Lancer:'Lancers Lost',Marksman:'Marksmen Lost'};
 function buildClasses(animate){ const g=$('#classGrid'); g.innerHTML='';
@@ -3667,7 +3735,7 @@ function renderCharts(animate,celebrate){
   setVerdict(celebrate);
   document.querySelectorAll('#obar .oseg').forEach((s,i)=>{ const t=s.dataset.b;
     if(animate){s.style.flexBasis='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{s.style.transitionDelay=(i*80)+'ms';s.style.flexBasis=t;}));} else s.style.flexBasis=t; });
-  buildArmy(animate); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildKillBreakdown(animate); buildSkillTelemetry(animate); renderMeta(celebrate);
+  buildArmy(animate); buildWhatMoved(); buildClasses(animate); buildRounds(animate); buildCats(animate); buildTimeline(animate); buildKillBreakdown(animate); buildSkillTelemetry(animate); renderMeta(celebrate);
 }
 
 function setVerdict(celebrate){
@@ -3886,10 +3954,12 @@ function initForecastTabs(){
   const oq=allParts.find(p=>{ const h=p.querySelector(':scope > .h'); return h && /outcome quality/i.test(h.textContent); });
   if(verdict && oq){ while(oq.firstChild) verdict.appendChild(oq.firstChild); oq.remove(); }
   // 2) tab groups — Timeline is first/default and also holds Battle length as its last box
+  //    ('what moved', Round 17, is excluded here too — like the verdict, it must stay
+  //    always-visible right under the headline, never buried behind a tab click)
   const groups=[{name:'Timeline', ids:['timelinePart'], match:['battle length']},
                 {name:'Kills and Losses', ids:['killMatrixPart'], match:['troops lost']},
                 {name:'Skills', ids:['skillTelemetryPart'], match:['skill details']}];
-  const tabParts=[...fc.querySelectorAll(':scope > .fc-part')].filter(p=>!p.querySelector(':scope > .verdict'));
+  const tabParts=[...fc.querySelectorAll(':scope > .fc-part')].filter(p=>!p.querySelector(':scope > .verdict') && p.id!=='whatMoved');
   if(tabParts.length<2) return;
   const group=el('div','tabgroup forecast-tabs'), bar=el('div','tabbar'), panels=el('div','tabpanels');
   bar.setAttribute('role','tablist');

@@ -115,4 +115,8 @@ def forecast_to_dict(fc: Forecast) -> dict:
         "rounds": {k: _dist(v) for k, v in fc.rounds.items()},
         "skill_telemetry": _skill_telemetry(fc.skill_telemetry),
         "battle_timeline": fc.timeline,
+        "sim": {"hold_rate": _prop(fc.sim_hold_rate) if fc.sim_hold_rate else None,
+                "casualty_margin": fc.casualty_margin},
+        "strength": {"ratio_own": fc.strength_ratio_own},
+        "display": {"branch": fc.display_branch, "stability": fc.call_stability},
     }

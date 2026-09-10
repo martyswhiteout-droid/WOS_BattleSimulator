@@ -381,6 +381,20 @@ class Forecast:
     confidence: str = "directional"
                                         #   real band. False -> model_error is a coarse floor; render the UI
                                         #   as "directional", NOT "± N%" (engine_meta QA note).
+    # Surface-what-varies fields (winprob.hybrid_win_prob_ex, 2026-09-10). Turn
+    # engine only; None on every other path. sim_hold_rate is the RAW turn-engine
+    # win fraction (what the headline used to collapse to 0/1); casualty_margin
+    # is the per-run (enemy loss% - own loss%) mean/p5/p95; strength_ratio_own is
+    # the joiner-aware effective ratio (winprob.effective_ratio); display_branch
+    # names which hybrid_win_prob_ex branch produced p_win; call_stability is the
+    # fraction of own-strength perturbations (kernel.call_stability) at which own
+    # wins -- the quantity that now drives the near-even headline instead of the
+    # collapsed sim bit.
+    sim_hold_rate: Proportion | None = None
+    casualty_margin: dict | None = None
+    strength_ratio_own: float | None = None
+    display_branch: str | None = None
+    call_stability: float | None = None
 
 
 def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
@@ -388,7 +402,12 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
               stochastic: bool = True, severe_fraction: float = 0.35,
               calibrated: bool = False, near_even: bool = False,
               confidence: str = "directional",
-              win_prob_override: float | None = None) -> Forecast:
+              win_prob_override: float | None = None,
+              sim_hold_rate: Proportion | None = None,
+              casualty_margin: dict | None = None,
+              strength_ratio_own: float | None = None,
+              display_branch: str | None = None,
+              call_stability: float | None = None) -> Forecast:
     n = len(records)
     own, enemy = ('A', 'D') if own_is_attacker else ('D', 'A')
     wins = sum(1 for r in records if r.winner == own)
@@ -453,4 +472,7 @@ def summarize(records, own_is_attacker: bool, engine_model_error: float = 0.13,
         timeline=_battle_timeline(records, own_is_attacker),
         engine_model_error=engine_model_error, engine_path=engine_path,
         engine_note=engine_note, stochastic=stochastic, severe_fraction=severe_fraction,
-        calibrated=calibrated, near_even=near_even, confidence=confidence)
+        calibrated=calibrated, near_even=near_even, confidence=confidence,
+        sim_hold_rate=sim_hold_rate, casualty_margin=casualty_margin,
+        strength_ratio_own=strength_ratio_own, display_branch=display_branch,
+        call_stability=call_stability)

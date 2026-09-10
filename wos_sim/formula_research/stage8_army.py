@@ -225,19 +225,20 @@ def predict_army_cross_class(att: dict, dfn: dict, *, att_cls: str, def_cls: str
                 f"{att_cls}->{def_cls}"}
     alpha, beta = rates(att, dfn)
     ba = (beta / alpha) * R
-    # could the winner flip inside the measured uncertainty?
-    if R_unc and abs(1.0 - ba) <= R_unc:
-        return {"winner": "uncertain", "R": R,
-                "reason": f"beta/alpha={ba:.4f} is within the measured R spread "
-                          f"({R_unc:.2%}) of parity -- the winner is not determined "
-                          f"by the evidence"}
+    # Phase A (2026-07-28): near-parity is no longer a hard abstention. The
+    # measured log-ratio error (winprob_calibrated: sigma = 0.0197) turns the
+    # margin into a CONTINUOUS win probability, which is the honest expression of
+    # "could the winner flip" -- better than refusing, and better than forcing a
+    # coin flip. The flag below lets callers label it; the probability does the work.
+    near_parity = bool(R_unc and abs(1.0 - ba) <= R_unc)
     if ba < 1.0:
         w, f, n = "attacker", math.sqrt(1.0 - ba), n_att
     else:
         w, f, n = "defender", math.sqrt(max(0.0, 1.0 - 1.0 / ba)), n_def
     return {"winner": w, "winner_fraction": f, "survivors": f * n,
             "alpha": alpha, "beta": beta, "beta_over_alpha": ba, "R": R,
-            "R_uncertainty": R_unc, "mode": "continuum-cross-class"}
+            "R_uncertainty": R_unc, "near_parity": near_parity,
+            "mode": "continuum-cross-class"}
 
 
 def eff(panel_pct: dict, base: dict) -> dict:

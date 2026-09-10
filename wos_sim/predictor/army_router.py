@@ -57,10 +57,8 @@ ARMY_MIN_TROOPS = 1000
 #: The garrison anchor's residual (+8.93%) governs -- see the module docstring.
 ARMY_MODEL_ERROR = 0.10
 
-#: A battle this close to mutual annihilation is reported as a coin flip rather
-#: than a confident call (the winner fraction is sqrt(1 - beta/alpha), so a small
-#: fraction means a knife-edge stat ratio).
-COIN_FLIP_FRACTION = 0.10
+# (COIN_FLIP_FRACTION retired 2026-07-28: the coin-flip label now follows the
+#  DERIVED probability -- |p - 0.5| < 0.10 -- not a survivor-fraction threshold.)
 
 
 def _deployed(side: SideProfile) -> list:
@@ -173,15 +171,20 @@ def try_army(matchup: Matchup):
         winner = res["winner"]
         frac = res.get("winner_fraction", 0.0)
         if winner == "uncertain":
-            # No winner may be inferred. Two causes, both principled: the solver hit
-            # its numerical limit with both sides alive (QA P1 #1 / GAME_RULES s.424),
-            # or beta/alpha sits inside the MEASURED R uncertainty so the evidence
-            # cannot distinguish the outcomes (the exp5 near-parity lesson).
+            # off-tier / unmeasured pair / solver limit: no winner may be inferred
             return None, f"(army law abstained: {res.get('reason', 'unresolved')})"
-        if winner == "mutual" or frac < COIN_FLIP_FRACTION:
-            coin_flip, winner = True, (winner if winner != "mutual" else "attacker")
-        else:
-            coin_flip = False
+        # Phase A (2026-07-28): the displayed probability is P(attacker wins) under
+        # the law's MEASURED log-ratio error -- Phi(-ln(beta/alpha)/sigma), sigma from
+        # winprob_calibrated.json. Continuous and derived: a decisive battle reads
+        # 99%+, a near-parity one 60-80%, and the coin_flip label applies inside
+        # 40-60%. This replaces the old p=1.0 / forced-0.5 pair (QA P1-3).
+        import math as _math
+        from . import winprob_calibrated as _wpc
+        p_att = _wpc.army_law_p_attacker(_math.log(res["beta_over_alpha"]))
+        p_own = p_att if matchup.own_is_attacker else 1.0 - p_att
+        coin_flip = abs(p_own - 0.5) < 0.10
+        if winner == "mutual":
+            winner = "attacker"
 
         att_surv = res["survivors"] if winner == "attacker" else 0.0
         def_surv = res["survivors"] if winner == "defender" else 0.0
@@ -199,17 +202,15 @@ def try_army(matchup: Matchup):
                 f"configurations (one misses by 8.9%), so treat both the winner and the "
                 f"magnitude as provisional; no turn count is claimed (the army clock is "
                 f"unmeasured).")
+        note += (f" Win% = P(this winner survives the law's measured error, "
+                 f"sigma={_wpc.calibration()['army_law']['sigma_ln_beta_over_alpha']:.4f}).")
         if coin_flip:
-            note = ("Army-scale attrition law (stage8.1): the two sides are within a "
-                    "knife-edge stat ratio -- near-mutual annihilation, called a coin flip.")
-            return summarize([record], own_is_attacker=matchup.own_is_attacker,
-                             engine_model_error=ARMY_MODEL_ERROR, engine_path="army_law",
-                             engine_note=note, stochastic=False, calibrated=False,
-                             near_even=True, confidence="coin_flip",
-                             win_prob_override=0.5), ""
+            note += " Inside the 40-60% band: a coin flip either side can take."
         return summarize([record], own_is_attacker=matchup.own_is_attacker,
                          engine_model_error=ARMY_MODEL_ERROR, engine_path="army_law",
                          engine_note=note, stochastic=False, calibrated=False,
-                         near_even=False, confidence="directional"), ""
+                         near_even=coin_flip,
+                         confidence=("coin_flip" if coin_flip else "directional"),
+                         win_prob_override=p_own), ""
     except Exception as e:                                       # noqa: BLE001
         return None, f"(army law abstained: exception:{type(e).__name__})"
