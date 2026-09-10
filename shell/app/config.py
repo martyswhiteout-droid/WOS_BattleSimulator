@@ -83,14 +83,14 @@ class Settings(BaseSettings):
     # D-014/D-024) so main.py's outer BodyLimitMiddleware never rejects a
     # request Agent C's own (correct) OCR-specific validation would accept.
     MAX_OCR_BODY_BYTES: int = 16 * 1024 * 1024 + 65_536   # 2026-08-29: 6 phone shots
-    # 2026-09-10 (owner report): screenshots forwarded through chat apps arrive
-    # ~230px wide — digits ~4px tall, unreadable by any engine (a 4x upscale
-    # still read 5/24), and each attempt burned ~90s in the Gemini rescue
-    # tier before failing. Real phone captures are 1080-1290px wide; a tight
-    # panel crop from one is still >600. Anything narrower is rejected up
-    # front (422 image_too_small) with the measured width so the client can
-    # say exactly what to do.
-    MIN_OCR_IMAGE_WIDTH: int = 500
+    # 2026-09-11 (owner: "what if the screenshots are not from phone?"):
+    # small screenshots (chat-forwarded copies, small emulator windows) are
+    # UPSCALED to OCR_UPSCALE_TARGET_WIDTH before the ladder instead of being
+    # rejected — a 230px Stat Bonuses panel reads 24/24 that way (RapidOCR +
+    # Gemini gap-fill). Only images too small to carry digits at all are
+    # refused up front (422 image_too_small, with the measured width).
+    MIN_OCR_IMAGE_WIDTH: int = 120
+    OCR_UPSCALE_TARGET_WIDTH: int = 1000
 
     # --- derived helpers (properties, not env keys) -----------------------
 
@@ -181,7 +181,8 @@ for _key in ("ENV", "BASE_URL", "CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY",
              "MIN_TROOPS_PER_SIDE", "FREE_SIMS_PER_DAY",
              "PRO_SIMS_PER_DAY", "PRO_OCR_PER_DAY", "BURST_PER_MIN",
              "GLOBAL_CONCURRENCY", "SWEEP_MIN_EVENTS", "IP_HASH_SALT",
-             "MAX_BODY_BYTES", "MAX_OCR_BODY_BYTES", "MIN_OCR_IMAGE_WIDTH"):
+             "MAX_BODY_BYTES", "MAX_OCR_BODY_BYTES", "MIN_OCR_IMAGE_WIDTH",
+             "OCR_UPSCALE_TARGET_WIDTH"):
     setattr(Settings, _key.lower(), _alias(_key))
 
 

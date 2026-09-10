@@ -97,6 +97,25 @@ def _is_image(raw: bytes) -> bool:
     )
 
 
+def _upscale_to_width(image: bytes, target: int) -> bytes:
+    """LANCZOS-upscale *image* so its width is at least *target* (aspect kept,
+    re-encoded as PNG). Returns the original bytes unchanged when it is already
+    wide enough or cannot be decoded (the ladder reports undecodable input)."""
+    try:
+        from PIL import Image as _Image
+        with _Image.open(io.BytesIO(image)) as im:
+            if im.size[0] >= target:
+                return image
+            scale = target / float(im.size[0])
+            big = im.convert("RGB").resize(
+                (target, max(1, int(round(im.size[1] * scale)))), _Image.LANCZOS)
+            out = io.BytesIO()
+            big.save(out, format="PNG")
+            return out.getvalue()
+    except Exception:
+        return image
+
+
 def _smallest_width(images) -> int | None:
     """Pixel width of the narrowest upload, or None if no header could be read
     (an undecodable image is the ladder's problem to report, not this guard's)."""
@@ -193,12 +212,19 @@ async def panel_upload(
     # (forwarded/compressed copies) — see config.MIN_OCR_IMAGE_WIDTH. Measured
     # before any engine runs, so a hopeless upload costs milliseconds, not the
     # ladder's full Gemini-timeout budget.
-    min_width = int(getattr(get_settings(), "MIN_OCR_IMAGE_WIDTH", 500) or 0)
+    min_width = int(getattr(get_settings(), "MIN_OCR_IMAGE_WIDTH", 120) or 0)
     if min_width > 0:
         too_small = _smallest_width(images)
         if too_small is not None and too_small < min_width:
             return JSONResponse(status_code=422, content={
                 "error": "image_too_small", "width": too_small, "min_width": min_width})
+    # 2026-09-11: small-but-readable screenshots (chat-forwarded copies, small
+    # emulator windows — "not from phone") are upscaled to the ladder's working
+    # width rather than refused; the ladder's Gemini gap-fill reads what
+    # RapidOCR can't at that size. Never downscales.
+    target = int(getattr(get_settings(), "OCR_UPSCALE_TARGET_WIDTH", 1000) or 0)
+    if target > 0:
+        images = [_upscale_to_width(image, target) for image in images]
 
     # QA D-019: every malformed-input failure in the panel stack is a ValueError
     # (CalibrationError/MissingSpecialsError included) — a client-input problem,

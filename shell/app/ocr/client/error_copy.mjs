@@ -13,13 +13,14 @@ export function mapError(status, body) {
       cta: 'upgrade',
     };
   }
-  // 2026-09-10 (owner report): forwarded/compressed screenshots arrive ~230px
-  // wide — unreadable by any engine. Say the width and the fix, instantly.
+  // 2026-09-11: only images too small to carry digits at all are refused
+  // (smaller ones are upscaled and read). Source-neutral wording — screenshots
+  // come from phones, emulators, and chat apps alike.
   if (status === 422 && code === 'image_too_small') {
-    const w = body && body.width ? `${body.width} px wide` : 'too small';
+    const w = body && body.width ? `${body.width} px wide` : 'too small to read';
     return {
       heading: 'Screenshot too small',
-      body: `This one is ${w}. Upload the original from your phone, not a forwarded or compressed copy.`,
+      body: `This one is ${w}. Use a larger copy of the screenshot.`,
       cta: 'retake',
     };
   }

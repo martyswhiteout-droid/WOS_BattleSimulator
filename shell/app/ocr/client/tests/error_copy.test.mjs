@@ -69,6 +69,7 @@ test('2026-09-10: 422 image_too_small says the width and the fix (retake), never
   const m = mapError(422, { error: 'image_too_small', width: 230, min_width: 500 });
   assert.equal(m.heading, 'Screenshot too small');
   assert.match(m.body, /230 px wide/);
-  assert.match(m.body, /original from your phone/);
+  assert.match(m.body, /larger copy/);
+  assert.doesNotMatch(m.body, /phone/);   // source-neutral (owner 2026-09-11)
   assert.equal(m.cta, 'retake');
 });

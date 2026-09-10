@@ -343,20 +343,45 @@ def _png_of_width(width: int, height: int = 40) -> bytes:
     return buf.getvalue()
 
 
-def test_tiny_screenshot_is_rejected_instantly_with_its_width(client_paid):
+def test_unreadably_small_screenshot_is_rejected_instantly_with_its_width(client_paid):
     resp = client_paid.post("/shell/ocr/panel",
-                       files=[("file", ("shot.png", _png_of_width(230), "image/png"))],
-                       data={"side": "you", "panel": "battle"})
+                            files=[("file", ("shot.png", _png_of_width(100), "image/png"))],
+                            data={"side": "you", "panel": "battle"})
     assert resp.status_code == 422
     body = resp.json()
     assert body["error"] == "image_too_small"
-    assert body["width"] == 230
-    assert body["min_width"] == 500
+    assert body["width"] == 100
+    assert body["min_width"] == 120
 
 
-def test_min_width_guard_lets_phone_sized_images_through_to_the_engine(client_paid):
-    # 1080 wide clears the guard; the mock/ladder then handles content.
+def test_small_but_readable_screenshot_is_upscaled_not_rejected(client_paid, monkeypatch):
+    # 2026-09-11 (owner: "not from phone"): a 230px chat-forwarded copy must
+    # reach the engine — upscaled to the working width, never refused.
+    seen = {}
+    async def fake_ladder(images, side, panel, *, settings=None):
+        from PIL import Image
+        import io as _io
+        seen["widths"] = [Image.open(_io.BytesIO(i)).size[0] for i in images]
+        return {"status": "ok", "panel_type": "battle", "requested_side": side, "stats": {},
+                "specials": [], "specials_observed": "none", "unreadable_fields": [],
+                "warnings": [], "field_engine": {}, "engines_used": ["rapidocr"]}
+    import shell.app.ocr.panel_router as pr
+    monkeypatch.setattr(pr, "extract_panel_production", fake_ladder)
+    monkeypatch.setattr(pr, "_mock_enabled", lambda: False)
     resp = client_paid.post("/shell/ocr/panel",
-                       files=[("file", ("shot.png", _png_of_width(1080, 200), "image/png"))],
-                       data={"side": "you", "panel": "battle"})
-    assert resp.status_code != 422 or resp.json().get("error") != "image_too_small"
+                            files=[("file", ("shot.png", _png_of_width(230, 60), "image/png"))],
+                            data={"side": "you", "panel": "battle"})
+    assert resp.status_code == 200, resp.text
+    assert seen["widths"] == [1000]
+
+
+def test_upscale_helper_keeps_aspect_and_never_downscales():
+    from PIL import Image
+    import io as _io
+    from shell.app.ocr.panel_router import _upscale_to_width
+    small = _png_of_width(230, 100)
+    big = Image.open(_io.BytesIO(_upscale_to_width(small, 1000)))
+    assert big.size == (1000, 435)
+    wide = _png_of_width(1206, 50)
+    assert _upscale_to_width(wide, 1000) == wide      # untouched bytes
+    assert _upscale_to_width(b"not an image", 1000) == b"not an image"
