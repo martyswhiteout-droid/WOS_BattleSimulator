@@ -120,3 +120,26 @@ for label, o, p in [("saved", own, {}), ("4-6-0", copy.deepcopy(own), {}), ("def
 ```
 
 Related: `ENGINE_HANDOFF_joiner_stacking.md`, `wos_sim/formula_research/STAGE8_SPEC.md`, `wos_sim/formula_research/STAGE8_1_FINDINGS.md`, `wos_sim/predictor/winprob_calibrated.py` (Phase A rationale and the three failed margin-sensitivity attempts), `wos_sim/data/golden_baseline.json`.
+
+---
+
+## Addendum (2026-09-10, later the same day) — Cara S3 bypass is under-modelled; the formation ranking is not robust to it
+
+Found while double-checking a formation recommendation Martin challenged ("Cara's skill kills Lancers and Marksmen directly").
+
+**Wiki text (skill_display/hero_skills.json, Cara skill_3 "Witch's Wrath"):** "she effortlessly bypasses the enemy infantry on the frontline. Her Marksmen deal 8–40% extra damage to enemy Lancers and 4–20% extra damage to enemy Marksmen every two attacks."
+
+**Engine today (`pvp_turn_engine.py`):** `_backline_targets("cara","skill_3")` → (Lancer, Marksman), so the bypass IS recognised, but it is emitted as a hero-skill `DamagePacket` with `amount = 0.4 × K_skill(0.15) × cara_burst(1.0)` = **6% of a Marksman volley at Lancers (3% at Marksmen) every 2 strikes, while the normal volley still lands on the Infantry wall**. By contrast the Lancers' Ambusher is a troop skill: a **full extra volley** (`ambush_frac = 1.0`, no K_skill) at the enemy Marksmen on 20% of turns. `hero_roster.py` (research model) and `HERO_SKILL_AUDIT.md` #21 both already record "bypass-to-backline not modelled" for Cara. The asymmetry favours Lancers in every garrison-vs-Marksman-rally comparison.
+
+**Sensitivity (garrison Hank/Estrella/Cara + Gatot/Wu Ming/Ling Xue/Nora vs 5-1-4 rally, symmetric engine own-loss %, n=300):**
+
+| variant | best formations | 4-6-0 | 5-5-0 | 5-1-4 |
+|---|---|---|---|---|
+| engine as-is (cara_burst 1, cm 1.1) | 4-6-0 47.2, 5-5-0 48.1 | 47.2 | 48.1 | 60.1 |
+| cara_burst 12 (≈0.7 volley redirected) | 4-2-4 46.0, 4-6-0 47.2, 4-3-3 47.8 | 47.2 | 48.1 | 48.8 |
+| cara_burst 23 (≈full volley +40%) | 4-2-4 40.3, 4-3-3 41.2, 3-3-4 42.9 | 47.2 | 48.1 | 43.8 |
+| cm 2.0 (counter ×2) | 5-0-5, 5-2-3, 4-2-4, 5-1-4 (hold .93–.97) | hold .81 | hold .72 | hold .93 |
+
+Robust across all variants: a 40–50% Infantry wall; thin (≤20%) and very thick (≥70%) walls always lose more. The Lancer-vs-Marksman split is entirely model-dependent.
+
+**Ask for the Engine Builder:** model Witch's Wrath as a *redirect* — every 2nd Marksman attack targets the backline (Lancers, then Marksmen) at +40%/+20% instead of the front, as a troop-skill-class packet without the K_skill hero-packet scaling — and revisit whether K_skill (fitted to A4's per-skill kill columns) should apply to targeting skills at all. Real per-class kill columns exist in `pvp_t12_report_003/004.json` (kills/troop: Lancer 0.50–0.71, Marksman 0.32–0.45, Infantry ≈0.04) for validation of class kill shares; a single Cara-led garrison report with Skill Details would pin the bypass magnitude directly (Cara S3 kills ≈5% of Marksman kills ⇒ current model; ≈half ⇒ redirect).

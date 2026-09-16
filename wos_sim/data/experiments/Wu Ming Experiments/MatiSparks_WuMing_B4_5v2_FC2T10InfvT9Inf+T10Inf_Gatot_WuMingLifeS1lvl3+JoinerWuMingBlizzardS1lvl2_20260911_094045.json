@@ -1,0 +1,331 @@
+{
+  "schema_version": 2,
+  "_type": "controlled_garrison_skill_experiment",
+  "type": 1,
+  "battle_date": "2026-09-11 09:40:45",
+  "recommended_filename": "MatiSparks_WuMing_B4_5v2_FC2T10InfvT9Inf+T10Inf_Gatot_WuMingLifeS1lvl3+JoinerWuMingBlizzardS1lvl2_20260911_094045.json",
+  "setup": "Wu Ming test Battle 4: the same attack into the same 2-Infantry garrison, captained by [JOE]MatiLife's Wu Ming (Shadow's Evasion Lv. 3) with [JOE]MatiBlizzard joining under a Wu Ming flag (Shadow's Evasion Lv. 2); attacker wins on turn 141 (Gatot Skill 2).",
+  "outcome": {
+    "winner": "attacker",
+    "attacker_result": "victory",
+    "defender_result": "defeat"
+  },
+  "turn_inference": {
+    "turns": 141,
+    "turns_range": [
+      141,
+      141
+    ],
+    "method": "gatot_kings_bestowal_trigger_count",
+    "clock_hero": "Gatot",
+    "cadence": "King's Bestowal (Gatot Skill 2) triggers each time Gatot's Infantry attacks; the attacker fields a single Infantry unit, so one trigger per turn",
+    "trigger_count": 141,
+    "assumptions": [
+      "Skill Details shows attacker Gatot Skill 2 (King's Bestowal) Triggered = 141.",
+      "Per the established Gatot-instrument convention (MuellerAlpaca_Gatot_v4/v5, Lab Rat, FarSeerGatot_v3) and Martin's instruction for this set, the King's Bestowal trigger count is the exact number of turns until the battle ended."
+    ]
+  },
+  "attacker": {
+    "name": "[Lns]MatiSparks",
+    "state": null,
+    "alliance": "Lns",
+    "coords": "X:746 Y:497",
+    "role": "attacker",
+    "power_loss": 0,
+    "troops": 5,
+    "losses": 0,
+    "injured": 0,
+    "lightly_injured": 0,
+    "survivors": 5,
+    "kills": 2,
+    "deployed_class": "Infantry",
+    "tier_display": "FC2 Lv. 10.0",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 546.6,
+        "Defense": 547.6,
+        "Lethality": 106.4,
+        "Health": 111.6
+      },
+      "Lancer": {
+        "Attack": 179.4,
+        "Defense": 183.2,
+        "Lethality": 115.9,
+        "Health": 121.2
+      },
+      "Marksman": {
+        "Attack": 197.1,
+        "Defense": 198.7,
+        "Lethality": 143.9,
+        "Health": 146.2
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Left (attacker) column of the Stat Bonuses panel; all 12 rows visible. Identical in every independently captured battle (Battles 1-4)."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Gatot",
+        "level": 71,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Gatot",
+        "slot": "Skill 1",
+        "name": "Golden Guard",
+        "level": null,
+        "effect": "Increases Gatot's Infantry Defense by 6%/12%/18%/24%/30% at Lv 1-5; this report does not show the skill level.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 2",
+        "name": "King's Bestowal",
+        "level": null,
+        "effect": "Each time Gatot's Infantry attacks, grants them a Shield equal to Attack x 6%/12%/18%/24%/30% (Lv 1-5) for 1 turn; skill level not shown. Trigger count is this battle's turn clock.",
+        "triggers": 141,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Gatot",
+        "slot": "Skill 3",
+        "name": "Royal Legion",
+        "level": null,
+        "effect": "Reduces enemy Attack by 5%/10%/15%/20%/25% at Lv 1-5; skill level not shown.",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "defender fields only Infantry"
+      },
+      {
+        "class": "Infantry",
+        "skill": "Bands of Steel",
+        "unlock": "T7",
+        "effect": "+10% Defense against Lancers",
+        "applies_in_this_battle": false,
+        "reason": "defender fields only Infantry"
+      }
+    ],
+    "specials": []
+  },
+  "defender": {
+    "name": "[JOE]MatiLife",
+    "state": null,
+    "alliance": "JOE",
+    "coords": "X:745 Y:494",
+    "role": "garrison",
+    "power_loss": -116,
+    "troops": 2,
+    "losses": 0,
+    "injured": 2,
+    "lightly_injured": 0,
+    "survivors": 0,
+    "kills": 0,
+    "deployed_class": "Infantry",
+    "tier_display": "Lv. 9.5",
+    "t12_skill_levels": null,
+    "stats_pct": {
+      "Infantry": {
+        "Attack": 351.2,
+        "Defense": 336.6,
+        "Lethality": 114.4,
+        "Health": 113.6
+      },
+      "Lancer": {
+        "Attack": 181.2,
+        "Defense": 163.4,
+        "Lethality": 108.8,
+        "Health": 106.5
+      },
+      "Marksman": {
+        "Attack": 198.6,
+        "Defense": 182.2,
+        "Lethality": 145.6,
+        "Health": 142.1
+      }
+    },
+    "stats_capture": {
+      "attack_defense": "visible",
+      "lethality_health": "visible",
+      "notes": "Right (defender) column; all 12 rows visible; identical to Battle 3 on every row."
+    },
+    "lead_heroes": {
+      "Infantry": {
+        "name": "Wu Ming",
+        "level": 1,
+        "stars": null
+      }
+    },
+    "hero_skills": [
+      {
+        "hero": "Wu Ming",
+        "slot": "Skill 1",
+        "name": "Shadow's Evasion",
+        "level": 3,
+        "effect": "Reduces his Infantry's damage taken from normal attacks by 15% and from skills by 18% (tooltip Lv. 3; MatiLife's Wu Ming, garrison Infantry hero).",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Wu Ming",
+        "slot": "Skill 2",
+        "name": "Crescent Uplift",
+        "level": 2,
+        "effect": "Increases damage dealt by 8% for all troops (tooltip Lv. 2; MatiLife's Wu Ming).",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Wu Ming",
+        "slot": "Skill 3",
+        "name": "Elemental Resonance",
+        "level": 1,
+        "effect": "Increases skill damage dealt by 5% for all troops (tooltip Lv. 1; MatiLife's Wu Ming).",
+        "triggers": 1,
+        "kills": 0,
+        "status": "identified"
+      },
+      {
+        "hero": "Wu Ming",
+        "slot": "Skill 1 (joiner flag hero of [JOE]MatiBlizzard)",
+        "name": "Shadow's Evasion",
+        "level": 2,
+        "effect": "Reduces Infantry damage taken from normal attacks by 10% and from skills by 12% (tooltip Lv. 2). A joiner contributes only its flag hero's Skill 1 (GAME_RULES.md s.3); joiner skills are not itemised in Skill Details.",
+        "triggers": null,
+        "kills": null,
+        "status": "identified"
+      }
+    ],
+    "troop_passives_active": [
+      {
+        "class": "Infantry",
+        "skill": "Master Brawler",
+        "unlock": "T1",
+        "effect": "+10% attack damage to Lancers",
+        "applies_in_this_battle": false,
+        "reason": "attacker fields only Infantry"
+      },
+      {
+        "class": "Infantry",
+        "skill": "Bands of Steel",
+        "unlock": "T7",
+        "effect": "+10% Defense against Lancers",
+        "applies_in_this_battle": false,
+        "reason": "attacker fields only Infantry"
+      }
+    ],
+    "specials": [],
+    "participants": [
+      {
+        "player": "[JOE]MatiLife",
+        "is_captain": true,
+        "flag_hero": "Wu Ming",
+        "troops": 1,
+        "kills": 0,
+        "power_loss": -50,
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": null,
+            "kills": 0,
+            "losses": 0,
+            "injured": 1,
+            "lightly_injured": 0,
+            "survivors": 0
+          }
+        ]
+      },
+      {
+        "player": "[JOE]MatiBlizzard",
+        "is_captain": false,
+        "flag_hero": "Wu Ming",
+        "troops": 1,
+        "kills": 0,
+        "power_loss": -66,
+        "rows": [
+          {
+            "troop_type": "Infantry",
+            "fc_badge": null,
+            "kills": 0,
+            "losses": 0,
+            "injured": 1,
+            "lightly_injured": 0,
+            "survivors": 0
+          }
+        ]
+      }
+    ],
+    "joiner_flags": [
+      "Wu Ming"
+    ]
+  },
+  "notes": [
+    "Source: E:/WOS/Screeenshots/WuMingTests.pdf, page 2, left column (slide heading 'Battle 4: 2x Wu Ming (MatiLife & MatiBlizzard)'); screens: Battle Overview, Troop Power Comparison, Stat Bonuses, Skill Details with the attacker participant card, Defender participants panel, one Wu Ming tooltip.",
+    "Battle location X:743 Y:493 (report banner). The attacker, its troops, its Stat Bonuses and the battle location are the same in all six Wu Ming battles; the defender always totals 2 Infantry, power loss -116, shown as one combined 'Lv. 9.5' icon.",
+    "Attacker troops: Troop Power Comparison shows one Infantry icon 'Lv. 10.0' x5 with a red crystal badge '2', recorded as FC2 T10 (FC-badge convention of the Alpaca 'FC1 Lv 1.0' files). FC2 is below FC3, so Crystal Shield (the first Infantry chance proc) is not unlocked.",
+    "Defender troops: wos_sim/troop_catalog.py TIER_POWER gives T9 = 50 and T10 = 66, so the only integer-tier pair with average Lv 9.5 and total power 116 is 1 T9 + 1 T10 Infantry. Battle 4's Defender panel shows the split: [JOE]MatiLife 1 troop (power -50, T9) and [JOE]MatiBlizzard 1 troop (power -66, T10).",
+    "Defender participants panel: [JOE]MatiLife - troops 1, kills 0, power -50, heroes Wu Ming (Lv. 1) + two empty slots, Infantry row kills 0 / losses 0 / injured 1 (shown '-1') / lightly injured 0 / survivors 0; [JOE]MatiBlizzard - troops 1, kills 0, power -66, heroes Wu Ming (Lv. 1) + two empty slots, same row values.",
+    "Garrison captain = [JOE]MatiLife (report header X:745 Y:494, first entry in the Defender panel, Stat Bonuses identical to MatiLife-led Battle 3). Joiner = [JOE]MatiBlizzard with Wu Ming as flag hero.",
+    "Wu Ming skills in play: the captain's (MatiLife) Wu Ming fires all three (Skill Details Triggered 1/1/1): Shadow's Evasion Lv. 3 (-15% normal / -18% skill damage taken), Crescent Uplift Lv. 2 (+8% damage dealt), Elemental Resonance Lv. 1 (+5% skill damage) - levels from Battle 3, unchanged per Martin. The joiner's (MatiBlizzard) Wu Ming contributes only Skill 1 (GAME_RULES.md s.3): Shadow's Evasion Lv. 2 (-10% normal / -12% skill damage taken; tooltip on this slide). Joiner skills are not itemised in Skill Details.",
+    "Gatot Skill 2 = 141 (Skill 1 = 1, Skill 3 = 1): the battle ended on turn 141.",
+    "Impact vs Battle 3 (130 turns): +11 turns (x1.085). Stat Bonuses are identical on all 24 values and the troops are the same, so this is the cleanest single-variable comparison in the set: adding MatiBlizzard's joiner Wu Ming (Shadow's Evasion Lv. 2). Vs control Battle 1 (69): +72 turns (x2.043).",
+    "Battle 5 repeats this setup with the joiner's Shadow's Evasion at Lv. 3: 146 turns (+5, x1.035); its slide re-uses this battle's overview, Stat Bonuses and Defender-panel images.",
+    "Outcome: attacker 0 losses, 0 injured, 5 survivors; defender 0 losses, 2 injured, 0 survivors. The attacker participant card (Skill Details footer) shows kills 2 = defender losses 0 + injured 2.",
+    "Type 1 (deterministic): Infantry only, T9-T10 with at most FC2 (no Crystal procs unlocked); Gatot's and Wu Ming's skills are fixed-effect or fixed-cadence (no chance procs)."
+  ],
+  "source_images": [
+    "E:/WOS/Screeenshots/WuMingTests.pdf",
+    "pdf_page_2_battle_4 (left column)",
+    "battle_overview",
+    "troop_power_comparison",
+    "stat_bonuses",
+    "skill_details",
+    "defender_participants",
+    "wu_ming_skill_tooltip: Shadow's Evasion Lv. 2 (same image as Battle 2)"
+  ],
+  "_extraction": {
+    "extracted_by": "claude-opus-5 (PyMuPDF native embedded-image extraction, LANCZOS upscaling, visual transcription)",
+    "timestamp": "2026-09-11",
+    "ocr_confidence": "high",
+    "manual_overrides": [
+      "Attacker troop badge '2' read as the Fire Crystal level; tier_display composed as 'FC2 Lv. 10.0' (precedent: 'FC1 Lv 1.0' Alpaca files).",
+      "Defender per-unit tiers (1 T9 + 1 T10) derived from power loss -116 and the Lv. 9.5 average via TIER_POWER; not displayed per unit.",
+      "Gatot skill names mapped by row order from the fixed Gatot kit (wos_sim/data/skill_display/hero_skills.json); Skill Details shows icons only.",
+      "Skill kills displayed as '-' recorded as 0.",
+      "Hero levels read from small hero-card text: Gatot 'Lv. 71', Wu Ming 'Lv. 1' (same reading in every crop).",
+      "Wu Ming skill names, levels and effects transcribed from the in-game tooltips placed on the slide.",
+      "Garrison captain set to [JOE]MatiLife (report header, first Defender-panel entry, Stat Bonuses identical to Battle 3); participant injured shown as '-1' recorded as 1."
+    ]
+  },
+  "_validation": {
+    "arithmetic_checks": "pass",
+    "missing": [
+      "attacker.hero_skills[Gatot].level (Skill Details shows no skill levels)",
+      "attacker.lead_heroes.Infantry.stars and defender Wu Ming stars (star row on hero cards not legible)",
+      "specials (the 'Notes on Special Bonuses' popup behind the Stat Bonuses '!' icon was not captured)",
+      "defender.participants[].rows[].fc_badge (troop-icon badge not legible)"
+    ],
+    "suspicions": [
+      "The captain's (MatiLife) Wu Ming levels are not re-shown on this slide (only MatiBlizzard's Shadow's Evasion Lv. 2 tooltip, the Battle 2 image); Skill 1/2/3 = Lv. 3/2/1 are carried from Battle 3 per Martin's 'no changes to their respective skills'."
+    ]
+  }
+}

@@ -161,3 +161,34 @@ def test_sign_guard_matches_point_sim(path):
         sim_p = dd["sim"]["hold_rate"]["p"]
         assert (fc.p_win.p >= 0.5) == (sim_p >= 0.5), (
             f"sign guard violated: displayed={fc.p_win.p:.3f} sim_hold={sim_p:.3f}")
+
+
+@pytest.mark.skipif(not os.path.exists(_GEN15), reason="Gen15_50_10_40 fixture absent")
+def test_knife_edge_cliff_never_exceeds_its_analytic_bound():
+    """SENTINEL for a known, pre-existing display cliff (red-team pass 2, 2026-09-16).
+
+    `decisive_agree` returns 0.5 + (p_turn_own - 0.5) * trust(s) while
+    `decisive_agree_knife_edge` returns 0.5 + (p_turn_own - 0.5) * DAMP, and the
+    branch is chosen by the BINARY blind probe (kernel._near_even_probe: +-5%,
+    3 points, defender-only) which is independent of the continuous stability s.
+    So at the flip the headline can jump by up to (p_turn_own-0.5)*(1-DAMP)*1,
+    i.e. 0.5*(1-DAMP) = 0.25 at the extreme. Live repro: this fixture + 4x Nora,
+    own troops x0.81 -> x0.82 (p 0.00 -> 0.25). The proper fix is a CONTINUOUS
+    blind-probe signal (a kernel change under the coin-flip rule), not a display
+    patch. This test only guarantees the cliff can never get WORSE than the
+    analytic bound; it does not bless it."""
+    from wos_sim.predictor import winprob
+    own0, enemy = _own_enemy()
+    own0 = copy.deepcopy(own0)
+    own0.joiners = ["Nora"] * 4
+    bound = 0.5 * (1.0 - winprob.DAMP) + 1e-9
+    prev = None
+    worst = 0.0
+    for mult in (0.78, 0.79, 0.80, 0.81, 0.82, 0.83, 0.84, 0.85, 0.86):
+        fc = _predict(_with_troop_mult(own0, mult), enemy)
+        d = forecast_to_dict(fc)
+        cur = (fc.p_win.p, d["display"]["branch"])
+        if prev is not None and {prev[1], cur[1]} == {"decisive_agree", "decisive_agree_knife_edge"}:
+            worst = max(worst, abs(cur[0] - prev[0]))
+        prev = cur
+    assert worst <= bound, f"knife-edge cliff {worst:.3f} exceeds analytic bound {bound:.3f}"

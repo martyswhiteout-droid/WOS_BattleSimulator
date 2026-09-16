@@ -800,6 +800,56 @@ class TestCatalogCoverage(unittest.TestCase):
             -0.50,
         )
 
+    def test_add_active_effect_dedup_guard_still_holds_under_multiplicative(self):
+        """Regression guard for the multiplicative-composition default
+        (2026-09-16): _add_active_effect must still merge same-source_id
+        effects into at most one live instance per non-whitelisted skill
+        (Greg S1 here) when the same proc re-fires on consecutive turns, and
+        must still let Lynn S3 (the one skill _skill_allows_self_stacking
+        whitelists) accumulate more than one live instance. Under
+        multiplicative composition a dedup regression would compound buffs
+        hard (prod(1+x_i) over N "concurrent" copies instead of 1), so this
+        guard matters more now than it did under legacy's gamma-compressed
+        sum."""
+        # Each add's window overlaps the next (expires_after = turn + 2) so a
+        # non-deduped skill would have MULTIPLE instances simultaneously live
+        # at turn 3 -- a same-turn expiry (e.g. (1,1),(2,2),(3,3)) would make
+        # every instance individually "not live" past its own turn and hide
+        # a missing self-stacking allowance behind an unrelated short-duration
+        # artifact, so the window must outlive the gap between adds.
+        book = load_skill_book()
+        greg_rows = tuple(row for row in book.for_hero("Greg")
+                          if row.source == SkillSource.SKILL_1)
+        greg = _make_hero_skill("Greg", SkillSource.SKILL_1, greg_rows,
+                                "attacker", "captain", TroopType.INFANTRY, 0)
+        active_greg = []
+        for turn in (1, 2, 3):
+            pvp_turn_engine._add_active_effect(
+                active_greg, pvp_turn_engine._ActiveEffect(greg, turn, turn + 2))
+        live_at_turn_3 = [e for e in active_greg
+                          if e.starts_at <= 3 <= e.expires_after]
+        self.assertEqual(
+            len(live_at_turn_3), 1,
+            "non-whitelisted skill (Greg S1) must dedup to one live "
+            "same-source_id instance per turn",
+        )
+
+        lynn_rows = tuple(row for row in book.for_hero("Lynn")
+                          if row.source == SkillSource.SKILL_3)
+        lynn = _make_hero_skill("Lynn", SkillSource.SKILL_3, lynn_rows,
+                                "attacker", "captain", TroopType.INFANTRY, 0)
+        active_lynn = []
+        for turn in (1, 2, 3):
+            pvp_turn_engine._add_active_effect(
+                active_lynn, pvp_turn_engine._ActiveEffect(lynn, turn, turn + 2))
+        live_at_turn_3_lynn = [e for e in active_lynn
+                               if e.starts_at <= 3 <= e.expires_after]
+        self.assertGreater(
+            len(live_at_turn_3_lynn), 1,
+            "Lynn S3 is whitelisted via _skill_allows_self_stacking and must "
+            "be allowed to accumulate more than one live instance",
+        )
+
     def test_damage_modifier_view_is_floored_at_zero_multiplier(self):
         stack = TypeStack(TroopType.INFANTRY, 12, 100_000, 100_000,
                           {A: 100.0, D: 100.0, L: 100.0, H: 100.0}, 100.0)

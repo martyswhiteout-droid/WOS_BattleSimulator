@@ -149,6 +149,7 @@ Codified in `wos_sim/battle.py`; every choice is a parameter.
   add (4×25% → 2.0×) but DIFFERENT heroes' buffs multiply (1.5×1.5).
   Martin confirmed additive for same-skill stacks; cross-source
   composition is a fittable engine option (modifier_stacking).
+- **MEASURED 2026-09-11 (first pass, six Gatot-clock battles, Wu Ming S1 Lv2/Lv3 — `wos_sim/formula_research/EXPERIMENT_DT_STACKING.md` §8):** same-hero Damage-Taken stacks **multiplicatively** (accepted at ±5%); raw additive REJECTED (−7.5% on the two-source rung); the engine's `mod_gamma=0.30` compression on DT REJECTED (+8.9% single-source). A consistent 3–4.5% shortfall below pure multiplicative hints at mild compression (recorded, not fitted; max-level rungs infeasible — owner 2026-09-11). **ENGINE 2026-09-16:** `TURN_PARAMS["modifier_stacking"] = "multiplicative"` — DT by measurement, Damage-Dealt by symmetry (owner decision; hypothesis, unmeasured). Retires the additive −100% floor that made a class immune.
 - **Casualty split**: incapacitated = damage received / unit health, then
   split killed / severely injured / lightly injured by parameterized
   shares (context-dependent; fit from reports). RNG = optional
@@ -304,6 +305,7 @@ x7 => 28-31, giving ~28-29 turns for report_001.
      feedback loop, and check DT stacking form (Marty's Wu Ming x2 +
      Ahmose stack would be -90% additive - his infantry still fell, so
      DT reduction likely stacks multiplicatively or is capped).
+     [2026-09-11: MEASURED — multiplicative, additive rejected; see §148 note.]
 
 ### Empirical discoveries from reports_004/005 (the fortress pair, 2026-03-28/29)
 

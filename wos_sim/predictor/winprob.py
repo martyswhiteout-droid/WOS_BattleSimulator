@@ -46,7 +46,7 @@ there is no cliff, and makes an agreeing-but-knife-edge call take the MORE
 confident of the near-even value and the disagree blend at that same ratio (the
 monotonicity guard). `hybrid_win_prob` keeps its old (p, near_even) tuple shape
 and, without an explicit `stability`, reproduces the pre-2026-09-10 numbers
-exactly -- the caller (``api.predict``) is what changed, to supply `stability`.
+on the near-even and disagree branches (decisive-agree is trust-scaled since 2026-09-16) -- the caller (``api.predict``) is what changed, to supply `stability`.
 No existing constant (BAND, DAMP, NEAR_EVEN_HIT_RATE) was retuned.
 
 2026-09-10 (continued -- Changes A and C, same handoff, two defects found once
@@ -114,6 +114,22 @@ def _joiner_mults(skill_defs):
         if getattr(s, "role", None) != "joiner":
             continue
         owner = s.side                                   # 'attacker' / 'defender'
+        # Damage-Taken rows are per DAMAGE CHANNEL (Normal vs Skills). A normal
+        # attack -- every troop's default damage every turn -- is affected by
+        # any row whose category is Normal OR Both (Both applies to every hit,
+        # so within ONE skill it DOES compound with a Normal row -- this also
+        # covers the latent Both+Normal case); a Skills row only matters as a
+        # FALLBACK, when the skill has no Normal/Both row for that (target,
+        # class) at all, since skill damage is a minority channel. This mirrors
+        # the engine's own channel split (_stack_view/TURN_PARAMS) and the DT
+        # experiment's measurement (EXPERIMENT_DT_STACKING.md s.8): the
+        # display's scalar strength proxy follows the Normal channel.
+        # 2026-09-16: the previous "keep the strongest |amount| row" rule chose
+        # Wu Ming S1's Skills -30% over its Normal -25% (bigger magnitude) even
+        # though Wu Ming deals Normal damage every turn, overstating toughness
+        # (+23% at 3 copies vs the engine's Normal-channel product).
+        normal_rows: dict[tuple, list] = {}
+        skills_rows: dict[tuple, list] = {}
         for r in s.rows:
             bucket = _ATTR.get(r.attribute.value)
             if bucket is None:
@@ -123,10 +139,27 @@ def _joiner_mults(skill_defs):
                 "defender" if owner == "attacker" else "attacker")
             classes = _CLS if r.receiver.value == "All" else (r.receiver.value,)
             amt = r.amount or 0.0
-            factor = (1.0 / (1.0 + amt)) if r.attribute.value == "Damage Taken" else (1.0 + amt)
+            if r.attribute.value == "Damage Taken":
+                cat = r.damage_category.value
+                for c in classes:
+                    if c not in mult[target]:
+                        continue
+                    key = (target, c)
+                    if cat in ("Normal", "Both"):
+                        normal_rows.setdefault(key, []).append(amt)
+                    else:
+                        skills_rows.setdefault(key, []).append(amt)
+                continue
             for c in classes:
                 if c in mult[target]:
-                    mult[target][c][bucket] *= factor
+                    mult[target][c][bucket] *= (1.0 + amt)
+        for key in set(normal_rows) | set(skills_rows):
+            amounts = normal_rows.get(key) or skills_rows.get(key, [])
+            factor = 1.0
+            for amt in amounts:
+                factor *= 1.0 / (1.0 + amt)
+            target, c = key
+            mult[target][c]["tough"] *= factor
     return mult
 
 
@@ -247,15 +280,27 @@ def hybrid_win_prob_ex(con, p_turn_own: float, blind_near_even: bool = False,
         return {**base, "p": p, "near_even": True,
                 "branch": "decisive_agree_knife_edge",
                 "joiner_share": j, "blend_weight": w_eff}
-    return {**base, "p": p_turn_own, "near_even": False, "branch": "decisive_agree",
+    # A decisive, AGREEING call earns the sim's raw number only in proportion to its
+    # STABILITY: trust = DAMP at s = 0.5 (a knife-edge reads like the near-even
+    # ceiling) rising linearly to 1.0 at |s - 0.5| = 0.5 (unanimous across the
+    # +-BAND, either side). Only measured quantities (S, DAMP); no new constant.
+    # 2026-09-11: the measured DT rule moved Gen15_50_10_40's tipping point so the
+    # x1.25-troops rung sat here at a raw 1.00 with S = 0.53 (9/17 perturbations),
+    # right beside a knife-edge 0.75 -- a 0.25 DROP as troops rose. Unanimous calls
+    # (expX2, RAW_04: S = 1.0) are unchanged, so G12 and the Brier gate do not move.
+    trust = DAMP + (1.0 - DAMP) * min(1.0, abs(s - 0.5) / 0.5)
+    p = 0.5 + (p_turn_own - 0.5) * trust
+    return {**base, "p": p, "near_even": False, "branch": "decisive_agree",
             "joiner_share": j, "blend_weight": w_eff}
 
 
 def hybrid_win_prob(con, p_turn_own: float, blind_near_even: bool = False) -> tuple[float, bool]:
     """Return (displayed_p_win_own, near_even). Thin wrapper over
-    ``hybrid_win_prob_ex`` (stability omitted -> falls back to the point sim, so
-    this is byte-identical to the pre-2026-09-10 rule for every caller that does
-    not have a call-stability measure to hand). See module docstring for the
-    rule, and ``hybrid_win_prob_ex`` for the full branch/field detail."""
+    ``hybrid_win_prob_ex`` (stability omitted -> falls back to the point sim).
+    The near-even and disagree branches then reproduce the pre-2026-09-10 rule;
+    since 2026-09-16 the decisive-agree branch is trust-scaled by |s - 0.5|, so a
+    FRACTIONAL p_turn_own reads slightly hedged here too. No live caller uses
+    this wrapper (api.py always supplies a real stability). See the module
+    docstring for the rule and ``hybrid_win_prob_ex`` for the field detail."""
     res = hybrid_win_prob_ex(con, p_turn_own, blind_near_even=blind_near_even)
     return res["p"], res["near_even"]

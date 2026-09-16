@@ -93,6 +93,20 @@ TURN_PARAMS = {
     # Floor on the composed per-stat modifier (additive stacking used to reach
     # -97.8% defense and blow up damage through def^qd).
     "stat_floor": 0.4,
+    # How DD/DT modifiers from multiple sources compose in a channel.
+    #   legacy            additive sum, then (1+sum)**mod_gamma - 1   (the fitted 2026-07 form)
+    #   dt_multiplicative Damage-Taken composes as prod(1+x_i), NO gamma; Damage-Dealt stays legacy
+    #   multiplicative    both DD and DT compose as prod(1+x_i), NO gamma
+    # MEASURED 2026-09-11 (EXPERIMENT_DT_STACKING.md s.8, six Type-1 battles): DT is multiplicative
+    # and the gamma compression on DT is rejected. DD is UNMEASURED (symmetry hypothesis only).
+    # DEFAULT = multiplicative since 2026-09-16 (owner decision, Martin). DT is MEASURED
+    # multiplicative (EXPERIMENT_DT_STACKING.md s.8); DD is adopted by SYMMETRY -- same
+    # modifier family in the game, same additive-floor hazard in legacy -- as a documented
+    # hypothesis, not a measurement. Gates at adoption: G12 7/13 PASS (no locked regression),
+    # suite green, 22-battle Brier 0.1817 (vs 0.2011 legacy). The legacy hazard this retires:
+    # an additive DD/DT sum reaching exactly -100% floors at -1.0 and zeroes damage
+    # (Gen15_Rally_WM: Estrella S3 + 3x Wu Ming = -100% DT -> Infantry immune -> 99/100 "hold").
+    "modifier_stacking": "multiplicative",
     # Skill packets scaled to the A4 report's per-skill kill columns: real
     # skill-attributed kills are ~7% of casualties; K_skill=1.0 produced 38-50%
     # (def Ligeia 99k engine kills vs 8.6k real).
@@ -110,6 +124,13 @@ TURN_PARAMS = {
     "ambush_frac": 1.0,
     "cara_burst": 1.0,
 }
+# Valid values for TURN_PARAMS["modifier_stacking"] / params["modifier_stacking"].
+# _damage_for validates against this once per damage computation (QA fix,
+# 2026-09-16): an unrecognized string used to silently fall through to the
+# "else" (additive/legacy) branches in _stack_view, which would mask a typo
+# (e.g. "multiplicitive") as a silent revert to legacy behavior instead of a
+# loud failure.
+MODIFIER_STACKING_MODES = ("legacy", "dt_multiplicative", "multiplicative")
 SKILL_DISPLAY_PATH = Path(__file__).resolve().parent / "data" / "skill_display" / "hero_skills.json"
 _ALL_TROOP_ATTACK_RE = re.compile(r"\ball\s+troops?\s+(?:normal\s+)?attacks?\b")
 _ALL_TROOPS_HAVE_CHANCE_RE = re.compile(
@@ -200,6 +221,18 @@ class _Mods:
     skill_dt: dict[tuple[str, TroopType], float] = field(default_factory=dict)
     normal_dd_target: dict[tuple[str, TroopType, TroopType], float] = field(default_factory=dict)
     skill_dd_target: dict[tuple[str, TroopType, TroopType], float] = field(default_factory=dict)
+    # Running PRODUCTS parallel to the additive dicts above: prod(1+x_i) per
+    # key, initialised to 1.0 and multiplied by (1+value) in add_dd/add_dt.
+    # Only read by _stack_view when TURN_PARAMS["modifier_stacking"] is
+    # "multiplicative"/"dt_multiplicative"; legacy mode never looks at them,
+    # so keeping them in sync unconditionally here costs legacy nothing
+    # observable (EXPERIMENT_DT_STACKING.md s.8).
+    normal_dd_mult: dict[tuple[str, TroopType], float] = field(default_factory=dict)
+    normal_dt_mult: dict[tuple[str, TroopType], float] = field(default_factory=dict)
+    skill_dd_mult: dict[tuple[str, TroopType], float] = field(default_factory=dict)
+    skill_dt_mult: dict[tuple[str, TroopType], float] = field(default_factory=dict)
+    normal_dd_target_mult: dict[tuple[str, TroopType, TroopType], float] = field(default_factory=dict)
+    skill_dd_target_mult: dict[tuple[str, TroopType, TroopType], float] = field(default_factory=dict)
 
     def add_stat(self, side: str, troop: TroopType, stat: StatType, value: float):
         self.stat[(side, troop, stat)] = self.stat.get((side, troop, stat), 0.0) + value
@@ -211,29 +244,37 @@ class _Mods:
     def add_dd(self, side: str, troop: TroopType, value: float,
                category: DamageCategory = DamageCategory.BOTH,
                target_troop: TroopType | None = None):
+        factor = 1.0 + value
         if category in (DamageCategory.BOTH, DamageCategory.NORMAL):
             if target_troop is None:
                 key = (side, troop)
                 self.normal_dd[key] = self.normal_dd.get(key, 0.0) + value
+                self.normal_dd_mult[key] = self.normal_dd_mult.get(key, 1.0) * factor
             else:
                 key = (side, troop, target_troop)
                 self.normal_dd_target[key] = self.normal_dd_target.get(key, 0.0) + value
+                self.normal_dd_target_mult[key] = self.normal_dd_target_mult.get(key, 1.0) * factor
         if category in (DamageCategory.BOTH, DamageCategory.SKILLS):
             if target_troop is None:
                 key = (side, troop)
                 self.skill_dd[key] = self.skill_dd.get(key, 0.0) + value
+                self.skill_dd_mult[key] = self.skill_dd_mult.get(key, 1.0) * factor
             else:
                 key = (side, troop, target_troop)
                 self.skill_dd_target[key] = self.skill_dd_target.get(key, 0.0) + value
+                self.skill_dd_target_mult[key] = self.skill_dd_target_mult.get(key, 1.0) * factor
 
     def add_dt(self, side: str, troop: TroopType, value: float,
                category: DamageCategory = DamageCategory.BOTH):
+        factor = 1.0 + value
         if category in (DamageCategory.BOTH, DamageCategory.NORMAL):
             key = (side, troop)
             self.normal_dt[key] = self.normal_dt.get(key, 0.0) + value
+            self.normal_dt_mult[key] = self.normal_dt_mult.get(key, 1.0) * factor
         if category in (DamageCategory.BOTH, DamageCategory.SKILLS):
             key = (side, troop)
             self.skill_dt[key] = self.skill_dt.get(key, 0.0) + value
+            self.skill_dt_mult[key] = self.skill_dt_mult.get(key, 1.0) * factor
 
 
 @dataclass
@@ -805,13 +846,21 @@ def _enemy_stacks(side: str, a, d):
 def _stack_view(stack: TypeStack, side: str, mods: _Mods,
                 channel: DamageCategory = DamageCategory.NORMAL,
                 stat_floor: float = 0.25, mod_gamma: float = 1.0,
-                target_troop: TroopType | None = None) -> TypeStack:
+                target_troop: TroopType | None = None,
+                modifier_stacking: str = "legacy") -> TypeStack:
     """Stack with skill modifiers applied.
 
     ``mod_gamma`` compresses every composed modifier multiplier toward 1
     (diminishing returns on stacked bonuses): all three T12 anchors show that
     nominally huge kits (+45% DD, -60% debuffs) net out to a ~0.9-1.1x real
-    exchange ratio, while raw multiplicative stacking predicts 3-4x.
+    exchange ratio, while raw multiplicative stacking predicts 3-4x. Stat rows
+    (above) always use this additive-sum-then-gamma form.
+
+    ``modifier_stacking`` (TURN_PARAMS, see its comment) instead governs how
+    the DD/DT channels compose: "legacy" keeps additive-sum-then-gamma;
+    "dt_multiplicative"/"multiplicative" compose the channel as prod(1+x_i)
+    with NO gamma (EXPERIMENT_DT_STACKING.md s.8 — MEASURED for DT, a
+    symmetry hypothesis for DD).
     """
     astat = dict(stack.astat)
     for stat in (A, D, L, H):
@@ -822,18 +871,37 @@ def _stack_view(stack: TypeStack, side: str, mods: _Mods,
     if channel == DamageCategory.SKILLS:
         dd = mods.skill_dd.get((side, stack.troop), 0.0)
         dt = mods.skill_dt.get((side, stack.troop), 0.0)
+        dd_mult = mods.skill_dd_mult.get((side, stack.troop), 1.0)
+        dt_mult = mods.skill_dt_mult.get((side, stack.troop), 1.0)
         if target_troop is not None:
             dd += mods.skill_dd_target.get((side, stack.troop, target_troop), 0.0)
+            dd_mult *= mods.skill_dd_target_mult.get((side, stack.troop, target_troop), 1.0)
     else:
         dd = mods.normal_dd.get((side, stack.troop), 0.0)
         dt = mods.normal_dt.get((side, stack.troop), 0.0)
+        dd_mult = mods.normal_dd_mult.get((side, stack.troop), 1.0)
+        dt_mult = mods.normal_dt_mult.get((side, stack.troop), 1.0)
         if target_troop is not None:
             dd += mods.normal_dd_target.get((side, stack.troop, target_troop), 0.0)
-    dd_total = max(stack.dd + dd, -1.0)
-    dt_total = max(stack.dt + dt, -1.0)
-    if mod_gamma != 1.0:
-        dd_total = (1.0 + dd_total) ** mod_gamma - 1.0
-        dt_total = (1.0 + dt_total) ** mod_gamma - 1.0
+            dd_mult *= mods.normal_dd_target_mult.get((side, stack.troop, target_troop), 1.0)
+
+    # DD composes multiplicatively only in full "multiplicative" mode; DT
+    # composes multiplicatively in EITHER multiplicative mode ("legacy" is
+    # additive-sum-then-gamma in both cases). See TURN_PARAMS comment.
+    if modifier_stacking == "multiplicative":
+        dd_total = max(dd_mult * (1.0 + stack.dd) - 1.0, -1.0)
+    else:
+        dd_total = max(stack.dd + dd, -1.0)
+        if mod_gamma != 1.0:
+            dd_total = (1.0 + dd_total) ** mod_gamma - 1.0
+
+    if modifier_stacking in ("multiplicative", "dt_multiplicative"):
+        dt_total = max(dt_mult * (1.0 + stack.dt) - 1.0, -1.0)
+    else:
+        dt_total = max(stack.dt + dt, -1.0)
+        if mod_gamma != 1.0:
+            dt_total = (1.0 + dt_total) ** mod_gamma - 1.0
+
     return replace(
         stack,
         astat=astat,
@@ -1123,13 +1191,19 @@ def _trigger_count_for_skill(skill: SkillDef, turn: int,
 def _build_mods(base: _Mods, active: list[_ActiveEffect], turn: int, a, d,
                 dependents: dict[tuple[str, TroopType], list[SkillDef]] | None = None) -> _Mods:
     mods = _Mods(
-        dict(base.stat),
-        dict(base.normal_dd),
-        dict(base.normal_dt),
-        dict(base.skill_dd),
-        dict(base.skill_dt),
-        dict(base.normal_dd_target),
-        dict(base.skill_dd_target),
+        stat=dict(base.stat),
+        normal_dd=dict(base.normal_dd),
+        normal_dt=dict(base.normal_dt),
+        skill_dd=dict(base.skill_dd),
+        skill_dt=dict(base.skill_dt),
+        normal_dd_target=dict(base.normal_dd_target),
+        skill_dd_target=dict(base.skill_dd_target),
+        normal_dd_mult=dict(base.normal_dd_mult),
+        normal_dt_mult=dict(base.normal_dt_mult),
+        skill_dd_mult=dict(base.skill_dd_mult),
+        skill_dt_mult=dict(base.skill_dt_mult),
+        normal_dd_target_mult=dict(base.normal_dd_target_mult),
+        skill_dd_target_mult=dict(base.skill_dd_target_mult),
     )
     dependents = dependents or {}
     for effect in active:
@@ -1179,9 +1253,16 @@ def _damage_for(src: TypeStack, target: TypeStack, own_front: TypeStack | None,
                 channel: DamageCategory = DamageCategory.NORMAL) -> float:
     floor = float(p.get("stat_floor", 0.25))
     gamma = float(p.get("mod_gamma", 1.0))
+    modifier_stacking = p.get("modifier_stacking", "legacy")
+    if modifier_stacking not in MODIFIER_STACKING_MODES:
+        raise ValueError(
+            f"modifier_stacking must be one of {MODIFIER_STACKING_MODES}, "
+            f"got {modifier_stacking!r}"
+        )
     src_v = _stack_view(src, src_side, mods, channel, stat_floor=floor, mod_gamma=gamma,
-                        target_troop=target.troop)
-    tgt_v = _stack_view(target, target_side, mods, channel, stat_floor=floor, mod_gamma=gamma)
+                        target_troop=target.troop, modifier_stacking=modifier_stacking)
+    tgt_v = _stack_view(target, target_side, mods, channel, stat_floor=floor, mod_gamma=gamma,
+                        modifier_stacking=modifier_stacking)
     # Firing strength blend between LIVE (n = current count, Lanchester taper)
     # and START (n = starting count, constant casualty rate). fire_blend in
     # [0,1]: 0 = live, 1 = start. Pure start over-fires a nearly-dead stack (a
