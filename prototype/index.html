@@ -1968,9 +1968,717 @@
   .whatmoved .wm-ember{color:#EF5F5F}
   @media (max-width:700px){ .whatmoved .wm-row{grid-template-columns:1fr} }
 
+  /* ============================================================
+     Round 18 — start journey, modes, generation picker (owner 2026-09-20)
+     docs/UX_START_JOURNEY_SPEC.md. Palette-locked: every literal below already
+     exists in prototype/style_baseline.json (navy world + glossy-CTA tokens).
+     ============================================================ */
+
+  /* ---- view switch: exactly one of body.view-start / body.view-work ---- */
+  body.view-start .top-actions{display:none}
+  body.view-start main.layout{display:none}
+  body.view-work #startScreen{display:none}
+
+  /* ---- start screen ---- */
+  #startScreen{max-width:1080px;margin:0 auto;min-height:calc(100vh - 82px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(20px,5vh,48px) clamp(16px,4vw,30px) 40px;gap:0}
+  #startTitle{font-family:var(--disp);font-weight:700;font-size:clamp(22px,3.6vw,32px);
+    letter-spacing:.01em;color:#EAF6FF;text-align:center;margin:0}
+  #startTitle:focus-visible{outline:2px solid #5AAEF3;outline-offset:6px;border-radius:6px}
+  .start-sub{font-family:var(--body);font-size:14.5px;color:#B9D2E5;text-align:center;margin:8px 0 28px}
+  .start-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
+  .start-grid:has(> #startSlotReports[hidden]){grid-template-columns:repeat(2,minmax(0,1fr))}
+  .start-slot:not([hidden]){display:flex;min-width:0}
+  .start-slot .start-card{width:100%}
+
+  .start-card{position:relative;isolation:isolate;display:flex;flex-direction:column;
+    align-items:flex-start;text-align:left;gap:9px;width:100%;min-height:200px;
+    padding:24px 22px 46px;border-radius:18px;border:0;cursor:pointer;font-family:inherit;
+    transition:transform .15s,filter .2s,box-shadow .2s}
+  .start-card:focus-visible{outline:2px solid #5AAEF3;outline-offset:3px}
+  .start-card-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;flex:none}
+  .start-card-icon svg{width:26px;height:26px}
+  .start-card-tag{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px}
+  .start-card-title{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:.01em}
+  .start-card-line{font-family:var(--body);font-size:13.5px;line-height:1.45}
+  .start-card-go{position:absolute;right:20px;bottom:18px;font-family:var(--disp);font-size:18px;
+    font-weight:700;transition:transform .15s}
+  .start-card:hover{transform:translateY(-1px)}
+  .start-card:active{transform:translateY(1px)}
+  .start-card:hover .start-card-go,.start-card:focus-visible .start-card-go{transform:translateX(2px)}
+
+  /* native cards (Quick test / Custom test): raised navy panel, DESIGN_SYSTEM §4 */
+  .start-card{background:linear-gradient(180deg,#164A72,#123B59);border:1px solid rgba(46,161,242,.14);
+    color:#EAF6FF;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(2,26,47,.5),
+      0 14px 30px -18px rgba(2,26,47,.65)}
+  .start-card:hover{border-color:rgba(46,161,242,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),
+      inset 0 -1px 0 rgba(2,26,47,.5),0 16px 34px -16px rgba(2,26,47,.65)}
+  .start-card-icon{background:rgba(46,161,242,.12);color:#55BFFF}
+  .start-card-tag{background:rgba(46,161,242,.14);color:#55BFFF}
+  .start-card-line{color:#B9D2E5}
+  .start-card-go{color:#55BFFF}
+
+  /* shell's card-1 (mounted into #startSlotReports): glossy CTA ramp, DESIGN_SYSTEM §4.
+     The prototype OWNS this class per contract §1.1 — shell must not restyle it. */
+  .start-card--primary{position:relative;overflow:hidden;background:linear-gradient(180deg,#8ED0FF 0%,#5AAEF3 46%,#3E97E8 100%);
+    border:0;color:#fff;box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+      0 2px 0 #235f9c,0 10px 24px -12px rgba(4,22,44,.7)}
+  .start-card--primary .start-card-title,.start-card--primary .start-card-line{color:#fff;
+    text-shadow:0 1px 2px rgba(10,52,96,.55)}
+  .start-card--primary .start-card-icon{background:rgba(255,255,255,.16);color:#fff}
+  .start-card--primary .start-card-tag{background:rgba(255,255,255,.16);color:#fff}
+  .start-card--primary .start-card-go{color:#fff}
+  .start-card--primary:hover{filter:brightness(1.05)}
+  .start-card--primary::after{content:"";position:absolute;top:-2px;bottom:-2px;left:-70%;width:45%;
+    transform:skewX(-22deg);pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
+  .start-card--primary:hover::after{opacity:1;animation:sheen .8s ease .05s}
+
+  /* entrance: rise + fade, 60ms staggered, transform/opacity only (killed globally under
+     reduced motion by the existing universal animation kill-switch above — no separate guard needed) */
+  @keyframes start-card-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .start-grid .start-card{animation:start-card-in .22s cubic-bezier(.2,.8,.2,1) both}
+  .start-grid > :nth-child(1).start-card,.start-grid > :nth-child(1) .start-card{animation-delay:0ms}
+  .start-grid > :nth-child(2).start-card,.start-grid > :nth-child(2) .start-card{animation-delay:60ms}
+  .start-grid > :nth-child(3).start-card,.start-grid > :nth-child(3) .start-card{animation-delay:120ms}
+
+  .start-resume{margin-top:26px;background:transparent;border:0;cursor:pointer;
+    font-family:var(--disp);font-weight:600;font-size:13.5px;letter-spacing:.03em;color:#55BFFF;
+    padding:8px 4px;display:inline-flex;align-items:center;gap:6px;
+    text-decoration:underline;text-decoration-color:rgba(85,191,255,.5)}
+  .start-resume:hover{color:#8ED0FF}
+  .start-resume:focus-visible{outline:2px solid #5AAEF3;outline-offset:3px;border-radius:6px}
+
+  @media (max-width:960px){
+    #startScreen{padding-top:clamp(16px,4vh,32px)}
+  }
+  @media (max-width:700px){
+    .start-grid{grid-template-columns:1fr;gap:12px}
+    .start-card{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;row-gap:3px;
+      grid-template-areas:"icon tag" "icon title" "icon line" "icon go";
+      align-items:center;min-height:96px;padding:14px 16px}
+    .start-card-icon{grid-area:icon;align-self:start;width:40px;height:40px}
+    .start-card-tag{grid-area:tag;justify-self:start}
+    .start-card-title{grid-area:title;font-size:16px}
+    .start-card-line{grid-area:line;font-size:13px}
+    .start-card-go{grid-area:go;position:static;justify-self:end;margin-top:2px}
+    #startTitle{font-size:21px}
+    .start-sub{font-size:13.5px;margin-bottom:20px}
+  }
+
+  /* ---- workspace mode bar (contract §2.2) ---- */
+  .modebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    background:linear-gradient(180deg,#123B59,#0B273D);border:1px solid rgba(255,255,255,.09);
+    border-radius:12px;padding:10px 14px;margin:10px 0 14px}
+  .modebar-btn{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.03em;
+    color:#cfe3f4;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+    border-radius:9px;padding:8px 12px;cursor:pointer;white-space:nowrap;
+    transition:transform .12s,background .15s,color .15s}
+  .modebar-btn:hover{background:rgba(255,255,255,.12);color:#EAF6FF;transform:translateY(-1px)}
+  .modebar-btn:active{transform:translateY(1px)}
+  .modebar-btn:focus-visible{outline:2px solid #5AAEF3;outline-offset:2px}
+  .modebar-link{background:transparent;border-color:transparent;color:#55BFFF;
+    text-decoration:underline;text-decoration-color:rgba(85,191,255,.5);padding:8px 4px}
+  .modebar-link:hover{background:transparent;color:#8ED0FF}
+  .modebar-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .modebar-title{font-family:var(--disp);font-weight:700;font-size:13.5px;color:#EAF6FF}
+  .modebar-title:focus-visible{outline:2px solid #5AAEF3;outline-offset:2px;border-radius:4px}
+  .modebar-helper{font-family:var(--body);font-size:12px;color:#8FB0C9}
+  /* whatever the shell mounts here must never be able to push the page wider
+     than the viewport (DESIGN_SYSTEM §2.6: no horizontal page scroll, ever) */
+  .modebar-slot{flex:0 1 auto;min-width:0;max-width:100%;overflow:hidden}
+  .modebar-slot:empty{display:none;flex:none}
+  .modebar-slot > *{max-width:100%}
+  body[data-mode="custom"] .mb-quick{display:none}
+  body[data-mode="quick"] .mb-custom{display:none}
+  @media (max-width:700px){
+    .modebar{gap:8px 10px;padding:9px 12px}
+    .modebar-info{flex:1 1 100%;order:3}
+  }
+
+  /* ---- quick vs custom mode visibility (contract §2.3) ---- */
+  body[data-mode="quick"] .input-tabs > .tabbar{display:none}
+  body[data-mode="quick"] .tabpanel[data-tab="itab1"],
+  body[data-mode="quick"] .tabpanel[data-tab="itab2"]{display:none}
+  body[data-mode="quick"] .iblock.output-block{display:none}
+
+  /* ---- bottom run button (contract §2.5): glossy CTA ramp, DESIGN_SYSTEM §4 ---- */
+  .run-bottom{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+    gap:10px;width:100%;margin-top:18px;padding:16px 20px;border:0;border-radius:16px;cursor:pointer;
+    font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase;
+    color:#fff;text-shadow:0 1px 2px rgba(10,52,96,.55);
+    background:linear-gradient(180deg,#8ED0FF 0%,#5AAEF3 46%,#3E97E8 100%);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+      0 2px 0 #235f9c,0 10px 24px -12px rgba(4,22,44,.7);
+    transition:transform .12s,filter .2s}
+  .run-bottom:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  .run-bottom:active{transform:translateY(2px)}
+  .run-bottom:disabled{opacity:.55;cursor:wait;filter:saturate(.6);transform:none}
+  .run-bottom:focus-visible{outline:2px solid #5AAEF3;outline-offset:3px}
+  .run-bottom::after{content:"";position:absolute;top:-2px;bottom:-2px;left:-70%;width:45%;
+    transform:skewX(-22deg);pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
+  .run-bottom:hover::after{opacity:1;animation:sheen .8s ease .05s}
+
+  /* ---- generation picker (contract §2.6): a row at the top of the captain
+     hero-block's existing .duo grid, mirroring the me | centre | foe columns ---- */
+  .hero-block .duo.gen-pick-row{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+  .gen-pick{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+  .gen-pick select{font-family:var(--body);font-size:12.5px;letter-spacing:0;text-transform:none;
+    min-height:32px;padding:6px 26px 6px 10px}
+  .hero-block .duo.gen-pick-row .lab{font-family:var(--disp);font-weight:700;font-size:11.5px;
+    letter-spacing:.03em;color:var(--mute);text-transform:none}
+  @media (max-width:960px){
+    .duo.gen-pick-row .gen-pick{justify-content:center;width:100%}
+    .duo.gen-pick-row .me .gen-pick::before{content:"My ";color:#55BFFF;font-weight:700}
+    .duo.gen-pick-row .foe .gen-pick::before{content:"Enemy ";color:#FF8181;font-weight:700}
+  }
+
+  /* ============================================================
+     Round 18b — pre-gate polish (orchestrator review, follow-up to Round 18)
+     Bigger start cards, mobile gen-picker placement, quick-test tab reuse is
+     JS-only (see the Round 18 script block), secondary Edit-all-stats button,
+     forecast scroll clearance, run-bottom as the page's primary CTA.
+     Append-only: overrides Round 18 rules by source order, important-count budget untouched.
+     ============================================================ */
+
+  /* ---- 1. start cards read as "three big buttons" at real desktop widths ---- */
+  @media (min-width:961px){
+    .start-grid{gap:20px}
+    .start-card{min-height:292px;padding:28px 26px 32px;gap:11px}
+    .start-card-icon{width:64px;height:64px;border-radius:16px}
+    .start-card-icon svg{width:34px;height:34px}
+    .start-card-title{font-size:24px}
+    .start-card-line{font-size:16px;line-height:1.55}
+    .start-card-go{right:26px;bottom:24px;font-size:20px}
+    .start-card-tag{font-size:11px;padding:5px 12px}
+  }
+
+  /* ---- 4. mode bar: title+helper left / actions right (desktop), and a clean
+     top-down stack on mobile via grid-template-areas ---- */
+  .modebar-actions{display:flex;align-items:center;gap:10px;flex:none}
+  /* "Edit all stats" reads as a proper secondary button, paired with the
+     shell's mini launcher (also .modebar-btn) instead of a bare underlined link */
+  .modebar-actions .modebar-link{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.09);
+    color:#cfe3f4;text-decoration:none;padding:8px 12px}
+  .modebar-actions .modebar-link:hover{background:rgba(255,255,255,.12);color:#EAF6FF;text-decoration:none}
+  @media (max-width:700px){
+    .modebar{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"back title" "helper helper" "actions actions";
+      gap:6px 10px;align-items:center;padding:10px 12px}
+    .modebar-back{grid-area:back}
+    .modebar-info{display:contents}
+    .modebar-title{grid-area:title;justify-self:start}
+    .modebar-helper{grid-area:helper}
+    .modebar-actions{grid-area:actions;flex-wrap:wrap}
+  }
+
+  /* ---- 5. forecast lands clear of the sticky header when scrolled to ---- */
+  .forecast{scroll-margin-top:90px}
+  @media (max-width:700px){ .forecast{scroll-margin-top:75px} }
+
+  /* ---- 7. #runBottom is THE primary action of the page ---- */
+  .run-bottom{min-height:58px;padding:15px 24px;font-size:18px;letter-spacing:.02em;text-transform:none}
+  @media (min-width:701px){ .run-bottom{max-width:520px;margin:18px auto 0} }
+
+  /* ---- 2. mobile generation pickers move beside their own side's captains
+     (JS relocates the .gen-pick <label> itself at <=700px — see Round 18 script;
+     this styles it once it lands inside #capMe/#capFoe) ---- */
+  #capMe>.gen-pick,#capFoe>.gen-pick{display:flex;width:100%;justify-content:center;
+    padding-bottom:8px;margin-bottom:1px;border-bottom:1px solid var(--line-soft)}
+  #capMe>.gen-pick::before{content:"My ";color:#55BFFF;font-weight:700}
+  #capFoe>.gen-pick::before{content:"Enemy ";color:#FF8181;font-weight:700}
+
+
+  /* ============================================================
+     Round 18c - Gate-1 round-2 fixes (UX reviewer report 2026-09-21)
+     UXE-002 primary-card contrast - UXE-005 header "Re-run" demotion -
+     UXE-006 start-card physics - UXE-007 programmatic-focus ring -
+     UXE-009 card alignment - UXE-010 generation pickers -
+     UXE-011/012 small-screen start stack + resume pill - UXE-017 touch
+     targets - UXE-023 "Mixed" reads as a state - UXE-026 captain-swap
+     pulse - UXE-027 reciprocal mode action - doubled "+" on the rail.
+     Append-only: every colour literal below already exists in
+     prototype/style_baseline.json; the override budget is untouched.
+     ============================================================ */
+
+  /* ---- UXE-006 root cause: the entrance ran with animation-fill-mode:both,
+     which pinned transform:none on every card for ever and swallowed the
+     hover lift and the press sink. backwards keeps the staggered rise and
+     hands transform back to the cascade once the animation is done. ---- */
+  .start-grid .start-card{animation-fill-mode:backwards}
+  .start-card:hover{transform:translateY(-1px)}
+  .start-card:active{transform:translateY(2px)}
+  /* navy cards: a clearly perceptible idle -> hover delta (border + top highlight) */
+  .start-card:not(.start-card--primary):hover{border-color:rgba(46,161,242,.35);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(2,26,47,.5),
+      0 18px 36px -16px rgba(2,26,47,.75)}
+  /* the primary keeps its glossy inset stack + 2px ledge on hover (the generic
+     .start-card:hover shadow above used to flatten it) and shortens it on press */
+  .start-card--primary:hover{filter:brightness(1.05);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.65),inset 0 -2px 1px rgba(20,96,170,.45),
+      0 2px 0 #235f9c,0 14px 30px -12px rgba(4,22,44,.7)}
+  .start-card--primary:active{box-shadow:inset 0 2px 1px rgba(255,255,255,.55),
+    inset 0 -1px 1px rgba(20,96,170,.45),0 1px 0 #235f9c,0 6px 14px -8px rgba(4,22,44,.7)}
+
+  /* ---- UXE-002: white copy on the glossy ramp measured 2.0-2.9:1. A scrim
+     behind the text (z-index:-1 inside the card's own stacking context - the
+     DESIGN_SYSTEM section 4 specular recipe) darkens the text zone while the
+     icon zone keeps the gloss; the tag becomes a dark chip; the glossy-button
+     text shadow lands on every text element. ---- */
+  .start-card--primary::before{content:"";position:absolute;inset:0;z-index:-1;
+    border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg,transparent 0%,rgba(2,26,47,.24) 18%,
+      rgba(2,26,47,.4) 34%,rgba(2,26,47,.5) 60%,rgba(2,26,47,.55) 100%)}
+  .start-card--primary .start-card-tag{background:rgba(2,26,47,.4);color:#fff;
+    text-shadow:0 1px 2px rgba(10,52,96,.55)}
+  .start-card--primary .start-card-go{text-shadow:0 1px 2px rgba(10,52,96,.55)}
+  .start-card--primary .start-card-icon{background:rgba(255,255,255,.24)}
+
+  /* ---- UXE-009: 1px transparent border so the primary's interior lines up
+     with the bordered navy cards; two reserved title lines at >=961px so all
+     three descriptions share a baseline; balanced titles kill the orphan. ---- */
+  .start-card--primary{border:1px solid transparent}
+  .start-card-title{line-height:1.22;text-wrap:balance}
+  @media (min-width:961px){
+    .start-card-title{min-height:2.44em}
+  }
+
+  /* ---- UXE-012: the returning user's control is a centred ghost pill on the
+     grid axis (dark inset well recipe), not a left-aligned underlined link. ---- */
+  .start-resume{display:flex;justify-content:center;align-items:center;gap:10px;
+    margin:24px auto 0;min-height:44px;padding:0 22px;border-radius:12px;
+    border:1px solid rgba(46,161,242,.25);background:rgba(6,20,34,.38);
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.45),inset 0 -1px 0 rgba(255,255,255,.07);
+    color:#EAF6FF;font-size:15px;letter-spacing:.02em;text-decoration:none;
+    transition:transform .12s,border-color .15s,color .15s}
+  .start-resume:hover{color:#EAF6FF;border-color:rgba(46,161,242,.35);transform:translateY(-1px)}
+  .start-resume:active{transform:translateY(1px)}
+
+  /* ---- UXE-009 (mobile) + UXE-011: three stacked cards of identical height,
+     and a start stack that fits 375x667 with the resume pill on screen. ---- */
+  @media (max-width:700px){
+    .start-grid{grid-auto-rows:1fr}
+    .start-slot .start-card{height:100%}
+    .start-card{align-content:center}
+    /* two reserved description lines so tag / title / line / arrow register
+       across the three stacked cards, not just their outer heights */
+    .start-card-line{line-height:1.42;min-height:2.84em}
+    /* the stacked card is a third the height, so the scrim has to reach its
+       text zone sooner (UXE-002 re-measured at 390x844 and 375x667) */
+    .start-card--primary::before{background:linear-gradient(180deg,transparent 0%,
+      rgba(2,26,47,.32) 10%,rgba(2,26,47,.5) 38%,rgba(2,26,47,.55) 100%)}
+  }
+  @media (max-width:400px){
+    #startScreen{min-height:0;padding-top:14px;padding-bottom:12px}
+    .start-sub{margin-bottom:10px}
+    #startTitle{font-size:20px}
+    .start-grid{gap:10px}
+    .start-card{padding:11px 14px;min-height:84px;row-gap:1px}
+    .start-card-icon{width:36px;height:36px}
+    .start-card-icon svg{width:22px;height:22px}
+    .start-card-title{font-size:15.5px}
+    .start-card-line{font-size:13px;line-height:1.35;min-height:2.7em}
+    .start-resume{margin-top:14px;margin-bottom:18px;font-size:14.5px}
+  }
+
+  /* ---- UXE-007: keep the programmatic focus move (screen readers announce the
+     new mode) but stop it painting a 923px ring that reads as a text input. ---- */
+  #modeBarTitle{align-self:flex-start;justify-self:start}
+  #modeBarTitle:focus,#startTitle:focus{outline:none}
+
+  /* ---- UXE-005: the header control is a compact SECONDARY "Re-run" - ghost
+     chrome, no glossy ramp, short enough at <=700px that the brand is not
+     truncated. #runBottom stays the page's single primary action. ---- */
+  .top-actions .run{height:34px;padding:0 13px;gap:6px;border-radius:10px;
+    font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:none;
+    color:#cfe3f4;text-shadow:none;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+  .top-actions .run:hover{filter:none;color:#EAF6FF;background:rgba(255,255,255,.12);
+    border-color:rgba(255,255,255,.24);transform:translateY(-1px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+  .top-actions .run:active{transform:translateY(1px);
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.45)}
+  .top-actions .run:disabled{opacity:.5;transform:none}
+  .run-rerun-icon{font-size:14px;line-height:1}
+
+  /* ---- UXE-017: one fixed height for every mode-bar button (the shell's mini
+     launcher is a .modebar-btn too, so the three stop being 34/35/34), and a
+     real 44px target for them and the generation selects on touch. ---- */
+  .modebar-btn{display:inline-flex;align-items:center;justify-content:center;height:34px}
+  /* inline-flex drops the whitespace text node between the chevron and the
+     label, so restate it as a gap on the one button that has two children */
+  .modebar-back{gap:5px}
+  @media (any-pointer:coarse){
+    .modebar-btn{height:44px}
+    .gen-pick select{min-height:44px}
+  }
+
+  /* ---- UXE-010: mirror the enemy picker (select nearest the centre, like the
+     hero rows), give it the ember chevron, and cap each picker over the hero-
+     tile column it controls (135px = Max Gears + class-icon + the two grid
+     gaps of the 145px|1fr|auto|30px captain row). ---- */
+  #genFoe{background-image:linear-gradient(45deg,transparent 50%,#C94646 50%),
+    linear-gradient(135deg,#C94646 50%,transparent 50%),
+    linear-gradient(180deg,#ffffff,#eef6fd)}
+  @media (min-width:961px){
+    .duo.gen-pick-row .foe .gen-pick{flex-direction:row-reverse;margin-left:135px}
+    .duo.gen-pick-row .me .gen-pick{margin-right:135px}
+  }
+
+  /* ---- UXE-023: "Mixed" is a state, not a pickable value. ---- */
+  .gen-pick select[data-mixed]{color:#8FB0C9;font-style:italic}
+
+  /* ---- UXE-026: a generation pick swaps three captains at once - give the
+     three tiles a one-shot faction-tinted pulse so the payoff is visible.
+     Opacity only; the global reduced-motion kill-switch covers it and the JS
+     refuses to start the stagger under reduced motion as well. ---- */
+  @keyframes gen-pulse{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+  .lead-row .hpick.gen-pulse::after{content:"";position:absolute;inset:-3px;
+    border-radius:12px;pointer-events:none;opacity:0;animation:gen-pulse .18s ease-out}
+  #capMe .lead-row .hpick.gen-pulse::after{background:rgba(46,161,242,.35)}
+  #capFoe .lead-row .hpick.gen-pulse::after{background:rgba(239,95,95,.35)}
+
+  /* ---- out-of-scope quick win: the scenario strip rendered "++ New scenario"
+     (the label already starts with "+" and Round 11's <=960px rule adds a
+     ::before "+" that Round 16 left in place when it restored the label). ---- */
+  .rail-add::before{content:none}
+
+  /* ============================================================
+     Round 18d - Gate-1 UX review round 2 (reviewer report 2026-09-21)
+     UXE-031 start-card tag contrast - UXE-034 title reservation in the
+     701-960px band - UXE-032-P 44px formation selects on touch -
+     UXE-033 outcome-quality labels on narrow screens - UXE-035 the
+     computed third formation row explains itself.
+     Append-only: it overrides Round 18/18b/18c by source order, every
+     colour literal below already exists in prototype/style_baseline.json,
+     and the override budget is untouched.
+     ============================================================ */
+
+  /* ---- UXE-031: the two navy cards' tag pills measured 4.11:1 (#55BFFF at
+     11px over the composited navy 23/81/123) - under WCAG AA 4.5 and
+     inconsistent with the primary card's 8.46:1. #8FD3FF is already in the
+     locked palette and lifts the same pill to 5.2:1. Ink only: the pill box,
+     its padding, its size and its wording are owner-approved and untouched,
+     and .start-card--primary (the shell's battle-report card) is not in the
+     selector. ---- */
+  .start-card:not(.start-card--primary) .start-card-tag{color:#8FD3FF}
+
+  /* ---- UXE-034: UXE-009's two reserved title lines were scoped to >=961px,
+     so at 820px card 1 wrapped to two lines while cards 2-3 stayed on one and
+     the three descriptions lost their shared baseline (y 709 vs 685 vs 685).
+     Reserve the same two lines across the rest of the non-stacked range;
+     <=700px stacks and is equalised by its own Round 18c rule. ---- */
+  @media (min-width:701px) and (max-width:960px){
+    .start-card-title{min-height:2.44em}
+  }
+
+  /* ---- UXE-032-P: the six FC / TIER / T12 STACK selects were the last 28px
+     targets on the reviewed path while every control around them is 44-46.
+     min-height alone loses to the fixed `height`, so restate `height` at the
+     specificity of the .troops-formation-block rule and win on source order
+     without an override. The chevron sprites are positioned in %, so they
+     stay centred at the taller height, and the tiny .qlbl2 label above is
+     untouched. Pointer-fine stays 28px. ---- */
+  @media (any-pointer:coarse){
+    .form-ctl .qctl select{height:44px;min-width:44px}
+    .troops-formation-block .form-ctl .qctl select{height:44px;min-width:44px}
+    /* same sweep: the formation nudge buttons were the other sub-44 target
+       left on this screen (26x26 under the <=700px rule). The slider between
+       them keeps well over its 34px minimum at 375px. */
+    .troops-formation-block .fbtn{width:44px;min-width:44px;height:44px;min-height:44px}
+    /* .gchk was left out of the Round 5 coarse list (.chk,.eqchk,.gear-check
+       all get 30px) even though it is the tap target for the two formation
+       input-mode labels - 20px tall is under the 24px WCAG 2.5.8 floor. Match
+       its siblings; 44 would need the mode well itself re-laid out. */
+    .gchk{min-height:30px}
+  }
+
+  /* ---- UXE-033: the outcome-quality chart reserved 430px of scroll content
+     for 8 buckets = 49px a column, against 75px for the widest label word
+     ("Overwhelming"), so bucket 6 clipped at the card edge and every label
+     broke mid-word ("Crushin/g Defeat", "survivor/s >75%"). Widen the scroll
+     content to ~82-88px a column and forbid the intra-word break; .cats
+     already scrolls, and the part-column it now always leaves at the right
+     edge is the affordance. Bars and labels are both inside .cats, so they
+     stay column-aligned while it scrolls. Desktop is untouched. ---- */
+  @media (max-width:700px){
+    .cats{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;
+      overscroll-behavior-x:contain}
+    .catbars,.catx{min-width:704px}
+    .catcol{scroll-snap-align:start}
+    .catx div{overflow-wrap:normal;word-break:keep-all;hyphens:none}
+  }
+
+  /* ---- UXE-035: the third formation row is the computed remainder in BOTH
+     input modes (ratio: 100 - Infantry - Lancer; count: total - Infantry -
+     Lancer), which is why its slider, its +/- and its count field are
+     disabled. Say so once, as a mono eyebrow directly under the input-mode
+     group - the centre column sits level with the two dimmed rows it
+     explains. Additive only: buildFormation() is untouched (spec 2.7) and
+     the rows themselves do not move. ---- */
+  .form-auto-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;
+    line-height:1.4;text-transform:uppercase;color:#9DC3E2;
+    margin:9px 0 0;text-align:left;text-wrap:balance}
+
+  /* ============================================================
+     Round 18e - Gate-1 UX review round 3 (reviewer report 2026-09-21)
+     UXE-037 - CSS half of the hero-picker scroll fix: the list may not
+               chain its overscroll into a page scroll (JS half is in the
+               heroPicker routines).
+     UXE-038 - the two route-change targets paint their focus ring again
+               for keyboard users only.
+     UXE-039 - the outcome-quality chart's scroll boundaries fade instead
+               of slicing label tails on phones (edge-aware).
+     UXE-040-P - the last three sub-44px touch targets the prototype owns
+               (hero-picker rows, the #runBtn re-run shortcut, the
+               "Max Gears" captain-row labels). Sizes only.
+     Append-only: overrides Round 18/18b/18c/18d by source order and by
+     equal-or-higher specificity, never in place. No override flags, no new
+     colour literal (#5AAEF3 and #fff are both already in
+     prototype/style_baseline.json), no external asset, no animation -
+     so there is nothing here for the reduced-motion kill-switch to guard.
+     ============================================================ */
+
+  /* ---- UXE-038: Round 18c's `#modeBarTitle:focus,#startTitle:focus{outline:none}`
+     has specificity (1,1,0) and beat `.modebar-title:focus-visible` (0,2,0), so after
+     Enter on a start card :focus-visible DID match but the computed outline-style was
+     `none` - a keyboard user lost the indicator for exactly one step, and the same
+     happened to #startTitle after browser Back. Restate the two rings at id
+     specificity so plain source order decides; the 18c rule stays untouched and keeps
+     doing its real job, because :focus-visible does not match a programmatic focus
+     that followed a click or a tap. Pointer and touch users therefore still get no
+     ring (the round-1 "ring that reads as a text input" complaint cannot return)
+     while keyboard users get a 2px ring tight to the 66x20 title. ---- */
+  #modeBarTitle:focus-visible{outline:2px solid #5AAEF3;outline-offset:2px;border-radius:4px}
+  /* #startTitle is a block inside .start-inner, so the same ring measured 1020x48
+     around 334px of centred text - the exact "this reads as a text input" shape the
+     round-1 triage objected to. fit-content + auto inline margins hug the words
+     without moving them (the box was already centred, and fit-content can never
+     exceed the available width, so a wrapping title is unaffected). Focus only. */
+  #startTitle:focus-visible{outline:2px solid #5AAEF3;outline-offset:6px;border-radius:6px;
+    width:fit-content;margin-inline:auto}
+
+  /* ---- UXE-037 (CSS half): reaching the end of the hero list must not chain into a
+     page scroll, which the new scroll-close handler would then correctly read as "the
+     anchor moved" and shut the picker on a user who was only browsing heroes. Every
+     pointer type, because touch tablets are wider than the phone breakpoint. ---- */
+  .hpick-pop{overscroll-behavior:contain}
+
+  /* ---- UXE-039: with .cats scrolling (UXE-033) and parkTallestBucket() auto-scrolling
+     it to the populated bucket, the boundary column showed hard-clipped label tails
+     ("%", "ic", "ory", "r") that read as broken text rather than "there is more this
+     way". Speak the same language as the shell's .ocrf-scr-body: a 20px fade. It is
+     EDGE-AWARE so it never claims content that is not there - the Round 18e script
+     toggles .cats--more-l / .cats--more-r from the live scroll offset, and a chart that
+     does not overflow gets no mask at all. Alpha masks, so #fff just means "opaque
+     here"; both sprite-free, both desktop-free (>=701px keeps mask-image: none). ---- */
+  @media (max-width:700px){
+    .cats.cats--more-l.cats--more-r{
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#fff 20px,#fff calc(100% - 20px),transparent 100%);
+      mask-image:linear-gradient(90deg,transparent 0,#fff 20px,#fff calc(100% - 20px),transparent 100%)}
+    .cats.cats--more-l:not(.cats--more-r){
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#fff 20px);
+      mask-image:linear-gradient(90deg,transparent 0,#fff 20px)}
+    .cats.cats--more-r:not(.cats--more-l){
+      -webkit-mask-image:linear-gradient(90deg,#fff calc(100% - 20px),transparent 100%);
+      mask-image:linear-gradient(90deg,#fff calc(100% - 20px),transparent 100%)}
+  }
+
+  /* ---- UXE-040-P: the prototype's half of the 44px sweep. Sizes only - no wording,
+     no restructuring, no new control - and strictly inside `any-pointer:coarse`, so
+     pointer-fine desktop/laptop measure exactly what they measured before. ---- */
+  @media (any-pointer:coarse){
+    /* the densest list on the reviewed path, and the only straggler with a real error
+       cost: 212x40 flush rows, where a mis-tap silently swaps the hero and changes the
+       forecast. The popover keeps its max-height (280px) and its own scroll. */
+    .hpick-pop .hpick-it{min-height:44px}
+    /* #runBtn measured 88x42: `.top-actions .run{height:34px}` (Round 18c) plus a
+       <=700px `min-height:42px` landed 2px short. Restate both at id specificity and
+       win on source order. It stays the compact ghost SECONDARY shortcut - same ghost
+       chrome, same 88px width, label still "Re-run", never "See who wins" (UXE-005). */
+    #runBtn{height:44px;min-height:44px}
+    /* the captain rows' "Max Gears" label is the real tap target of an 18px native
+       checkbox and measured 87x30. The label is already inline-flex/align-items:center,
+       so the box just centres in the taller row. */
+    .lead-row .gear-check{min-height:44px}
+  }
+  /* === Round 19 - Gate-2 first-time-user round 1 (2026-09-21) === */
+  /* ============================================================
+     Tester reports 2026-09-21: desktop 4/10, mobile 3/10 - pass is <=3 on both.
+     P1 (U1-D1 / U1-M1 / U1-D2 / U1-M3) the formation % box is a real
+        type-in field. It already WEARS the porcelain input recipe, so both
+        testers clicked it first and got nothing; this is the affordance half
+        (caret cursor, keyboard ring, 44px touch box, the swap-in editor's
+        chrome). The value still travels through the row's own
+        input[type=range] - buildFormation()/recalc() are untouched.
+     P2 (U1-M6) the header logo goes home: pointer + the existing press
+        grammar. Handlers live in the Round 19 script, attributes in markup.
+     P3 (U1-M2) on the stacked <=700px hero layout each generation picker
+        reads as the HEADER of its own side instead of the footer of the
+        block above it.
+     P4 (U1-M5) the stats table says whose column is whose on every row.
+     P5 (U1-M3) hold-to-repeat needs the +/- buttons to stop being treated
+        as text/callout targets on touch.
+     Append-only: overrides Rounds 18/18b/18c/18d/18e by source order and by
+     equal-or-higher specificity, never in place. No override flags at all (the
+     budget is untouched), no new colour literal (every value is a
+     var() token or already in prototype/style_baseline.json), no external
+     asset. The three new transitions are covered by the global
+     reduced-motion kill-switch.
+     ============================================================ */
+
+  /* ---- P1: make the % box behave the way it already looks. Marksman
+     (.form-ctl.auto) is the derived remainder - it keeps the default cursor
+     and never becomes a tab stop (the Round 19 script only decorates
+     :not(.auto) rows). While editing, the <div> is hidden and a sibling
+     <input> borrowing the same .fval chrome stands in its place: paint()
+     rewrites .fval.textContent on every recalc, so an editor parked INSIDE
+     the div would be destroyed mid-keystroke. ---- */
+  .form-ctl:not(.auto) .fval{cursor:text;transition:border-color .12s ease,box-shadow .12s ease}
+  .form-ctl:not(.auto) .fval:hover{border-color:#5AAEF3}
+  .form-ctl:not(.auto) .fval:focus-visible{outline:2px solid #5AAEF3;outline-offset:2px}
+  .form-ctl .fval.is-editing{display:none}
+  .fval-edit{width:auto;appearance:none;-webkit-appearance:none;
+    outline:2px solid #5AAEF3;outline-offset:2px}
+  .fval-edit::-webkit-outer-spin-button,
+  .fval-edit::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+  /* ---- P5 (CSS half): a held +/- button must not turn into a text
+     selection or an iOS callout. ---- */
+  .fbtn{touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+
+  /* ---- P2: the brand block is the way home (it was inert, and the mobile
+     tester's single biggest annoyance was tapping it and getting nothing).
+     Same press grammar as the page's other pressables. ---- */
+  .bar .flake,.bar .brand{cursor:pointer}
+  .bar .flake{transition:transform .12s ease,filter .12s ease}
+  .bar .brand{transition:filter .12s ease}
+  .bar .flake:hover,.bar .brand:hover{filter:brightness(1.08)}
+  .bar .flake:active,.bar .brand:active{transform:translateY(1px);filter:brightness(.95)}
+  .bar .flake:focus-visible{outline:2px solid #5AAEF3;outline-offset:3px}
+
+  /* ---- P4a (all widths): the two number boxes on a stat row are identical
+     white rectangles. Tint their OUTER edge with the same me/ember language
+     the formation sliders and the Max Gears ticks already speak, so the
+     column reads as "mine" / "the enemy's" without a header. var(--ice) /
+     var(--ember) resolve inside .input to #2EA1F2 / #EF5F5F. ---- */
+  #statPanel .duo .me input{border-left:3px solid var(--ice)}
+  #statPanel .duo .foe input{border-right:3px solid var(--ember)}
+
+  /* ---- P4b/P4c (<=700px): on a phone the MY SIDE / ENEMY heading scrolls
+     away long before the 12 rows do. A slim caption row (inserted by the
+     Round 19 script as a SIBLING before #statPanel - buildStats() clears
+     #statPanel, so nothing may live inside it) sticks under the header and
+     names both columns. aria-hidden: every input already carries a
+     "My ... / Enemy ..." aria-label, so this is decoration for the eye only.
+     The same block pins the centre column to one width, because each row is
+     its own grid and an auto-width label made the input columns ragged
+     (measured 78-95px across the 12 rows). ---- */
+  .stat-cap{display:none}
+  @media (max-width:700px){
+    #statPanel .duo,.stat-cap{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr)}
+    #statPanel .duo .lab.stat-name{white-space:normal;line-height:1.25}
+    .stat-cap{display:grid;gap:4px 8px;align-items:center;position:sticky;
+      top:var(--wos-sticky-top,60px);z-index:3;
+      margin:0 0 2px;padding:5px 8px;border-radius:8px;background:#0E3459;
+      box-shadow:0 1px 0 rgba(255,255,255,.06)}
+    .stat-cap span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+      text-transform:uppercase;line-height:1.4}
+    .stat-cap .stat-cap-me{color:#55BFFF;text-align:left}
+    /* the enemy cell ends with the row's "%" suffix (5.7px + a 5px margin), so the
+       caption is inset by the same amount and both columns' captions sit exactly over
+       their own input's outer edge (measured: 38.0 = 38.0 left, 341.3 = 341.0 right). */
+    .stat-cap .stat-cap-foe{color:#FF8181;text-align:right;padding-right:11px}
+  }
+
+  /* ---- P1 (touch): a 44px-tall, 52px-wide target that opens the numeric
+     keypad, and >=16px type while editing so iOS never zooms the page on
+     focus. At 375px the row still holds 44 + 44 + 52 + 3 gaps inside its
+     244px control track, leaving the slider ~96px. ---- */
+  @media (any-pointer:coarse){
+    /* all three rows share one box geometry so the column stays tidy; only the
+       two editable ones get the caret, the tab stop and the editor (the auto
+       row is already dimmed and its +/- are disabled). */
+    .troops-formation-block .form-ctl .fval{
+      min-height:44px;min-width:52px;padding-block:0;
+      display:flex;align-items:center;justify-content:center}
+    .troops-formation-block .form-ctl:not(.auto) .fval.is-editing{display:none}
+    .troops-formation-block .form-ctl:not(.auto) .fval-edit{font-size:16px;letter-spacing:0}
+  }
+
+  /* ---- P3: the mobile tester scrolled straight past ENEMY GENERATION. It
+     sat 7px under my last hero card as a thin transparent row whose divider
+     was BELOW it, so it read as the footer of my side. Keep the Round 18b
+     placement (each picker above its own side's captains) and make it a
+     raised band with a faction accent: a break above, the divider above, and
+     the label big enough to be a heading. Desktop/tablet (the side-by-side
+     .gen-pick-row) is untouched. ---- */
+  @media (max-width:700px){
+    #capMe>.gen-pick,#capFoe>.gen-pick{
+      justify-content:flex-start;gap:10px;font-size:12px;letter-spacing:.06em;
+      margin:0 0 5px;padding:9px 11px;border-radius:12px;background:#123B59;
+      border:1px solid rgba(255,255,255,.09);border-left:3px solid #55BFFF;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+    #capMe>.gen-pick select,#capFoe>.gen-pick select{flex:1;min-width:0;width:auto}
+    #capFoe>.gen-pick{position:relative;margin-top:28px;border-left-color:#FF8181}
+    #capFoe>.gen-pick::after{content:"";position:absolute;left:0;right:0;top:-14px;
+      height:1px;background:rgba(255,255,255,.09)}
+  }
+
+  /* === Round 20 - Gate-2 first-time-user round 3 (2026-09-22) === */
+  /* Tester report user_round3_desktop.md, top annoyance #3 ("the run button
+     moves around"): on Custom test the tester typed two stats, found no run
+     control on screen, and had to scroll past the whole hero roster and the
+     FINAL STATS table to reach it. The header control is a deliberate
+     SECONDARY "Re-run" (UXE-005) and stays that way, so the fix is not a new
+     control - it is keeping the one primary control reachable.
+
+     U3D-T4: #runBottom sticks to the foot of the viewport for exactly as long
+     as its containing block (section.input) is on screen, then comes to rest
+     at its own place in flow at the end of the section - so the end of the
+     inputs still reads as "and here is the button", and nothing new appears
+     over the Forecast. Position only: no colour, no transform, no animation,
+     nothing for the reduced-motion kill-switch to strip, and no override
+     keyword (the guard counts them, comments included).
+
+     `bottom` keeps the button clear of the shell's corner legal strip
+     (#wos-shell-legal: 27px tall at an 8px offset) for every state in which
+     that strip is fixed; at <=700px the strip is in flow and only the
+     safe-area inset is owed. z-index 5 is above ordinary panel content and
+     below everything that must cover the button: the sticky header (60),
+     .hpick-pop (120), .session-toast (150) and .tip-pop (200). section.input
+     is position:relative with z-index:auto, so it opens no stacking context
+     of its own and those numbers compare directly. ---- */
+  body.view-work #runBottom{position:sticky;bottom:44px;z-index:5}
+  @media (max-width:700px){
+    body.view-work #runBottom{bottom:calc(10px + env(safe-area-inset-bottom))}
+  }
+
+  /* U3D-T2 (quick mode shows the heroes first) is a DOM move, not a CSS
+     reorder - see the Round 20 script block. Turning section.input into a
+     flex column to use `order` would change margin collapsing between its
+     panels, and custom mode plus the S5 battle-report arrival have to stay
+     pixel-identical, so no layout rule is added here. */
+
+  /* ---- U3D-T2 follow-on, <=700px only: at that width the Round 18b script
+     relocates BOTH .gen-pick labels into #capMe/#capFoe, which leaves
+     .duo.gen-pick-row an empty 19px grid box still carrying its 10px margin,
+     10px padding and 1px divider - measured 40px of dead band. Where the
+     block used to sit (mid-page, after Buffs) nobody looked at it; directly
+     under MY SIDE / ENEMY it is the first thing a phone user meets and reads
+     as a stray rule. Collapsed only while the row really is empty, so a
+     browser that never ran the relocation still shows its two selects. Quick
+     mode only: custom mode keeps today's geometry to the pixel. ---- */
+  @media (max-width:700px){
+    body[data-mode="quick"] .hero-block .duo.gen-pick-row:not(:has(.gen-pick)){display:none}
+  }
   </style>
 </head>
-<body>
+<body class="view-start">
 
 <video class="bg-video" autoplay muted loop playsinline preload="auto" poster="assets/Backdrop/Backdrop1.png" aria-hidden="true">
   <source src="assets/Backdrop/Backdrop6_loop.mp4" type="video/mp4">
@@ -1984,16 +2692,50 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
 </script>
 
 <header class="bar">
-  <div class="flake">❄</div>
+  <!-- P2 (Round 19): the brand block is the way home. The .flake tile is the
+       single tab stop so the <h1> keeps its heading semantics; .brand is a
+       pointer-only target. Handlers live in the Round 19 script. -->
+  <div class="flake" role="button" tabindex="0" aria-label="Back to start">❄</div>
   <div class="brand"><h1>Whiteout Tactics</h1><p>Battle Predictor</p></div>
   <div class="top-actions">
     <div class="mini-field"><label>Runs</label>
       <select class="val" id="runsSel" title="Monte-Carlo runs per forecast"><option selected>10</option><option>50</option><option>100</option></select></div>
-    <button class="run" id="runBtn">Run forecast</button>
+    <!-- UXE-005 (Round 18c): the header control is a compact SECONDARY re-run shortcut.
+         #runBottom is the page's one primary action; this must never read "See who wins". -->
+    <button class="run run-rerun" id="runBtn" title="Run the forecast again" aria-label="Re-run the forecast"><span class="run-rerun-icon" aria-hidden="true">↻</span> Re-run</button>
     <button class="run-status" id="runStatus" type="button" hidden></button>
     <div class="bar-note">Live engine · local</div>
   </div>
 </header>
+
+<!-- ========= START SCREEN (Round 18, owner directive 2026-09-20) =========
+     Contract: docs/UX_START_JOURNEY_SPEC.md §1.1 / §2.1. Static markup only —
+     the shell mounts into #startSlotReports / #modeBarSlot before DOMContentLoaded,
+     so these ids/classes/order must never be built by JS. -->
+<section class="start" id="startScreen" aria-labelledby="startTitle">
+  <div class="start-inner">
+    <h1 class="start-title" id="startTitle" tabindex="-1">Who wins this battle?</h1>
+    <p class="start-sub">Choose how to set it up.</p>
+    <div class="start-grid" id="startGrid">
+      <div class="start-slot" id="startSlotReports" hidden></div>
+      <button type="button" class="start-card" data-start="quick">
+        <span class="start-card-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 12l11 12-11 12"/><path d="M25 12l11 12-11 12"/></svg></span>
+        <span class="start-card-tag">No typing</span>
+        <span class="start-card-title">Quick test</span>
+        <span class="start-card-line">Test heroes and formations. Stats are already filled in.</span>
+        <span class="start-card-go" aria-hidden="true">&rarr;</span>
+      </button>
+      <button type="button" class="start-card" data-start="custom">
+        <span class="start-card-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="14" x2="38" y2="14"/><circle cx="20" cy="14" r="3.5" fill="currentColor" fill-opacity=".18"/><line x1="10" y1="24" x2="38" y2="24"/><circle cx="30" cy="24" r="3.5" fill="currentColor" fill-opacity=".18"/><line x1="10" y1="34" x2="38" y2="34"/><circle cx="17" cy="34" r="3.5" fill="currentColor" fill-opacity=".18"/></svg></span>
+        <span class="start-card-tag">Full control</span>
+        <span class="start-card-title">Custom test</span>
+        <span class="start-card-line">Enter every stat yourself.</span>
+        <span class="start-card-go" aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+    <button type="button" class="start-resume" id="startResume" hidden>Continue your last setup <span aria-hidden="true">&rarr;</span></button>
+  </div>
+</section>
 
 <main class="layout">
 
@@ -2009,6 +2751,19 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
 
   <!-- ========= INPUT ========= -->
   <section class="input">
+    <!-- workspace mode bar (Round 18): quick vs custom, contract §2.2 -->
+    <div class="modebar" id="modeBar">
+      <button type="button" class="modebar-btn modebar-back" id="modeBarBack"><span aria-hidden="true">&lsaquo;</span> Start</button>
+      <div class="modebar-info" aria-live="polite" aria-atomic="true">
+        <span class="modebar-title" id="modeBarTitle" tabindex="-1"><span class="mb-only mb-quick">Quick test</span><span class="mb-only mb-custom">Custom test</span></span>
+        <span class="modebar-helper"><span class="mb-only mb-quick">Stats are prefilled and equal. Change heroes and formation, then run.</span><span class="mb-only mb-custom">Every stat is yours to set.</span></span>
+      </div>
+      <div class="modebar-actions">
+        <span class="modebar-slot" id="modeBarSlot"></span>
+        <button type="button" class="modebar-btn modebar-link mb-only mb-quick" id="modeBarEdit">Edit all stats</button>
+        <button type="button" class="modebar-btn modebar-link mb-only mb-custom" id="modeBarQuick">Use prefilled stats</button>
+      </div>
+    </div>
     <div class="sides-head">
       <div class="side-title me">
         <span class="badge">MY SIDE</span>
@@ -2083,6 +2838,13 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
 
     <!-- captain -->
     <div class="iblock hero-block">
+      <!-- generation picker (Round 18, contract §2.6): a row at the top of the
+           existing .duo grid, reusing its me | centre-label | foe columns -->
+      <div class="duo gen-pick-row">
+        <div class="me"><label class="gen-pick">Generation <select id="genMe" aria-label="My captain heroes generation"></select></label></div>
+        <div class="lab">Captain heroes</div>
+        <div class="foe"><label class="gen-pick">Generation <select id="genFoe" aria-label="Enemy captain heroes generation"></select></label></div>
+      </div>
       <div class="duo">
         <div class="me"><div class="hero-lane" id="capMe"></div></div>
         <div class="lab lead-labels"><span>Infantry Hero</span><span>Lancer Hero</span><span>Marksman Hero</span></div>
@@ -2104,6 +2866,9 @@ if(window.matchMedia && matchMedia('(max-width:700px)').matches){
       <div class="title">Final Stats</div>
       <div class="stat-panel final-stats" id="finalStatsPanel"></div>
     </div>
+
+    <!-- bottom run button (Round 18, contract §2.5) -->
+    <button type="button" class="run-bottom" id="runBottom"><span class="run-bottom-label">See who wins</span> <span class="run-bottom-go" aria-hidden="true">&rarr;</span></button>
   </section>
 
   <!-- ========= 3 · FORECAST ========= -->
@@ -2320,17 +3085,37 @@ function troopIcon(cls, clsName='class-icon-img'){
 }
 
 /* ---------- hero picker ---------- */
-let openPop=null, openWrap=null, heroPickerSeq=0;
+let openPop=null, openWrap=null, heroPickerSeq=0, openAnchorRect=null;   // openAnchorRect: UXE-037 scroll-close baseline
 function closeHeroPicker(opts={}){
   const trigger=openWrap?openWrap.querySelector('.hpick-btn'):null;
   if(openWrap)openWrap.style.zIndex='';
   if(openPop){ openPop.classList.remove('open'); openPop.style.left=''; openPop.style.top=''; }
   if(trigger){ trigger.setAttribute('aria-expanded','false'); if(opts.returnFocus) trigger.focus(); }
-  openPop=null; openWrap=null;
+  openPop=null; openWrap=null; openAnchorRect=null;
 }
 document.addEventListener('click', closeHeroPicker);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeHeroPicker({returnFocus:true}); });
 window.addEventListener('resize', closeHeroPicker);
+/* UXE-037 (Gate-1 UX review round 3): .hpick-pop is position:fixed and is placed once by
+   place(), so a page scroll used to leave it ~550px from the row it edits while still
+   intercepting taps over unrelated controls. ONE persistent capture listener closes it
+   when its ANCHOR has actually moved. The displacement test is what makes capture:true
+   safe - a bare {once:true,capture:true} handler would fire on the first wheel/touch
+   scroll of the hero LIST (overflow:auto) and close the picker mid-browse, and the .cats
+   chart scroll or sub-pixel jitter would close it for nothing. No returnFocus on this
+   path: trigger.focus() would scroll the page back and undo the user's own scroll. */
+window.addEventListener('scroll', function(e){
+  if(!openPop || !openAnchorRect) return;
+  const src=e.target;
+  if(src===openPop || (src && src.nodeType===1 && openPop.contains(src))) return;   // the popover's own list scroll
+  const trigger=openWrap?openWrap.querySelector('.hpick-btn'):null;
+  if(!trigger) return;
+  const r=trigger.getBoundingClientRect();
+  if(Math.abs(r.top-openAnchorRect.top)<=8 && Math.abs(r.left-openAnchorRect.left)<=8) return;
+  const hadFocus=openPop.contains(document.activeElement);
+  closeHeroPicker();
+  if(hadFocus){ try{ trigger.focus({preventScroll:true}); }catch(_){} }
+}, {passive:true, capture:true});
 function heroPicker(filter, def, opts={}){
   const list = filter ? HERO_LIST.filter(h=>h.c===filter) : HERO_LIST;
   const allowNone=!!opts.allowNone, noneLabel=opts.noneLabel||'No joiner';
@@ -2359,9 +3144,13 @@ function heroPicker(filter, def, opts={}){
   function items(q=''){ listBox.innerHTML='';
     const rows=(allowNone ? [noneHero] : []).concat(list).filter(h=>h.none || h.n.toLowerCase().includes(q.toLowerCase()));
     rows.forEach(h=>{
-      const it=el('button','hpick-it'); const im=el('img'); im.src=avatar(h.f); im.alt=''; im.loading='lazy';
-      if(h.none){ im.remove(); const rd=el('img','none-red'); rd.src=RED_ICON; rd.alt=''; it.appendChild(rd); }
-      else it.appendChild(im);
+      const it=el('button','hpick-it');
+      /* OOS-H (Gate-1 round 3): the <img> used to be built - and its src assigned -
+         BEFORE this branch, and avatar('') === 'avatars/', so every allow-none (joiner)
+         picker fired a detached GET /avatars/ -> 404 for its "No joiner" row. Build the
+         avatar only when there is one; the none row itself is unchanged. */
+      if(h.none){ const rd=el('img','none-red'); rd.src=RED_ICON; rd.alt=''; it.appendChild(rd); }
+      else { const im=el('img'); im.src=avatar(h.f); im.alt=''; im.loading='lazy'; it.appendChild(im); }
       const sp=el('span'); sp.textContent=h.none?noneLabel:h.n; const cl=el('span','cls'); cl.textContent=h.none?'NONE':(h.g==='SR'?'SR':'G'+h.g);
       it.type='button'; it.setAttribute('role','option'); it.setAttribute('aria-selected',String(h.n===cur.n));
       it.append(sp,cl);
@@ -2383,7 +3172,8 @@ function heroPicker(filter, def, opts={}){
     pop.classList.add('open'); wrap.style.zIndex='200'; btn.setAttribute('aria-expanded','true');      // lift this picker above the rows below it
     openPop=pop; openWrap=wrap; items(search.value);
     place();
-    setTimeout(()=>search.focus(),0); }
+    openAnchorRect=btn.getBoundingClientRect();        // UXE-037: baseline for the scroll-close displacement test
+    setTimeout(()=>{ try{ search.focus({preventScroll:true}); }catch(_){ search.focus(); } },0); }
   function close(){ closeHeroPicker({returnFocus:true}); }
   btn.onclick=(e)=>{e.stopPropagation(); pop.classList.contains('open')?close():open();};
   btn.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();open();setTimeout(()=>focusOption(1),0);} };
@@ -3995,14 +4785,15 @@ window.addEventListener('DOMContentLoaded',()=>{
   // partial write) previously threw here and silently killed the initial run,
   // leaving "--" and empty charts until the user touched a control
   let restored=false;
+  window.__wosDefaults = formToConfig();   // Round 18: quick-test template baseline, captured before any restore
   try{ restored=restoreAutosave(); }
   catch(err){ console.error('autosave restore failed — starting from defaults', err); }
-  try{ if(restored) showSessionNote('Restored your last session'); }
+  try{ if(restored && document.body.classList.contains('view-work')) showSessionNote('Restored your last session'); }   // Round 18b: suppressed on the start screen — shown on Resume click instead
   catch(err){ console.error('session note failed', err); }
   updateFinalStats();
   updateAccordionSummaries();   // chips were computed from defaults before the autosave restore
   snapshotTab(activeTab());
-  runForecast();   // initial forecast from the live engine
+  if(document.body.classList.contains('view-work')) runForecast();   // Round 18: start screen defers this to wosStart.enter()
 });
 </script>
 <script>
@@ -4030,6 +4821,877 @@ window.addEventListener('DOMContentLoaded',()=>{
     kick();
   },{passive:true});
   root.classList.add('parallax-on'); kick();
+})();
+</script>
+<script>
+/* ============================================================
+   Round 18 — start journey, workspace modes, generation picker
+   (owner directive 2026-09-20). Contract: docs/UX_START_JOURNEY_SPEC.md.
+   Front-end only; formToConfig() output is unchanged for unchanged inputs.
+   Relies on top-level const/function declarations from the main script above
+   ($, el, ROSTER, CLS, heroGen, formToConfig, makeTab, selectTab, selectTabIn,
+   runForecast, showSessionNote — classic <script> blocks share one global
+   scope, so these are already in reach here).
+   ============================================================ */
+(function(){
+  // Initial hash routing — runs synchronously during parse, BEFORE
+  // DOMContentLoaded, so the main boot's guarded runForecast() call (the
+  // "if(document.body.classList.contains('view-work'))" edit above) sees the
+  // right view class and fires for a #quick/#custom deep link on first load.
+  var h=(location.hash||'').replace('#','');
+  var bootWillAutoRun=false;
+  if(h==='quick'||h==='custom'){
+    document.body.classList.remove('view-start');
+    document.body.classList.add('view-work');
+    document.body.dataset.mode=h;
+    bootWillAutoRun=true;
+  }
+  window.__wosBootWillAutoRun=bootWillAutoRun;
+})();
+
+window.addEventListener('DOMContentLoaded', function(){
+  var AUTOSAVE_KEY='wos:lastConfig:v2';
+  var _bootRan=!!window.__wosBootWillAutoRun;   // true only when the guarded boot call above already ran it
+
+  function sameOwnEnemy(a,b){
+    try{
+      return JSON.stringify(a&&a.own)===JSON.stringify(b&&b.own) &&
+             JSON.stringify(a&&a.enemy)===JSON.stringify(b&&b.enemy);
+    }catch(_){ return false; }
+  }
+  function reduceMotion(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); }
+
+  function refreshResumeVisibility(){
+    var btn=$('#startResume'); if(!btn) return;
+    var has=false; try{ has=!!localStorage.getItem(AUTOSAVE_KEY); }catch(_){}
+    btn.hidden=!has;
+  }
+
+  function applyViewClasses(view,mode){
+    document.body.classList.toggle('view-start', view==='start');
+    document.body.classList.toggle('view-work', view==='work');
+    if(view==='work'&&mode) document.body.dataset.mode=mode;
+    else delete document.body.dataset.mode;
+  }
+  function focusAfterChange(view){
+    var target = view==='start' ? $('#startTitle') : $('#modeBarTitle');
+    if(target && target.focus) target.focus({preventScroll:true});
+  }
+  // Owner walkthrough 2026-09-21: arriving from a battle-report scan must land on
+  // the FIRST tab (Troops Formation) - the stats are already filled in, so landing
+  // on Stats read as "confusing". Custom test from the start screen still opens on
+  // Stats (that card's promise is "enter every stat yourself").
+  function selectModeTab(mode, from){
+    var bar=document.querySelector('.input-tabs > .tabbar'), panels=document.querySelector('.input-tabs > .tabpanels');
+    if(!bar||!panels||typeof selectTabIn!=='function') return;
+    selectTabIn(bar,panels, (mode==='quick'||from==='reports')?'itab0':'itab1');
+  }
+  function runDeferredBootIfNeeded(){
+    if(_bootRan) return;
+    _bootRan=true;
+    if(typeof runForecast==='function') runForecast();   // instant path — never {celebrate:true} here
+  }
+  function findTabByName(name){
+    var tabs=[].slice.call(document.querySelectorAll('#tabs .tab'));
+    for(var i=0;i<tabs.length;i++){
+      var nm=tabs[i].querySelector('.tname');
+      if(nm && nm.textContent===name) return tabs[i];
+    }
+    return null;
+  }
+
+  function wosEnter(mode, opts){
+    opts=opts||{};
+    var from=opts.from||'start';
+    if(mode!=='quick' && mode!=='custom') return;
+    if(mode==='quick'){
+      var useTemplate = opts.template!==undefined ? !!opts.template : (from==='start');
+      if(useTemplate && typeof formToConfig==='function'){
+        var current=formToConfig(), tmpl=window.__wosDefaults;
+        if(tmpl && !sameOwnEnemy(current,tmpl)){
+          // Round 18b fix: reuse an existing "Quick test" tab as-is (no reset,
+          // no pile-up of duplicate tabs) — only make a new one when none exists.
+          var existingQuickTab=findTabByName('Quick test');
+          if(existingQuickTab){
+            selectTab(existingQuickTab);
+          } else {
+            var tabCount=document.querySelectorAll('#tabs .tab').length;
+            if(tabCount<5){
+              var cfg=JSON.parse(JSON.stringify(tmpl));
+              cfg.name='Quick test';
+              var t=makeTab(cfg.name,cfg,null);
+              selectTab(t);
+            } else if(typeof showSessionNote==='function'){
+              showSessionNote('Scenario limit reached — using your current stats');
+            }
+          }
+        }
+      }
+    }
+    applyViewClasses('work',mode);
+    selectModeTab(mode, from);
+    if(location.hash!=='#'+mode) location.hash=mode;
+    focusAfterChange('work');
+    runDeferredBootIfNeeded();
+    document.dispatchEvent(new CustomEvent('wos:view',{detail:{view:'work',mode:mode,from:from}}));
+  }
+
+  function wosShowStart(){
+    applyViewClasses('start',null);
+    refreshResumeVisibility();
+    if(location.hash) location.hash='';
+    focusAfterChange('start');
+    document.dispatchEvent(new CustomEvent('wos:view',{detail:{view:'start',mode:null,from:'start'}}));
+  }
+
+  window.wosStart={
+    enter: wosEnter,
+    showStart: wosShowStart,
+    view: function(){ return document.body.classList.contains('view-work')?'work':'start'; },
+    mode: function(){ return document.body.classList.contains('view-work') ? (document.body.dataset.mode||null) : null; }
+  };
+
+  // Subsequent navigation (browser Back/Forward, hand-edited hash). Guarded so
+  // the hash writes wosEnter()/wosShowStart() make themselves don't loop back.
+  window.addEventListener('hashchange', function(){
+    var hh=(location.hash||'').replace('#',''), wantMode=(hh==='quick'||hh==='custom')?hh:null, wantView=wantMode?'work':'start';
+    if(window.wosStart.view()===wantView && window.wosStart.mode()===wantMode) return;
+    if(wantMode) wosEnter(wantMode,{from:'hash'});
+    else wosShowStart();
+  });
+
+  // ---- start screen wiring ----
+  refreshResumeVisibility();
+  var startScreen=$('#startScreen');
+  if(startScreen) startScreen.addEventListener('click', function(e){
+    var card=e.target.closest('.start-card[data-start]'); if(!card) return;
+    var mode=card.dataset.start;
+    if(mode==='quick'||mode==='custom') wosEnter(mode,{from:'start'});
+  });
+  var resumeBtn=$('#startResume');
+  if(resumeBtn) resumeBtn.addEventListener('click', function(){
+    wosEnter('custom',{from:'resume'});
+    // Round 18b fix: the boot toast is now suppressed while the start screen is
+    // showing (see the guarded showSessionNote() edit in the main boot handler)
+    // — surface it here instead, at the moment the user actually asks to resume.
+    if(typeof showSessionNote==='function') showSessionNote('Restored your last session');
+  });
+
+  // ---- mode bar wiring (contract §2.2) ----
+  var modeBack=$('#modeBarBack'); if(modeBack) modeBack.addEventListener('click', function(){ wosShowStart(); });
+  var modeEdit=$('#modeBarEdit'); if(modeEdit) modeEdit.addEventListener('click', function(){ wosEnter('custom',{from:'switch'}); });
+  // UXE-027: the reciprocal action out of Custom. template:true reuses (or
+  // creates) the "Quick test" scenario tab exactly like the start-screen card,
+  // so the user's own scenario is never overwritten.
+  var modeQuick=$('#modeBarQuick'); if(modeQuick) modeQuick.addEventListener('click', function(){ wosEnter('quick',{from:'switch',template:true}); });
+
+  // If a #quick/#custom deep link already put us in the workspace before this
+  // listener ran, finish the entry choreography a plain enter() would have done.
+  if(window.wosStart.view()==='work') selectModeTab(window.wosStart.mode());
+
+  // ---- bottom run button (contract §2.5) ----
+  var runBtn=$('#runBtn'), runBottom=$('#runBottom');
+  // UXE-005: the header control is a compact SECONDARY re-run shortcut and must
+  // never carry the page's primary wording. The shell's OCR arrival still
+  // relabels #runBtn (shell/app/ocr/client/screens/setup.mjs relabelForecastCta,
+  // pinned by its own node test), so restore our label whenever that lands.
+  if(runBtn){
+    var RERUN_HTML='<span class="run-rerun-icon" aria-hidden="true">↻</span> Re-run';
+    var keepRerun=function(){
+      if(!/See who wins|Run forecast/i.test(runBtn.textContent||'')) return;
+      runBtn.innerHTML=RERUN_HTML;
+      runBtn.setAttribute('aria-label','Re-run the forecast');
+      runBtn.title='Run the forecast again';
+    };
+    keepRerun();
+    if(window.MutationObserver) new MutationObserver(keepRerun).observe(runBtn,{childList:true,characterData:true,subtree:true});
+  }
+  if(runBtn && runBottom){
+    var runBottomLabel=runBottom.querySelector('.run-bottom-label');
+    var syncBusy=function(){
+      var busy=runBtn.disabled;
+      runBottom.disabled=busy;
+      if(runBottomLabel) runBottomLabel.textContent=busy?'Simulating…':'See who wins';
+    };
+    syncBusy();
+    if(window.MutationObserver) new MutationObserver(syncBusy).observe(runBtn,{attributes:true,attributeFilter:['disabled']});
+    runBottom.addEventListener('click', function(){
+      runBtn.click();
+      var fc=document.querySelector('.forecast');
+      if(fc) fc.scrollIntoView({behavior:reduceMotion()?'auto':'smooth', block:'start'});
+    });
+  }
+
+  // ---- generation picker (contract §2.6) ----
+  function genOptionsPresent(){
+    var seen={}, out=[];
+    ROSTER.forEach(function(hh){ var g=parseInt(hh.g,10); if(Number.isFinite(g) && !seen[g]){ seen[g]=1; out.push(g); } });
+    return out.sort(function(a,b){ return b-a; });
+  }
+  function buildGenSelect(sel){
+    sel.innerHTML='';
+    genOptionsPresent().forEach(function(g){ var o=el('option'); o.value=String(g); o.textContent='Gen '+g; sel.appendChild(o); });
+  }
+  function syncGenSelect(which){
+    var sel=which==='me'?$('#genMe'):$('#genFoe'); if(!sel) return;
+    var mount=which==='me'?$('#capMe'):$('#capFoe'); if(!mount) return;
+    var rows=[].slice.call(mount.querySelectorAll('.lead-row'));
+    var gens=rows.map(function(r){ var p=r.querySelector('.hpick'); return p?heroGen(p.dataset.hero):null; });
+    var existingMixed=sel.querySelector('option[value="mixed"]'); if(existingMixed) existingMixed.remove();
+    var valid=gens.filter(function(g){ return g!=null; });
+    var allSame = valid.length===gens.length && valid.length>0 && valid.every(function(g){ return g===valid[0]; });
+    if(allSame){ sel.value=String(valid[0]); delete sel.dataset.mixed; }   // UXE-023
+    else{
+      var o=el('option'); o.value='mixed'; o.textContent='Mixed'; o.disabled=true; o.hidden=true;
+      sel.insertBefore(o, sel.firstChild); o.selected=true;
+      sel.dataset.mixed='1';   // UXE-023: styled muted+italic so it reads as a state
+    }
+  }
+  function applyGenPick(which, gen){
+    var mount=which==='me'?$('#capMe'):$('#capFoe'); if(!mount) return;
+    [].slice.call(mount.querySelectorAll('.lead-row')).forEach(function(row){
+      var cls=row.dataset.cls, code=Object.keys(CLS).filter(function(k){ return CLS[k]===cls; })[0];
+      var hero=ROSTER.filter(function(hh){ return hh.c===code && String(parseInt(hh.g,10))===String(gen); })[0];
+      if(hero){ var p=row.querySelector('.hpick'); if(p&&p.setHero) p.setHero(hero.n); }
+    });
+  }
+  // UXE-026: a generation pick changes three captains at once - flash the three
+  // tiles so the payoff is visible. User-initiated only (applyGenPick is only
+  // reached from the select's change handler) and skipped under reduced motion.
+  function pulseCaptains(which){
+    if(reduceMotion()) return;
+    var mount=which==='me'?$('#capMe'):$('#capFoe'); if(!mount) return;
+    [].slice.call(mount.querySelectorAll('.lead-row .hpick')).forEach(function(tile,i){
+      setTimeout(function(){
+        tile.classList.remove('gen-pulse');
+        void tile.offsetWidth;                 // restart the animation on repeat picks
+        tile.classList.add('gen-pulse');
+        setTimeout(function(){ tile.classList.remove('gen-pulse'); }, 300);
+      }, i*40);
+    });
+  }
+  var genMe=$('#genMe'), genFoe=$('#genFoe');
+  if(genMe && genFoe){
+    buildGenSelect(genMe); buildGenSelect(genFoe);
+    syncGenSelect('me'); syncGenSelect('foe');
+    genMe.addEventListener('change', function(e){ if(e.target.value==='mixed') return; applyGenPick('me', e.target.value); pulseCaptains('me'); });
+    genFoe.addEventListener('change', function(e){ if(e.target.value==='mixed') return; applyGenPick('foe', e.target.value); pulseCaptains('foe'); });
+    var capMe=$('#capMe'), capFoe=$('#capFoe');
+    if(capMe) capMe.addEventListener('herochange', function(){ syncGenSelect('me'); });
+    if(capFoe) capFoe.addEventListener('herochange', function(){ syncGenSelect('foe'); });
+
+    // Round 18b fix: on the stacked mobile hero layout (<=700px, "my rows then
+    // enemy rows") each generation picker relocates to sit directly above its
+    // OWN side's three captain rows instead of both selects sitting together
+    // above the whole block. Desktop/tablet (side-by-side columns) is untouched
+    // — the pickers move back to their original .gen-pick-row home there.
+    var genMeWrap=genMe.closest('.gen-pick'), genFoeWrap=genFoe.closest('.gen-pick');
+    var genMeHome=genMeWrap&&genMeWrap.parentElement, genFoeHome=genFoeWrap&&genFoeWrap.parentElement;
+    if(genMeWrap && genFoeWrap && genMeHome && genFoeHome && capMe && capFoe){
+      var placeGenPickers=function(stacked){
+        if(stacked){
+          if(genMeWrap.parentElement!==capMe) capMe.insertBefore(genMeWrap, capMe.firstChild);
+          if(genFoeWrap.parentElement!==capFoe) capFoe.insertBefore(genFoeWrap, capFoe.firstChild);
+        } else {
+          if(genMeWrap.parentElement!==genMeHome) genMeHome.appendChild(genMeWrap);
+          if(genFoeWrap.parentElement!==genFoeHome) genFoeHome.appendChild(genFoeWrap);
+        }
+      };
+      var stackedMQ=window.matchMedia && matchMedia('(max-width:700px)');
+      if(stackedMQ){
+        placeGenPickers(stackedMQ.matches);
+        var onStackChange=function(e){ placeGenPickers(e.matches); };
+        if(stackedMQ.addEventListener) stackedMQ.addEventListener('change', onStackChange);
+        else if(stackedMQ.addListener) stackedMQ.addListener(onStackChange);
+      }
+    }
+  }
+});
+</script>
+<script>
+/* ============================================================
+   Round 18d - Gate-1 UX review round 2 (reviewer report 2026-09-21).
+   A NEW script block (spec 2.7: new JS goes in a new <script> before
+   </body>) so Rounds 8/18 stay byte-identical. Front-end only and
+   purely decorative: nothing here reads or writes a form value, so
+   formToConfig() output is unchanged for unchanged inputs.
+   UXE-035 - explain the computed third formation row.
+   UXE-033 - park the tallest outcome bucket inside the chart's
+             scrollport on narrow screens.
+   ============================================================ */
+(function(){
+  function ready(fn){
+    if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',fn);
+    else fn();
+  }
+  function reduceMotion18d(){
+    return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /* ---- UXE-035 ------------------------------------------------------
+     buildFormation() disables the third (Marksman) row on purpose: it is
+     the computed remainder in BOTH input modes - "Input By Troop Ratio"
+     (100 - Infantry - Lancer) and "Input By Troop Quantity" (total -
+     Infantry - Lancer, count field readOnly). Nothing said so, so the
+     dead slider and dead +/- read as a bug. Decorate, never rebuild:
+     one mono eyebrow under the input-mode group, a real tooltip on the
+     row (disabled inputs do not reliably surface their own), and
+     aria-disabled on the controls that are actually inert. The FC /
+     TIER / T12 selects in the same row stay fully editable and are
+     deliberately left alone. --------------------------------------- */
+  var AUTO_NOTE_ID='formAutoNote';
+  var AUTO_NOTE_TEXT='Third class fills the remainder';
+  var AUTO_ROW_TITLE='Set automatically so the three add up to 100%';
+
+  function ensureAutoNote(){
+    var host=document.getElementById('formModeChecks');
+    if(!host||!host.parentNode) return;
+    if(document.getElementById(AUTO_NOTE_ID)) return;
+    var note=document.createElement('div');
+    note.id=AUTO_NOTE_ID;
+    note.className='form-auto-note';
+    note.textContent=AUTO_NOTE_TEXT;
+    host.parentNode.insertBefore(note, host.nextSibling);
+  }
+
+  function decorateAutoRows(){
+    var rows=document.querySelectorAll('.form-ctl.auto');
+    for(var i=0;i<rows.length;i++){
+      var row=rows[i];
+      if(row.getAttribute('title')!==AUTO_ROW_TITLE) row.setAttribute('title',AUTO_ROW_TITLE);
+      var ctl=row.querySelectorAll('input,button');
+      for(var j=0;j<ctl.length;j++){
+        var c=ctl[j];
+        if(!(c.disabled || c.readOnly)) continue;       // FC/Tier/T12 are editable - skip
+        if(c.getAttribute('aria-disabled')!=='true') c.setAttribute('aria-disabled','true');
+        if(c.getAttribute('aria-describedby')!==AUTO_NOTE_ID) c.setAttribute('aria-describedby',AUTO_NOTE_ID);
+      }
+    }
+  }
+
+  function initAutoRowExplainer(){
+    ensureAutoNote();
+    decorateAutoRows();
+    // re-decorate if either formation stack is ever rebuilt (scenario switch,
+    // config load): buildFormation() replaces the rows wholesale.
+    if(!window.MutationObserver) return;
+    var obs=new MutationObserver(function(){ ensureAutoNote(); decorateAutoRows(); });
+    ['#formMe','#formFoe'].forEach(function(sel){
+      var n=document.querySelector(sel);
+      if(n) obs.observe(n,{childList:true});
+    });
+  }
+
+  /* ---- UXE-033 (nice-to-have) ---------------------------------------
+     The outcome-quality card now scrolls 8 whole-word buckets through a
+     ~300px window on phones. After a run, bring the tallest bucket into
+     that window with the smallest possible move (if it is already fully
+     visible nothing happens), so the answer is not parked off-screen.
+     Scrolls the card's own overflow box only - never the page - and
+     jumps instead of animating under reduced motion. ---------------- */
+  function tallestBucket(cats){
+    var cols=cats.querySelectorAll('#catBars .catcol');
+    var best=null, bv=-1;
+    for(var i=0;i<cols.length;i++){
+      // read the printed share, not the bar's rendered height: the bar grows
+      // through a .5s transition that has not necessarily started yet
+      var cv=cols[i].querySelector('.cval');
+      var v=cv?parseFloat(cv.textContent):NaN;
+      if(!isFinite(v)) v=-1;
+      if(v>bv){ bv=v; best=cols[i]; }
+    }
+    return best;
+  }
+  function parkTallestBucket(tries){
+    if(window.innerWidth>700) return;
+    var cats=document.querySelector('.cats');
+    if(!cats) return;
+    if(cats.clientWidth<=0){                       // not laid out yet - look again
+      if(tries>0) setTimeout(function(){ parkTallestBucket(tries-1); },250);
+      return;
+    }
+    if(cats.scrollWidth<=cats.clientWidth+1) return;   // nothing to scroll
+    var best=tallestBucket(cats);
+    if(!best) return;
+    var cr=cats.getBoundingClientRect(), br=best.getBoundingClientRect();
+    var pad=16, left=null;
+    if(br.left-cr.left < pad) left=cats.scrollLeft+(br.left-cr.left)-pad;
+    else if(br.right-cr.left > cats.clientWidth-pad) left=cats.scrollLeft+(br.right-cr.left)-cats.clientWidth+pad;
+    if(left===null) return;                        // already fully in the scrollport
+    left=Math.max(0,Math.min(left, cats.scrollWidth-cats.clientWidth));
+    try{ cats.scrollTo({left:left, behavior:reduceMotion18d()?'auto':'smooth'}); }
+    catch(_){ cats.scrollLeft=left; }
+  }
+
+  function initBucketPark(){
+    var bars=document.getElementById('catBars');
+    if(!bars||!window.MutationObserver) return;
+    var t=null;
+    new MutationObserver(function(){
+      clearTimeout(t);
+      t=setTimeout(function(){ parkTallestBucket(8); },160);
+    }).observe(bars,{childList:true});
+  }
+
+  ready(function(){
+    try{ initAutoRowExplainer(); }catch(err){ console.error('formation auto-row note failed', err); }
+    try{ initBucketPark(); }catch(err){ console.error('outcome-bucket park failed', err); }
+  });
+})();
+</script>
+<script>
+/* ============================================================
+   Round 18e - Gate-1 UX review round 3 (reviewer report 2026-09-21).
+   A NEW script block (spec 2.7: new JS goes in a new <script> before
+   </body>) so Rounds 8/18/18d stay byte-identical.
+   UXE-039 - keep the outcome-quality chart's 20px scroll fade
+             EDGE-AWARE: it may only fade a side that actually has
+             more content behind it. The fade itself is CSS (Round
+             18e, <=700px); this block only reports the scroll state
+             as two classes. Front-end only and purely decorative:
+             nothing here reads or writes a form value, so
+             formToConfig() output is unchanged for unchanged inputs.
+   ============================================================ */
+(function(){
+  function ready(fn){
+    if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',fn);
+    else fn();
+  }
+  var MORE_L='cats--more-l', MORE_R='cats--more-r';
+  function syncCatsEdges(){
+    var cats=document.querySelector('.cats');
+    if(!cats) return;
+    var max=cats.scrollWidth-cats.clientWidth;          // 1px slack: sub-pixel rounding
+    if(max<=1){ cats.classList.remove(MORE_L); cats.classList.remove(MORE_R); return; }
+    // .cats' 16px inline padding is part of its scrollable content, and
+    // scroll-snap parks the first column at scrollLeft === paddingLeft, so
+    // "there is more content to the left" only begins one pixel past that
+    // padding - at either rest position the boundary column stays fully opaque.
+    var cs=getComputedStyle(cats);
+    var padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
+    var l=cats.scrollLeft;
+    cats.classList.toggle(MORE_L, l>padL+1);
+    cats.classList.toggle(MORE_R, l<max-padR-1);
+  }
+  function initCatsEdges(){
+    var cats=document.querySelector('.cats');
+    if(!cats) return;
+    cats.addEventListener('scroll', syncCatsEdges, {passive:true});
+    window.addEventListener('resize', syncCatsEdges, {passive:true});
+    // after every chart render, and again after parkTallestBucket()'s smooth
+    // scroll has settled (that scroll fires its own events too, this is belt
+    // and braces for the reduced-motion instant jump)
+    var bars=document.getElementById('catBars');
+    if(bars && window.MutationObserver){
+      var t=null;
+      new MutationObserver(function(){
+        clearTimeout(t);
+        t=setTimeout(function(){ syncCatsEdges(); setTimeout(syncCatsEdges,700); },180);
+      }).observe(bars,{childList:true});
+    }
+    syncCatsEdges();
+  }
+  ready(function(){
+    try{ initCatsEdges(); }catch(err){ console.error('outcome-chart scroll fade failed', err); }
+  });
+})();
+</script>
+<script>
+/* ============================================================
+   Round 19 - Gate-2 first-time-user round 1 (tester reports 2026-09-21:
+   desktop 4/10, mobile 3/10; pass is <=3 on both).
+   A NEW script block (spec 2.7: new JS goes in a new <script> before
+   </body>) so Rounds 8/18/18d/18e stay byte-identical.
+
+   P1  type-in formation percentages        (U1-D1, U1-M1, U1-D2, U1-M3)
+   P2  the header logo goes home            (U1-M6)
+   P4  the stats table's sticky side caption (U1-M5)
+   P5  hold-to-repeat on the formation +/-   (U1-M3)
+   P6  "your last numbers are still here"    (U1-D3)
+   (P3 is CSS only - see the Round 19 style block.)
+
+   Front-end only, and it never forks a calculation: P1 commits by writing
+   the row's own input[type=range] and dispatching 'input', so
+   buildFormation()'s recalc() stays the single source of formation truth
+   (it clamps, gives the other class way, recomputes Marksman, repaints,
+   syncs the counts and autosaves). formToConfig() output is therefore
+   unchanged for unchanged inputs. Round 18e's "decorate, never rebuild"
+   precedent: buildFormation()/buildStats() are not touched, and because
+   both rebuild their rows wholesale every listener here is delegated.
+   ============================================================ */
+(function(){
+  'use strict';
+
+  function ready(fn){
+    if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',fn);
+    else fn();
+  }
+  function closestEl(node,sel){
+    var e = node && node.nodeType===3 ? node.parentElement : node;
+    return (e && e.closest) ? e.closest(sel) : null;
+  }
+  var STACK_SEL=['#formMe','#formFoe'];
+
+  /* ---------------- P1: the % box types ---------------- */
+
+  var EDIT=null;            // {box, ed} while an editor is open
+  var selfFocus=false;      // true only while we move focus ourselves
+
+  function rowOf(box){ return closestEl(box,'.form-ctl'); }
+  function stackOf(box){ return closestEl(box,'.form-stack'); }
+  function rangeOf(box){ var r=rowOf(box); return r?r.querySelector('input[type=range]'):null; }
+  function sideWord(stack){ return (stack && stack.id==='formFoe') ? 'Enemy' : 'My'; }
+
+  function typeable(box){
+    if(!box || !box.classList || !box.classList.contains('fval')) return false;
+    if(box.classList.contains('fval-edit')) return false;          // the editor itself
+    var row=rowOf(box); if(!row || row.classList.contains('auto')) return false;  // Marksman is derived
+    var stack=stackOf(box); if(!stack || stack.classList.contains('count-mode')) return false;
+    var r=rangeOf(box);
+    return !!r && !r.disabled;
+  }
+
+  // give every editable box a tab stop, a name and a hint. Idempotent, and
+  // re-run whenever buildFormation() replaces the rows.
+  function decorate(stack){
+    var boxes=stack.querySelectorAll('.form-ctl:not(.auto) .fval');
+    for(var i=0;i<boxes.length;i++){
+      var box=boxes[i];
+      if(box.classList.contains('fval-edit') || box.dataset.typein==='1') continue;
+      box.dataset.typein='1';
+      box.tabIndex=0;
+      var nm=rowOf(box) && rowOf(box).querySelector('.fname');
+      box.setAttribute('aria-label', sideWord(stack)+' '+((nm&&nm.textContent)||'')+' percent');
+      box.setAttribute('title','Type a percentage');
+    }
+  }
+
+  function beginEdit(box){
+    if(EDIT && EDIT.box===box) return;
+    if(EDIT) endEdit(true,false);
+    if(!typeable(box)) return;
+    var r=rangeOf(box);
+    var ed=document.createElement('input');
+    ed.type='text';                       // not [type=number]: no spinner, and
+    ed.inputMode='numeric';               // inputmode+pattern open the keypad
+    ed.setAttribute('pattern','[0-9]*');
+    ed.className='fval fval-edit';        // borrows the box's own chrome
+    ed.maxLength=3; ed.size=3; ed.autocomplete='off'; ed.spellcheck=false;
+    // stand in the box's own footprint: an <input>'s intrinsic width is ~20
+    // characters, and .fval is flex:none, so without this the editor would
+    // shove the slider aside (measured 217px instead of 52px at 375px).
+    var r0=box.getBoundingClientRect();
+    ed.style.width=Math.round(r0.width)+'px';
+    ed.style.height=Math.round(r0.height)+'px';
+    var al=box.getAttribute('aria-label'); if(al) ed.setAttribute('aria-label',al);
+    ed.value=String(Math.round(+r.value));
+    box.classList.add('is-editing');
+    box.parentNode.insertBefore(ed, box.nextSibling);
+    EDIT={box:box, ed:ed};
+    ed.addEventListener('keydown', onEditorKey);
+    ed.addEventListener('blur', onEditorBlur);
+    ed.addEventListener('input', function(){
+      var clean=ed.value.replace(/[^0-9]/g,'').slice(0,3);
+      if(clean!==ed.value) ed.value=clean;
+    });
+    ed.focus();
+    try{ ed.select(); }catch(_){}
+  }
+
+  // the ONLY write path: the row's range + a bubbling 'input' event, which is
+  // exactly what the slider and the +/- buttons already do.
+  function commit(value){
+    if(!EDIT) return false;
+    var r=rangeOf(EDIT.box); if(!r) return false;
+    var n=parseInt(String(value).replace(/[^0-9]/g,''),10);
+    if(!isFinite(n)) return false;                       // empty / non-numeric: revert
+    n=Math.max(0,Math.min(100,n));
+    if(Math.round(+r.value)===n) return true;
+    r.value=String(n);
+    r.dispatchEvent(new Event('input',{bubbles:true}));
+    return true;
+  }
+
+  function endEdit(save, refocus){
+    if(!EDIT) return;
+    var box=EDIT.box, ed=EDIT.ed;
+    if(save) commit(ed.value);
+    EDIT=null;                                           // before the removal, so the
+    if(ed.parentNode) ed.parentNode.removeChild(ed);     // blur it fires is a no-op
+    box.classList.remove('is-editing');
+    if(refocus){
+      selfFocus=true;
+      try{ box.focus(); } finally { selfFocus=false; }
+    }
+  }
+
+  function stepBy(d){
+    if(!EDIT) return;
+    var r=rangeOf(EDIT.box); if(!r) return;
+    var n=parseInt(EDIT.ed.value,10);
+    if(!isFinite(n)) n=Math.round(+r.value);
+    commit(n+d);
+    EDIT.ed.value=String(Math.round(+r.value));          // honest: shows what recalc kept
+    try{ EDIT.ed.select(); }catch(_){}
+  }
+
+  function onEditorBlur(){ endEdit(true,false); }        // Tab and click-away commit
+
+  function onEditorKey(e){
+    var k=e.key;
+    if(k==='Enter'){ e.preventDefault(); endEdit(true,true); }
+    else if(k==='Escape'||k==='Esc'){ e.preventDefault(); endEdit(false,true); }
+    else if(k==='ArrowUp'){ e.preventDefault(); stepBy(1); }
+    else if(k==='ArrowDown'){ e.preventDefault(); stepBy(-1); }
+  }
+
+  function onStackFocusIn(e){
+    if(selfFocus) return;                                // our own focus() after Enter/Escape
+    var box=closestEl(e.target,'.fval');
+    if(typeable(box)) beginEdit(box);
+  }
+  function onStackClick(e){
+    var box=closestEl(e.target,'.fval');
+    if(typeable(box)) beginEdit(box);                    // idempotent
+  }
+  function onStackKey(e){
+    var box=closestEl(e.target,'.fval');
+    if(!box || !typeable(box)) return;                   // the editor handles its own keys
+    if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); beginEdit(box); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); beginEdit(box); stepBy(1); }
+    else if(e.key==='ArrowDown'){ e.preventDefault(); beginEdit(box); stepBy(-1); }
+  }
+
+  /* ---------------- P5: hold-to-repeat on +/- ---------------- */
+
+  var HOLD_DELAY=400, HOLD_EVERY=80;
+  var holdBtn=null, holdWait=null, holdTick=null, holdFired=false, holdFiring=false;
+
+  function stopHold(){
+    if(holdWait){ clearTimeout(holdWait); holdWait=null; }
+    if(holdTick){ clearInterval(holdTick); holdTick=null; }
+    holdBtn=null;
+  }
+  function fireRepeat(){
+    if(!holdBtn || holdBtn.disabled || !holdBtn.isConnected){ stopHold(); return; }
+    var btn=holdBtn;
+    holdFiring=true;                                   // so the swallow below lets OUR
+    try{ btn.click(); }                                // click reach the button's own
+    finally{ holdFiring=false; }                       // handler: no forked maths
+    holdFired=true;
+  }
+  function onStackPointerDown(e){
+    var btn=closestEl(e.target,'.fbtn');
+    if(!btn || btn.disabled) return;
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    stopHold();
+    holdBtn=btn; holdFired=false;
+    holdWait=setTimeout(function(){
+      holdWait=null;
+      holdTick=setInterval(fireRepeat, HOLD_EVERY);
+    }, HOLD_DELAY);
+  }
+  // a hold ends with a real click; swallow it in the capture phase so the
+  // button's own listener never sees it and the count is never one too many.
+  function onStackClickCapture(e){
+    if(holdFiring) return;                             // a repeat we fired ourselves
+    if(!holdFired) return;
+    if(!closestEl(e.target,'.fbtn')) return;
+    holdFired=false;
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  /* ---------------- P2: the header logo goes home ---------------- */
+
+  function goHome(){
+    var api=window.wosStart;
+    if(!api || typeof api.showStart!=='function') return;
+    if(typeof api.view==='function' && api.view()==='start') return;   // silent no-op
+    api.showStart();
+  }
+  function initBrandHome(){
+    var flake=document.querySelector('header.bar .flake');
+    var brand=document.querySelector('header.bar .brand');
+    if(flake){
+      flake.addEventListener('click', goHome);
+      flake.addEventListener('keydown', function(e){
+        if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){ e.preventDefault(); goHome(); }
+      });
+    }
+    if(brand) brand.addEventListener('click', goHome);   // pointer-only: the <h1> keeps its
+  }                                                      // heading semantics, .flake is the tab stop
+
+  /* ---------------- P4: whose column is this? ---------------- */
+
+  // the caption parks under the sticky header, whose height is not constant (the
+   // workspace header carries Runs/Re-run/status and measured 60px where the start
+   // screen measures 44px), so track it instead of assuming it.
+  function syncStickyTop(){
+    var bar=document.querySelector('header.bar');
+    if(!bar) return;
+    var h=Math.round(bar.getBoundingClientRect().height);
+    if(h>0 && h<200) document.documentElement.style.setProperty('--wos-sticky-top', h+'px');
+  }
+  function watchStickyTop(){
+    var bar=document.querySelector('header.bar');
+    if(!bar) return;
+    syncStickyTop();
+    if(window.ResizeObserver) new ResizeObserver(syncStickyTop).observe(bar);
+    window.addEventListener('resize', syncStickyTop, {passive:true});
+    document.addEventListener('wos:view', syncStickyTop);
+  }
+  function initStatCaption(){
+    var panel=document.getElementById('statPanel');
+    if(!panel || !panel.parentNode) return;
+    var host=panel.parentNode;
+    if(host.querySelector('.stat-cap')) return;
+    var cap=document.createElement('div');
+    cap.className='stat-cap';
+    cap.setAttribute('aria-hidden','true');              // the inputs are already named
+    var me=document.createElement('span'); me.className='stat-cap-me';  me.textContent='MY SIDE';
+    var mid=document.createElement('span'); mid.className='stat-cap-mid';
+    var foe=document.createElement('span'); foe.className='stat-cap-foe'; foe.textContent='ENEMY';
+    cap.appendChild(me); cap.appendChild(mid); cap.appendChild(foe);
+    host.insertBefore(cap, panel);                       // SIBLING: buildStats() clears #statPanel
+    watchStickyTop();
+  }
+
+  /* ---------------- P6: "your last numbers are still here" ---------------- */
+
+  function sameOwnEnemy(a,b){
+    try{
+      return JSON.stringify(a&&a.own)===JSON.stringify(b&&b.own) &&
+             JSON.stringify(a&&a.enemy)===JSON.stringify(b&&b.enemy);
+    }catch(_){ return true; }                            // unknown: stay quiet
+  }
+  function initStartOverNote(){
+    document.addEventListener('wos:view', function(e){
+      var d=e.detail||{};
+      // only the one case the tester flagged: "Custom test" picked fresh from the
+      // start screen, which per spec 2.4 deliberately keeps the data. resume /
+      // reports / switch / hash all have their own story already.
+      if(d.view!=='work' || d.mode!=='custom' || d.from!=='start') return;
+      if(typeof formToConfig!=='function' || !window.__wosDefaults) return;
+      if(sameOwnEnemy(formToConfig(), window.__wosDefaults)) return;   // pristine: nothing to say
+      if(typeof showSessionNote==='function') showSessionNote('Your last numbers are still here');
+    });
+  }
+
+  /* ---------------- wiring ---------------- */
+
+  function initStacks(){
+    STACK_SEL.forEach(function(sel){
+      var stack=document.querySelector(sel);
+      if(!stack) return;
+      decorate(stack);
+      stack.addEventListener('focusin', onStackFocusIn);
+      stack.addEventListener('click', onStackClick);
+      stack.addEventListener('keydown', onStackKey);
+      stack.addEventListener('pointerdown', onStackPointerDown);
+      stack.addEventListener('click', onStackClickCapture, true);
+      stack.addEventListener('contextmenu', function(e){
+        if(holdBtn && closestEl(e.target,'.fbtn')) e.preventDefault();
+      });
+      // buildFormation() replaces the rows wholesale (stack.innerHTML='') - childList
+      // on the stack itself is exactly that event, and nothing else.
+      if(window.MutationObserver){
+        new MutationObserver(function(){ decorate(stack); }).observe(stack,{childList:true});
+      }
+    });
+    ['pointerup','pointercancel','pointerleave','blur'].forEach(function(ev){
+      window.addEventListener(ev, stopHold, true);
+    });
+  }
+
+  ready(function(){
+    try{ initStacks(); }catch(err){ console.error('formation type-in failed', err); }
+    try{ initBrandHome(); }catch(err){ console.error('brand home failed', err); }
+    try{ initStatCaption(); }catch(err){ console.error('stat caption failed', err); }
+    try{ initStartOverNote(); }catch(err){ console.error('start-over note failed', err); }
+  });
+})();
+</script>
+<script>
+/* ============================================================
+   Round 20 - Gate-2 first-time-user round 3 (tester report 2026-09-22:
+   scratchpad gates/user_round3_desktop.md, top annoyance #1).
+
+   U3D-T2 - QUICK MODE SHOWS THE HEROES FIRST.
+   Measured on entering Quick test at 1440x900 BEFORE this change: #genMe and
+   #genFoe at top=897 in a 900px viewport, #capMe at top=950 - every
+   generation select and every hero portrait started below the fold, under the
+   troop sliders. The tester: "where do I pick the enemy's generation? I don't
+   see hero pictures anywhere."
+
+   Fix: in quick mode ONLY, the two .hero-block panels (captain first - it
+   carries .gen-pick-row - then joiner) move to sit directly under
+   .sides-head, above the Troops & formation tab group. That also makes the
+   mode bar's helper, "Change heroes and formation, then run.", describe the
+   real on-screen order instead of the reverse of it.
+
+   A DOM move rather than CSS `order` because section.input would have to
+   become a flex column for `order` to apply, which changes margin collapsing
+   between its panels; custom mode and the S5 battle-report arrival must stay
+   pixel-identical. Every non-quick entry puts the pair back, so custom mode
+   never sees a reordered DOM.
+
+   Safe by construction: event listeners and MutationObservers survive a
+   move; formToConfig()/buildProfile() read by id, never by sibling order;
+   initInputTabs() and initAccordions() have already run (they are wired on
+   DOMContentLoaded by the main script, which registered earlier than this
+   block) so neither ever sees the reordered DOM; and the Round 18b mobile
+   generation-picker relocation holds direct element references, not paths.
+   ============================================================ */
+(function(){
+  var sec=null, tabs=null, cap=null, join=null, home=null;
+
+  // Resolve the four nodes once and keep them; re-resolve if anything was
+  // replaced under us (buildHeroes() only ever refills the lanes, but a
+  // stale reference must never silently disable the reorder).
+  function collect(){
+    if(sec&&sec.isConnected&&tabs&&tabs.isConnected&&cap&&cap.isConnected&&
+       join&&join.isConnected&&home&&home.isConnected&&tabs.parentElement===sec) return true;
+    sec=document.querySelector('section.input'); if(!sec) return false;
+    tabs=sec.querySelector('.tabgroup.input-tabs');
+    if(!tabs||tabs.parentElement!==sec) return false;          // initInputTabs() has not run
+    var blocks=[].filter.call(sec.children,function(n){
+      return n.classList&&n.classList.contains('hero-block'); });
+    if(blocks.length!==2) return false;
+    cap=blocks[0]; join=blocks[1];
+    home=join.nextElementSibling;                              // Final Stats: where the pair goes back to
+    if(!home) return false;
+    return true;
+  }
+
+  function place(heroesFirst){
+    try{
+      if(!collect()) return;
+      if(heroesFirst){
+        if(join.nextElementSibling===tabs) return;             // already moved
+        sec.insertBefore(cap, tabs);
+        sec.insertBefore(join, tabs);
+      } else {
+        if(cap.previousElementSibling===tabs) return;          // already in its authored place
+        sec.insertBefore(cap, home);
+        sec.insertBefore(join, home);
+      }
+    }catch(err){ console.error('quick-mode hero order failed', err); }
+  }
+
+  function sync(){
+    place(document.body.classList.contains('view-work') &&
+          document.body.dataset.mode==='quick');
+  }
+
+  document.addEventListener('wos:view', sync);                 // every enter()/showStart()
+
+  // Boot: a #quick deep link applies body[data-mode] during parse and never
+  // dispatches wos:view, so the first placement has to happen here. This
+  // listener is registered after the main script's and after Round 18's, so
+  // initInputTabs() has already built .tabgroup.input-tabs by now.
+  if(document.readyState==='loading') window.addEventListener('DOMContentLoaded', sync);
+  else sync();
 })();
 </script>
 </body>

@@ -14,7 +14,7 @@ import {
   renderUpload, wireUpload, uploadModel, cardsFor, SLOTS, DEFAULT_COLUMNS, otherColumn, renderE1,
   renderSampleFallback,
 } from './screens/pick_upload.mjs';
-import { renderS3, driveScan, applyStepClasses, wireS3 } from './screens/reading.mjs';
+import { renderS3, driveScan, applyStepClasses, wireS3, setScanNote } from './screens/reading.mjs';
 import {
   renderS4, renderEditorSheet, renderPictureView, renderPictureSheet, fieldRenderState, computeTally,
   validateEditorInput, editorContentFor, nextResetState, wireS4,
@@ -69,11 +69,22 @@ let controller = null;
 const app = { history: ['entry'], screen: 'entry', navOpts: null,
   noBuffs: { you: false, enemy: false },   // QAC-011: attestation is PER SIDE, like the file store
   lastSlot: null,   // paste routing (slot key "side:key")
+  // UXE-008 (Gate-1 UX round 1): WHY lastSlot currently points where it
+  // does. true = the user aimed at that row themselves (clicked its paste
+  // well, dragged over it, or pressed its "+ Add"); false = a file just
+  // LANDED there and the row is merely the most recent one touched. Only an
+  // explicit aim may hold the armed well on a row that still has room - see
+  // pasteTargetSlot.
+  aimExplicit: false,
   // Owner 2026-09-06 (designer spec): per-side column choice for battle
   // reports (L = this side's stats are in the LEFT column), the enemy's
   // "Use your report for the enemy too" box, and whether the missing line
   // has been requested by a tap on the locked Scan.
   columns: { ...DEFAULT_COLUMNS }, sameReport: false, showMissing: false,
+  // U1-M4 (Gate-2 round 1): has the same-report hint already fired its one
+  // pulse for the CURRENT run of the condition? Edge tracking only — the
+  // hint itself is derived fresh from the model on every render.
+  sameHintPulsed: false,
   shots: { you: [], enemy: [] },            // [{id, bytes: Uint8Array, url, slot}]
   savedValues: { you: {}, enemy: {} }, typedFields: { you: {}, enemy: {} },
   lastRead: null, priorSnapshot: null, resetTimer: null };
@@ -94,16 +105,45 @@ function root() { return document.getElementById('ocrfRoot'); }
 // the SLOT is decided by, in order: the slot the user last touched (tap or
 // drag-over) if it still has room, the first empty slot, then the first
 // slot with room. Pure; exported for tests. `model` = uploadModel() output.
-export function pasteTargetSlot(model, lastSlot = null) {
+// UXE-008 (Gate-1 UX round 1, Major): the Stats row takes TWO files (battle
+// stats are two columns), so "last-touched slot wins while it has room" kept
+// the armed well on Stats after the FIRST stats screenshot landed - and the
+// user's next paste (the Buffs screenshot) silently filed itself as a second
+// Stats image. Mis-filing is the one failure this screen exists to prevent,
+// and it costs a metered OCR run to discover. New rule: a landed file never
+// holds the aim - after anything lands, the target ADVANCES to the first
+// empty row; a partially filled multi-file row is targeted again only when
+// the user says so themselves (clicks its well, drags over it, presses its
+// "+ Add"), which is what `aimExplicit` records. Default true keeps the
+// signature honest for callers that mean "this ref was chosen deliberately".
+export function pasteTargetSlot(model, lastSlot = null, aimExplicit = true) {
   const flat = model.cards.filter((c) => !c.rowsHidden)
     .flatMap((g) => g.slots.map((s) => ({ ...s, side: g.side, ref: `${g.side}:${s.key}` })));
   const room = (s) => s.state !== 'none' && s.count < s.max;
-  const last = flat.find((s) => s.ref === lastSlot && room(s));
+  const last = aimExplicit ? flat.find((s) => s.ref === lastSlot && room(s)) : null;
   if (last) return last.ref;
   const empty = flat.find((s) => s.state === 'empty');
   if (empty) return empty.ref;
   const any = flat.find(room);
   return any ? any.ref : null;
+}
+
+// Where the "Missing: ..." line jumps to. Gate-2 round 1, U1-M4: until now
+// this was unconditionally "the first empty required row", which on the one
+// screen the playtest got stuck on means the enemy card's Heroes + Experts —
+// i.e. the jump scrolled STRAIGHT PAST the control that actually answers the
+// question ("Use your report for the enemy too") to demand the very thing
+// the user has just said they do not have. When the same-report hint is lit
+// (pick_upload.mjs sameHintFor: your card complete, the box shown and off,
+// the enemy card untouched), the box IS the missing item's answer, so the
+// jump lands there. Every other case is unchanged, byte for byte.
+// Pure (returns a selector, touches no DOM); exported for tests.
+export function missingJumpTarget(model) {
+  const hinted = model.cards.find((c) => c.sameHint);
+  if (hinted) return '[data-same]';
+  const first = model.cards.filter((c) => !c.rowsHidden)
+    .flatMap((c) => c.slots.filter((s) => s.required && s.state === 'empty').map((s) => `${c.side}:${s.key}`))[0];
+  return first ? `[data-slot-tile="${first}"]` : null;
 }
 
 // Which slot keys the active type accepts for a side — the read sends ONLY
@@ -118,6 +158,55 @@ export function sendableShots(types, side, sideShots, sameReport = false) {
 
 export function presentationFor(screen) {
   return { modal: screen !== 'entry' && screen !== 's5' };
+}
+
+// UX_START_JOURNEY_SPEC.md §3.1: "focus returns to whichever launcher opened
+// the flow" — up to two real launchers can exist at once (the start-screen
+// card, the workspace mode-bar's mini launcher), but only ONE of their host
+// regions is ever visible at a time (the prototype's own body.view-start/
+// view-work gate — #startScreen and #modeBar are never both shown). Prefer
+// the one the click actually came from, PROVIDED it's still the visible one
+// (defensive: nothing in this flow lets the user switch view while the
+// modal's background is inert, but a future caller shouldn't have to prove
+// that to trust this); otherwise fall back to whichever region IS visible.
+// Legacy has exactly one launcher and no view-switching concept at all.
+// Pure and exported — same split as pasteTargetSlot/decideAfterRead/
+// planS2Entry: the DOM visibility check (offsetParent) is thin glue, this
+// decision is not.
+export function pickReturnLauncher({ mode, lastUsed, startVisible, miniVisible }) {
+  if (mode === 'legacy') return 'start';
+  if (lastUsed === 'mini' && miniVisible) return 'mini';
+  if (lastUsed === 'start' && startVisible) return 'start';
+  if (miniVisible) return 'mini';
+  if (startVisible) return 'start';
+  return null;
+}
+function isLauncherVisible(el) {
+  return !!(el && el.offsetParent !== null);
+}
+
+// UX_START_JOURNEY_SPEC.md §3.3 (the owner's headline complaint: "there's no
+// place for them to paste it... on mobile you should not be allowed to do
+// that"). Pure helper, injectable matchMedia so it's unit-testable without a
+// real DOM/browser — real callers omit the arg and fall through to
+// window.matchMedia. Evaluated at render time (which rows get a well at
+// all) AND again inside the paste listener (touch devices never act on a
+// paste even if one somehow reached the document).
+export function canPaste(matchMediaFn) {
+  const mm = matchMediaFn || (typeof window !== 'undefined' ? window.matchMedia : null);
+  if (!mm) return false;
+  try { return mm('(hover: hover) and (pointer: fine)').matches; } catch (err) { return false; }
+}
+
+// Keycap glyph for the armed paste well: Ctrl+V everywhere except a real Mac
+// keyboard, where it's Cmd+V (owner spec: detect via
+// navigator.userAgentData?.platform / navigator.platform). Injectable navigator,
+// same discipline as canPaste's injectable matchMedia.
+export function isMacPlatform(nav) {
+  const n = nav || (typeof navigator !== 'undefined' ? navigator : null);
+  if (!n) return false;
+  const platform = (n.userAgentData && n.userAgentData.platform) || n.platform || '';
+  return /mac/i.test(platform);
 }
 
 // UXJ-009 (round 3): re-entering the flow after a mid-flow exit silently
@@ -191,10 +280,19 @@ function exitFlow() {
   });
 }
 
-// Set once by boot() — the S0 CTA card, hidden while the flow is open and
-// restored on Back-to-entry (the [hidden] show/hide pattern, per the global
-// constraints; the entry card is not itself part of the #ocrfRoot stack).
-let entryNode = null;
+// Set once by boot() from mountEntry()'s return (screens/entry.mjs) — UP TO
+// TWO real launchers now (UX_START_JOURNEY_SPEC.md §3.1): the start-screen
+// card and the workspace mode-bar's mini launcher, or (mode:'legacy') the
+// one old hero CTA on a host page with no start screen at all. `lastUsed`
+// tracks which button a click actually came from, so back-to-entry can
+// return focus to THAT one specifically — legacy has only ever had the one.
+// Only the legacy card is hidden/restored ([hidden] show/hide) while the
+// flow is open: the contract launchers live inside the prototype's own
+// view-start/view-work-gated regions (already inert + dimmed by the modal
+// scrim while the flow is open — see syncBackgroundInert), so hiding them
+// too would just be a second, redundant visibility mechanism to keep in
+// sync with the prototype's own CSS.
+let launcher = { mode: null, node: null, container: null, mini: null, lastUsed: null };
 
 function show(html) {
   root().innerHTML = html;
@@ -429,7 +527,7 @@ function renderScreen() {
     if (modal) {
       stack.setAttribute('role', 'dialog');
       stack.setAttribute('aria-modal', 'true');
-      stack.setAttribute('aria-label', 'Fill from screenshots');
+      stack.setAttribute('aria-label', 'Forecast from battle reports');
     } else {
       stack.removeAttribute('role');
       stack.removeAttribute('aria-modal');
@@ -437,11 +535,26 @@ function renderScreen() {
     }
   }
   if (app.screen === 'entry') {
-    // Back from S1 lands here: restore the CTA, clear whatever the flow was
-    // showing so a later "Fill from screenshots" tap starts clean.
-    if (entryNode) { entryNode.hidden = false; entryNode.querySelector('#ocrfCtaScreenshots')?.focus({ preventScroll: true });
+    // Back from S1 lands here. Legacy: restore the one hero CTA (hidden
+    // while the flow was open) and refocus it — unchanged. Contract mode:
+    // nothing was hidden (the launcher's own region was already inert +
+    // scrim-dimmed while the modal was open — see `launcher`'s own comment),
+    // so this only has to pick and refocus whichever launcher should get
+    // focus back (§3.1: "focus returns to whichever launcher opened the
+    // flow" / "focus whichever is visible").
+    if (launcher.mode === 'legacy' && launcher.container) {
+      launcher.container.hidden = false;
+      launcher.node?.focus({ preventScroll: true });
       // Owner 2026-08-29: never strand the user where the CTA isn't visible.
-      entryNode.scrollIntoView({ block: 'nearest' }); }
+      launcher.container.scrollIntoView({ block: 'nearest' });
+    } else if (launcher.mode === 'contract') {
+      const target = pickReturnLauncher({
+        mode: launcher.mode, lastUsed: launcher.lastUsed,
+        startVisible: isLauncherVisible(launcher.node), miniVisible: isLauncherVisible(launcher.mini),
+      });
+      const el = target === 'mini' ? launcher.mini : target === 'start' ? launcher.node : null;
+      if (el) { el.focus({ preventScroll: true }); el.scrollIntoView?.({ block: 'nearest' }); }
+    }
     document.getElementById('ocrfS5Host')?.remove();
     root()?.remove();
     return;
@@ -478,7 +591,14 @@ function renderScreen() {
       }
     }
     if (model.canScan) app.showMissing = false;
-    show(renderUpload({ model, notice: app.s2Notice, showMissing: app.showMissing }));
+    // Desktop paste wells (§3.3): evaluated fresh on every render — a
+    // window resize/pointer change between renders must never leave a stale
+    // well/keycap on screen. Exactly one well is armed: the same slot a
+    // paste would actually land in right now (pasteTargetSlot), so the
+    // well's own promise ("Paste here") is never a lie.
+    const pasteOn = canPaste();
+    const paste = { on: pasteOn, armed: pasteOn ? pasteTargetSlot(model, app.lastSlot, app.aimExplicit) : null, mac: isMacPlatform() };
+    show(renderUpload({ model, notice: app.s2Notice, showMissing: app.showMissing, paste }));
     wireUpload(root(), {
       // Per-card type: shots for the other types stay parked per side.
       onType: (side, t) => { controller.flow.setSideType(side, t); render(); },
@@ -499,12 +619,39 @@ function renderScreen() {
         openPicker(side, key, slot.max - count);
       },
       onSlotPreview: (side, key) => { openSlotPreview(side, key); },
+      // §3.3: a click on ANY well (armed or not) AIMS it — that is all it
+      // does. UXE-003 (Gate-1 UX round 1, Major): this used to ALSO run
+      // navigator.clipboard.read(), so one intentional paste landed TWICE
+      // (the click read the clipboard, then the user's own Ctrl+V inserted
+      // the same image again), and merely clicking a well to aim it could
+      // silently drop a stale, unrelated clipboard image into a
+      // battle-report row. Clicking a target means "aim here", never "act
+      // now" — which is exactly what this screen's own tip line already
+      // promises ("Paste with Ctrl+V, drop files, or use + Add"). The aim is
+      // EXPLICIT (UXE-008): it may hold a partially-filled multi-file row,
+      // unlike a row that merely received the last file.
+      onPasteWell: (side, key) => {
+        app.lastSlot = `${side}:${key}`;
+        app.aimExplicit = true;
+        render();
+        root()?.querySelector(`[data-paste-slot="${side}:${key}"]`)?.focus({ preventScroll: true });
+      },
       onMissingJump: () => {
-        const m = currentModel();
-        const first = m.cards.filter((c) => !c.rowsHidden)
-          .flatMap((c) => c.slots.filter((s) => s.required && s.state === 'empty').map((s) => `${c.side}:${s.key}`))[0];
-        const row = first ? document.querySelector(`[data-slot-tile="${first}"]`) : null;
-        if (row) { row.scrollIntoView({ block: 'center' }); flashFull(row); }
+        const sel = missingJumpTarget(currentModel());
+        const row = sel ? document.querySelector(sel) : null;
+        if (!row) return;
+        row.scrollIntoView({ block: 'center' });
+        flashFull(row);
+        // U1-M4: the checkbox branch is the one jump target that is itself a
+        // control, so hand it the keyboard too — a scroll-and-flash says
+        // nothing to someone who is not looking at the screen, and the very
+        // next key press should be the Space that ticks it. preventScroll so
+        // the centring above is not immediately re-done by the focus (same
+        // call shape the paste wells already use). A pointer user sees no
+        // ring: Chromium withholds :focus-visible when the last input was a
+        // tap. The row branch is untouched — a requirement row is a
+        // container, not a control, and focusing it would be a lie.
+        if (sel === '[data-same]') row.focus({ preventScroll: true });
       },
       onSlotRemove: (side, key, idx) => {
         if (idx === null || idx === undefined) { dropSlot(side, key); render(); return; }
@@ -537,10 +684,33 @@ function renderScreen() {
         goto('s3');
       },
     });
+    // Gate-2 round 1, U1-M4: ONE attention pulse on the rising edge of the
+    // same-report hint — the render where your card just became complete and
+    // the enemy card is still empty, i.e. the exact frame where the footer
+    // starts saying "Missing: enemy's battle report". Edge-tracked, so the
+    // many renders that follow (typing, tab switches, the L/R pill) leave the
+    // now-static highlight alone; it re-arms only when the condition drops,
+    // so undoing and redoing the same state can ask for attention again. The
+    // static border/glow carries the message by itself under
+    // prefers-reduced-motion, where the base round's kill-switch strips the
+    // animation but not the class.
+    const hintOn = model.cards.some((c) => c.sameHint);
+    if (hintOn && !app.sameHintPulsed) {
+      app.sameHintPulsed = true;
+      flashFull(root()?.querySelector('[data-same]'));
+    } else if (!hintOn) {
+      app.sameHintPulsed = false;
+    }
     return;
   }
   if (app.screen === 's3') {
-    show(renderS3());
+    // UXE-021: the title must match reality - three screenshots in flight
+    // under a singular "Reading your screenshot..." was simply wrong. Counted
+    // from the same sendableShots() pairs the read itself posts below (parked
+    // shots of an inactive type are NOT sent and must not be counted).
+    const sendCount = sendableShots(typesNow(), 'you', app.shots.you, app.sameReport).length
+      + sendableShots(typesNow(), 'enemy', app.shots.enemy, app.sameReport).length;
+    show(renderS3({ shots: sendCount }));
     // UXJ-008: the abort controller + handle live in app/module state so
     // EVERY way of leaving S3 (Cancel button, Escape, ✕, backdrop, back —
     // all of which funnel through render() via leaveScanIfRunning below)
@@ -561,6 +731,11 @@ function renderScreen() {
           columns: effectiveColumns(),
         }),
       onStepChange: (i) => { const r = root(); if (r) applyStepClasses(r, i); },
+      // U3D-A2: a slow read now says so in the line that made the promise
+      // ("Usually 10–40 seconds"), instead of repeating it for three minutes.
+      // Same guard shape as onStepChange — S3 may already be gone (the swap is
+      // scheduled, driveScan.cancel clears it, but never trust a live DOM).
+      onNote: (text) => { const r = root(); if (r) setScanNote(r, text); },
       onDone: (result) => { app.scanHandle = null; activeScanAbort = null; onReadDone(result); },
       onError: (err) => { app.scanHandle = null; activeScanAbort = null; onReadError(err); },
     });
@@ -603,6 +778,14 @@ function renderScreen() {
       percentsFoe: window.readInputPanelPct ? window.readInputPanelPct('foe') : {},
       heroesMe: null, heroesFoe: null, statsScoutedChecked: document.getElementById('statsScouted')?.checked ?? false,
     });
+    // UX_START_JOURNEY_SPEC.md §3.2: land in the CUSTOM workspace (not the
+    // start screen, not quick mode) BEFORE the Stats-tab activation below —
+    // #statPanel/its Stats tab are only laid out (non-zero rects) once
+    // body.view-work is showing, so this must run first, and the S5 host
+    // must land above a VISIBLE panel per the takeover charter's own
+    // rect-vs-viewport rule. Optional-chained: must keep working on a host
+    // page with no start screen (wosStart absent) exactly like before.
+    window.wosStart?.enter('custom', { from: 'reports' });
     // UXJ-010 adjunct 2: #statPanel lives inside the prototype's runtime-
     // tabbed input block — if the user's active tab is Troops Formation (the
     // default), the fill writes .value into a HIDDEN panel (0-size rects)
@@ -611,9 +794,18 @@ function renderScreen() {
     // API) BEFORE the fill, so applyFillPlan's own scroll targets a panel
     // that is actually laid out, and chip + freshly filled panel +
     // See-who-wins land on screen together.
-    const statsTab = [...document.querySelectorAll('[role="tab"], .tab, button')]
-      .find((t) => t.textContent.trim().toLowerCase() === 'stats');
-    if (statsTab && statsTab.getAttribute('aria-selected') !== 'true') statsTab.click();
+    // OWNER WALKTHROUGH 2026-09-21 (supersedes the Stats-tab activation above):
+    // "after I click ok, it lands on the stats page rather than the troop
+    // formation page, which is confusing - please land on the first tab."
+    // The stats are already filled in by the read, so the next thing the user
+    // does is troops + formation: activate the FIRST input tab the way a user
+    // would (wosStart.enter({from:'reports'}) already does this on a page with
+    // the start screen; this keeps a host page without it consistent). The
+    // fill itself only writes .value, so a hidden Stats panel is fine - what
+    // must stay VISIBLE is the arrival cluster, which therefore mounts ABOVE
+    // the tab group now (see the host placement below).
+    const firstInputTab = document.querySelector('.input-tabs [role="tablist"] [role="tab"]');
+    if (firstInputTab && firstInputTab.getAttribute('aria-selected') !== 'true') firstInputTab.click();
     applyFillPlan(plan, { scroll: false });   // the branch anchors its own arrival scroll below
     // Takeover ends HERE, by design (owner escalation 2026-08-15 + the
     // mock's own S5): S5 is the app again — the modal closes (the class
@@ -635,11 +827,18 @@ function renderScreen() {
       // the prototype's tab consolidation has long run, so anchoring off
       // the live #statPanel is stable (unlike UXJ-001's mount-time anchor,
       // which broke precisely because it ran before that consolidation).
+      // 2026-09-21: the arrival lands on the FIRST tab, so the cluster may
+      // not live inside the (now hidden) Stats tab panel any more - it sits
+      // directly above the whole tab group, visible whichever tab is active.
       const statPanel = document.getElementById('statPanel');
-      if (statPanel && statPanel.parentElement) {
+      const tabGroup = statPanel && statPanel.closest('.input-tabs');
+      if (tabGroup && tabGroup.parentElement) {
+        tabGroup.parentElement.insertBefore(host, tabGroup);
+      } else if (statPanel && statPanel.parentElement) {
         statPanel.parentElement.insertBefore(host, statPanel);
-      } else if (entryNode && entryNode.parentElement) {
-        entryNode.parentElement.insertBefore(host, entryNode);
+      } else if ((launcher.container || launcher.node)?.parentElement) {
+        const anchor = launcher.container || launcher.node;
+        anchor.parentElement.insertBefore(host, anchor);
       } else {
         document.body.prepend(host);
       }
@@ -652,14 +851,24 @@ function renderScreen() {
     // scrollers, and reduced-motion users get the same honest jump — the
     // modal just closed, so an immediate reveal of chip + filled panel is
     // the correct beat, not a second animation.
-    window.scrollTo({ top: Math.max(0, host.getBoundingClientRect().top + window.scrollY - 12), behavior: 'auto' });
+    // UXE-025 (Gate-1 UX round 1): a bare 12px offset put the host's top
+    // edge 12px below the VIEWPORT's top - i.e. underneath the prototype's
+    // own STICKY header (.bar, ~58-74px depending on width/view), which
+    // sliced the green "All 24 numbers in" banner in half. The banner is the
+    // single most reassuring thing in the whole flow, so it may not be the
+    // one thing clipped. Measured live rather than hard-coded: the header's
+    // height changes with viewport width and with view-start/view-work.
+    const stickyHead = document.querySelector('header.bar');
+    const headH = stickyHead && getComputedStyle(stickyHead).position === 'sticky'
+      ? stickyHead.getBoundingClientRect().height : 0;
+    window.scrollTo({ top: Math.max(0, host.getBoundingClientRect().top + window.scrollY - headH - 12), behavior: 'auto' });
     const s5Heading = host.querySelector('h1');
     if (s5Heading) { s5Heading.setAttribute('tabindex', '-1'); s5Heading.focus({ preventScroll: true }); }
     const undoChip = document.getElementById('ocrfUndoChip');
     if (undoChip) undoChip.hidden = !shouldShowUndo(app.priorSnapshot);
     wireS5(host, {
       onToggleChip: onToggleS5Chip, onOpenPicture: openPicture, onReset: () => doReset('s5'),
-      onRunForecast: () => document.getElementById('runBtn')?.click(),
+      onRunForecast: runForecastFromArrival,
       onUndo: () => {
         const snap = app.priorSnapshot;
         if (!snap) return;
@@ -685,6 +894,84 @@ function renderScreen() {
     const upgradeBtn = document.getElementById('ocrfE1Upgrade');
     if (upgradeBtn) wireE1Upgrade(upgradeBtn);
     return;
+  }
+}
+
+// --- UXE-028 (Gate-1 UX review round 2, MAJOR) ------------------------------
+// The arrival's own "See who wins" (#ocrfS5Run) ran the forecast and showed
+// NOTHING for it: measured at 1440x900 the page stayed at scrollY 421 while
+// `.forecast` sat at y 2140 (3113 at 390x844) — two to three viewports below
+// the fold — and the button never went busy. The cause was this branch
+// proxying `#runBtn`, the compact header *Re-run* shortcut, whose own listener
+// only starts the run. The page's DECLARED primary action is `#runBottom`, and
+// the prototype hangs both of the missing halves off that one — a
+// `scrollIntoView` on `.forecast` and a `Simulating…` label — so the arrival
+// delegates THERE and inherits both instead of forking run logic (the engine
+// call, the payload and formToConfig are untouched; nothing here relabels
+// #runBtn, which stays "Re-run" per the owner's constraint and
+// screens_setup.test.mjs's guard).
+// `doc` is injected purely so node:test can pin the ORDER without a DOM (the
+// whole reason the round-2 defect existed was an unpinned choice of button).
+export function pagePrimaryRunButton(doc = (typeof document === 'undefined' ? null : document)) {
+  if (!doc) return null;
+  return doc.getElementById('runBottom') || doc.getElementById('runBtn');
+}
+
+// The arrival CTA needs its OWN feedback: the button the thumb is still on
+// must say what is happening, not only the one 2000px below it. Busy state is
+// OBSERVED from the page's primary button rather than assumed on a timer, so
+// the arrival can never claim "Simulating…" for longer (or shorter) than the
+// real run — the prototype mirrors #runBtn.disabled onto #runBottom already.
+let s5RunBusyObserver = null;
+let s5RunIdleHtml = 'See who wins <span aria-hidden="true">&rarr;</span>';
+
+function syncS5RunBusy(target) {
+  // Re-looked-up every time, never closed over: S5 can re-render (chip
+  // toggle, undo) while a run is still in flight, and a stale node reference
+  // would leave the live button stuck on whatever it last said.
+  const btn = document.getElementById('ocrfS5Run');
+  if (!btn) return;
+  const busy = !!(target && target.disabled);
+  if (busy === (btn.getAttribute('aria-busy') === 'true') && busy === btn.disabled) return;
+  btn.disabled = busy;
+  if (busy) {
+    btn.setAttribute('aria-busy', 'true');
+    btn.textContent = 'Simulating…';
+  } else {
+    btn.removeAttribute('aria-busy');
+    btn.innerHTML = s5RunIdleHtml;   // restored byte-for-byte, arrow span included
+  }
+}
+
+function watchS5RunBusy() {
+  if (s5RunBusyObserver) { s5RunBusyObserver.disconnect(); s5RunBusyObserver = null; }
+  const btn = document.getElementById('ocrfS5Run');
+  const target = pagePrimaryRunButton();
+  if (!btn || !target) return null;
+  // Captured from the freshly-rendered markup (renderS5 always emits the idle
+  // label) so the restore can never drift from the template.
+  if (!btn.disabled) s5RunIdleHtml = btn.innerHTML;
+  if (typeof MutationObserver === 'function') {
+    s5RunBusyObserver = new MutationObserver(() => syncS5RunBusy(target));
+    s5RunBusyObserver.observe(target, { attributes: true, attributeFilter: ['disabled'] });
+  }
+  syncS5RunBusy(target);
+  return target;
+}
+
+export function runForecastFromArrival() {
+  const target = watchS5RunBusy() || pagePrimaryRunButton();
+  if (!target) return;
+  target.click();
+  // #runBottom's own handler already brings `.forecast` into view. When the
+  // page offers only #runBtn (no #runBottom at all) nobody does, so the
+  // arrival scrolls itself — instantly under reduced motion, per DESIGN_SYSTEM
+  // §2 rule 4's JS-motion check.
+  if (target.id !== 'runBottom') {
+    const forecast = document.querySelector('.forecast');
+    if (forecast) {
+      forecast.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    }
   }
 }
 
@@ -747,7 +1034,8 @@ function openPicker(side, slot, remaining) {
     await addFilesToSlot(side, slot, input.files);
     input.remove();
   });
-  app.lastSlot = `${side}:${slot}`;   // paste routing: last-touched slot
+  app.lastSlot = `${side}:${slot}`;   // paste routing: EXPLICIT aim (UXE-008) -
+  app.aimExplicit = true;             // the user named this row by pressing its "+ Add"
   input.click();
 }
 
@@ -783,11 +1071,50 @@ async function addFilesToSlot(side, slot, fileList) {
     app.noBuffs = { ...app.noBuffs, [side]: false };
   }
   app.lastSlot = `${side}:${slot}`;
+  // UXE-008: a file LANDING here is not an aim. Dropping the explicit flag
+  // makes pasteTargetSlot advance the armed well to the first EMPTY row, so
+  // the next paste can never quietly become a second file on this row.
+  app.aimExplicit = false;
   // The recovery/re-entry notice has served its purpose once a screenshot
   // lands — leaving it up reads as stale (L4 closing nit).
   app.s2Notice = null;
   render();
   return files.length;
+}
+
+// UXE-003 (Gate-1 UX round 1, Major): a `tryClipboardRead()` helper used to
+// run navigator.clipboard.read() from the click-to-arm handler as a
+// "progressive enhancement". It is GONE, deliberately, and must not come
+// back: it made one intentional paste land twice (the click read the
+// clipboard, the user's own Ctrl+V then inserted the same image again) and
+// let a click meant to AIM a well silently insert a stale, unrelated
+// clipboard image into a battle-report row. Clicking arms; Ctrl/⌘+V pastes
+// (the document-level `paste` listener in boot()); "+ Add" and drag-drop are
+// the other two channels. Nothing the screen ever promised is lost.
+
+// Orchestrator polish (2026-09-21, item 4): "the only feedback [after a
+// paste] is a 40px thumbnail appearing at the far right and the armed well
+// jumping a row" — too easy to miss. Reuses the EXISTING full-slot pulse
+// (ocrf-slot-flash/ocrf-full-pulse, already used for rejectNote and a full
+// row) on the row that just received the image — addFilesToSlot's own
+// synchronous render() has already swapped in the fresh thumbnail/advanced
+// well by the time this runs, so the pulse lands on the real, current node.
+function flashRowLanded(side, slot) {
+  flashFull(document.querySelector(`[data-slot-tile="${side}:${slot}"]`));
+}
+
+// Orchestrator polish (2026-09-21, item 4): every row is full (or the whole
+// grid is attested-none) and the user still pasted — reuses the S2
+// notice slot (already aria-live, already the carrier for the recovery/
+// re-entry notices) for a short-lived, visible message instead of the
+// silent no-op UXG-007's fix used to fall back to. Auto-clears itself
+// after 1.8s unless something else has already replaced it.
+function pasteAllFull() {
+  app.s2Notice = 'All rows are full.';
+  render();
+  setTimeout(() => {
+    if (app.s2Notice === 'All rows are full.') { app.s2Notice = null; render(); }
+  }, 1800);
 }
 
 // QAC-002: swap the row's locator hint for a short reason, restore after
@@ -1125,7 +1452,9 @@ function boot() {
     if (app.screen !== 's1') return;
     ev.preventDefault();                     // required for drop to fire; also
     const tile = tileOf(ev);                 // stops the browser navigating away
-    if (tile) { tile.classList.add('ocrf-drag-over'); app.lastSlot = tile.dataset.slotTile; }
+    // Dragging OVER a row is an explicit aim (UXE-008) - the pointer is
+    // literally on it - so it may hold a partially-filled multi-file row.
+    if (tile) { tile.classList.add('ocrf-drag-over'); app.lastSlot = tile.dataset.slotTile; app.aimExplicit = true; }
   });
   document.addEventListener('dragleave', (ev) => { tileOf(ev)?.classList.remove('ocrf-drag-over'); });
   document.addEventListener('drop', (ev) => {
@@ -1139,13 +1468,26 @@ function boot() {
   });
   document.addEventListener('paste', (ev) => {
     if (app.screen !== 's1') return;
+    // §3.3 (owner: "on mobile you should not be allowed to do that") — a
+    // touch device that somehow still delivers a paste event (a Bluetooth
+    // keyboard, an OS-level paste gesture) must be treated exactly like it
+    // never happened. Re-checked here, not just at render time: hover/
+    // pointer capability can change between renders (a 2-in-1 undocking).
+    if (!canPaste()) return;
     const files = [...((ev.clipboardData && ev.clipboardData.files) || [])];
     if (!files.length) return;
     ev.preventDefault();
-    const ref = pasteTargetSlot(currentModel(), app.lastSlot);
-    if (!ref) { flashFull(document.querySelector('.ocrf-summary')); return; }   // UXG-007
+    const ref = pasteTargetSlot(currentModel(), app.lastSlot, app.aimExplicit);
+    // Orchestrator polish (2026-09-21, item 4): UXG-007's original target,
+    // `.ocrf-summary`, is dead markup left over from the retired slot-grid
+    // round (2026-08-29) — flashFull() on a selector that matches nothing
+    // is a silent no-op, so a paste against a totally full grid previously
+    // gave the user NO feedback at all. Real, visible feedback now: the
+    // same transient-notice slot the S2 recovery/re-entry notices already
+    // use (aria-live, auto-clears).
+    if (!ref) { pasteAllFull(); return; }
     const [side, key] = ref.split(':');
-    addFilesToSlot(side, key, files);
+    addFilesToSlot(side, key, files).then((added) => { if (added > 0) flashRowLanded(side, key); });
   });
   // Real-screenshot samples degrade to the hand-drawn mini-panels when their
   // images can't load (a promoted bundle strips game-IP raster art —
@@ -1173,41 +1515,49 @@ function boot() {
     if (sample && type) { sample.outerHTML = renderSampleFallback(type); return; }
   }, true);
 
-  entryNode = mountEntry({ root: document });   // module-level (see the `let entryNode` declaration above render())
-  if (!entryNode) return;
-  wireEntry(entryNode, {
-    checkAccess,
-    onProceed: () => {
-      entryNode.hidden = true;
-      // UXJ-009: a re-entry with carried-over shots must SAY so on S2
-      // (the exit was non-destructive by design; the silence was the bug).
-      // Staged in its own slot and consumed exactly once by the s2
-      // branch's navOpts block — the recovery notice outranks it there,
-      // and the clear-on-new-upload rule applies to both the same way.
-      app.reentryNotice = reentryNotice({
-        shotsYou: controller.flow.shots('you'),
-        shotsEnemy: controller.flow.shots('enemy'),
-      });
-      // Reuse an existing #ocrfRoot (e.g. after Back-to-entry then proceeding
-      // again) rather than appending a second one with a duplicate id.
-      const stack = root() || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'ocrfRoot' }));
-      // Takeover polish: flag the NEXT show() (S1's) as the true "opening"
-      // moment — see pendingEnterAnimation's own comment. Set here (not
-      // inside goto/show generally) because this is the one and only call
-      // site that starts a fresh flow open.
-      pendingEnterAnimation = true;
-      goto('s1');
-    },
-    onNeedsUpgrade: () => {
-      const wrap = document.createElement('div'); wrap.innerHTML = renderUpgradeNote();
-      const node = wrap.firstElementChild; document.body.appendChild(node);
-      node.removeAttribute('inert'); node.setAttribute('aria-hidden', 'false');
-      wireUpgradeNote(node, {
-        checkout: () => fetch('/shell/billing/checkout', { method: 'POST', credentials: 'same-origin' })
-          .then((r) => { if (!r.ok) throw new Error('checkout unavailable'); return r.json(); }),
-      });
-    },
-  });
+  const mounted = mountEntry({ root: document });   // module-level `launcher` (see its own declaration above render())
+  if (!mounted) return;
+  launcher = { mode: mounted.mode, node: mounted.node, container: mounted.container, mini: mounted.mini, lastUsed: null };
+
+  function onNeedsUpgrade() {
+    const wrap = document.createElement('div'); wrap.innerHTML = renderUpgradeNote();
+    const node = wrap.firstElementChild; document.body.appendChild(node);
+    node.removeAttribute('inert'); node.setAttribute('aria-hidden', 'false');
+    wireUpgradeNote(node, {
+      checkout: () => fetch('/shell/billing/checkout', { method: 'POST', credentials: 'same-origin' })
+        .then((r) => { if (!r.ok) throw new Error('checkout unavailable'); return r.json(); }),
+    });
+  }
+
+  // Shared by both possible launchers (start card / mini launcher) and the
+  // one legacy CTA — `source` (§3.1's "whichever launcher opened the flow")
+  // is all that differs between them; everything else is the exact original
+  // onProceed behavior.
+  function onLauncherProceed(source) {
+    launcher.lastUsed = source;
+    if (launcher.mode === 'legacy' && launcher.container) launcher.container.hidden = true;
+    // UXJ-009: a re-entry with carried-over shots must SAY so on S2
+    // (the exit was non-destructive by design; the silence was the bug).
+    // Staged in its own slot and consumed exactly once by the s2
+    // branch's navOpts block — the recovery notice outranks it there,
+    // and the clear-on-new-upload rule applies to both the same way.
+    app.reentryNotice = reentryNotice({
+      shotsYou: controller.flow.shots('you'),
+      shotsEnemy: controller.flow.shots('enemy'),
+    });
+    // Reuse an existing #ocrfRoot (e.g. after Back-to-entry then proceeding
+    // again) rather than appending a second one with a duplicate id.
+    const stack = root() || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'ocrfRoot' }));
+    // Takeover polish: flag the NEXT show() (S1's) as the true "opening"
+    // moment — see pendingEnterAnimation's own comment. Set here (not
+    // inside goto/show generally) because this is the one and only call
+    // site that starts a fresh flow open.
+    pendingEnterAnimation = true;
+    goto('s1');
+  }
+
+  if (launcher.node) wireEntry(launcher.node, { checkAccess, onProceed: () => onLauncherProceed('start'), onNeedsUpgrade });
+  if (launcher.mini) wireEntry(launcher.mini, { checkAccess, onProceed: () => onLauncherProceed('mini'), onNeedsUpgrade });
 }
 
 if (typeof document !== 'undefined') {

@@ -21,7 +21,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   createDelegatedClickHandler, planS2Entry, decideAfterRead, decideSheetToClose, takeNavOpts, pickReadError, presentationFor, reentryNotice, pasteTargetSlot,
-  sendableShots, backLandsOnEntry,
+  sendableShots, backLandsOnEntry, canPaste, isMacPlatform, pickReturnLauncher,
+  pagePrimaryRunButton, missingJumpTarget,
 } from '../ocr_flow.js';
 import { mapError } from '../error_copy.mjs';
 import { uploadModel } from '../screens/pick_upload.mjs';
@@ -401,6 +402,31 @@ test('pasteTargetSlot: all slots occupied but one has room -> that one; truly fu
     { slot: 'buffs' }, { slot: 'buffs' }, { slot: 'power' }], enemy: [] });
   assert.equal(pasteTargetSlot(full, null), null);
 });
+// --- UXE-008 (Gate-1 UX round 1, Major): "last-touched wins while it has
+// room" mis-filed the Buffs screenshot into the two-file Stats row. The third
+// argument says WHETHER lastSlot was an explicit aim (a click on that row's
+// well, a drag over it, its own "+ Add") or merely where the last file
+// happened to land. Only an explicit aim may hold a partially-filled row;
+// after a landing, the target advances to the first EMPTY row.
+
+test('UXE-008: after a file LANDS (aim not explicit), the target advances past a partially-filled multi-file row to the first EMPTY row', () => {
+  const m = model('battle', { you: [{ slot: 'stats' }], enemy: [] });   // stats 1/2 - still has room
+  assert.equal(pasteTargetSlot(m, 'you:stats', false), 'you:heroes');   // first EMPTY row, not stats
+  // ...and the very same state, when the user explicitly aimed at Stats,
+  // still targets Stats (that is how you deliberately add the 2nd column).
+  assert.equal(pasteTargetSlot(m, 'you:stats', true), 'you:stats');
+});
+
+test('UXE-008: with no empty row left, a non-explicit aim still falls back to whatever row has room', () => {
+  const m = model('battle', { you: [{ slot: 'heroes' }, { slot: 'stats' }, { slot: 'buffs' }, { slot: 'power' }], enemy: [] });
+  assert.equal(pasteTargetSlot(m, 'you:stats', false), 'you:stats');   // stats max=2, the only room anywhere
+});
+
+test('UXE-008: the explicit-aim flag defaults to true, so every pre-existing caller keeps the old meaning', () => {
+  const m = model('battle', { you: [{ slot: 'stats' }], enemy: [] });
+  assert.equal(pasteTargetSlot(m, 'you:stats'), pasteTargetSlot(m, 'you:stats', true));
+});
+
 test("sendableShots: the read sends ONLY the card's active-type slots — parked shots of other types stay home; the enemy sends nothing while the same-report box is on", () => {
   const shots = [{ slot: 'heroes', id: 'a' }, { slot: 'scout', id: 'b' }, { slot: 'stats', id: 'c' }];
   const bb = { you: 'battle', enemy: 'battle' };
@@ -409,4 +435,150 @@ test("sendableShots: the read sends ONLY the card's active-type slots — parked
   assert.deepEqual(sendableShots(bb, 'enemy', shots).map((s) => s.id), ['a', 'c']);   // its own report
   assert.deepEqual(sendableShots(bb, 'enemy', shots, true), []);                        // box on: covered by yours
   assert.deepEqual(sendableShots({ you: 'battle', enemy: 'scout' }, 'enemy', shots, true).map((s) => s.id), ['b']);   // box inert when not both battle
+});
+
+// ---- UX_START_JOURNEY_SPEC.md §3.3 — desktop paste wells --------------------
+// canPaste() gates BOTH which rows render a well (render time) and whether a
+// real paste event is ever acted on (the document-level listener, boot()) —
+// "on mobile you should not be allowed to do that". Injectable matchMedia so
+// this is provable without a real browser.
+
+test('canPaste: true only for a real hover+fine-pointer device (desktop mouse); false for touch (coarse pointer / no hover)', () => {
+  const desktop = (q) => ({ matches: q === '(hover: hover) and (pointer: fine)' });
+  const touch = () => ({ matches: false });
+  assert.equal(canPaste(desktop), true);
+  assert.equal(canPaste(touch), false);
+});
+
+test('canPaste: false, never throws, when matchMedia is missing entirely (no window under node:test here, or a hostile/old browser) or itself throws', () => {
+  assert.equal(canPaste(null), false);
+  assert.equal(canPaste(() => { throw new Error('nope'); }), false);
+});
+
+test('isMacPlatform: true for a Mac userAgentData/platform string, false for Windows/Linux/absent navigator', () => {
+  assert.equal(isMacPlatform({ userAgentData: { platform: 'macOS' } }), true);
+  assert.equal(isMacPlatform({ platform: 'MacIntel' }), true);
+  assert.equal(isMacPlatform({ platform: 'Win32' }), false);
+  assert.equal(isMacPlatform({ platform: 'Linux x86_64' }), false);
+  assert.equal(isMacPlatform(null), false);
+});
+
+// ---- UX_START_JOURNEY_SPEC.md §3.1 — focus returns to whichever launcher
+// opened the flow (start card, the workspace's mini launcher, or the one
+// legacy CTA). Only one of the two contract launchers' host regions is ever
+// visible at once (view-start XOR view-work), so "visible" always wins over
+// a stale `lastUsed` if the two ever disagree.
+
+test('pickReturnLauncher: legacy always returns to its one CTA, regardless of lastUsed/visibility', () => {
+  assert.equal(pickReturnLauncher({ mode: 'legacy', lastUsed: null, startVisible: false, miniVisible: false }), 'start');
+});
+
+test('pickReturnLauncher: contract mode prefers the launcher that was actually clicked, provided it is still the visible one', () => {
+  assert.equal(pickReturnLauncher({ mode: 'contract', lastUsed: 'start', startVisible: true, miniVisible: false }), 'start');
+  assert.equal(pickReturnLauncher({ mode: 'contract', lastUsed: 'mini', startVisible: false, miniVisible: true }), 'mini');
+});
+
+test('pickReturnLauncher: contract mode falls back to whichever region IS visible when lastUsed disagrees (defensive — should not happen while the modal keeps the background inert)', () => {
+  assert.equal(pickReturnLauncher({ mode: 'contract', lastUsed: 'start', startVisible: false, miniVisible: true }), 'mini');
+  assert.equal(pickReturnLauncher({ mode: 'contract', lastUsed: 'mini', startVisible: true, miniVisible: false }), 'start');
+});
+
+test('pickReturnLauncher: neither region visible (should not happen on the real page) -> null, never throws', () => {
+  assert.equal(pickReturnLauncher({ mode: 'contract', lastUsed: null, startVisible: false, miniVisible: false }), null);
+});
+
+// ---- UXE-028 (Gate-1 UX review round 2, MAJOR) ----------------------------
+// The arrival's "See who wins" used to proxy `#runBtn` — the compact header
+// *Re-run* shortcut — whose listener only starts the run. Measured: the page
+// stayed at scrollY 421 (desktop) / 490 (mobile) while `.forecast` sat at
+// y 2140 / 3113, and the button never went busy. The page's declared primary
+// is `#runBottom`, and the prototype hangs the `.forecast` scroll AND the
+// `Simulating…` label off that one, so the arrival must delegate there. These
+// pin the ORDER (the unpinned choice of button WAS the defect) and the two
+// behaviours that ride on it.
+
+test("UXE-028: the arrival delegates to #runBottom FIRST — the page's declared primary action, which carries both the scroll-into-view and the busy label", () => {
+  const both = { getElementById: (id) => ({ id }) };
+  assert.equal(pagePrimaryRunButton(both).id, 'runBottom');
+});
+
+test('UXE-028: #runBtn is the FALLBACK only — used when the page has no #runBottom at all', () => {
+  const headerOnly = { getElementById: (id) => (id === 'runBtn' ? { id } : null) };
+  assert.equal(pagePrimaryRunButton(headerOnly).id, 'runBtn');
+  const neither = { getElementById: () => null };
+  assert.equal(pagePrimaryRunButton(neither), null);
+  assert.equal(pagePrimaryRunButton(null), null);
+});
+
+test('UXE-028: the arrival scrolls .forecast itself ONLY on the #runBtn fallback (#runBottom already does it), reduced-motion-guarded, and never forks the run', () => {
+  const src = readFileSync(new URL('../ocr_flow.js', import.meta.url), 'utf8');
+  // (line-ending agnostic — this repo's shell sources are CRLF)
+  const body = src.slice(src.indexOf('export function runForecastFromArrival'));
+  const end = body.search(/\r?\n\}\r?\n/);
+  const fn = body.slice(0, end === -1 ? body.length : end);
+  // delegation, not a second engine call
+  assert.match(fn, /target\.click\(\)/);
+  assert.doesNotMatch(fn, /fetch\(|\/api\/predict|formToConfig/);
+  // the self-scroll is fenced behind "this is not #runBottom"
+  assert.match(fn, /target\.id !== 'runBottom'/);
+  assert.match(fn, /querySelector\('\.forecast'\)/);
+  assert.match(fn, /prefersReducedMotion\(\) \? 'auto' : 'smooth'/);
+});
+
+test("UXE-028: the pressed button gets its own busy feedback, OBSERVED from the page primary's disabled attribute, and restores the exact idle markup (arrow span, aria-hidden)", () => {
+  const src = readFileSync(new URL('../ocr_flow.js', import.meta.url), 'utf8');
+  assert.match(src, /attributeFilter: \['disabled'\]/);
+  assert.match(src, /btn\.textContent = 'Simulating…'/);
+  assert.match(src, /s5RunIdleHtml = 'See who wins <span aria-hidden="true">&rarr;<\/span>'/);
+  assert.match(src, /btn\.innerHTML = s5RunIdleHtml/);
+  // never relabel the prototype's header shortcut again (owner constraint 5)
+  assert.doesNotMatch(src, /runBtn'\)\.(textContent|innerHTML) *=/);
+});
+
+// --- U1-M4 (Gate-2 round 1): where the "Missing: ..." line jumps ------------
+// Before this round the jump was unconditionally "the first empty required
+// row". In the one state the playtest got stuck in — your card 3/3, the
+// footer reading "Missing: enemy's battle report", exactly one report in the
+// user's possession — that row is the ENEMY's Heroes + Experts, so tapping
+// the line scrolled straight PAST the control that answers the question
+// ("Use your report for the enemy too") to demand the thing the user has
+// just decided they do not have.
+
+const BATTLE_BOTH = { you: 'battle', enemy: 'battle' };
+const YOU_3_OF_3 = [{ slot: 'heroes' }, { slot: 'stats' }, { slot: 'buffs' }];
+
+test('U1-M4: with the same-report hint lit, the missing line jumps to the checkbox — not to the enemy\'s first empty row', () => {
+  const model = uploadModel({ types: BATTLE_BOTH, shots: { you: YOU_3_OF_3, enemy: [] } });
+  assert.equal(model.cards.find((c) => c.side === 'enemy').sameHint, true);
+  assert.deepEqual(model.missing, ["enemy's battle report"]);
+  assert.equal(missingJumpTarget(model), '[data-same]');
+});
+
+test('U1-M4: every other missing case is unchanged — still the first empty REQUIRED row, in card order', () => {
+  // nothing uploaded at all -> your own Heroes + Experts (unchanged)
+  assert.equal(missingJumpTarget(uploadModel({ types: BATTLE_BOTH, shots: { you: [], enemy: [] } })),
+    '[data-slot-tile="you:heroes"]');
+  // your card part-done -> your next empty required row, never the enemy's
+  assert.equal(missingJumpTarget(uploadModel({ types: BATTLE_BOTH, shots: { you: [{ slot: 'heroes' }], enemy: [] } })),
+    '[data-slot-tile="you:stats"]');
+  // your card complete but the ENEMY card already has a shot: the user does
+  // have a second report, the hint is off, so the jump goes back to being the
+  // enemy's first empty required row.
+  assert.equal(missingJumpTarget(uploadModel({ types: BATTLE_BOTH,
+    shots: { you: YOU_3_OF_3, enemy: [{ slot: 'heroes' }] } })), '[data-slot-tile="enemy:stats"]');
+  // a pairing that never shows the box at all -> the enemy's own empty row
+  assert.equal(missingJumpTarget(uploadModel({ types: { you: 'battle', enemy: 'scout' },
+    shots: { you: YOU_3_OF_3, enemy: [] } })), '[data-slot-tile="enemy:scout"]');
+});
+
+test('U1-M4: with the box ticked the enemy rows are hidden, so the jump skips them exactly as before', () => {
+  const ticked = uploadModel({ types: BATTLE_BOTH, shots: { you: [{ slot: 'heroes' }], enemy: [] }, sameReport: true });
+  assert.equal(ticked.cards.find((c) => c.side === 'enemy').rowsHidden, true);
+  assert.equal(missingJumpTarget(ticked), '[data-slot-tile="you:stats"]');
+});
+
+test('U1-M4: nothing missing -> no jump target at all (the line is not rendered in that state)', () => {
+  const done = uploadModel({ types: BATTLE_BOTH, shots: { you: YOU_3_OF_3, enemy: [] }, sameReport: true });
+  assert.equal(done.canScan, true);
+  assert.equal(missingJumpTarget(done), null);
 });

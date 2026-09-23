@@ -1235,3 +1235,529 @@ body.ocrf-flow-open #ocrfRoot .screen { max-height: 100%; }
   .ocrf-req-card .ocrf-req-card-head{padding:6px 4px 4px}
 }
 .ocrf-col-note{font-size:11px;color:var(--ocrf-ink-mute);font-style:italic}
+
+/* --- Round: mode-bar mini launcher icon sizing (contract §1.1/§3.1 — the
+   shell may style `.ocrf-launch-mini`'s own icon spacing only; `.modebar-btn`
+   itself is prototype-owned chrome, never restyled here). Without an
+   explicit size the icon's bare <svg viewBox="0 0 48 48"> (no width/height
+   attributes) falls back to the UA default replaced-element size (300x150),
+   ballooning the whole button — this is the one and only fix that needs. */
+.ocrf-launch-mini-icon{display:inline-flex;width:16px;height:16px;margin-right:6px;
+  vertical-align:-3px;flex:none}
+.ocrf-launch-mini-icon svg{width:100%;height:100%}
+
+/* --- Round: desktop paste wells (owner 2026-09-20, UX_START_JOURNEY_SPEC.md
+   §3.3 — "there's no place for them to paste it... I want a placeholder
+   where the user feels like they can paste it... on mobile you should not
+   be allowed to do that"). Rendered only when canPaste() (hover:hover AND
+   pointer:fine) and only on a row with room (screens/pick_upload.mjs's
+   slotHasRoom): a dashed, clearly-empty rectangle on its own line under the
+   row's text, with "+ Add" moved down to sit at its right end (never
+   duplicated in the top cluster too — see requirementRow's addBtnInline).
+   `.ocrf-req` already lays its two direct children out with plain flex; the
+   paste row is a THIRD child forced onto its own line by flex-wrap + a
+   100%-basis, so paste-off markup (no third child at all) is untouched.
+   Same navy tokens as every round above; append-only. */
+.ocrf-req{flex-wrap:wrap}
+.ocrf-paste-row{flex:1 1 100%;display:flex;align-items:stretch;gap:8px;margin:2px 0 3px}
+.ocrf-paste-well{flex:1 1 auto;min-height:40px;display:flex;align-items:center;justify-content:center;
+  gap:6px;padding:5px 10px;border-radius:10px;cursor:pointer;font:inherit;color:var(--ocrf-ink-mute);
+  border:1.5px dashed rgba(185,210,229,.32);background:var(--ocrf-well)}
+.ocrf-paste-well:hover{border-color:rgba(185,210,229,.6);color:var(--ocrf-ink);background:rgba(255,255,255,.04)}
+.ocrf-paste-well:focus-visible{outline:2px solid var(--ocrf-tile-focus);outline-offset:1px}
+.ocrf-paste-well:active{transform:translateY(1px)}
+.ocrf-paste-ic{width:16px;height:16px;flex:none}
+.ocrf-paste-well--armed{border-style:solid;font-weight:600;color:var(--ocrf-ink)}
+.ocrf-paste-well--armed.ocrf-paste-well--you{border-color:var(--ocrf-ice-b);
+  background:rgba(46,161,242,.10);box-shadow:0 0 0 3px rgba(46,161,242,.14)}
+.ocrf-paste-well--armed.ocrf-paste-well--enemy{border-color:var(--ocrf-ember-b);
+  background:rgba(239,95,95,.10);box-shadow:0 0 0 3px rgba(239,95,95,.14)}
+.ocrf-paste-well kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;
+  height:20px;padding:0 5px;border-radius:5px;font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:10.5px;font-weight:700;color:var(--ocrf-tile-ink);
+  background:linear-gradient(180deg,var(--ocrf-tile),var(--ocrf-tile-2));
+  border:1px solid var(--ocrf-tile-border);box-shadow:0 1.5px 0 var(--ocrf-tile-border)}
+.ocrf-paste-well-label{font-size:12px}
+
+/* RETIRED by UXE-004 (Gate-1 UX review round 1, 2026-09-21): this rule used
+   to reveal the generated words "Paste here" on an un-armed well's hover /
+   focus-visible. Two wells then promised "Paste here" at the same time while
+   only the ARMED one actually received the paste — pasting while hovering
+   Stats sent the file to Heroes. An affordance may not state an outcome it
+   will not deliver, so the words are the armed well's alone now; the
+   un-armed hover/focus treatment lives in the Gate-1 round at the end of
+   this file (glyph scale + faction-tinted dashed border, no words). */
+
+/* Orchestrator polish (2026-09-21, item 5): one-line first-use tip, gone
+   the moment the screen is touched — a caption, not a notice (no box, no
+   border, quieter than .ocrf-s2-notice), so it reads as ambient guidance. */
+.ocrf-paste-tip{font-size:12px;color:var(--ocrf-ink-mute);margin:0 0 10px}
+
+/* A freshly-rendered thumbnail (a paste/drop/pick just landed, or the armed
+   well just advanced) settles in rather than snapping — ≤200ms, transform/
+   opacity only. Already covered by the file's existing #ocrfRoot * reduced-
+   motion kill-switch (top of file) — no separate override needed. */
+@keyframes ocrf-thumb-in{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.ocrf-req-thumb{animation:ocrf-thumb-in 160ms cubic-bezier(.2,.8,.2,1) both}
+
+/* Desktop room to breathe: two cards WITH wells feel cramped at the
+   S1/S2/S3/E1 band's existing 760px cap, so S1 alone may grow further at
+   wide viewports. Same (id+class+attribute) specificity as the 768px round
+   that set 760px above; this rule is simply LATER in source, so at
+   >=1100px it wins outright — the dialog never visibly resizes as the
+   viewport crosses 1100px, it just stops growing there. */
+@media (min-width:1100px){
+  #ocrfRoot .screen[data-screen="s1"]{max-width:980px}
+}
+
+/* Paste wells add a full second line to every row that has room — at
+   1440x900 that pushed the "your report" card's 4 rows past the dialog's
+   own internal-scroll body without ALSO trimming the row's other desktop-
+   only paddings (measured: 575px baseline body height -> 821px with wells,
+   only 592px available). Scoped to `.ocrf-req-cards` (S1 only) and
+   >=768px (desktop scale round's own breakpoint) so no other screen's row
+   density changes; recovers ~35px/row without shrinking the sample crop
+   below its existing desktop floor (still 50px, bigger than the <=430px
+   round's 36-40px) or the row text. */
+@media (min-width:768px){
+  .ocrf-req-cards .ocrf-req-main{padding:5px 2px}
+  .ocrf-req-cards .ocrf-req-fig{height:42px}
+  .ocrf-req-cards .ocrf-req-card-head{padding:3px 4px 2px}
+  .ocrf-req-cards .ocrf-card-types{margin:4px 0 2px}
+  .ocrf-req-cards .ocrf-col{margin:2px 0 4px}
+}
+/* S1's own head/foot chrome, tightened (this screen only — S2/S3/E1 keep
+   the shared desktop-scale round's roomier 26px/10px): the row content
+   above needs the room more than the "Screenshots" title does. Still well
+   clear of the 46px back-button's own floor. */
+@media (min-width:768px){
+  #ocrfRoot .screen[data-screen="s1"] .ocrf-scr-head{padding:10px 8px 5px}
+  #ocrfRoot .screen[data-screen="s1"] .ocrf-scr-foot{padding:12px 8px 16px}
+}
+/* Orchestrator polish (2026-09-21, item 3): vertical rhythm — a paste row's
+   own margins had it floating in no-man's-land (2px below the hint text,
+   only 3px above the next row's divider), reading as belonging to nothing.
+   Scoped via the `.ocrf-req--paste` modifier class (screens/pick_upload.mjs
+   requirementRow, added ONLY when a well actually renders on that row — a
+   plain CSS-only fix could not tell "has a well" from "doesn't" without it,
+   short of a fragile :has()) rather than changing `.ocrf-req-main`/
+   `.ocrf-paste-row` globally, which would also retune every non-well row's
+   own (already-shipped, untouched-by-this-round) spacing. Hint-to-well:
+   main's own bottom padding (3) + row's own top margin (2) = 5px, comfortably
+   under the 8px ceiling. Well-to-divider: row's own bottom margin alone =
+   11px, comfortably over the 10px floor. */
+@media (min-width:768px){
+  /* align-items:flex-end (not the row's usual :center — QAC-family rows
+     elsewhere keep center): centering the fig against a SHORTER text block
+     left extra invisible padding above the hint's own bottom edge (the
+     fig's own height minus the text's, halved) that no amount of
+     padding/margin tuning could reach — bottom-aligning fig+text makes the
+     hint's rendered bottom edge match its padding-box bottom exactly, so
+     the padding below actually IS the gap, for both 1-line and 2-line hint
+     rows alike. */
+  .ocrf-req-cards .ocrf-req--paste .ocrf-req-main{align-items:flex-end;padding:3px 2px 2px}
+  /* `.ocrf-req`'s own `gap:10px` (the horizontal gap between .ocrf-req-main
+     and .ocrf-req-cluster on the row's first line) ALSO applies between
+     flex LINES once flex-wrap forces the paste-row onto its own second
+     line — a real 10px that no amount of margin/padding on the children
+     alone can see or cancel from the outside. Measured directly (getBoundingClientRect):
+     main.bottom to paste-row.top was 12px (10 flex-gap + this rule's own
+     2px margin-top) even though req-main's own padding-bottom read 2px.
+     A negative margin-top cancels the flex-gap back down to the real
+     6px hint-to-well gap this round targets. */
+  .ocrf-req-cards .ocrf-req--paste .ocrf-paste-row{margin:-6px 0 10px}
+  /* The enemy card's own extra row (the same-report checkbox, unique to
+     that card) is what actually pushes it past the you-card's height —
+     tightened here rather than trimming every row further. */
+  .ocrf-req-cards .ocrf-req-same{min-height:38px;margin:5px 0;padding:7px 10px}
+}
+/* And a taller cap at genuinely spacious viewport HEIGHTS (not just width) —
+   88vh of 900px (792px) left the "your report" card ~40-50px short even
+   after every row/chrome trim above; 94vh (orchestrator polish round: BOTH
+   cards, not just "your report", must fit at 1440x900) puts .screen's
+   bottom edge at 45px(5vh top)+94vh=891px of 900 — 9px short of the
+   viewport's own bottom edge, never touching #ocrfRoot's own dormant
+   overflow fallback. `body.ocrf-flow-open` prefix matches (and, by
+   data-screen's extra attribute, beats) the takeover-polish round's own
+   `body.ocrf-flow-open #ocrfRoot .screen{max-height:88vh}` specificity — a
+   bare `#ocrfRoot .screen[data-screen="s1"]` here would silently lose to
+   that rule. */
+@media (min-width:768px) and (min-height:900px){
+  body.ocrf-flow-open #ocrfRoot .screen[data-screen="s1"]{max-height:94vh}
+}
+
+/* Kept from the orchestrator polish round: the scrolling upload body is its
+   own positioning context (the paste wells' and thumbnails' own absolutely
+   positioned parts rely on it being predictable). Its 18px sticky
+   fixed-colour fade is RETIRED by UXE-013 — an opaque `--ocrf-panel` strip
+   over a gradient background was a visible seam at 1280x720 AND still cut
+   the last row dead flat, because a solid band cannot fade the content it
+   covers. A real `mask-image` on the same element does (see the Gate-1
+   round below), and it needs no colour at all, so it cannot mismatch the
+   background it sits on. */
+#ocrfRoot .screen[data-screen="s1"] .ocrf-scr-body{position:relative}
+
+/* ============================================================
+   Round: Gate-1 UX review, round 1 (2026-09-21) — UXE-004, UXE-005
+   (arrival CTA only), UXE-008, UXE-013, UXE-014, UXE-015, UXE-017, UXE-020.
+   Palette-locked to this file's own --ocrf-* tokens (no new colours: every
+   value below is one of them, or an alpha of one). Appended in review
+   order; the only two rules this round removes are the two it explicitly
+   retires above, both named by a finding.
+   ============================================================ */
+
+/* UXE-004 (Major) — an un-armed well must not promise an outcome it will not
+   deliver. Hover/focus now says "clickable" in the only two ways that cannot
+   be read as "the paste lands here": the clipboard glyph grows 1.25x, and the
+   dashed border takes the CARD's own faction tint (ice on your report, ember
+   on the enemy's), so the cue also confirms WHICH side you are about to aim
+   at. Transform/colour only — the file's own #ocrfRoot reduced-motion
+   kill-switch (top of file, !important) already covers the transition. */
+.ocrf-paste-ic{transition:transform .12s ease}
+.ocrf-paste-well:not(.ocrf-paste-well--armed):hover .ocrf-paste-ic,
+.ocrf-paste-well:not(.ocrf-paste-well--armed):focus-visible .ocrf-paste-ic{transform:scale(1.25)}
+.ocrf-paste-well--you:not(.ocrf-paste-well--armed):hover,
+.ocrf-paste-well--you:not(.ocrf-paste-well--armed):focus-visible{
+  border-color:rgba(85,191,255,.55);background:rgba(46,161,242,.07);color:var(--ocrf-ink)}
+.ocrf-paste-well--enemy:not(.ocrf-paste-well--armed):hover,
+.ocrf-paste-well--enemy:not(.ocrf-paste-well--armed):focus-visible{
+  border-color:rgba(255,129,129,.55);background:rgba(239,95,95,.07);color:var(--ocrf-ink)}
+
+/* UXE-008 (Major) — the digits-only counter beside a multi-file row's title
+   ("Stats 1/2"). Mono, one notch smaller than the row name, and it earns its
+   colour: muted while the row is untouched, the card's faction tint while it
+   is partly full (the state that used to mis-file the NEXT screenshot), ok
+   green once the row is satisfied. Never rendered on single-file rows
+   (screens/pick_upload.mjs), so nothing changes for them. */
+.ocrf-req-count{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--ocrf-ink-mute);opacity:.72}
+.ocrf-req-card--you .ocrf-req-count--part{color:var(--ocrf-ice-b);opacity:1}
+.ocrf-req-card--enemy .ocrf-req-count--part{color:var(--ocrf-ember-b);opacity:1}
+.ocrf-req-count--full{color:var(--ocrf-ok);opacity:1}
+
+/* UXE-015 (Minor) — the uploaded thumbnail is the user's ONLY evidence that
+   the right screenshot landed, and at 40x40 it was smaller than the sample
+   illustration next to it (68x40): you could not tell a stats panel from a
+   buffs popup. 72x54 keeps the 4:3 shape of a phone screenshot crop and
+   still fits the row. The remove control is now a real sibling BUTTON beside
+   the image (screens/pick_upload.mjs's .ocrf-req-thumb-set) instead of a
+   20px badge painted over the image's own corner — it stopped hiding the
+   pixels it exists to let you re-check, it is the only undo for a mis-filed
+   screenshot, and it is 28px on a fine pointer / 44px under coarse (WCAG
+   2.5.8 asks >=24, touch convention is 44). `position:relative` (not static)
+   is load-bearing: the button's own ::before hit-area expander is absolute,
+   and would otherwise anchor to .ocrf-req and blanket the whole row. */
+.ocrf-req-thumb{width:72px;height:54px}
+.ocrf-req-thumb-set{display:inline-flex;align-items:center;gap:6px}
+.ocrf-req-thumb-x{position:relative;left:auto;top:auto;width:28px;height:28px;
+  font-size:15px;flex:none}
+/* The tick moves fully ON to the image (it used to hang 5px outside, where
+   the remove badge also sat) — a small corner confirmation, nothing more. */
+.ocrf-req-tick{right:3px;top:3px}
+
+/* UXE-017 (Minor) — coarse-pointer targets on this screen. "+ Add", "None"
+   and every thumbnail's remove button reach 44px; the well itself is already
+   40px tall and never renders on a touch device at all (canPaste()). Only
+   the OCR flow's own controls are touched here — the prototype's selects and
+   mode-bar buttons are its own chrome. */
+@media (any-pointer:coarse){
+  .ocrf-req-add,.ocrf-req-none{min-height:44px}
+  .ocrf-req-thumb-x{width:44px;height:44px;font-size:18px}
+}
+
+/* UXE-017 (second half) — the mode bar's three buttons must share one
+   baseline. `.modebar-btn` is prototype-owned chrome and is NOT restyled
+   here; the 1px came from this file's own icon, whose `vertical-align:-3px`
+   grew the button's inline line box past its two siblings' 34px. Aligning
+   the icon to the text's middle instead keeps the exact same optical
+   position without touching the line box. */
+.ocrf-launch-mini-icon{vertical-align:middle}
+
+/* UXE-013 (Minor) — at 1280x720 the upload body's internal scroll sliced
+   rows dead flat: the left card's Buffs well cut mid-height, the right
+   card's "Buffs" label cut through the glyphs, and with overlay scrollbars
+   no cue at all that more existed — it read as a rendering fault. A real
+   mask fades whatever is at the bottom edge (a solid overlay strip, which
+   this replaces, could only paint OVER it), and the extra bottom padding on
+   short viewports guarantees the fade lands on padding rather than on the
+   last row once the user has scrolled all the way down. */
+#ocrfRoot .screen[data-screen="s1"] .ocrf-scr-body{
+  -webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);
+  mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent)}
+@media (max-height:860px){
+  #ocrfRoot .screen[data-screen="s1"] .ocrf-scr-body{padding-bottom:40px}
+}
+
+/* UXE-005 (Major, arrival half) — the arrival's own "See who wins" hung in
+   the empty left gutter while the stat rows it belongs to are centred. The
+   header #runBtn relabel is gone (screens/setup.mjs); this is the one
+   "See who wins" on the arrival screen, so it sits on the same axis as the
+   panel it acts on. */
+.ocrf-s5-cta-row{justify-content:center}
+
+/* UXE-014 (Minor) — nothing may move while the user works down the list.
+   Measured before: filling `you:heroes` shrank its row 101px -> 64px (the
+   paste well is gone once a row is full) and pulled the next armed well
+   ~57px UP under the cursor, three times in a row; the dialog itself
+   resized on every paste. Two rules, in the only environment where a well
+   exists at all (canPaste() = hover + fine pointer; >=768px is this file's
+   own two-card desktop breakpoint):
+     1. every row reserves TWO lines of hint, so a row's height stops
+        depending on whether its own sentence happens to wrap — that was
+        the reason "one" min-height could not fit all four rows;
+     2. every row then takes the same min-height, which is the tallest
+        state any row reaches (empty, with a well and a two-line hint). A
+        filled row's natural height is ~40px less, so the min-height is what
+        holds it: the row keeps its size, the card keeps its height, and the
+        next well stays exactly where the user was already pointing.
+   Rows never shrink below their content — min-height only ever adds. */
+@media (min-width:768px) and (hover:hover) and (pointer:fine){
+  .ocrf-req-cards .ocrf-req-hint{min-height:2.7em}
+  /* 116px = the tallest state measured live at 1440x900 and 1280x720: an
+     empty row (two-line hint reserve + its 40px paste well) is 114px, and a
+     two-file row whose thumbnails stack in the narrow desktop cluster is
+     115px - so every row sits at exactly 116px in every state, empty or
+     full, and the card's height simply cannot change any more. */
+  .ocrf-req-cards .ocrf-req{min-height:116px}
+}
+
+/* UXE-021 (Polish) — the reading screen's duration expectation. A quiet
+   caption directly under the title, on the same centred axis as everything
+   else on this screen; the flex column's own 22px gap is pulled back so it
+   reads as part of the title block rather than as a third element. It must
+   never compete with the trust line below it (same muted ink, one notch
+   smaller than the step labels). */
+.ocrf-scan-note{margin:-16px 0 0;text-align:center;font-size:12px;
+  color:var(--ocrf-ink-mute);opacity:.85}
+
+/* UXE-020 (Minor) — "Check your numbers" rendered `Lethali` with the green
+   tick painted across the last two letters. Measured at 1440x900: the tile
+   is 73.4px, the label's own text is 59.4px and ends at x=602.6 while the
+   badge starts at x=590.6 — a 12px collision, on the one screen whose whole
+   job is letting the user read what we read. The badge was already absolute
+   (it never pushed the text); what it lacked was somewhere to sit that is
+   not on top of a word. It moves to the tile's BOTTOM-right corner, beside
+   the number — which is ~43px of mono and leaves it room — the value
+   reserves that room explicitly, and the label gets the tile's full width
+   back. The tile also gets a floor wide enough for the longest stat name
+   where there is room to give (the dialog is shrink-to-fit up to 900px, so
+   this simply lets it use a little more of what it already has); below
+   1000px the tiles are already wider than the label needs, and a floor
+   there would risk a horizontal overflow at 390px instead. */
+.ocrf-rv-field .ocrf-rv-ic{top:auto;bottom:4px}
+.ocrf-rv-field .ocrf-rv-lab{white-space:nowrap}
+.ocrf-rv-field .ocrf-rv-val{padding-right:18px}
+@media (min-width:1000px){
+  .ocrf-rv-field{min-width:92px}
+}
+
+/* ===========================================================================
+   Round: Gate-1 UX review round 2 (2026-09-21) — UXE-030, UXE-032-S, UXE-036.
+   Append-only, same --ocrf-* tokens as every round above, no new colours.
+   ===========================================================================
+
+   UXE-030 (Minor, desktop 1440x900 + laptop 1280x720) — "Check your numbers"
+   cut its tiles dead flat. Measured on `[data-screen="s4"]`: the body's
+   scrollHeight 723 vs clientHeight 592 with `mask-image:none`, so both
+   MARKSMAN blocks (8 of the 24 numbers) were sliced 14px above `Next` with no
+   fade and, with overlay scrollbars, no cue at all that more existed. The
+   screen is literally titled "Check your numbers" and claims "All 24 numbers
+   are in" while a third of them read as a rendering fault — and `Next` is the
+   nearest control to the cut, so the likeliest action is to confirm numbers
+   you were never shown. UXE-013 had already written exactly the right rule one
+   round earlier and scoped it to `[data-screen="s1"]` alone.
+   DECISION — scoped to s4, NOT widened to `.screen .ocrf-scr-body`: every
+   screen's body is `overflow-y:auto` (the takeover round's flex rule), but
+   only s1 and s4 actually overflow. A blanket mask would fade the bottom 26px
+   of the two bodies that never scroll, and in both cases that band is exactly
+   what must not go quiet — S3's privacy line + Cancel (the trust copy of the
+   one screen that uploads anything) and E1's own recovery buttons. So s4 is
+   named, and the next screen that grows a scroll gets named with it.
+   The 32px+ bottom padding is the other half of the fix: at scroll end the
+   fade must land on PADDING, never on the last tile row. The shared desktop
+   rule already gives 36px at >=768px but the base is 24px, and on 390x844 —
+   where all 24 tiles fit in one view and the body never scrolls at all — a
+   24px pad would have put the last row inside the 26px fade. 36px everywhere
+   keeps the last row fully opaque in both states. */
+#ocrfRoot .screen[data-screen="s4"] .ocrf-scr-body{
+  -webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);
+  mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);
+  padding-bottom:36px}
+/* Same guarantee for the screen that already had the mask: UXE-013 only
+   raised s1's bottom padding at `max-height:860px`, so on a TALL viewport
+   (820x1180 tablet, measured: padding-bottom 24px, body 560/560) the last row
+   sat 24px from the edge - 2px inside the 26px fade. The short-viewport 40px
+   rule is deliberately left alone (it is what the reviewer measured at
+   1280x720 and 1440x900); this only lifts the tall case to 36px. */
+@media (min-height:861px){
+  #ocrfRoot .screen[data-screen="s1"] .ocrf-scr-body{padding-bottom:36px}
+}
+
+/* UXE-032-S (Minor, touch: mobile 390x844, small 375x667, tablet 820x1180) —
+   the last two control families under 44px on the upload screen, and the dense
+   ones. Measured on touch: `.ocrf-type-tab` (Battle Report / Scout Report /
+   City Stats) 104x34, `.ocrf-col-seg` (the L / R column pill) 34x30. The pill
+   is the SMALLEST target on the screen and it is the control that decides
+   whose stats are whose — the most expensive mis-tap in the flow, since you
+   only discover it after a metered OCR run. Everything else on these screens
+   committed to 44px in round 1 (UXE-017), so 30-34px now reads as an oversight
+   rather than a decision.
+   Real sizes, not `::before` hit-area expanders: the two L/R segments are
+   adjacent, so expanded hit areas would overlap each other (and the reviewer
+   measures bounding rects, which an expander does not change). This block sits
+   after the `@media (max-width:430px)` rounds on purpose — that round's
+   `.ocrf-card-types .ocrf-type-tab{min-height:34px}` has the same specificity,
+   so source order is what settles it. Pointer-fine desktop keeps its existing
+   sizes; nothing here is re-worded, re-ordered or restructured. */
+@media (any-pointer:coarse){
+  .ocrf-type-tab,
+  .ocrf-card-types .ocrf-type-tab{min-height:44px}
+  /* width/height (not min-*) because the base rule sets both explicitly and a
+     min-* alone would lose to them. */
+  .ocrf-col-seg{width:44px;height:44px}
+}
+/* The height the two rules above add back, clawed out of the surrounding
+   margins on the narrow touch screens that can least afford it (QAC-020: the
+   enemy card's pill on first open at 375x667). Margins only — no row padding,
+   no font size, no sample crop: the tap targets themselves may not shrink and
+   the locked caption "set by your report" must keep its line. */
+@media (any-pointer:coarse) and (max-width:430px){
+  .ocrf-card-types{margin:3px 0 2px}
+  .ocrf-col{margin:2px 0 3px}
+  .ocrf-req-cards--two .ocrf-req-card{padding-top:6px;padding-bottom:2px}
+  .ocrf-req-card .ocrf-req-card-head{padding:4px 4px 3px}
+  /* The row's own box, not any control in it: "+ Add", "None" and every
+     remove button keep their 44px. Measured at 375x667 - 60px rows -> 56px,
+     which with the margins above brings the whole round back to within 5px
+     of the pre-round page height (QAC-020's own measurement below). */
+  .ocrf-req-cards .ocrf-req-main{padding:3px 0}
+}
+
+/* UXE-036 (Polish, desktop 1440x900 + laptop 1280x720) — the mirrored enemy
+   column looked half-drawn. With "Use your report for the enemy too" ticked
+   the left card measures 583px and the enemy card collapses to ~165px,
+   leaving a ~420px void with Scan floating under it. Purely additive: the
+   owner-approved structure (two cards always, per-card type tabs, the L/R
+   pill, the checkbox INSIDE the enemy card, the row labels, the hint
+   sentences, the h1 "Screenshots", "+ Add" as the only picker trigger) is
+   untouched — this is a quiet confirmation of what the tick just did,
+   rendered UNDER the collapsed card.
+   `position:absolute` at `top:100%` is load-bearing and not a shortcut: an
+   in-flow block would grow the enemy card (UXE-014 pins card heights and the
+   116px rows) or, as a third grid child, land under the TALL card in a new
+   grid row and push the sticky footer. Out of flow, the enemy card's height,
+   every row's height, the grid's row height, `Scan` and the footer are all
+   byte-identical with the block present or absent. The thumbnails are the
+   SAME object URLs already rendered in your card (nothing re-read, nothing
+   re-uploaded) at 48x36, inert: no remove button, no preview, no picker,
+   nothing focusable — it is evidence, not a control. Navy-world tokens only,
+   no entrance animation, so reduced motion needs no extra guard. */
+/* The containing block for the absolute note below. Nothing inside the card
+   was anchored above `.ocrf-req` (which is `position:relative` itself), so
+   this changes not one rendered pixel on its own. */
+.ocrf-req-card--enemy{position:relative}
+.ocrf-mirror-note{position:absolute;left:0;right:0;top:100%;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  margin-top:10px;padding:12px 10px;border-radius:12px;
+  border:1px dashed rgba(239,95,95,.30);background:rgba(239,95,95,.06);
+  pointer-events:none}
+.ocrf-mirror-shots{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.ocrf-mirror-shot{display:block;width:48px;height:36px;border-radius:6px;
+  border:1px solid rgba(185,210,229,.30);background:var(--ocrf-well) center/cover no-repeat;
+  box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.ocrf-mirror-cap{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ocrf-ember-b)}
+/* Stacked layout (one column) gets nothing: the shorter page is the benefit
+   there, and there is no void to fill. Same 768px line the two-card grid and
+   the paste round already use. */
+@media (max-width:767px){
+  .ocrf-mirror-note{display:none}
+}
+
+/* UXE-040-S (Polish, touch: mobile 390x844, small 375x667, tablet 820x1180) -
+   the shell half of the 44px sweep. The mirror control `.ocrf-req-same` ("Use
+   your report for the enemy too", inside the enemy card) was the last control
+   on the reviewed upload path still under the 44px this build committed to in
+   round 1 (UXE-017) and finished for the tabs/pill in UXE-032.
+   Measured with offsetWidth x offsetHeight, NOT getBoundingClientRect: the
+   screen's parked entrance-animation transform (matrix(0.97,0,0,0.97,0,16))
+   scales every rect by 0.97 on first open, which is what made the same control
+   read 314x40.7 instead of its real 324x42.
+   Before: 324x42 at 390x844 and 309x42 at 375x667 (the `max-width:430px`
+   round's `min-height:42px`, ~line 1234), and 316x38 at 820x1180 (the
+   `min-width:768px` two-card round's `.ocrf-req-cards .ocrf-req-same`,
+   ~line 1372). Size only - the label text, its home INSIDE the enemy card, the
+   card structure, the per-card type tabs, the L/R pill, the row labels, the
+   hint sentences and "+ Add" are all untouched (owner constraint 1).
+   Two selectors, not one: the 768px rule is (0,2,0), so a bare
+   `.ocrf-req-same` here would lose to it at tablet width whatever the source
+   order. Real `min-height`, not a `::before` hit-area expander - the reviewer
+   measures bounding/layout boxes, which an expander does not change. */
+@media (any-pointer:coarse){
+  .ocrf-req-same,
+  .ocrf-req-cards .ocrf-req-same{min-height:44px}
+}
+/* The 2px the rule above adds on the narrowest touch screens, clawed straight
+   back out of the control's OWN margins (6px -> 5px), exactly the trick the
+   UXE-032 round used one block up. 42+6+6 = 54 becomes 44+5+5 = 54, so the
+   QAC-020 first-open geometry - the enemy card's L/R pill, the sticky Scan
+   footer and the s1 scroll height - measures identically before and after this
+   round. No tap target shrinks, no row padding is trimmed and the locked
+   "set by your report" caption keeps its line. */
+@media (any-pointer:coarse) and (max-width:430px){
+  .ocrf-req-cards .ocrf-req-same{margin:5px 0}
+}
+
+/* --- Round: U1-M4 "use my report for the enemy too" hint (Gate-2 round 1) --
+   Playtest evidence (mobile, task 3, scored 2): with your card at 3/3 the
+   footer reads "Missing: enemy's battle report" and a first-time user who
+   owns exactly ONE report stalls — "I don't have a separate report for the
+   enemy..." — until they happen to spot the dashed, low-contrast checkbox
+   sitting between the enemy card's type tabs and its L/R pill. Measured on
+   that screen at 390x844: the control is 324x44 with a 1px DASHED border at
+   rgba(185,210,229,.35) and no fill, i.e. the quietest thing in a card whose
+   loudest thing (the selected "Battle Report" tab) is a full CTA gradient.
+   So the control is louder ONLY in the one state where it is the answer
+   (pick_upload.mjs sameHintFor: box shown + OFF, your card complete, the
+   enemy card completely untouched). Nothing structural moves - same node,
+   same place inside the enemy card, same words, same default-OFF, same word
+   budget. It ends the instant the box is ticked or the enemy card receives
+   a file / "None", because the flag is derived from that state on every
+   render.
+   Ice (#55BFFF = --ocrf-ice-b, YOUR faction colour and the colour the app
+   already uses for "this is about your side") - deliberately NOT the ember
+   of the enemy card's own accent, which means danger here, and not the
+   --ocrf-ok green that .ocrf-req-same--on owns for the ticked state.
+   The pulse reuses the build's one attention animation (ocrf-full-pulse, via
+   flashFull's .ocrf-slot-flash) - the same flash the missing line, a full
+   row and a rejected paste already use. It also revives a call that was
+   silently dead: ocr_flow.js's onCol(locked) branch has been calling
+   flashFull on THIS element since QAC-021 with no rule to animate. Under
+   prefers-reduced-motion the base round's `#ocrfRoot *{animation:none}`
+   kill-switch (line ~22) strips the pulse and leaves the static highlight,
+   which carries the whole message on its own. */
+.ocrf-req-same--hint{border-style:solid;border-color:rgba(85,191,255,.75);
+  background:rgba(85,191,255,.08);color:var(--ocrf-ink);
+  box-shadow:0 0 0 1px rgba(85,191,255,.22),0 0 16px -4px rgba(85,191,255,.55)}
+.ocrf-req-same--hint:hover{border-color:rgba(85,191,255,.95);color:var(--ocrf-ink)}
+.ocrf-req-same--hint .ocrf-req-same-box{border-color:rgba(85,191,255,.85);
+  background:rgba(85,191,255,.14);box-shadow:0 0 0 3px rgba(85,191,255,.12)}
+.ocrf-req-same.ocrf-slot-flash{animation:ocrf-full-pulse .55s ease-out}
+
+/* --- Round: U3D-T3 the missing line answers its own question (Gate-2 round 3)
+   Desktop task 3 scored 3 (the round's worst): with your card at 3/3 the
+   footer read "Missing: enemy's battle report" and the tester took it
+   literally - "do I have to go back into the game and take more
+   screenshots?" - and only noticed the lit "Use your report for the enemy
+   too" a beat later. The round-1 hint lights the right control; this lights
+   the right SENTENCE, in the footer where the eye already is. It is text
+   inside the existing .ocrf-missing button (the jump that focuses that very
+   box), so it needs no new colour and no new geometry: one muted tone below
+   the line's gold so the named item still leads and the pointer reads as the
+   aside it is, and the label echo is kept on one unbroken run of words so the
+   eye can match it to the control it names. The arrow is aria-hidden in the
+   markup (house style: "See who wins &rarr;") and only ever nudges up - the
+   enemy card sits above this footer side-by-side AND stacked. */
+.ocrf-missing-tip{color:var(--ocrf-ink-mute)}
+.ocrf-missing-tip-arrow{color:var(--ocrf-ice-b);font-weight:600;padding-left:1px}

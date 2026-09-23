@@ -32,16 +32,26 @@ test('computeTally: all clean', () => {
 test('computeTally: mixed, exact copy and percentages that always sum to 100', () => {
   const states = [...Array(18).fill('ok'), ...Array(3).fill('check'), ...Array(3).fill('missing')];
   const t = computeTally(states);
-  assert.equal(t.statusText, '18 of 24 read well · 3 to check · 3 still empty');
+  assert.equal(t.statusText, '21 of 24 read · 3 to double-check · 3 still empty');
   assert.equal(t.okCount, 18); assert.equal(t.checkCount, 3); assert.equal(t.missingCount, 3);
+  assert.equal(t.readCount, 21);
   assert.equal(t.okPct + t.checkPct + t.missPct, 100);
 });
 
 test('computeTally: ok+check only, and ok+missing only (no "0 to check"/"0 still empty" ever shown)', () => {
   const checkOnly = computeTally([...Array(20).fill('ok'), ...Array(4).fill('check')]);
-  assert.equal(checkOnly.statusText, '20 of 24 read well · 4 to check');
+  assert.equal(checkOnly.statusText, 'All 24 numbers read · 4 to double-check');
   const missingOnly = computeTally([...Array(22).fill('ok'), ...Array(2).fill('missing')]);
-  assert.equal(missingOnly.statusText, '22 of 24 read well · 2 still empty');
+  assert.equal(missingOnly.statusText, '22 of 24 read · 2 still empty');
+});
+
+// Owner walkthrough 2026-09-21: every number came through the backup reader and the
+// card said "0/24 · 0 of 24 read well" - a complete read that looked like a failure.
+test('computeTally: an all-backup-reader scan reads as complete, with the double-check count', () => {
+  const t = computeTally(Array(24).fill('check'));
+  assert.equal(t.statusText, 'All 24 numbers read · 24 to double-check');
+  assert.equal(t.readCount, 24); assert.equal(t.okCount, 0); assert.equal(t.clear, false);
+  assert.equal(t.okPct + t.checkPct + t.missPct, 100);
 });
 
 test('validateEditorInput matches saveEditor exactly: empty is a silent no-op, bad format and out-of-range have distinct messages', () => {

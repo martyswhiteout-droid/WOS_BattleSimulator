@@ -62,13 +62,21 @@
   legal.id = "wos-shell-legal";
   legal.appendChild(document.createTextNode(
     "Fan-made tool. Not affiliated with or endorsed by Century Games. "));
+  // UXE-024 (Gate-1 UX round 1): the two links AND their separator live in
+  // one white-space:nowrap span so the pair always wraps together — the line
+  // used to break as "… Century Games. Terms ·" / "Privacy", leaving an
+  // orphaned separator at the end of one line and a lone word on the next.
+  // Wording, order and both hrefs are untouched (disclaimer.md is verbatim;
+  // test_overlay_inject.py pins the sentence and both /legal paths).
+  var legalLinks = el("span", "wos-legal-links");
   var tosLink = el("a", null, "Terms");
   tosLink.href = "/legal/tos";
-  legal.appendChild(tosLink);
-  legal.appendChild(document.createTextNode(" · "));
+  legalLinks.appendChild(tosLink);
+  legalLinks.appendChild(document.createTextNode(" · "));
   var privacyLink = el("a", null, "Privacy");
   privacyLink.href = "/legal/privacy";
-  legal.appendChild(privacyLink);
+  legalLinks.appendChild(privacyLink);
+  legal.appendChild(legalLinks);
   // NOT inside the chip any more (2026-08-15): mounted as its own fixed
   // micro-footer in mount() below, so it stays visible in metric mode.
 
@@ -107,10 +115,16 @@
     var ocrLeft = remaining.ocr != null ? String(remaining.ocr)
       : String(ent.daily_ocr_quota != null ? ent.daily_ocr_quota : "—");
 
-    // The one-line metric (textContent only — hostile-client rule).
-    metric.textContent = (user.plan || "free").toUpperCase()
-      + " · Sims " + simsLeft
-      + (user.plan === "pro" ? " · OCR " + ocrLeft : "");
+    // The one-line metric (textContent only — hostile-client rule). UXE-016
+    // (Gate-1 UX round 1): the plan token and the quota tail are separate
+    // spans so overlay.css can drop the tail on the START screen at <=700px,
+    // where "· Sims 99788 · OCR 4999" read as developer telemetry crowding
+    // the H1. Same single line, same order, same characters — this only
+    // gives the tail something CSS can address.
+    clear(metric);
+    metric.appendChild(el("span", "wos-sc-metric-plan", (user.plan || "free").toUpperCase()));
+    metric.appendChild(el("span", "wos-sc-metric-rest",
+      " · Sims " + simsLeft + (user.plan === "pro" ? " · OCR " + ocrLeft : "")));
 
     var who = el("div", "wos-sc-user");
     who.appendChild(el("span", "wos-sc-name", user.email || user.user_id || "player"));
@@ -184,6 +198,28 @@
         .catch(function () { renderSignedOut(null); });
     })
     .catch(renderError);
+
+  // Orchestrator polish round (2026-09-21): the chip's own footprint (width
+  // varies with its text — plan/quota digits — and toggles between the
+  // collapsed metric pill and the full account panel; height varies the
+  // same way) is published as CSS custom properties so overlay.css can
+  // reserve real space for it instead of guessing a worst-case constant —
+  // the header's own `.top-actions` (Runs/Run/run-status/bar-note) and, on
+  // small screens, the page content right below the header, both read
+  // these to stay clear of wherever the chip actually is. ResizeObserver
+  // fires on the FIRST layout too (no separate initial call needed) and on
+  // every metric<->expanded toggle or text change.
+  function publishChipSize() {
+    var r = root.getBoundingClientRect();
+    document.documentElement.style.setProperty("--wos-chip-w", Math.ceil(r.width) + "px");
+    document.documentElement.style.setProperty("--wos-chip-h", Math.ceil(r.height) + "px");
+  }
+  if (window.ResizeObserver) {
+    new ResizeObserver(publishChipSize).observe(root);
+  } else {
+    publishChipSize();
+    window.addEventListener("resize", publishChipSize);
+  }
 
   function mount() {
     document.body.appendChild(root);

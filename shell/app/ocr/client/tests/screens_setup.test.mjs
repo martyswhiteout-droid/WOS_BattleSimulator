@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {
-  computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, renderS5, relabelForecastCta,
+  computeChipText, conversionNotices, shouldShowUndo, buildFillPlan, renderS5,
 } from '../screens/setup.mjs';
 import { computeTally } from '../screens/review.mjs';
 
@@ -14,7 +15,7 @@ test('computeChipText: complete', () => {
 test('computeChipText: incomplete, same join rules as the tally card, always ends "tap to check"', () => {
   const states = [...Array(18).fill('ok'), ...Array(3).fill('check'), ...Array(3).fill('missing')];
   const text = computeChipText(computeTally(states));
-  assert.equal(text, '18 of 24 in · 3 to check · 3 still empty — tap to check');
+  assert.equal(text, '21 of 24 in · 3 to check · 3 still empty — tap to check');
 });
 
 test('shouldShowUndo is true whenever a snapshot was captured, even on the very first fill', () => {
@@ -115,24 +116,21 @@ test('UXJ-005 probe: the heading is the FIRST thing in #ocrfS5 — before the st
   assert.ok(sectionOpen < heading && heading < accordion);
 });
 
-// --- UXJ-006 (EVAL_UX_JOURNEY.md round 1): the S5 primary CTA must read
-// "See who wins ->" per OCR_UX_FLOW_SPEC.md §3 S5.4 / the mock — but the
-// real button (prototype/index.html's #runBtn) can't be edited at the
-// source (CLAUDE.md: prototype/ is read-only), so the relabel is a runtime
-// DOM write, scoped to the OCR-arrival context (same mechanism as every
-// other applyFillPlan side effect). ---
+// --- UXE-005 (Gate-1 UX round 1, Major) RETIRED UXJ-006's relabel. The old
+// probes here pinned a runtime rewrite of prototype/index.html's own header
+// #runBtn to "See who wins ->". That put two identically-labelled primary
+// buttons on one screen (the header's and the page's own #runBottom) and, on
+// mobile, one action under two different names. The page's primary action is
+// #runBottom; the header button is a compact secondary "Re-run" and keeps
+// whatever label the prototype gives it. What replaces the probes is a
+// NEGATIVE guard: no export and no source line in this module may write
+// #runBtn's label again. The arrival's own "See who wins" (#ocrfS5Run) is
+// pinned by the renderS5 test further down, unchanged.
 
-test('UXJ-006 probe: relabelForecastCta relabels the real forecast button to the PRD/mock wording', () => {
-  const btn = { innerHTML: 'Run forecast' };
-  const fakeDoc = { getElementById: (id) => (id === 'runBtn' ? btn : null) };
-  const returned = relabelForecastCta({ doc: fakeDoc });
-  assert.equal(btn.innerHTML, 'See who wins <span aria-hidden="true">&rarr;</span>');
-  assert.equal(returned, btn);
-});
-
-test('UXJ-006 probe: relabelForecastCta is a safe no-op when the button is not present', () => {
-  const fakeDoc = { getElementById: () => null };
-  assert.doesNotThrow(() => relabelForecastCta({ doc: fakeDoc }));
+test('UXE-005 guard: setup.mjs never relabels the prototype header button (#runBtn) again', () => {
+  const src = readFileSync(new URL('../screens/setup.mjs', import.meta.url), 'utf8');
+  assert.doesNotMatch(src, /getElementById\(['"]runBtn['"]\)/);
+  assert.doesNotMatch(src, /export function relabelForecastCta/);
 });
 
 // ---- QA defect 044: chip/tally must reflect conversion-readiness ----------

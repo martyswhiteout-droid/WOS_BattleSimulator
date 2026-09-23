@@ -28,13 +28,15 @@ export function conversionNotices(conversion = {}) {
 export function computeChipText(tally, notices = []) {
   if (notices.length) {
     const sides = notices.map((n) => SIDE_LABELS[n.side]).join(' and ');
-    const lead = tally.clear ? `All ${tally.total} numbers read` : `${tally.okCount} of ${tally.total} in`;
+    const lead = tally.clear ? `All ${tally.total} numbers read` : `${tally.readCount ?? tally.okCount} of ${tally.total} in`;
     return `${lead} · ${sides} not filled in — tap to check`;
   }
   if (tally.clear) {
     return `All ${tally.total} numbers in <span class="ocrf-chip-ok-ic" aria-hidden="true">&#10003;</span> — tap to check`;
   }
-  const parts = [`${tally.okCount} of ${tally.total} in`];
+  // 2026-09-21: count every number that is IN (clean + to-check), same rule as the
+  // review tally - a backup-reader scan must not read as "0 of 24 in".
+  const parts = [tally.missingCount === 0 ? `All ${tally.total} numbers in` : `${tally.readCount ?? tally.okCount} of ${tally.total} in`];
   if (tally.checkCount > 0) parts.push(`${tally.checkCount} to check`);
   if (tally.missingCount > 0) parts.push(`${tally.missingCount} still empty`);
   return `${parts.join(' · ')} — tap to check`;
@@ -115,21 +117,17 @@ export function renderS5({ chipText, complete, states, notices = [], infoNotes =
 
 /* ---- thin DOM wiring below: exercised by the Task 10 browser gate, not node:test ---- */
 
-// UXJ-006 fix (EVAL_UX_JOURNEY.md round 1): OCR_UX_FLOW_SPEC.md §3 S5.4 —
-// "Primary CTA: 'See who wins →' = the existing forecast button" — but the
-// real button is prototype/index.html's own #runBtn ("Run forecast"), and
-// that file is READ-ONLY (CLAUDE.md: never touch prototype/). The relabel
-// happens the same way every other S5 side effect in applyFillPlan already
-// does (applyPanel/updateFinalStats/scrollIntoView): a runtime DOM write
-// from this injected module, scoped to the OCR-arrival context only — a
-// user who never touches the OCR flow never sees the button change. Exported
-// on its own (same split as the rest of this file's pure-ish decisions) so
-// the relabel itself is unit-testable without a real DOM.
-export function relabelForecastCta({ doc = document } = {}) {
-  const btn = doc.getElementById('runBtn');
-  if (btn) btn.innerHTML = 'See who wins <span aria-hidden="true">&rarr;</span>';
-  return btn;
-}
+// UXE-005 (Gate-1 UX round 1, Major) RETIRES the old UXJ-006 relabel. This
+// module used to rewrite prototype/index.html's own header #runBtn to "See
+// who wins ->" on arrival, which put TWO identically-labelled primary
+// buttons on one screen (the header's and the page's own #runBottom) plus
+// this cluster's third one - and, on mobile, the same action under two
+// different names. The page's primary action is #runBottom; the header
+// #runBtn is a compact secondary "Re-run" shortcut and must keep whatever
+// label the prototype gives it. Nothing relabels it from here any more, by
+// design: do not reintroduce a runtime write to #runBtn's text. The arrival
+// keeps its OWN "See who wins" (#ocrfS5Run, renderS5 above), which the
+// arrival charter requires next to the freshly filled panel.
 
 export function applyFillPlan(plan, { win = window, scroll = true } = {}) {
   if (plan.me && typeof win.applyPanel === 'function') win.applyPanel('me', plan.me);
@@ -146,7 +144,6 @@ export function applyFillPlan(plan, { win = window, scroll = true } = {}) {
   if (plan.heroesMe && typeof win.applyHeroes === 'function') win.applyHeroes('#capMe', plan.heroesMe);
   if (plan.heroesFoe && typeof win.applyHeroes === 'function') win.applyHeroes('#capFoe', plan.heroesFoe);
   if (typeof win.updateFinalStats === 'function') win.updateFinalStats();
-  relabelForecastCta();
   // scroll:false on the S5-arrival path — the s5 branch anchors the viewport
   // on its own chip+panel cluster instead (a competing smooth scroll here
   // was one of the two authors of the UXJ-010 arrival-geometry fight).

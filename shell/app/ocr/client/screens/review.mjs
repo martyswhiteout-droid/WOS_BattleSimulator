@@ -20,17 +20,23 @@ export function computeTally(states) {
   const checkCount = states.filter((s) => s === 'check').length;
   const missingCount = states.filter((s) => s === 'missing').length;
   const okCount = total - checkCount - missingCount;
+  // Owner walkthrough 2026-09-21: a scan whose 24 numbers ALL came through the
+  // backup reader showed "0/24 · 0 of 24 read well · 24 to check" - a fully
+  // successful read that looked like a total failure ("the OCR doesn't seem to
+  // be working"). The headline now counts every number that is IN (clean +
+  // to-double-check); the amber share still says how many deserve a second look.
+  const readCount = total - missingCount;
   if (checkCount === 0 && missingCount === 0) {
-    return { okCount, checkCount, missingCount, total, clear: true,
+    return { okCount, readCount, checkCount, missingCount, total, clear: true,
       statusText: `All ${total} numbers are in.`, okPct: 100, checkPct: 0, missPct: 0 };
   }
   const checkPct = Math.round((checkCount / total) * 100);
   const missPct = Math.round((missingCount / total) * 100);
   const okPct = 100 - checkPct - missPct;   // remainder, not independently rounded — segments always sum to 100
-  const parts = [`${okCount} of ${total} read well`];
-  if (checkCount > 0) parts.push(`${checkCount} to check`);
+  const parts = [missingCount === 0 ? `All ${total} numbers read` : `${readCount} of ${total} read`];
+  if (checkCount > 0) parts.push(`${checkCount} to double-check`);
   if (missingCount > 0) parts.push(`${missingCount} still empty`);
-  return { okCount, checkCount, missingCount, total, clear: false, statusText: parts.join(' · '), okPct, checkPct, missPct };
+  return { okCount, readCount, checkCount, missingCount, total, clear: false, statusText: parts.join(' · '), okPct, checkPct, missPct };
 }
 
 export function validateEditorInput(raw) {
@@ -91,7 +97,7 @@ export function renderReviewGrid(states) {
 }
 
 function tallyCardHtml(tally) {
-  return `<div class="ocrf-tally-head"><span class="ocrf-tally-num">${tally.okCount}/${tally.total}</span>
+  return `<div class="ocrf-tally-head"><span class="ocrf-tally-num">${tally.readCount ?? tally.okCount}/${tally.total}</span>
   <span class="ocrf-tally-status${tally.clear ? ' ocrf-clear' : ''}">${tally.statusText}</span></div>
   <div class="ocrf-tally-bar"><i class="ocrf-b-ok" style="width:${tally.okPct}%"></i>
   <i class="ocrf-b-check" style="width:${tally.checkPct}%"></i>

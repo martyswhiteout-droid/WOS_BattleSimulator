@@ -261,3 +261,236 @@
   font-size: 11px;
   color: #8FB0C9;
 }
+
+/* --- Round 3 (2026-09-21, UX_START_JOURNEY_SPEC.md §3.4): quota chip vs the
+ * header's Runs select / Run button on small screens. prototype/index.html's
+ * own "Round 11" `@media (max-width:700px)` rule collapses `.bar` (the
+ * sticky header — present unchanged on the start screen AND the workspace,
+ * UX_START_JOURNEY_SPEC.md §2.1) to a single ~58-59px-tall row: flake, brand,
+ * Runs select and Run button all inline, the button's right edge landing
+ * close to the viewport's own right edge. This chip is `position:fixed;
+ * top:10px;right:10px` at every width, so from 360px to 700px it sits
+ * squarely on top of that row instead of below it — confirmed by measuring
+ * both rects live at 360/375/390/414/430/700px (header bottom edge never
+ * exceeds ~59px across that whole range; the metric-mode default chip alone
+ * overlaps the Runs select AND the Run button by ~150x26px at 390px). Fix:
+ * dock the chip BELOW the header on small screens instead of trying to
+ * dodge it sideways — the chip's own width varies (collapsed metric pill vs.
+ * the expanded account panel), so a horizontal-only dodge could never cover
+ * every state, but every state starts clear of the header once its `top` is
+ * past the header's own bottom edge. 68px leaves the same ~8-9px breathing
+ * room the un-collapsed 10px top offset already had above a ~59px header. */
+@media (max-width: 700px) {
+  #wos-shell-overlay {
+    position: absolute;   /* scrolls away with the page instead of floating over it (see Round 4) */
+    top: 50px;
+    right: 8px;
+  }
+  /* The start screen's header is brand-only (44px — no Runs select/Run
+   * button to dodge there at all, `body.view-start` hides `.top-actions`
+   * entirely per UX_START_JOURNEY_SPEC.md §2.1), but the WORKSPACE header
+   * keeps the full Runs+Run row and grows to ~58-59px — measured live at
+   * 360/375/390/414/430px, every run. A single top offset tuned for the
+   * taller workspace header (68px) left only ~4px of clearance under the
+   * shorter start-screen header at the shortest tested viewport (375x667:
+   * the start title sits at y=81.8, 68px+26px-tall-chip = 94, overlapping
+   * it); 50px clears the 44px header with room to spare on the start
+   * screen, and this rule bumps it back up to 68px specifically once
+   * body.view-work is set. */
+  body.view-work #wos-shell-overlay {
+    top: 68px;
+  }
+}
+
+/* --- Round 4 (2026-09-21, orchestrator polish pass) -----------------------
+ * Two more quota-chip collisions found after Round 3 landed:
+ *
+ * (1a) DESKTOP (>=701px): the chip's fixed top:10px/right:10px sat on top
+ * of the header's red "LIVE ENGINE - LOCAL" bar-note in the workspace — the
+ * chip's own width varies with its text (plan name, sim/OCR digit counts,
+ * collapsed-metric vs. expanded-panel state), so no single fixed reservation
+ * is correct at every width/state. overlay.js now measures the chip live
+ * (ResizeObserver) and publishes --wos-chip-w/-h on <html>; `.top-actions`
+ * (Runs select, Run button, run-status, bar-note — all of it, as one flex
+ * block already pinned to the header's right edge via its own
+ * `margin-left:auto`) reserves exactly that much space on its own right
+ * side, so it shifts left by the chip's real current width + a 12px gap,
+ * at every width from 701px up (no upper bound — matches "1440, 1280, 1024,
+ * 800" in the ask, and beyond) and in both collapsed and expanded states,
+ * automatically, with no per-breakpoint tuning. body.view-start already
+ * hides `.top-actions` entirely (Round 18), so this is inert there.
+ *
+ * (1b) MOBILE (<=700px): Round 3's fix (above) stopped the chip covering
+ * the Runs/Run row, but being `position:fixed` it stayed glued to the
+ * viewport while the PAGE scrolled underneath it — on the workspace this
+ * meant it drifted down over the scenario rail's "+ New scenario" button at
+ * the top of the page, and kept floating over hero-row text further down
+ * once the user actually scrolled. Round 3's own block (above) now also
+ * flips `position` to `absolute` — with no positioned ancestor between the
+ * chip and <html>, its containing block is the page itself, so "50px/68px
+ * from the top" becomes a real document position that scrolls normally
+ * (and out of view almost immediately) instead of a viewport-locked
+ * overlay. That alone stops the "floats over content while scrolling" half
+ * of the complaint; the "covers the top of the scenario strip" half still
+ * needs real space RESERVED right below the header (an absolutely
+ * positioned element takes no room in the flow on its own) — reserved only
+ * in the WORKSPACE, where the concrete collision (scenario rail) was
+ * reported; the start screen's own vertically-centered layout
+ * (`#startScreen{justify-content:center}`) already had comfortable
+ * clearance under the existing 50px offset at every tested width down to
+ * 375x667 (Round 3's own measurements), so reserving space there too would
+ * only add empty space to an already-centered composition for no benefit.
+ * ============================================================ */
+@media (max-width: 700px) {
+  body.view-work main.layout {
+    padding-top: calc(var(--wos-chip-h, 26px) + 20px);
+  }
+}
+
+@media (min-width: 701px) {
+  header.bar .top-actions {
+    margin-right: calc(var(--wos-chip-w, 0px) + 12px);
+  }
+}
+
+/* --- Round 5 (2026-09-21, Gate-1 UX review round 1) -----------------------
+ * UXE-001 (BLOCKER), UXE-016, UXE-024. Append-only, same navy-world tokens.
+ *
+ * UXE-001: `#wos-shell-legal` is `position:fixed` with the same max z-index
+ * as the account chip, so its 340x27 box sat ON TOP of the page at every
+ * width and ATE every pointer event inside that box — measured on mobile
+ * (390x844): `#genFoe` resting at y 797-829, `elementFromPoint(258,821)` and
+ * `(356,821)` both returned `DIV#wos-shell-legal`, i.e. the bottom 20px of a
+ * 32px select (chevron included) plus the formation card's FC / TIER / T12
+ * selects were dead. Two independent fixes, both needed:
+ *   (a) at EVERY width the container stops taking pointer events at all and
+ *       only its two links take them back — a disclaimer is something to
+ *       read, never something that intercepts a tap meant for the page. This
+ *       alone makes the dead zone impossible at any viewport and in any
+ *       scroll position (padding reservations only ever protect the END of a
+ *       scrolling document).
+ *   (b) at <=700px it leaves fixed positioning entirely and renders in
+ *       normal flow as the last thing on the page — still always rendered,
+ *       never collapsible, never behind a toggle (PRODUCTION_CRITERIA F2 /
+ *       shell/legal/disclaimer.md: the canonical sentence must be VISIBLE
+ *       and uncollapsible; nothing here hides it — `shell/tests/
+ *       test_overlay_inject.py::test_overlay_js_carries_the_century_games_
+ *       disclaimer` stays true, the wording and both /legal links are
+ *       untouched). It is the last non-popup child of <body> already
+ *       (overlay.js's mount() appends it last; the `.hpick-pop` nodes after
+ *       it are absolutely-positioned popovers), so normal flow puts it
+ *       exactly where a footer belongs.
+ * Its z-index also drops BELOW the OCR takeover's own `#ocrfRoot`
+ * (2147482600) while staying above ordinary page content, so a modal can
+ * never have page chrome painted across it (the UXE-016 complaint, same
+ * cause) — the footer is still on screen, the dialog is simply in front of
+ * it, which is what a dialog is for.
+ * On DESKTOP the fixed corner footer keeps clear of the content column's own
+ * end: `main.layout` already reserves 90px of bottom padding (measured) —
+ * comfortably more than the footer's 27px + 8px offset — and the start
+ * screen's centred stack ends ~300px above it at 1440x900 / 1280x720.
+ */
+#wos-shell-legal {
+  pointer-events: none;          /* (a) never intercept a tap meant for the page */
+  z-index: 2147482500;           /* above page content, BELOW #ocrfRoot's 2147482600 */
+}
+#wos-shell-legal a { pointer-events: auto; }
+
+/* UXE-024: "Terms · Privacy" breaks as a pair — never an orphaned separator
+ * at the end of one line with a lone word on the next. */
+#wos-shell-legal .wos-legal-links { white-space: nowrap; }
+
+@media (max-width: 700px) {
+  #wos-shell-legal {
+    position: static;            /* (b) real flow, last thing on the page */
+    z-index: auto;
+    max-width: none;             /* the 340px corner cap forced 3 ragged lines in flow */
+    margin: 16px auto calc(10px + env(safe-area-inset-bottom));
+    padding: 0 12px;
+    text-align: center;          /* a centred footer line, not a corner overlay */
+    pointer-events: auto;        /* in flow it overlays nothing — text stays selectable */
+    opacity: 1;                  /* it is the page's own footer now, not a floating aside */
+  }
+}
+
+/* UXE-016: on the START screen at <=700px the chip's "· Sims 99788 · OCR
+ * 4999" tail was the second-loudest thing on a first-time visitor's screen
+ * and read as developer telemetry crowding the H1. The plan token alone is
+ * the part a visitor can act on; the full metric returns in the workspace
+ * (body.view-work), where quota is actually context. Text-only change, the
+ * chip's own hit area, aria and expand behaviour are untouched. */
+@media (max-width: 700px) {
+  body.view-start #wos-shell-overlay.wos-metric-mode .wos-sc-metric-rest { display: none; }
+}
+
+/* UXE-016 (second half): page chrome must never paint over a modal. The OCR
+ * takeover sets `body.ocrf-flow-open` for exactly as long as its dialog is
+ * up (ocr_flow.css's own takeover round), and the chip is pure page chrome —
+ * no state of the flow depends on it, and it comes straight back when the
+ * dialog closes. */
+body.ocrf-flow-open #wos-shell-overlay {
+  visibility: hidden;      /* NOT display:none - see below */
+  pointer-events: none;
+}
+/* `visibility` rather than `display` is load-bearing: overlay.js measures the
+ * chip with a ResizeObserver and publishes --wos-chip-w/-h, which the header's
+ * `.top-actions` and (on small screens) `main.layout`'s own top padding both
+ * reserve space from. `display:none` collapses those to 0 while the dialog is
+ * up and restores them the instant it closes - which shifted the whole page
+ * down by the chip's height RIGHT AFTER the OCR arrival had already scrolled
+ * to its target (measured: the arrival landed 26px lower than asked for at
+ * 390x844, exactly --wos-chip-h). `visibility:hidden` keeps the box, and its
+ * measurements, exactly as they were. */
+
+/* --- Round 6 (2026-09-21, Gate-1 UX review round 2) -----------------------
+ * UXE-029 (Minor, desktop 1440x900 + laptop 1280x720): the legal strip was
+ * illegible ON TOP OF the forecast panel. Measured after a run: `#wos-shell-
+ * legal` fixed at [1090, 865, 340, 27], 9px `#8FB0C9` at opacity .85, landing
+ * on the parchment result panel (`#F6E3BB`, which runs to y ~890) at
+ * **1.80 : 1** — one line under "Your side wins at 65% of +/-20% strength
+ * shifts". Required legal text rendered unreadable is a compliance problem as
+ * much as a design one, and page chrome painted across the panel that holds
+ * the answer is the classic z-index smell. Over navy it is 11.6 : 1, so the
+ * defect is entirely about WHERE it is, not what colour it is.
+ *
+ * DECISION — in-flow footer in the workspace, nothing at all on the start
+ * screen. The reviewer offered two options and I took the "cleaner still" one,
+ * scoped to `body.view-work`:
+ *   * it is the same treatment <=700px has had since UXE-001 (a) — one
+ *     behaviour, two widths, instead of a third variant;
+ *   * a backing (`rgba(6,20,34,.72)` + blur, the reviewer's first option) does
+ *     not actually clear the bar: I computed #8FB0C9 through a .72 ink over
+ *     the parchment at only 3.1-3.7 : 1 (an alpha of >=.9 is needed to reach
+ *     4.5 : 1, at which point it is an opaque navy slab sitting on the
+ *     result), and a fixed strip would STILL intersect `.forecast`'s box at
+ *     some scroll position. Moving it out of the overlap is the only fix that
+ *     is true at every scroll offset.
+ *   * `body.view-start` is deliberately left EXACTLY as it was: fixed
+ *     bottom-right over navy at 11.6 : 1, no overlap to fix (the centred
+ *     start stack ends ~300px above it), and `#startScreen` carries
+ *     `min-height:calc(100vh - 82px)` — an in-flow footer there would push
+ *     `documentElement.scrollHeight` past `innerHeight` and hand the landing
+ *     screen a scrollbar it does not have today. That file is the prototype
+ *     builder's, not mine, so trading a 1.8 : 1 overlap for a scrollbar on the
+ *     first screen anyone sees is not a trade I get to make.
+ * `main.layout` already reserves 90px of bottom padding, so the strip lands in
+ * the space that was being held for it either way. `pointer-events` goes back
+ * to `auto` because in flow it overlays nothing — the UXE-001 (a) dead-zone
+ * cannot exist for an element that is not on top of the page. Wording, both
+ * /legal links, the `.wos-legal-links` nowrap pair and the "always visible,
+ * never collapsible" rule (PRODUCTION_CRITERIA F2 / shell/legal/disclaimer.md)
+ * are untouched: nothing here hides it, and z-index stays below #ocrfRoot so
+ * the OCR takeover is never painted over.
+ */
+@media (min-width: 701px) {
+  body.view-work #wos-shell-legal {
+    position: static;
+    z-index: auto;
+    max-width: none;            /* the 340px corner cap forced ragged lines in flow */
+    margin: 0 auto 18px;
+    padding: 0 16px;
+    text-align: center;         /* a centred footer line, not a corner overlay */
+    pointer-events: auto;       /* in flow it overlays nothing */
+    opacity: 1;                 /* the page's own footer now, not a floating aside */
+  }
+}
