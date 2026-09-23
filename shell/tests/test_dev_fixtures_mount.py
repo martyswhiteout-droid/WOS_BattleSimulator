@@ -54,3 +54,12 @@ def test_non_dev_never_mounts_fixtures(env):
         assert resp.status_code == 200
     else:
         assert resp.status_code == 404
+
+
+def test_dev_fixtures_can_be_switched_off_per_instance():
+    # 2026-09-23: a public link-share instance runs ENV=dev but must not serve
+    # the fixture screenshots — OCR_DEV_FIXTURES=0 unmounts the route.
+    app = create_app(Settings(_env_file=None, DEV_BYPASS=True, ENV="dev", IP_HASH_SALT="x",
+                              OCR_DEV_FIXTURES=False))
+    resp = TestClient(app).get("/shell/ocr/dev-fixtures/C_battle_1.png")
+    assert resp.status_code == 404

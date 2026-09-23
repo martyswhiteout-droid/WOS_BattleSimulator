@@ -91,6 +91,11 @@ class Settings(BaseSettings):
     # refused up front (422 image_too_small, with the measured width).
     MIN_OCR_IMAGE_WIDTH: int = 120
     OCR_UPSCALE_TARGET_WIDTH: int = 1000
+    # 2026-09-23: the DEV-ONLY fixture-image mount (/shell/ocr/dev-fixtures/,
+    # real game screenshots for QA reads) can be switched off per instance —
+    # a public link-share instance runs ENV=dev (OCR needs the dev plan) but
+    # must not serve Century Games art to the internet.
+    OCR_DEV_FIXTURES: bool = True
 
     # --- derived helpers (properties, not env keys) -----------------------
 
@@ -182,7 +187,7 @@ for _key in ("ENV", "BASE_URL", "CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY",
              "PRO_SIMS_PER_DAY", "PRO_OCR_PER_DAY", "BURST_PER_MIN",
              "GLOBAL_CONCURRENCY", "SWEEP_MIN_EVENTS", "IP_HASH_SALT",
              "MAX_BODY_BYTES", "MAX_OCR_BODY_BYTES", "MIN_OCR_IMAGE_WIDTH",
-             "OCR_UPSCALE_TARGET_WIDTH"):
+             "OCR_UPSCALE_TARGET_WIDTH", "OCR_DEV_FIXTURES"):
     setattr(Settings, _key.lower(), _alias(_key))
 
 

@@ -555,7 +555,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # promoted bundle can never expose fixture screenshots (game IP).
     _fixtures_dir = _REPO_ROOT / "shell" / "tests" / "fixtures" / "panel_ocr" / "images"
     _env = getattr(settings, "ENV", "") or ""
-    if _env.strip().lower() == "dev" and _fixtures_dir.is_dir():
+    _fixtures_on = bool(getattr(settings, "OCR_DEV_FIXTURES", True))
+    if _env.strip().lower() == "dev" and _fixtures_on and _fixtures_dir.is_dir():
         app.mount("/shell/ocr/dev-fixtures", _StaticFiles(directory=str(_fixtures_dir)),
                   name="ocr_dev_fixtures")
 
