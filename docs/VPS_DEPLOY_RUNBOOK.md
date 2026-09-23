@@ -130,3 +130,24 @@ The VPS above is DEFERRED (owner choice). What is actually serving today:
   in-memory; keep GEMINI_API_KEY unset here unless fuzzier budget-reset-on-restart is accepted.
 - Moving to the VPS later: run the runbook above, then just repoint — either delete the
   tunnel route and add the `A staging → VPS` record, or keep Cloudflare proxying to the VPS.
+
+
+### Public link-share instance — testing.wostests.com (LIVE since 2026-09-23)
+
+Same tunnel (`wos-pc`), second published application route
+`testing.wostests.com -> http://localhost:8202`, **no Access application**
+(anyone with the link gets in — a friends-testing instance, not a launch).
+
+- Code: a clean clone at `E:\WOS\wostests-testing` (committed code only — never
+  the staging working tree's uncommitted WIP). Update it deliberately:
+  `cd E:\WOS\wostests-testing && git pull` then restart via the bat below.
+- Process: `C:\Users\Martin\wos-ops\start_testing.bat` (uvicorn :8202,
+  `--env-file shell/.env`, log `%LOCALAPPDATA%\WOS\testing_app.log`), launched at
+  logon by the same Startup `wos-staging.vbs`.
+- Its `shell/.env` = staging's plus `OCR_DEV_FIXTURES=0` (the dev-only fixture-
+  screenshot route must not be public — game IP). ENV stays `dev` because OCR
+  needs the dev plan; there are no accounts: every visitor is `dev_user` (pro,
+  30 OCR reads/day shared), the Gemini daily budget (1200 calls) is the cost cap.
+- Verified 2026-09-23: root 200 with the OCR overlay, `/shell/me` 200 with no
+  login redirect, `/shell/ocr/dev-fixtures/*` 404, staging still 302 -> Access.
+- Ports on the PC: 8200 staging (Access-gated), 8201 QA instance, 8202 testing.
