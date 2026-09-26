@@ -3086,16 +3086,33 @@ function troopIcon(cls, clsName='class-icon-img'){
 
 /* ---------- hero picker ---------- */
 let openPop=null, openWrap=null, heroPickerSeq=0, openAnchorRect=null;   // openAnchorRect: UXE-037 scroll-close baseline
+// 2026-09-26 (phone bug report, Android Chrome, screen recording): openPlace = the open
+// picker's own place(); openFocusAt = when its search box last took focus. Both drive the
+// "soft keyboard" handling below. COARSE_POINTER = phones/tablets: the search box is NOT
+// auto-focused there (the keyboard it summoned covered the list and, on Android, resized
+// the page - which closed the list before it could be used).
+let openPlace=null, openFocusAt=0, lastViewportW=window.innerWidth;
+const COARSE_POINTER=!!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
 function closeHeroPicker(opts={}){
   const trigger=openWrap?openWrap.querySelector('.hpick-btn'):null;
   if(openWrap)openWrap.style.zIndex='';
   if(openPop){ openPop.classList.remove('open'); openPop.style.left=''; openPop.style.top=''; }
   if(trigger){ trigger.setAttribute('aria-expanded','false'); if(opts.returnFocus) trigger.focus(); }
-  openPop=null; openWrap=null; openAnchorRect=null;
+  openPop=null; openWrap=null; openAnchorRect=null; openPlace=null;
 }
+function refreshOpenAnchor(){ const t=openWrap?openWrap.querySelector('.hpick-btn'):null; if(t) openAnchorRect=t.getBoundingClientRect(); }
 document.addEventListener('click', closeHeroPicker);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeHeroPicker({returnFocus:true}); });
-window.addEventListener('resize', closeHeroPicker);
+// Android Chrome shrinks the layout viewport when the soft keyboard opens or closes, and
+// when the URL bar hides/shows while scrolling: the WIDTH does not change. That is not a
+// reason to close a list the user just opened (the 2026-09-26 bug) - re-place it around
+// its trigger. A width change (orientation flip, desktop window resize) still closes it.
+window.addEventListener('resize', function(){
+  const vw=window.innerWidth, widthChanged=vw!==lastViewportW; lastViewportW=vw;
+  if(!openPop) return;
+  if(!widthChanged && openPlace){ openPlace(); refreshOpenAnchor(); return; }
+  closeHeroPicker();
+});
 /* UXE-037 (Gate-1 UX review round 3): .hpick-pop is position:fixed and is placed once by
    place(), so a page scroll used to leave it ~550px from the row it edits while still
    intercepting taps over unrelated controls. ONE persistent capture listener closes it
@@ -3113,6 +3130,15 @@ window.addEventListener('scroll', function(e){
   const r=trigger.getBoundingClientRect();
   if(Math.abs(r.top-openAnchorRect.top)<=8 && Math.abs(r.left-openAnchorRect.left)<=8) return;
   const hadFocus=openPop.contains(document.activeElement);
+  // 2026-09-26: while the user is TYPING in the search box, closing would throw the query
+  // away - follow the trigger instead (place() re-anchors the fixed popover), and close
+  // only after the trigger has left the viewport. The first second after the box takes
+  // focus is the soft keyboard settling (Android scrolls the focused field into view):
+  // follow unconditionally there, even if the shrunken viewport hides the row for a moment.
+  const vh=window.innerHeight||document.documentElement.clientHeight;
+  const anchorVisible=r.bottom>0 && r.top<vh;
+  const keyboardSettling=hadFocus && (Date.now()-openFocusAt)<1000;
+  if(openPlace && (keyboardSettling || (hadFocus && anchorVisible))){ openPlace(); openAnchorRect=trigger.getBoundingClientRect(); return; }
   closeHeroPicker();
   if(hadFocus){ try{ trigger.focus({preventScroll:true}); }catch(_){} }
 }, {passive:true, capture:true});
@@ -3123,10 +3149,12 @@ function heroPicker(filter, def, opts={}){
   let cur = allowNone && (def==null || def==='') ? noneHero : (list.find(h=>h.n===def) || list[0]);
   const wrap=el('div','hpick');
   if(allowNone) wrap.dataset.allowNone='1';
+  wrap.setAttribute('translate','no');   // 2026-09-26: hero names are proper nouns - Chrome auto-translate turned "Hank" into "Motek" (Polish phone), which also broke the name search
   const listId='hero-list-'+(++heroPickerSeq);
-  const btn=el('button','hpick-btn'); const pop=el('div','hpick-pop');
+  const btn=el('button','hpick-btn'); const pop=el('div','hpick-pop'); pop.setAttribute('translate','no');
   btn.type='button'; btn.setAttribute('aria-haspopup','listbox'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls',listId);
   const search=el('input','hpick-search'); search.type='text'; search.placeholder='Search hero…'; pop.appendChild(search);
+  search.addEventListener('focus', ()=>{ openFocusAt=Date.now(); });   // 2026-09-26: soft-keyboard settling window (see the scroll/resize handlers)
   const listBox=el('div'); listBox.id=listId; listBox.setAttribute('role','listbox'); pop.appendChild(listBox);
   function draw(){ wrap.dataset.hero=cur.none?'':cur.n; btn.title=cur.none?noneLabel:cur.n; btn.innerHTML='';
     if(cur.none){ const rd=el('img','none-red'); rd.src=RED_ICON; rd.alt=''; btn.appendChild(rd); }
@@ -3173,7 +3201,10 @@ function heroPicker(filter, def, opts={}){
     openPop=pop; openWrap=wrap; items(search.value);
     place();
     openAnchorRect=btn.getBoundingClientRect();        // UXE-037: baseline for the scroll-close displacement test
-    setTimeout(()=>{ try{ search.focus({preventScroll:true}); }catch(_){ search.focus(); } },0); }
+    openPlace=place;
+    // 2026-09-26: keyboard users get the search box focused; on phones/tablets the list
+    // opens WITHOUT summoning the keyboard (tap the box to search) - see COARSE_POINTER.
+    if(!COARSE_POINTER) setTimeout(()=>{ if(openPop!==pop) return; try{ search.focus({preventScroll:true}); }catch(_){ search.focus(); } },0); }
   function close(){ closeHeroPicker({returnFocus:true}); }
   btn.onclick=(e)=>{e.stopPropagation(); pop.classList.contains('open')?close():open();};
   btn.onkeydown=e=>{ if(e.key==='ArrowDown'){e.preventDefault();open();setTimeout(()=>focusOption(1),0);} };
@@ -4892,6 +4923,9 @@ window.addEventListener('DOMContentLoaded', function(){
     if(typeof runForecast==='function') runForecast();   // instant path — never {celebrate:true} here
   }
   function findTabByName(name){
+    // 2026-09-26: Chrome auto-translate rewrites the visible tab name (a Polish phone showed
+    // the page translated), so the tab Quick test creates is flagged and matched by the flag first.
+    if(name==='Quick test'){ var flagged=document.querySelector('#tabs .tab[data-quick-test]'); if(flagged) return flagged; }
     var tabs=[].slice.call(document.querySelectorAll('#tabs .tab'));
     for(var i=0;i<tabs.length;i++){
       var nm=tabs[i].querySelector('.tname');
@@ -4919,7 +4953,7 @@ window.addEventListener('DOMContentLoaded', function(){
             if(tabCount<5){
               var cfg=JSON.parse(JSON.stringify(tmpl));
               cfg.name='Quick test';
-              var t=makeTab(cfg.name,cfg,null);
+              var t=makeTab(cfg.name,cfg,null); if(t&&t.dataset) t.dataset.quickTest='1';
               selectTab(t);
             } else if(typeof showSessionNote==='function'){
               showSessionNote('Scenario limit reached — using your current stats');
